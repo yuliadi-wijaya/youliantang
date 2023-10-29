@@ -34,7 +34,7 @@ class PromoSeeder extends Seeder
         foreach (range(1,5) as $index) {
             DB::table('promo_vouchers')->insert([
                 'promo_id' => 1,
-                'voucher_code' => 'GRANDOPENING' . Carbon::now()->format('Ymd') . $faker->unique()->numerify('#####'),
+                'voucher_code' => 'GRANDOPENING' . Carbon::now()->format('ymd') . $faker->unique()->numerify('#####'),
             ]);
         }
     }

@@ -1,4 +1,15 @@
 @extends('layouts.master-layouts')
+@section('css')
+<style type="text/css">
+    .h-formfield-uppercase {
+        text-transform: uppercase;
+        &::placeholder {
+            text-transform: none;
+        }
+    }
+
+</style>
+@endsection
 @section('title')
     @if ($promo)
         {{ __('Update Promo Details') }}
@@ -178,7 +189,7 @@
                                                 <div class="col-md-6">
                                                     <div class="input-group datepickerdiv">
                                                         <input type="text"
-                                                            class="form-control appointment-date @error('active_period_start') is-invalid @enderror"
+                                                            class="form-control active_period @error('active_period_start') is-invalid @enderror"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
                                                             {{ old('active_period_start', date('Y-m-d')) }} placeholder="{{ __('Enter Start Date') }}">
@@ -195,7 +206,7 @@
                                                 <div class="col-md-6">
                                                     <div class="input-group datepickerdiv">
                                                         <input type="text"
-                                                            class="form-control appointment-date @error('active_period_end') is-invalid @enderror"
+                                                            class="form-control active_period @error('active_period_end') is-invalid @enderror"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
                                                             {{ old('active_period_end', date('Y-m-d')) }} placeholder="{{ __('Enter End Date') }}">
@@ -230,13 +241,13 @@
                                         </div>
                                         <div class="col-md-4 form-group">
                                             <input type="text"
-                                                class="form-control text-uppercase"
+                                                class="form-control text-uppercase h-formfield-uppercase"
                                                 name="voucher_prefix" id="VoucherPrefix" tabindex="1"
                                                 value="{{ old('voucher_prefix') }}"
                                                 placeholder="{{ __('Enter Prefix Voucher') }}">
                                         </div>
                                         <div class="col-md-4 form-group">
-                                            <button type="submit" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
+                                            <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -245,10 +256,12 @@
                                 <div class="col-md-12 form-group">
                                     <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}<span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(will be generated automatically after click the generate voucher button)") }}</span></label>
-                                    <div class="d-block voucher_list">
-                                        <div class="d-inline p-2 bg-success text-white font-weight-bold">GRANDOPENING231102001</div>
-                                        <div class="d-inline p-2 bg-success text-white font-weight-bold">GRANDOPENING231102002</div>
-                                        <div class="d-inline p-2 bg-success text-white font-weight-bold ">GRANDOPENING231102003</div>
+                                    <div class="btn-group voucher_list d-block">
+                                        @error('voucher_list')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -279,5 +292,31 @@
         <script src="{{ URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js') }}"></script>
         <script>
             // Script
+            $('.active_period').datepicker({
+                startDate: new Date(),
+                format: 'yyyy-mm-dd'
+            });
+
+            $(document).on('click', '#GenerateVoucher', function() {
+                var voucherTotal = $('#VoucherTotal').val();
+                var voucherPrefix = $('#VoucherPrefix').val();
+
+                if (!voucherTotal || !voucherPrefix) {
+                    alert('Input filters are required.');
+                }
+
+                today = new Date();
+
+                console.log(today.getFullYear());
+                console.log(today.getMonth());
+                console.log(today.getDate());
+
+                $('.voucher_list').html('');
+                for(var i = 1; i <= voucherTotal; i++) {
+                    voucherGeneratedText = voucherPrefix.replaceAll(/\s/g,'').toUpperCase() + today.getFullYear() + today.getMonth() + today.getDate() + i.toString().padStart(3, '0')
+                    //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
+                    $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
+                }
+            });
         </script>
     @endsection

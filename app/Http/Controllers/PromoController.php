@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Promo;
+use App\PromoVoucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
@@ -156,7 +157,8 @@ class PromoController extends Controller
             'active_period_start' => 'required|date|after:yesterday',
             'active_period_end' => 'required|date|after:active_period_start',
             'is_reuse_voucher' => 'required|numeric',
-            'status' => 'required|numeric'
+            'status' => 'required|numeric',
+            'voucher_list.*' => 'required'
         ]);
 
         try {
@@ -164,6 +166,8 @@ class PromoController extends Controller
             $obj = $this->toObject($request, new Promo());
             $obj->created_by = $user->id;
             $obj->save();
+
+            $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($request));
 
             return redirect('promo')->with('success', 'Promo created successfully!');
         } catch (Exception $e) {
@@ -277,5 +281,16 @@ class PromoController extends Controller
         $promo->status = $request->input('status');
 
         return $promo;
+    }
+
+    private function toObjectVoucherList(Request $request) {
+        $promoVouchers = [];
+        foreach($request->input('voucher_list') as $item) {
+            $obj = new PromoVoucher();
+            $obj->voucher_code = $item;
+            $promoVouchers[] = $obj;
+        }
+
+        return $promoVouchers;
     }
 }
