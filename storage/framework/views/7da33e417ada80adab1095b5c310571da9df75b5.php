@@ -1,3 +1,14 @@
+<?php $__env->startSection('css'); ?>
+<style type="text/css">
+    .h-formfield-uppercase {
+        text-transform: uppercase;
+        &::placeholder {
+            text-transform: none;
+        }
+    }
+
+</style>
+<?php $__env->stopSection(); ?>
 <?php $__env->startSection('title'); ?>
     <?php if($promo): ?>
         <?php echo e(__('Update Promo Details')); ?>
@@ -282,7 +293,7 @@ unset($__errorArgs, $__bag); ?>
                                                 <div class="col-md-6">
                                                     <div class="input-group datepickerdiv">
                                                         <input type="text"
-                                                            class="form-control appointment-date <?php $__errorArgs = ['active_period_start'];
+                                                            class="form-control active_period <?php $__errorArgs = ['active_period_start'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -313,7 +324,7 @@ unset($__errorArgs, $__bag); ?>
                                                 <div class="col-md-6">
                                                     <div class="input-group datepickerdiv">
                                                         <input type="text"
-                                                            class="form-control appointment-date <?php $__errorArgs = ['active_period_end'];
+                                                            class="form-control active_period <?php $__errorArgs = ['active_period_end'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -362,13 +373,13 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                         <div class="col-md-4 form-group">
                                             <input type="text"
-                                                class="form-control text-uppercase"
+                                                class="form-control text-uppercase h-formfield-uppercase"
                                                 name="voucher_prefix" id="VoucherPrefix" tabindex="1"
                                                 value="<?php echo e(old('voucher_prefix')); ?>"
                                                 placeholder="<?php echo e(__('Enter Prefix Voucher')); ?>">
                                         </div>
                                         <div class="col-md-4 form-group">
-                                            <button type="submit" class="btn btn-primary"><?php echo e(__('Generate Voucher')); ?></button>
+                                            <button type="button" id="GenerateVoucher" class="btn btn-primary"><?php echo e(__('Generate Voucher')); ?></button>
                                         </div>
                                     </div>
                                 </div>
@@ -377,10 +388,19 @@ unset($__errorArgs, $__bag); ?>
                                 <div class="col-md-12 form-group">
                                     <label for="" class="d-block" style="margin-bottom: 15px"><?php echo e(__("Voucher List")); ?><span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;"><?php echo e(__("(will be generated automatically after click the generate voucher button)")); ?></span></label>
-                                    <div class="d-block voucher_list">
-                                        <div class="d-inline p-2 bg-success text-white font-weight-bold">GRANDOPENING231102001</div>
-                                        <div class="d-inline p-2 bg-success text-white font-weight-bold">GRANDOPENING231102002</div>
-                                        <div class="d-inline p-2 bg-success text-white font-weight-bold ">GRANDOPENING231102003</div>
+                                    <div class="btn-group voucher_list d-block">
+                                        <?php $__errorArgs = ['voucher_list'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong><?php echo e($message); ?></strong>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
@@ -413,6 +433,32 @@ unset($__errorArgs, $__bag); ?>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js')); ?>"></script>
         <script>
             // Script
+            $('.active_period').datepicker({
+                startDate: new Date(),
+                format: 'yyyy-mm-dd'
+            });
+
+            $(document).on('click', '#GenerateVoucher', function() {
+                var voucherTotal = $('#VoucherTotal').val();
+                var voucherPrefix = $('#VoucherPrefix').val();
+
+                if (!voucherTotal || !voucherPrefix) {
+                    alert('Input filters are required.');
+                }
+
+                today = new Date();
+
+                console.log(today.getFullYear());
+                console.log(today.getMonth());
+                console.log(today.getDate());
+
+                $('.voucher_list').html('');
+                for(var i = 1; i <= voucherTotal; i++) {
+                    voucherGeneratedText = voucherPrefix.replaceAll(/\s/g,'').toUpperCase() + today.getFullYear() + today.getMonth() + today.getDate() + i.toString().padStart(3, '0')
+                    //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
+                    $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
+                }
+            });
         </script>
     <?php $__env->stopSection(); ?>
 

@@ -14,4 +14,8 @@ class PromoVoucher extends Model
         'promo_id',
         'voucher_code',
     ];
+
+    function promo(){
+        return $this->belongsTo(Promo::class)->where('is_deleted',0);
+    }
 }
