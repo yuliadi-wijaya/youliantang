@@ -13,13 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('promos', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->double('duration')->comment('minute');
-            $table->double('price')->default(0);
-            $table->double('commission_fee')->default(0)->comment('therapist commission fee');
+            $table->string('description');
+            $table->integer('discount_type')->default(0)->comment('0=>fix,1=>percentage');
+            $table->double('discount_value')->default(0);
+            $table->double('discount_max_value')->default(0)->comment('fix rate');
+            $table->date('active_period_start')->default(DB::raw('NOW()'));
+            $table->date('active_period_end')->default(DB::raw('NOW()'));
             $table->tinyInteger('status')->default(0)->comment('0=>inactive,1=>active');
+            $table->tinyInteger('is_reuse_voucher')->comment('0=>no,1=>yes');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users');
@@ -36,6 +40,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('promos');
     }
 };

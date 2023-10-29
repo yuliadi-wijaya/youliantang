@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
+use App\Promo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Yajra\DataTables\DataTables;
 
-class ProductController extends Controller
+class PromoController extends Controller
 {
     public function __construct() {
         $this->middleware('sentinel.auth');
@@ -33,7 +33,7 @@ class ProductController extends Controller
         $user = Sentinel::getUser();
         
         // Check user access
-        if (!$user->hasAccess('product.list')) {
+        if (!$user->hasAccess('promo.list')) {
             return view('error.403');
         }
 
@@ -41,26 +41,33 @@ class ProductController extends Controller
         $role = $user->roles[0]->slug;
 
         // Get available data only
-        $products = Product::where('is_deleted', 0)->orderByDesc('id')->get();
+        $promos = Promo::where('is_deleted', 0)->orderByDesc('id')->get();
 
         // Load Datatables
         if ($request->ajax()) {
-            return Datatables::of($products)
+            return Datatables::of($promos)
                 ->addIndexColumn()
                 ->addColumn('name', function($row) {
                     return $row->name;
                 })
-                ->addColumn('duration', function($row) {
-                    return number_format($row->duration) . ' minute';
+                ->addColumn('discount', function($row) {
+                    if ($row->discount_type == 0) {
+                        return 'Rp ' . number_format($row->discount_value);
+                    } else if ($row->discount_type == 1) {
+                        return $row->discount_value . '%';
+                    }
                 })
-                ->addColumn('price', function($row) {
-                    return 'Rp ' . number_format($row->price);
+                ->addColumn('discount_max', function($row) {
+                    return 'Rp ' . number_format($row->discount_max_value);
                 })
-                ->addColumn('commission_fee', function($row) use ($role) {
-                    if ($role == 'admin') {
-                        return 'Rp ' . number_format($row->commission_fee);
+                ->addColumn('active_period', function($row) {
+                    return $row->active_period_start . ' - ' . $row->active_period_end;
+                })
+                ->addColumn('is_reuse_voucher', function($row) {
+                    if ($row->is_reuse_voucher == 0) {
+                        return 'No';
                     } else {
-                        return '';
+                        return 'Yes';
                     }
                 })
                 ->addColumn('status', function($row) {
@@ -69,6 +76,11 @@ class ProductController extends Controller
                 ->addColumn('option', function($row) use ($role) {
                     if ($role == 'admin') {
                         $option = '
+                            <a href="promo/'.$row->id.'">
+                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Promo Voucher">
+                                    <i class="mdi mdi-eye"></i>
+                                </button>
+                            </a>
                             <a href="product/'.$row->id.'/edit">
                                 <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Product">
                                     <i class="mdi mdi-lead-pencil"></i>
@@ -79,13 +91,20 @@ class ProductController extends Controller
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';
+                    } else if ($role == 'receptionist') {
+                        $option = '
+                            <a href="promo/'.$row->id.'">
+                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Promo Voucher">
+                                    <i class="mdi mdi-eye"></i>
+                                </button>
+                            </a>';
                     }
                     return $option;
                 })->rawColumns(['option'])->make(true);
         }
         // End
 
-        return view('product.products', compact('user', 'role', 'products'));
+        return view('promo.promos', compact('user', 'role', 'promos'));
     }
 
     /**
@@ -99,7 +118,7 @@ class ProductController extends Controller
         $user = Sentinel::getUser();
 
         // Check user access
-        if (!$user->hasAccess('product.create')) {
+        if (!$user->hasAccess('promo.create')) {
             return view('error.403');
         }
 
@@ -107,9 +126,9 @@ class ProductController extends Controller
         $role = $user->roles[0]->slug;
 
         // Default data null
-        $product = null;
+        $promo = null;
         
-        return view('product.product-details', compact('user', 'role', 'product'));
+        return view('promo.promo-details', compact('user', 'role', 'promo'));
     }
 
     /**
@@ -124,38 +143,41 @@ class ProductController extends Controller
         $user = Sentinel::getUser();
 
         // Check user access
-        if (!$user->hasAccess('product.create')) {
+        if (!$user->hasAccess('promo.create')) {
             return view('error.403');
         }
 
         // Validate input data
         $request->validate([
             'name' => 'required',
-            'duration' => 'required|numeric',
-            'price' => 'required|numeric',
-            'commission_fee' => 'required|numeric',
+            'discount_type' => 'required|numeric',
+            'discount_value' => 'required|numeric',
+            'discount_max_value' => 'numeric',
+            'active_period_start' => 'required|date|after:yesterday',
+            'active_period_end' => 'required|date|after:active_period_start',
+            'is_reuse_voucher' => 'required|numeric',
             'status' => 'required|numeric'
         ]);
 
         try {
             // Mapping request to object and store data
-            $obj = $this->toObject($request, new Product());
+            $obj = $this->toObject($request, new Promo());
             $obj->created_by = $user->id;
             $obj->save();
 
-            return redirect('product')->with('success', 'Product created successfully!');
+            return redirect('promo')->with('success', 'Promo created successfully!');
         } catch (Exception $e) {
-            return redirect('product')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            return redirect('promo')->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Promo  $promo
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Promo $promo)
     {
         //
     }
@@ -163,10 +185,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Promo  $promo
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(Promo $promo)
     {
         // Get user session data
         $user = Sentinel::getUser();
@@ -175,117 +197,85 @@ class ProductController extends Controller
         $role = $user->roles[0]->slug;
 
         // Get available data only
-        $obj = Product::where('id', $product->id)->where('is_deleted', 0)->first();
+        $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->first();
 
         // Check user access and available data
-        if (!$user->hasAccess('product.update') || $obj == NULL) {
+        if (!$user->hasAccess('promo.update') || $obj == NULL) {
             return view('error.403');
         }
 
-        return view('product.product-details', compact('user', 'role', 'product'));
+        return view('promo.promo-details', compact('user', 'role', 'promo'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
+     * @param  \App\Promo  $promo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Promo $promo)
     {
         // Get user session data
         $user = Sentinel::getUser();
 
         // Check user access
-        if (!$user->hasAccess('product.update')) {
+        if (!$user->hasAccess('promo.update')) {
             return view('error.403');
         }
 
         // Validate input data
         $request->validate([
             'name' => 'required',
-            'duration' => 'required|numeric',
-            'price' => 'required|numeric',
-            'commission_fee' => 'required|numeric',
+            'discount_type' => 'required|numeric',
+            'discount_value' => 'required|numeric',
+            'discount_max_value' => 'numeric',
+            'active_period_start' => 'required|date|after:yesterday',
+            'active_period_end' => 'required|date|after:active_period_start',
+            'is_reuse_voucher' => 'required|numeric',
             'status' => 'required|numeric'
         ]);
 
         try {
             // Mapping request to object and store data
-            $obj = $this->toObject($request, $product);
+            $obj = $this->toObject($request, $promo);
             $obj->updated_by = $user->id;
             $obj->save();
 
-            return redirect('product')->with('success', 'Product updated successfully!');
+            return redirect('promo')->with('success', 'Promo updated successfully!');
         } catch (Exception $e) {
-            return redirect('product')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            return redirect('promo')->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Promo  $promo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Promo $promo)
     {
-        // Get user session data
-        $user = Sentinel::getUser();
-
-        // Get available data only
-        $obj = Product::where('id', $product->id)->where('is_deleted', 0)->first();
-
-        // Check user access and available data
-        if (!$user->hasAccess('product.delete') || $obj == NULL) {
-            return response()->json([
-                'success' =>false,
-                'message' =>'You have no permission to delete product.',
-                'data'=> [],
-            ],409);
-        }
-
-        try {
-            if ($obj != NULL) {
-                // Set available data to false
-                $obj->is_deleted = 1;
-                $obj->save();
-                
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Product deleted successfully.',
-                    'data' => $obj,
-                ], 200);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Product not found.',
-                    'data' => [],
-                ], 409); 
-            }
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Something went wrong!!! ' . $e->getMessage(),
-                'data' => [], 
-            ], 409);
-        }
+        //
     }
 
     /**
      * Mapping request to object.
      *
      * @param  \Illuminate\Http\Request
-     * @return \App\Product $product
+     * @return \App\Promo $promo
      */
-    private function toObject(Request $request, Product $product) {
-        $product->name = $request->input('name');
-        $product->duration = $request->input('duration');
-        $product->price = $request->input('price');
-        $product->commission_fee = $request->input('commission_fee');
-        $product->status = $request->input('status');
+    private function toObject(Request $request, Promo $promo) {
+        $promo->name = $request->input('name');
+        $promo->description = $request->input('description');
+        $promo->discount_type = $request->input('discount_type');
+        $promo->discount_value = $request->input('discount_value');
+        $promo->discount_max_value = $request->input('discount_max_value');
+        $promo->active_period_start = $request->input('active_period_start');
+        $promo->active_period_end = $request->input('active_period_end');
+        $promo->is_reuse_voucher = $request->input('is_reuse_voucher');
+        $promo->status = $request->input('status');
 
-        return $product;
+        return $promo;
     }
 }

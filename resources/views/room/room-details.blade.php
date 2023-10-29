@@ -78,9 +78,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Description') }}<span
-                                                    class="text-danger">*</span></label>
-                                                    <textarea id="Description" name="description" tabindex="7"
+                                            <label class="control-label">{{ __('Description') }}</label>
+                                            <textarea id="Description" name="description" tabindex="7"
                                                     class="form-control @error('description') is-invalid @enderror" rows="3"
                                                     placeholder="{{ __('Enter Description') }}">@if ($room){{ $room->description }}@elseif(old('description')){{ old('description') }}@endif</textarea>
                                             @error('duration')

@@ -57,6 +57,7 @@ Route::get('doctor-view/{id}', 'DoctorController@doctor_view');
 Route::resource('membership', 'MembershipController');
 Route::resource('product', 'ProductController');
 Route::resource('room', 'RoomController');
+Route::resource('promo', 'PromoController');
 
 // appointment routes
 Route::get('appointmentList', 'AppointmentController@appointment_list');

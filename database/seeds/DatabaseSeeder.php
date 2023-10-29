@@ -9,6 +9,7 @@ use Database\Seeders\DoctorAvailableTimeSeeder;
 use Database\Seeders\MembershipSeeder;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\RoomSeeder;
+use Database\Seeders\PromoSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
             MembershipSeeder::class,
             ProductSeeder::class,
             RoomSeeder::class,
+            PromoSeeder::class,
         ]);
     }
 }
