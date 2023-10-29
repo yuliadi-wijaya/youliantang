@@ -84,6 +84,10 @@ class RoleSeeder extends Seeder
             'room.create'=>true,
             'room.update'=>true,
             'room.delete'=>true,
+            'promo.list'=>true,
+            'promo.create'=>true,
+            'promo.update'=>true,
+            'promo.delete'=>true,
         ];
         $role_admin->save();
 

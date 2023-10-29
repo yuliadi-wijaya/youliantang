@@ -98,9 +98,8 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Description')); ?><span
-                                                    class="text-danger">*</span></label>
-                                                    <textarea id="Description" name="description" tabindex="7"
+                                            <label class="control-label"><?php echo e(__('Description')); ?></label>
+                                            <textarea id="Description" name="description" tabindex="7"
                                                     class="form-control <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

@@ -52,7 +52,7 @@ class MembershipController extends Controller
                 })
                 ->addColumn('discount', function($row) {
                     if ($row->discount_type == 0) {
-                        return "Rp " . $row->discount_value;
+                        return "Rp " . number_format($row->discount_value);
                     } else if ($row->discount_type == 1) {
                         return $row->discount_value . "%";
                     }
@@ -111,7 +111,7 @@ class MembershipController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        // Default membership data null
+        // Default data null
         $membership = null;
         
         return view('membership.membership-details', compact('user', 'role', 'membership'));

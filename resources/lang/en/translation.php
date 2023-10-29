@@ -47,7 +47,10 @@
         "add-new-product" => "Add New Product",
         "rooms" => "Rooms",
         "list-of-rooms" => "List of Rooms",
-        "add-new-room" => "Add New Room"
+        "add-new-room" => "Add New Room",
+        "promos" => "Promos",
+        "list-of-promos" => "List of Promos",
+        "add-new-promo" => "Add New Promo"
     ];
 ?>
 
