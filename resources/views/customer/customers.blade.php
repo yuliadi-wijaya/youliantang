@@ -37,10 +37,11 @@
                     <table id="customerList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>{{ __('Sr. No') }}</th>
+                                <th>{{ __('No') }}</th>
                                 <th>{{ __('Name') }}</th>
-                                <th>{{ __('Contact No') }}</th>
+                                <th>{{ __('Phone Number') }}</th>
                                 <th>{{ __('Email') }}</th>
+                                <th>{{ __('Status') }}</th>
                                 <th>{{ __('Option') }}</th>
                             </tr>
                         </thead>
@@ -53,8 +54,9 @@
                                 <td>{{ $i++ }}</td>
                                 <td><a href="{{ url('customer/' . $customer->id) }}">{{ $customer->first_name }}
                                         {{ $customer->last_name }}</a></td>
-                                <td>{{ $customer->mobile }}</td>
+                                <td>{{ $customer->phone_number }}</td>
                                 <td>{{ $customer->email }}</td>
+                                <td>{{ $customer->status }}</td>
                                 <td>
                                     <a href="{{ url('customer/' . $customer->id) }}">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
@@ -100,8 +102,9 @@
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name', sortable : false, visible:true },
-                    { data: 'mobile', name: 'mobile' },
+                    { data: 'phone_number', name: 'phone_number' },
                     { data: 'email', name: 'email' },
+                    { data: 'status', name: 'status' },
                     { data: 'option', name: 'option', orderable: false, searchable: false },
                 ],
                 pagingType: 'full_numbers',

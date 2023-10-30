@@ -37,10 +37,11 @@
                     <table id="customerList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th><?php echo e(__('Sr. No')); ?></th>
+                                <th><?php echo e(__('No')); ?></th>
                                 <th><?php echo e(__('Name')); ?></th>
-                                <th><?php echo e(__('Contact No')); ?></th>
+                                <th><?php echo e(__('Phone Number')); ?></th>
                                 <th><?php echo e(__('Email')); ?></th>
+                                <th><?php echo e(__('Status')); ?></th>
                                 <th><?php echo e(__('Option')); ?></th>
                             </tr>
                         </thead>
@@ -54,8 +55,9 @@
                                 <td><a href="<?php echo e(url('customer/' . $customer->id)); ?>"><?php echo e($customer->first_name); ?>
 
                                         <?php echo e($customer->last_name); ?></a></td>
-                                <td><?php echo e($customer->mobile); ?></td>
+                                <td><?php echo e($customer->phone_number); ?></td>
                                 <td><?php echo e($customer->email); ?></td>
+                                <td><?php echo e($customer->status); ?></td>
                                 <td>
                                     <a href="<?php echo e(url('customer/' . $customer->id)); ?>">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
@@ -101,8 +103,9 @@
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name', sortable : false, visible:true },
-                    { data: 'mobile', name: 'mobile' },
+                    { data: 'phone_number', name: 'phone_number' },
                     { data: 'email', name: 'email' },
+                    { data: 'status', name: 'status' },
                     { data: 'option', name: 'option', orderable: false, searchable: false },
                 ],
                 pagingType: 'full_numbers',

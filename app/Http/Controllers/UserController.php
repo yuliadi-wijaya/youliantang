@@ -238,14 +238,12 @@ class UserController extends Controller
                 $user = Sentinel::getUser();
                 $validatedData = $request->validate([
                     'first_name' => 'required|alpha',
-                    'last_name' => 'required|alpha',
-                    'phone_number' => 'required',
+                    'last_name' => 'alpha',
+                    'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                     'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                    'title' => 'required|regex:/^[a-zA-Z ]+$/',
-                    'fees' => 'required|numeric',
-                    'degree' => 'required',
-                    'experience' => 'required|numeric',
-                    'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
+                    'gender' => 'required',
+                    'phone_number' => 'required',
+                    'rekening_number' => 'required|numeric',
                     'mon' => 'required_without_all:tue,wen,thu,fri,sat,sun',
                     'tue' => 'required_without_all:mon,wen,thu,fri,sat,sun',
                     'wen' => 'required_without_all:mon,tue,thu,fri,sat,sun',
@@ -253,6 +251,7 @@ class UserController extends Controller
                     'fri' => 'required_without_all:wen,tue,mon,thu,sat,sun',
                     'sat' => 'required_without_all:wen,tue,mon,thu,fri,sun',
                     'sun' => 'required_without_all:wen,tue,mon,thu,fri,sat',
+                    'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 ]);
                 try {
                     $user = Sentinel::getUser();
@@ -276,10 +275,14 @@ class UserController extends Controller
                     $therapist->save();
                     Therapist::where('user_id', $therapist->id)
                         ->update([
-                            'title' => $validatedData['title'],
-                            'degree' => $validatedData['degree'],
-                            'experience' => $validatedData['experience'],
-                            'fees' => $validatedData['fees'],
+                            'ktp' => $validatedData['ktp'],
+                            'gender' => $validatedData['gender'],
+                            'place_of_birth' =>$request->place_of_birth,
+                            'birth_date' => $request->birth_date,
+                            'address' => $request->address,
+                            'rekening_number' => $request->rekening_number,
+                            'emergency_contact' => $request->emergency_contact,
+                            'emergency_name' => $request->emergency_name,
                         ]);
                     $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
                     $availableDay->therapist_id = $therapist->id;

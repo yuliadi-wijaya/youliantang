@@ -85,6 +85,22 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('ID Card ') }}<span
+                                                class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control @error('ktp') is-invalid @enderror"
+                                                name="ktp" id="lastname" tabindex="2"
+                                                value="{{ old('ktp', $therapist_info->ktp) }}"
+                                                placeholder="{{ __('Enter ID Card') }}">
+                                            @error('ktp')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Email ') }}<span
                                                     class="text-danger">*</span></label>
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
@@ -100,13 +116,12 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Title ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                                name="title" id="title" tabindex="5"
-                                                value="{{ old('title', $therapist_info->title) }}"
-                                                placeholder="{{ __('Enter Title') }}">
-                                            @error('title')
+                                            <label class="control-label">{{ __('Place Of Birth ') }}</label>
+                                            <input type="text" class="form-control @error('place_of_birth') is-invalid @enderror"
+                                                name="place_of_birth" id="place_of_birth" tabindex="4"
+                                                value="{{ old('place_of_birth', $therapist_info->place_of_birth) }}"
+                                                placeholder="{{ __('Enter Place Of Birth') }}">
+                                            @error('place_of_birth')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -115,14 +130,40 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Experience ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control @error('experience') is-invalid @enderror"
-                                                name="experience" tabindex="7" id="experience"
-                                                value="{{ old('experience', $therapist_info->experience) }}"
-                                                placeholder="{{ __('Enter Experience') }}">
-                                            @error('experience')
+                                            <label class="control-label">{{ __('Address ') }}</label>
+                                            <textarea rows="3"
+                                                class="form-control @error('address') is-invalid @enderror"
+                                                name="address" tabindex="5" id="address"
+                                                placeholder="{{ __('Enter Address') }}">{{ old('address', $therapist_info->address) }}</textarea>
+                                            @error('address')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Emergency Contact ') }}</label>
+                                            <input type="text" class="form-control @error('emergency_contact') is-invalid @enderror"
+                                                name="emergency_contact" id="emergency_contact" tabindex="6"
+                                                value="{{ old('emergency_contact', $therapist_info->emergency_contact) }}"
+                                                placeholder="{{ __('Enter Emergency Contact') }}">
+                                            @error('emergency_contact')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Emergency Name ') }}</label>
+                                            <input type="text" class="form-control @error('emergency_name') is-invalid @enderror"
+                                                name="emergency_name" id="emergency_name" tabindex="7"
+                                                value="{{ old('emergency_name', $therapist_info->emergency_name) }}"
+                                                placeholder="{{ __('Enter Emergency Name') }}">
+                                            @error('emergency_name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -132,7 +173,7 @@
                                     <div class="row">
                                         @if ($availableDay)
                                             <div class="col-md-12 form-group">
-                                                <label class="control-label d-block">{{ __('Therapist available days') }} <span
+                                                <label class="control-label d-block">{{ __("Therapist available days") }} <span
                                                         class="text-danger">*</span></label>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
@@ -183,7 +224,7 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Last Name ') }}</label>
                                             <input type="text" class="form-control @error('last_name') is-invalid @enderror"
-                                                name="last_name" id="lastname" tabindex="2"
+                                                name="last_name" id="lastname" tabindex="8"
                                                 value="{{ old('last_name', $therapist->last_name) }}"
                                                 placeholder="{{ __('Enter Last Name') }}">
                                             @error('last_name')
@@ -194,14 +235,16 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Contact Number ') }}<span
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Gender ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="tel" class="form-control @error('mobile') is-invalid @enderror"
-                                                name="mobile" id="customerMobile" tabindex="4"
-                                                value="{{ old('mobile', $therapist->mobile) }}"
-                                                placeholder="{{ __('Enter Contact Number') }}">
-                                            @error('mobile')
+                                            <select class="form-control select2 @error('gender') is-invalid @enderror"
+                                                name="gender" id="gender">
+                                                <option value="" disabled selected>-</option>
+                                                <option value="{{ 'Male' }}" {{ old('gender', $therapist_info->gender) == 'Male' ? 'selected' : '' }}>{{ 'Male' }}</option>
+                                                <option value="{{ 'Female' }}" {{ old('gender', $therapist_info->gender) == 'Female' ? 'selected' : '' }}>{{ 'Female' }}</option>
+                                            </select>
+                                            @error('gender')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -210,13 +253,28 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Degree ') }}<span
+                                            <label class="control-label">{{ __('Phone Number ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('degree') is-invalid @enderror"
-                                                name="degree" id="degree" tabindex="6"
-                                                value="{{ old('degree', $therapist_info->degree) }}"
-                                                placeholder="{{ __('Enter Degree') }}">
-                                            @error('degree')
+                                            <input type="tel" class="form-control @error('phone_number') is-invalid @enderror"
+                                                name="phone_number" id="phone_number" tabindex="9"
+                                                value="{{ old('phone_number', $therapist->phone_number) }}"
+                                                placeholder="{{ __('Enter Phone Number') }}">
+                                            @error('phone_number')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Birth Date ') }}</label>
+                                            <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
+                                                name="birth_date" id="birth_date" tabindex="10"
+                                                value="{{ old('birth_date', $therapist_info->birth_date) }}"
+                                                placeholder="{{ __('Enter Birth Date') }}">
+                                            @error('birth_date')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -225,13 +283,13 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Fees ') }}<span
+                                            <label class="control-label">{{ __('Rekening Number ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('fees') is-invalid @enderror"
-                                                name="fees" id="fees" tabindex="6"
-                                                value="{{ old('fees', $therapist_info->fees) }}"
-                                                placeholder="{{ __('Enter Fees') }}">
-                                            @error('fees')
+                                            <input type="text" class="form-control @error('rekening_number') is-invalid @enderror"
+                                                name="rekening_number" id="rekening_number" tabindex="11"
+                                                value="{{ old('rekening_number', $therapist_info->rekening_number) }}"
+                                                placeholder="{{ __('Enter Rekening Number') }}">
+                                            @error('rekening_number')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -242,12 +300,16 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Profile Photo ') }}</label>
                                             <img class="@error('profile_photo') is-invalid @enderror"
-                                                src="@if ($user->profile_photo != ''){{ URL::asset('storage/images/users/' . $user->profile_photo) }}@else{{ URL::asset('assets/images/users/noImage.png') }}@endif" id="profile_display" onclick="triggerClick()"
-                                                data-toggle="tooltip" data-placement="top"
-                                                title="Click to Upload Profile Photo" />
+                                                src=" @if ($therapist && $therapist_info &&
+                                                $therapist->profile_photo != null)
+                                            {{ URL::asset('storage/images/users/' . $therapist->profile_photo) }}
+                                        @else {{ URL::asset('assets/images/users/noImage.png') }} @endif"
+                                            id="profile_display" onclick="triggerClick()"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Click to Upload Profile Photo" />
                                             <input type="file"
                                                 class="form-control @error('profile_photo') is-invalid @enderror"
-                                                tabindex="8" name="profile_photo" id="profile_photo" style="display:none;"
+                                                tabindex="12" name="profile_photo" id="profile_photo" style="display:none;"
                                                 onchange="displayProfile(this)">
                                             @error('profile_photo')
                                                 <span class="invalid-feedback" role="alert">

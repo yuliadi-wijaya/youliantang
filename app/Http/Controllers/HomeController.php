@@ -130,7 +130,7 @@ class HomeController extends Controller
                 $re->orWhere('booked_by', $user_id);
             })->get();
 
-            $therapist_count = ReceptionListTherapist::where('therapist_id', $user_id)->pluck('reception_id');
+            $therapist_count = Receptionist::where('therapist_id', $user_id)->pluck('user_id');
             $Invoice_Detail = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
             }])->where('created_by', $user_id)->orWhereIN('created_by', $therapist_count)->pluck('id');
@@ -192,7 +192,7 @@ class HomeController extends Controller
             ->orderBy('users.id', 'DESC')
             ->limit(5)
             ->get();
-            //$therapists = ReceptionListTherapist::with('therapist')->where('reception_id', $user_id->id)->orderby('id', 'DESC')->limit(5)->get();
+            //$therapists = Receptionist::with('therapist')->where('user_id', $user_id->id)->orderby('id', 'DESC')->limit(5)->get();
             $therapists = DB::table('users')
             ->join('therapists', 'users.id', '=', 'therapists.user_id')
             ->select('users.first_name', 'users.last_name', 'users.phone_number', 'users.email', 'therapists.*')
@@ -200,7 +200,7 @@ class HomeController extends Controller
             ->orderBy('users.id', 'DESC')
             ->limit(5)
             ->get();
-            $receptionists_therapist_id = ReceptionListTherapist::where('reception_id', $user_id->id)->pluck('therapist_id');
+            $receptionists_therapist_id = Receptionist::where('user_id', $user_id->id)->pluck('therapist_id');
             $appointments = Appointment::with('customer', 'therapist')->where(function ($re) use ($userId, $receptionists_therapist_id) {
                 $re->orWhereIN('appointment_with', $receptionists_therapist_id);
                 $re->orWhere('booked_by', $userId);
@@ -216,7 +216,7 @@ class HomeController extends Controller
             })->get();
             $tot_customer = $customer_role->users()->with('roles')->where('is_deleted', 0)->get();
             $therapist_role = Sentinel::findRoleBySlug('therapist');
-            $tot_therapist = ReceptionListTherapist::where('reception_id', $user_id->id)->where('is_deleted', 0)->get();
+            $tot_therapist = Receptionist::where('user_id', $user_id->id)->where('is_deleted', 0)->get();
             $monthlyEarning = ReportController::getMonthlyEarning();
             $today_appointment = Appointment::with('customer', 'therapist')->where(function ($re) use ($userId, $receptionists_therapist_id) {
                 $re->orWhereIN('appointment_with', $receptionists_therapist_id);

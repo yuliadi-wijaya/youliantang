@@ -63,6 +63,9 @@ class CustomerController extends Controller
                         $name = $row->first_name.' '.$row->last_name;
                         return $name;
                     })
+                    ->addColumn('status', function($row) {
+                        return Config::get('constants.status.' . $row->status, 'Undefined');
+                    })
                     ->addColumn('option', function($row){
                         $option = '
                             <a href="customer/'.$row->id.'">
