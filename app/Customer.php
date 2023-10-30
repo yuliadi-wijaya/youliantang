@@ -10,9 +10,12 @@ class Customer extends Model
 
     protected $fillable = [
         'user_id',
-        'age',
+        'place_of_birth',
+        'birth_date',
         'gender',
         'address',
+        'emergency_contact',
+        'emergency_name',
         'status',
         'is_deleted',
     ];
@@ -21,6 +24,6 @@ class Customer extends Model
         return $this->hasMany(Appointment::class,'appointment_for','id');
     }
     function user(){
-        return $this->hasOne(user::class,'appointment_with','id')->where('status',0);
+        return $this->hasOne(user::class,'appointment_with','id')->where('is_deleted',0);
     }
 }

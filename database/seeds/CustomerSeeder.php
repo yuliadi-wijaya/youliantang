@@ -34,7 +34,6 @@ class CustomerSeeder extends Seeder
 
         DB::table('customers')->insert([
             'user_id' => 3,
-            'age' => 20,
             'place_of_birth' => 'Jakarta',
             'birth_date' => $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d'),
             'gender' => 'Male',

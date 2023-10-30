@@ -7,12 +7,12 @@ use App\Invoice;
 use App\InvoiceDetail;
 use App\Customer;
 use App\User;
-use App\MedicalInfo;
 use App\Prescription;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
@@ -20,7 +20,7 @@ use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
 {
-    protected $customer_info, $medical_info, $MedicalInfo;
+    protected $customer_info;
 
     /**
      * Create a new controller instance.
@@ -31,7 +31,6 @@ class CustomerController extends Controller
     {
         $this->middleware('sentinel.auth');
         $this->customer_info = new Customer();
-        $this->medical_info = new MedicalInfo();
         $this->middleware(function ($request, $next) {
             if (session()->has('page_limit')) {
                 $this->limit = session()->get('page_limit');
@@ -53,7 +52,14 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.list')) {
             $role = $user->roles[0]->slug;
             $customer_role = Sentinel::findRoleBySlug('customer');
-            $customers = $customer_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
+            //$customers = $customer_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
+            $customers = DB::table('users')
+            ->join('customers', 'users.id', '=', 'customers.user_id')
+            ->select('users.first_name', 'users.last_name', 'users.phone_number', 'users.email', 'customers.*')
+            ->where('users.is_deleted', 0)
+            ->orderBy('users.id', 'DESC')
+            ->limit(5)
+            ->get();
 
             // Load Datatables
             if ($request->ajax()) {
@@ -105,8 +111,7 @@ class CustomerController extends Controller
             $role = $user->roles[0]->slug;
             $customer = null;
             $customer_info = null;
-            $medical_info = null;
-            return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info', 'medical_info'));
+            return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
         } else {
             return view('error.403');
 
@@ -125,21 +130,13 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.create')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                'last_name' => 'required|alpha',
+                'last_name' => 'alpha',
                 'phone_number' => 'required',
                 'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'age' => 'required|numeric',
                 'address' => 'required|max:100',
                 'gender' => 'required',
-                'height' => 'required',
-                'b_group' => 'required',
-                'pulse' => 'required',
-                'allergy' => 'required',
-                'weight' => 'required|numeric',
-                'b_pressure' => 'required',
-                'respiration' => 'required',
-                'diet' => 'required',
-                'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500'
+                'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
+                'status' => 'required'
             ]);
             if ($request->profile_photo != null) {
                 $request->validate([
@@ -153,7 +150,7 @@ class CustomerController extends Controller
             }
             try {
                 $user = Sentinel::getUser();
-                // Set Default Password for Therapist
+                // Set Default Password for Customer
                 $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
                 $validatedData['created_by'] = $user->id;
                 $validatedData['updated_by'] = $user->id;
@@ -163,14 +160,25 @@ class CustomerController extends Controller
                 $role = Sentinel::findRoleBySlug('customer');
                 $role->users()->attach($customer);
                 $validatedData['user_id'] = $customer->id;
-                $this->customer_info->create($validatedData);
-                $this->medical_info->create($validatedData);
+
+                $customer_info = new Customer();
+                $customer_info->user_id = $customer->id;
+                $customer_info->gender = $request->gender;
+                $customer_info->place_of_birth = $request->place_of_birth;
+                $customer_info->birth_date = $request->birth_date;
+                $customer_info->address = $request->address;
+                $customer_info->emergency_contact = $request->emergency_contact;
+                $customer_info->emergency_name = $request->emergency_name;
+                $customer_info->created_by = $user->id;
+                $customer_info->updated_by = $user->id;
+                $customer_info->status = $request->status;
+                $customer_info->save();
 
                 $app_name =  AppSetting('title');
                 $verify_mail = trim($request->email);
                 Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
                     $message->to($verify_mail);
-                    $message->subject($app_name . ' ' . 'Welcome email from Therapistly - Hospital Management System');
+                    $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
                 });
                 return redirect('/customer')->with('success', 'Customer created successfully!');
             } catch (Exception $e) {
@@ -200,7 +208,6 @@ class CustomerController extends Controller
             if ($customer) {
                 $customer_info = Customer::where('user_id', '=', $customer->id)->first();
                 if ($customer_info) {
-                    $medical_Info = MedicalInfo::where('user_id', '=', $customer->id)->first();
                     $customer_role = Sentinel::findRoleBySlug('customer');
                     $customers = $customer_role->users()->with('roles')->get();
                     $appointments = Appointment::with('therapist')->where('appointment_for', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'appointment');
@@ -215,7 +222,7 @@ class CustomerController extends Controller
                         'revenue' => $revenue,
                         'pending_bill' => $pending_bill
                     ];
-                    return view('customer.customer-profile', compact('user', 'role', 'customer', 'customer_info', 'medical_Info', 'data', 'appointments', 'prescriptions', 'invoices'));
+                    return view('customer.customer-profile', compact('user', 'role', 'customer', 'customer_info', 'data', 'appointments', 'prescriptions', 'invoices'));
                 } else {
                     return redirect('/')->with('error', 'Customer information  not found, update customer information');
                 }
@@ -244,8 +251,7 @@ class CustomerController extends Controller
             if ($user->hasAccess('customer.update')) {
                 $role = $user->roles[0]->slug;
                 $customer_info = Customer::where('user_id', '=', $customer->id)->first();
-                $medical_info = MedicalInfo::where('user_id', '=', $customer->id)->first();
-                return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info', 'medical_info'));
+                return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
             } else {
                 return view('error.403');
             }
@@ -269,21 +275,13 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                /*'last_name' => 'required|alpha',*/
+                'last_name' => 'alpha',
                 'phone_number' => 'required',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'age' => 'required|numeric',
                 'address' => 'required|max:100',
                 'gender' => 'required',
-                'height' => 'required|numeric',
-                'b_group' => 'required',
-                'pulse' => 'required',
-                'allergy' => 'required',
-                'weight' => 'required|numeric',
-                'b_pressure' => 'required',
-                'respiration' => 'required',
-                'diet' => 'required',
-                'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500'
+                'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
+                'status' => 'required'
             ]);
             try {
                 $user = Sentinel::getUser();
@@ -308,44 +306,30 @@ class CustomerController extends Controller
                 $customer_info= Customer::where('user_id', '=', $customer->id)->first();
                     if($customer_info == null){
                         $customer_info = new Customer();
-                        $customer_info->age = $request->age;
-                        $customer_info->gender = $request->gender;
-                        $customer_info->address = $request->address;
                         $customer_info->user_id = $customer->id;
+                        $customer_info->gender = $request->gender;
+                        $customer_info->place_of_birth = $request->place_of_birth;
+                        $customer_info->birth_date = $request->birth_date;
+                        $customer_info->address = $request->address;
+                        $customer_info->emergency_contact = $request->emergency_contact;
+                        $customer_info->emergency_name = $request->emergency_name;
+                        $customer_info->created_by = $user->id;
+                        $customer_info->updated_by = $user->id;
+                        $customer_info->status = $request->status;
                         $customer_info->save();
                     }
                     else{
-                        $customer_info->age = $request->age;
-                        $customer_info->gender = $request->gender;
-                        $customer_info->address = $request->address;
                         $customer_info->user_id = $customer->id;
+                        $customer_info->gender = $request->gender;
+                        $customer_info->place_of_birth = $request->place_of_birth;
+                        $customer_info->birth_date = $request->birth_date;
+                        $customer_info->address = $request->address;
+                        $customer_info->emergency_contact = $request->emergency_contact;
+                        $customer_info->emergency_name = $request->emergency_name;
+                        $customer_info->created_by = $user->id;
+                        $customer_info->updated_by = $user->id;
+                        $customer_info->status = $request->status;
                         $customer_info->save();
-                    }
-                    $medical_info = MedicalInfo::where('user_id', '=', $customer->id)->first();
-                    if($medical_info == null){
-                        $medical_info = new MedicalInfo();
-                        $medical_info->height = $request->height;
-                        $medical_info->b_group = $request->b_group;
-                        $medical_info->pulse = $request->pulse;
-                        $medical_info->allergy = $request->allergy;
-                        $medical_info->weight = $request->weight;
-                        $medical_info->b_pressure = $request->b_pressure;
-                        $medical_info->respiration = $request->respiration;
-                        $medical_info->diet = $request->diet;
-                        $medical_info->user_id = $customer->id;
-                        $medical_info->save();
-                    }
-                    else{
-                        $medical_info->height = $request->height;
-                        $medical_info->b_group = $request->b_group;
-                        $medical_info->pulse = $request->pulse;
-                        $medical_info->allergy = $request->allergy;
-                        $medical_info->weight = $request->weight;
-                        $medical_info->b_pressure = $request->b_pressure;
-                        $medical_info->respiration = $request->respiration;
-                        $medical_info->diet = $request->diet;
-                        $medical_info->user_id = $customer->id;
-                        $medical_info->save();
                     }
                 if ($role == 'customer') {
                     return redirect('/')->with('success', 'Profile updated successfully!');
@@ -378,7 +362,7 @@ class CustomerController extends Controller
                 try {
                     $User = User::where('id',$request->id)->first();
                     if ($User != Null) {
-                        $User->status = 1;
+                        $User->is_deleted = 1;
                         $User->save();
                         return response()->json([
                             'success' => true,

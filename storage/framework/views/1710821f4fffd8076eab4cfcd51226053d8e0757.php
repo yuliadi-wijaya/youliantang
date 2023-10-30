@@ -1,23 +1,24 @@
-@extends('layouts.master-layouts')
-@section('title') {{ __('Customer Profile') }} @endsection
-@section('body')
+<?php $__env->startSection('title'); ?> <?php echo e(__('Customer Profile')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
 
     <body data-topbar="dark" data-layout="horizontal">
-    @endsection
-    @section('content')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('content'); ?>
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <h4 class="mb-0 font-size-18">
-                        {{ __('Customer Profile') }}
+                        <?php echo e(__('Customer Profile')); ?>
+
                     </h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('Dashboard') }}</a></li>
-                            <li class="breadcrumb-item"><a href="{{ url('customer') }}">{{ __('Customers') }}</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo e(url('/')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo e(url('customer')); ?>"><?php echo e(__('Customers')); ?></a></li>
                             <li class="breadcrumb-item active">
-                                {{ __('Customer Profile') }}
+                                <?php echo e(__('Customer Profile')); ?>
+
                             </li>
                         </ol>
                     </div>
@@ -32,11 +33,11 @@
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
-                                    <h5 class="text-primary">{{ __('Customer Information') }}</h5>
+                                    <h5 class="text-primary"><?php echo e(__('Customer Information')); ?></h5>
                                 </div>
                             </div>
                             <div class="col-5 align-self-end">
-                                <img src="{{ URL::asset('assets/images/profile-img.png') }}" alt="" class="img-fluid">
+                                <img src="<?php echo e(URL::asset('assets/images/profile-img.png')); ?>" alt="" class="img-fluid">
                             </div>
                         </div>
                     </div>
@@ -44,23 +45,24 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="avatar-md profile-user-wid mb-4">
-                                    <img src="@if ($customer->profile_photo != null){{ URL::asset('storage/images/users/' . $customer->profile_photo) }}@else{{ URL::asset('assets/images/users/noImage.png') }}@endif" alt="{{ $customer->first_name }}"
+                                    <img src="<?php if($customer->profile_photo != null): ?><?php echo e(URL::asset('storage/images/users/' . $customer->profile_photo)); ?><?php else: ?><?php echo e(URL::asset('assets/images/users/noImage.png')); ?><?php endif; ?>" alt="<?php echo e($customer->first_name); ?>"
                                         class="img-thumbnail rounded-circle">
                                 </div>
-                                <h5 class="font-size-15 text-truncate"> {{ $customer->first_name }}
-                                    {{ $customer->last_name }}</h5>
+                                <h5 class="font-size-15 text-truncate"> <?php echo e($customer->first_name); ?>
+
+                                    <?php echo e($customer->last_name); ?></h5>
                             </div>
                             <div class="col-sm-8">
                                 <div class="pt-4">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h5 class="font-size-12">{{ __('Last Login :') }}</h5>
-                                            <p class="text-muted mb-0"> {{ $customer->last_login }} </p>
+                                            <h5 class="font-size-12"><?php echo e(__('Last Login :')); ?></h5>
+                                            <p class="text-muted mb-0"> <?php echo e($customer->last_login); ?> </p>
                                         </div>
                                     </div>
                                     <div class="mt-4">
-                                        <a href="{{ url('customer/' . $customer->id . '/edit') }}"
-                                            class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Profile ') }}<i
+                                        <a href="<?php echo e(url('customer/' . $customer->id . '/edit')); ?>"
+                                            class="btn btn-primary waves-effect waves-light btn-sm"><?php echo e(__('Edit Profile ')); ?><i
                                                 class="mdi mdi-arrow-right ml-1"></i></a>
                                     </div>
                                 </div>
@@ -71,33 +73,33 @@
                 <!-- end card -->
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">{{ __('Personal Information') }}</h4>
+                        <h4 class="card-title mb-4"><?php echo e(__('Personal Information')); ?></h4>
                         <div class="table-responsive">
                             <table class="table mb-0">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">{{ __('Full Name:') }}</th>
-                                        <td>{{ $customer->first_name }} {{ $customer->last_name }}</td>
+                                        <th scope="row"><?php echo e(__('Full Name:')); ?></th>
+                                        <td><?php echo e($customer->first_name); ?> <?php echo e($customer->last_name); ?></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Contact No:') }}</th>
-                                        <td> {{ $customer->mobile }} </td>
+                                        <th scope="row"><?php echo e(__('Contact No:')); ?></th>
+                                        <td> <?php echo e($customer->mobile); ?> </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Email:') }}</th>
-                                        <td> {{ $customer->email }} </td>
+                                        <th scope="row"><?php echo e(__('Email:')); ?></th>
+                                        <td> <?php echo e($customer->email); ?> </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Age:') }}</th>
-                                        <td> {{ $customer_info->age }} </td>
+                                        <th scope="row"><?php echo e(__('Age:')); ?></th>
+                                        <td> <?php echo e($customer_info->age); ?> </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Gender:') }}</th>
-                                        <td> {{ $customer_info->gender }} </td>
+                                        <th scope="row"><?php echo e(__('Gender:')); ?></th>
+                                        <td> <?php echo e($customer_info->gender); ?> </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Address:') }}</th>
-                                        <td> {{ $customer_info->address }} </td>
+                                        <th scope="row"><?php echo e(__('Address:')); ?></th>
+                                        <td> <?php echo e($customer_info->address); ?> </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -113,8 +115,8 @@
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Appointments') }}</p>
-                                        <h4 class="mb-0">{{ number_format($data['total_appointment']) }}</h4>
+                                        <p class="text-muted font-weight-medium"><?php echo e(__('Appointments')); ?></p>
+                                        <h4 class="mb-0"><?php echo e(number_format($data['total_appointment'])); ?></h4>
                                     </div>
                                     <div class="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
                                         <span class="avatar-title">
@@ -130,8 +132,8 @@
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Pending Bills') }}</p>
-                                        <h4 class="mb-0">{{ number_format($data['pending_bill']) }}</h4>
+                                        <p class="text-muted font-weight-medium"><?php echo e(__('Pending Bills')); ?></p>
+                                        <h4 class="mb-0"><?php echo e(number_format($data['pending_bill'])); ?></h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
@@ -147,8 +149,8 @@
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                        <p class="text-muted font-weight-medium"><?php echo e(__('Total Bill')); ?></p>
+                                        <h4 class="mb-0">$<?php echo e(number_format($data['revenue'], 2)); ?></h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
@@ -167,25 +169,25 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#Medical_info" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Medical Information') }}</span>
+                                    <span class="d-none d-sm-block"><?php echo e(__('Medical Information')); ?></span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#AppointmentList" role="tab">
                                     <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Appointment List') }}</span>
+                                    <span class="d-none d-sm-block"><?php echo e(__('Appointment List')); ?></span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#PrescriptionList" role="tab">
                                     <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Prescription List') }}</span>
+                                    <span class="d-none d-sm-block"><?php echo e(__('Prescription List')); ?></span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#Invoices" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Invoices') }}</span>
+                                    <span class="d-none d-sm-block"><?php echo e(__('Invoices')); ?></span>
                                 </a>
                             </li>
                         </ul>
@@ -196,36 +198,36 @@
                                     <table class="table table-striped mb-0">
                                         <tbody>
                                             <tr>
-                                                <th scope="row">{{ __('Height') }}</th>
-                                                <td> {{ $medical_Info->height }} </td>
+                                                <th scope="row"><?php echo e(__('Height')); ?></th>
+                                                <td> <?php echo e($medical_Info->height); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Weight') }}</th>
-                                                <td> {{ $medical_Info->weight }} </td>
+                                                <th scope="row"><?php echo e(__('Weight')); ?></th>
+                                                <td> <?php echo e($medical_Info->weight); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Blood Group') }}</th>
-                                                <td> {{ $medical_Info->b_group }} </td>
+                                                <th scope="row"><?php echo e(__('Blood Group')); ?></th>
+                                                <td> <?php echo e($medical_Info->b_group); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Blood Pressure') }}</th>
-                                                <td> {{ $medical_Info->b_pressure }} </td>
+                                                <th scope="row"><?php echo e(__('Blood Pressure')); ?></th>
+                                                <td> <?php echo e($medical_Info->b_pressure); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Pulse') }}</th>
-                                                <td> {{ $medical_Info->pulse }} </td>
+                                                <th scope="row"><?php echo e(__('Pulse')); ?></th>
+                                                <td> <?php echo e($medical_Info->pulse); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Respiration') }}</th>
-                                                <td> {{ $medical_Info->respiration }} </td>
+                                                <th scope="row"><?php echo e(__('Respiration')); ?></th>
+                                                <td> <?php echo e($medical_Info->respiration); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Allergy') }}</th>
-                                                <td> {{ $medical_Info->allergy }} </td>
+                                                <th scope="row"><?php echo e(__('Allergy')); ?></th>
+                                                <td> <?php echo e($medical_Info->allergy); ?> </td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{{ __('Diet') }}</th>
-                                                <td> {{ $medical_Info->diet }} </td>
+                                                <th scope="row"><?php echo e(__('Diet')); ?></th>
+                                                <td> <?php echo e($medical_Info->diet); ?> </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -236,41 +238,42 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('No.') }}</th>
-                                            <th>{{ __('Therapy Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Time') }}</th>
+                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('Therapy Name')); ?></th>
+                                            <th><?php echo e(__('Date')); ?></th>
+                                            <th><?php echo e(__('Time')); ?></th>
                                         </tr>
                                     </thead>
-                                    @if (session()->has('page_limit'))
-                                        @php
+                                    <?php if(session()->has('page_limit')): ?>
+                                        <?php
                                             $per_page = session()->get('page_limit');
-                                        @endphp
-                                    @else
-                                        @php
+                                        ?>
+                                    <?php else: ?>
+                                        <?php
                                             $per_page = Config::get('app.page_limit');
-                                        @endphp
-                                    @endif
-                                    @php
+                                        ?>
+                                    <?php endif; ?>
+                                    <?php
                                         $currentpage = $invoices->currentPage();
-                                    @endphp
-                                    @foreach ($appointments as $item)
+                                    ?>
+                                    <?php $__currentLoopData = $appointments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                            <td>{{ $item->therapy->first_name }} {{ $item->therapy->last_name }}</td>
-                                            <td>{{ $item->appointment_date }}</td>
-                                            <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>
+                                            <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
+                                            <td><?php echo e($item->therapy->first_name); ?> <?php echo e($item->therapy->last_name); ?></td>
+                                            <td><?php echo e($item->appointment_date); ?></td>
+                                            <td><?php echo e($item->timeSlot->from . ' to ' . $item->timeSlot->to); ?></td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </tbody>
                                 </table>
                                 <div class="col-md-12 text-center mt-3">
                                     <div class="d-flex justify-content-start">
-                                        Showing {{ $appointments->firstItem() }} to {{ $appointments->lastItem() }} of
-                                        {{ $appointments->total() }} entries
+                                        Showing <?php echo e($appointments->firstItem()); ?> to <?php echo e($appointments->lastItem()); ?> of
+                                        <?php echo e($appointments->total()); ?> entries
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        {{ $appointments->links() }}
+                                        <?php echo e($appointments->links()); ?>
+
                                     </div>
                                 </div>
                             </div>
@@ -279,50 +282,54 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('No.') }}</th>
-                                            <th>{{ __('Therapy Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Option') }}</th>
+                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('Therapy Name')); ?></th>
+                                            <th><?php echo e(__('Date')); ?></th>
+                                            <th><?php echo e(__('Option')); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (session()->has('page_limit'))
-                                            @php
+                                        <?php if(session()->has('page_limit')): ?>
+                                            <?php
                                                 $per_page = session()->get('page_limit');
-                                            @endphp
-                                        @else
-                                            @php
+                                            ?>
+                                        <?php else: ?>
+                                            <?php
                                                 $per_page = Config::get('app.page_limit');
-                                            @endphp
-                                        @endif
-                                        @php
+                                            ?>
+                                        <?php endif; ?>
+                                        <?php
                                             $currentpage = $prescriptions->currentPage();
-                                        @endphp
-                                        @foreach ($prescriptions as $item)
+                                        ?>
+                                        <?php $__currentLoopData = $prescriptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td>{{ $item->therapy->first_name }} {{ $item->therapy->last_name }}
+                                                <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
+                                                <td><?php echo e($item->therapy->first_name); ?> <?php echo e($item->therapy->last_name); ?>
+
                                                 </td>
-                                                <td>{{ date('d-m-Y') }}</td>
+                                                <td><?php echo e(date('d-m-Y')); ?></td>
                                                 <td>
-                                                    <a href="{{ url('prescription/' . $item->id) }}">
+                                                    <a href="<?php echo e(url('prescription/' . $item->id)); ?>">
                                                         <button type="button"
                                                             class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                                            {{ __('View') }}
+                                                            <?php echo e(__('View')); ?>
+
                                                         </button>
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </tbody>
                                 </table>
                                 <div class="col-md-12 text-center mt-3">
                                     <div class="d-flex justify-content-start">
-                                        Showing {{ $prescriptions->firstItem() }} to {{ $prescriptions->lastItem() }}
-                                        of {{ $prescriptions->total() }} entries
+                                        Showing <?php echo e($prescriptions->firstItem()); ?> to <?php echo e($prescriptions->lastItem()); ?>
+
+                                        of <?php echo e($prescriptions->total()); ?> entries
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        {{ $prescriptions->links() }}
+                                        <?php echo e($prescriptions->links()); ?>
+
                                     </div>
                                 </div>
                             </div>
@@ -331,49 +338,51 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('No.') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Option') }}</th>
+                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('Date')); ?></th>
+                                            <th><?php echo e(__('Status')); ?></th>
+                                            <th><?php echo e(__('Option')); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (session()->has('page_limit'))
-                                            @php
+                                        <?php if(session()->has('page_limit')): ?>
+                                            <?php
                                                 $per_page = session()->get('page_limit');
-                                            @endphp
-                                        @else
-                                            @php
+                                            ?>
+                                        <?php else: ?>
+                                            <?php
                                                 $per_page = Config::get('app.page_limit');
-                                            @endphp
-                                        @endif
-                                        @php
+                                            ?>
+                                        <?php endif; ?>
+                                        <?php
                                             $currentpage = $invoices->currentPage();
-                                        @endphp
-                                        @foreach ($invoices as $item)
+                                        ?>
+                                        <?php $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td>{{ date('d-m-Y') }}</td>
-                                                <td>{{ $item->payment_status }}</td>
+                                                <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
+                                                <td><?php echo e(date('d-m-Y')); ?></td>
+                                                <td><?php echo e($item->payment_status); ?></td>
                                                 <td>
-                                                    <a href="{{ url('invoice/' . $item->id) }}">
+                                                    <a href="<?php echo e(url('invoice/' . $item->id)); ?>">
                                                         <button type="button"
                                                             class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                                            {{ __('View') }}
+                                                            <?php echo e(__('View')); ?>
+
                                                         </button>
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </tbody>
                                 </table>
                                 <div class="col-md-12 text-center mt-3">
                                     <div class="d-flex justify-content-start">
-                                        Showing {{ $invoices->firstItem() }} to {{ $invoices->lastItem() }} of
-                                        {{ $invoices->total() }} entries
+                                        Showing <?php echo e($invoices->firstItem()); ?> to <?php echo e($invoices->lastItem()); ?> of
+                                        <?php echo e($invoices->total()); ?> entries
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        {{ $invoices->links() }}
+                                        <?php echo e($invoices->links()); ?>
+
                                     </div>
                                 </div>
                             </div>
@@ -383,13 +392,15 @@
             </div>
         </div>
         <!-- end row -->
-    @endsection
-    @section('script')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('script'); ?>
         <!-- flot plugins -->
-        <script src="{{ URL::asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+        <script src="<?php echo e(URL::asset('assets/libs/apexcharts/apexcharts.min.js')); ?>"></script>
         <!-- Plugins js -->
-        <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+        <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
+        <script src="<?php echo e(URL::asset('assets/libs/pdfmake/pdfmake.min.js')); ?>"></script>
         <!-- Init js-->
-        <script src="{{ URL::asset('assets/js/pages/profile.init.js') }}"></script>
-    @endsection
+        <script src="<?php echo e(URL::asset('assets/js/pages/profile.init.js')); ?>"></script>
+    <?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/customer/customer-profile.blade.php ENDPATH**/ ?>

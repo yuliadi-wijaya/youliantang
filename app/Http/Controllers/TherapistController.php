@@ -307,7 +307,7 @@ class TherapistController extends Controller
                     $verify_mail = trim($request->email);
                     Mail::send('emails.WelcomeEmail', ['user' => $therapist, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
                         $message->to($verify_mail);
-                        $message->subject($app_name . ' ' . 'Welcome email from Therapistly - Hospital Management System');
+                        $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
                     });
                     return redirect('therapist')->with('success', 'Therapist created successfully!');
                 }
