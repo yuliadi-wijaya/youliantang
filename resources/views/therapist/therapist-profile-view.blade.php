@@ -73,24 +73,16 @@
                                         <td>{{ $therapist->first_name }} {{ $therapist->last_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Contact No:') }}</th>
-                                        <td> {{ $therapist->mobile }} </td>
+                                        <th scope="row">{{ __('ID Card:') }}</th>
+                                        <td> {{ $therapist_info->ktp }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">{{ __('Phone Number:') }}</th>
+                                        <td> {{ $therapist->phone_number }} </td>
                                     </tr>
                                     <tr>
                                         <th scope="row">{{ __('Email:') }}</th>
                                         <td> {{ $therapist->email }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Degree:') }}</th>
-                                        <td> {{ $therapist_info->degree }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Experience:') }}</th>
-                                        <td> {{ $therapist_info->experience }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Fees:') }}</th>
-                                        <td>{{ $therapist_info->fees }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -224,9 +216,9 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Sr. No') }}</th>
+                                            <th>{{ __('No.') }}</th>
                                             <th>{{ __('Customer Name') }}</th>
-                                            <th>{{ __('Contact no') }}</th>
+                                            <th>{{ __('Phone Number') }}</th>
                                             <th>{{ __('Email') }}</th>
                                             <th>{{ __('Date') }}</th>
                                             <th>{{ __('Time') }}</th>
@@ -250,7 +242,7 @@
                                                 <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
                                                 <td> {{ $item->customer->first_name }} {{ $item->customer->last_name }}
                                                 </td>
-                                                <td> {{ $item->customer->mobile }} </td>
+                                                <td> {{ $item->customer->phone_number }} </td>
                                                 <td> {{ $item->customer->email }} </td>
                                                 <td>{{ $item->appointment_date }}</td>
                                                 <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>
@@ -273,7 +265,7 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Sr. No') }}</th>
+                                            <th>{{ __('No.') }}</th>
                                             <th>{{ __('Customer Name') }}</th>
                                             <th>{{ __('Date') }}</th>
                                             <th>{{ __('Option') }}</th>
@@ -325,7 +317,7 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Sr. No') }}</th>
+                                            <th>{{ __('No.') }}</th>
                                             <th>{{ __('Customer Name') }}</th>
                                             <th>{{ __('Date') }}</th>
                                             <th>{{ __('Status') }}</th>
