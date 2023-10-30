@@ -39,20 +39,20 @@
                         <div class="row">
                             <div class="col-3">
                                 <address>
-                                    <strong>{{ __('Patient Details') }}</strong><br>
-                                    {{ $invoice_detail->patient->first_name . ' ' . $invoice_detail->patient->last_name }}<br>
+                                    <strong>{{ __('Customer Details') }}</strong><br>
+                                    {{ $invoice_detail->customer->first_name . ' ' . $invoice_detail->customer->last_name }}<br>
                                     {{-- {{ 'd' }} --}}
-                                    <i class="mdi mdi-phone"></i> {{ $invoice_detail->patient->mobile }}<br>
-                                    <i class="mdi mdi-email"></i> {{ $invoice_detail->patient->email }}<br>
+                                    <i class="mdi mdi-phone"></i> {{ $invoice_detail->customer->mobile }}<br>
+                                    <i class="mdi mdi-email"></i> {{ $invoice_detail->customer->email }}<br>
                                 </address>
                             </div>
                             <div class="col-3">
                                 <address>
-                                    <strong>{{ __('Doctor Details') }}</strong><br>
-                                    {{ $invoice_detail->doctor->first_name . ' ' . $invoice_detail->doctor->last_name }}<br>
+                                    <strong>{{ __('Therapist Details') }}</strong><br>
+                                    {{ $invoice_detail->therapist->first_name . ' ' . $invoice_detail->therapist->last_name }}<br>
                                     {{-- {{ 'd' }} --}}
-                                    <i class="mdi mdi-phone"></i> {{ $invoice_detail->doctor->mobile }}<br>
-                                    <i class="mdi mdi-email"></i> {{ $invoice_detail->doctor->email }}<br>
+                                    <i class="mdi mdi-phone"></i> {{ $invoice_detail->therapist->mobile }}<br>
+                                    <i class="mdi mdi-email"></i> {{ $invoice_detail->therapist->email }}<br>
                                 </address>
                             </div>
                             <div class="col-3">

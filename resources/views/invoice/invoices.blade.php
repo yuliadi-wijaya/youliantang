@@ -45,7 +45,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        @if ($role != 'patient')
+                        @if ($role != 'customer')
                             <a href=" {{ route('invoice.create') }}">
                                 <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
                                     <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
@@ -58,8 +58,8 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('Sr. No') }}</th>
-                                    @if ($role != 'patient')
-                                        <th>{{ __('Patient Name') }}</th>
+                                    @if ($role != 'customer')
+                                        <th>{{ __('Customer Name') }}</th>
                                     @endif
                                     <th>{{ __('Appointment Date') }}</th>
                                     <th>{{ __('Appointment Time') }}</th>
@@ -83,7 +83,7 @@
                                 @foreach ($invoices as $invoice)
                                     <tr>
                                         <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                        @if ($role != 'patient')
+                                        @if ($role != 'customer')
                                             <td>{{ $invoice->user->first_name }} {{ $invoice->user->last_name }}</td>
                                         @endif
                                         <td>{{ $invoice->appointment->appointment_date }}</td>
@@ -105,7 +105,7 @@
                                                     <i class="mdi mdi-lead-pencil"></i>
                                                 </button>
                                             </a>
-                                            @if ($role != 'patient')
+                                            @if ($role != 'customer')
                                                 <a href="javascript:void(0)">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light

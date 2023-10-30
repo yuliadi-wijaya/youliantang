@@ -15,8 +15,8 @@ class AddForeignKeysToAppointmentsTable extends Migration
     {
         Schema::table('appointments', function (Blueprint $table) {
             //
-            $table->foreign('available_time')->references('id')->on('doctor_available_times');
-            $table->foreign('available_slot')->references('id')->on('doctor_available_slots');
+            $table->foreign('available_time')->references('id')->on('therapist_available_times');
+            $table->foreign('available_slot')->references('id')->on('therapist_available_slots');
 
         });
     }

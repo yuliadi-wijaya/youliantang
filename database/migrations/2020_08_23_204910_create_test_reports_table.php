@@ -18,9 +18,10 @@ class CreateTestReportsTable extends Migration
             $table->unsignedBigInteger('prescription_id');
             $table->string('name');
             $table->string('notes');
-            $table->tinyInteger('is_deleted')->default(0)->comment('0=>active,1=>inactive');
+            $table->tinyInteger('status')->default(0)->comment('0=>inactive,1=>active');
             $table->foreign('prescription_id')->references('id')->on('prescriptions');
             $table->timestamps();
+            $table->tinyInteger('is_deleted')->default(0);
         });
     }
 

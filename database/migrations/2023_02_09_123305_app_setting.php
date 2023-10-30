@@ -28,14 +28,14 @@ return new class extends Migration
         });
 
         AppSettings::create([
-            "title" => "Doctorly",
+            "title" => "You Lian tAng",
             "logo_sm" => "logo-light.png",
             "logo_lg" => "logo-light1.png",
             "logo_dark_sm" => "logo-dark.png",
             "logo_dark_lg" => "logo-dark1.png",
             "favicon" => "favicon.ico",
-            "footer_left" => "Doctorly",
-            "footer_right" => "Design & Develop by Themesbrand",
+            "footer_left" => "You Lian tAng",
+            "footer_right" => "Reflexology & Massage Therapy",
         ]);
     }
 

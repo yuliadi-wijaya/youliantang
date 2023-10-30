@@ -37,7 +37,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text"
                                                         class="form-control @error('age') is-invalid @enderror" name="age"
-                                                        id="patientAge" value="{{ old('age') }}"
+                                                        id="customerAge" value="{{ old('age') }}"
                                                         placeholder="{{ __('Enter Age') }}">
                                                     @error('age')
                                                         <span class="invalid-feedback" role="alert">
@@ -111,7 +111,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text"
                                                         class="form-control @error('height') is-invalid @enderror"
-                                                        name="height" value="{{ old('height') }}" id="patientHeight"
+                                                        name="height" value="{{ old('height') }}" id="customerHeight"
                                                         placeholder="{{ __('Enter Height In Centimeter') }}">
                                                     @error('height')
                                                         <span class="invalid-feedback" role="alert">
@@ -149,7 +149,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text"
                                                         class="form-control @error('pulse') is-invalid @enderror"
-                                                        name="pulse" value="{{ old('pulse') }}" id="patientPulse"
+                                                        name="pulse" value="{{ old('pulse') }}" id="customerPulse"
                                                         placeholder="{{ __('Enter Pulse') }}">
                                                     @error('pulse')
                                                         <span class="invalid-feedback" role="alert">
@@ -164,7 +164,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text"
                                                         class="form-control @error('allergy') is-invalid @enderror"
-                                                        name="allergy" id="patientAllergy" value="{{ old('allergy') }}"
+                                                        name="allergy" id="customerAllergy" value="{{ old('allergy') }}"
                                                         placeholder="{{ __('Enter Allergy Symptoms') }}">
                                                     @error('allergy')
                                                         <span class="invalid-feedback" role="alert">
@@ -181,7 +181,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text"
                                                         class="form-control @error('weight') is-invalid @enderror"
-                                                        name="weight" id="patientWeight" value="{{ old('weight') }}"
+                                                        name="weight" id="customerWeight" value="{{ old('weight') }}"
                                                         placeholder="{{ __('Enter Weight') }}">
                                                     @error('weight')
                                                         <span class="invalid-feedback" role="alert">
@@ -212,7 +212,7 @@
                                                             class="text-danger">*</span></label>
                                                     <input type="text"
                                                         class="form-control @error('respiration') is-invalid @enderror"
-                                                        name="respiration" id="patientRespiration"
+                                                        name="respiration" id="customerRespiration"
                                                         value="{{ old('respiration') }}"
                                                         placeholder="{{ __('Enter Respiration') }}">
                                                     @error('respiration')

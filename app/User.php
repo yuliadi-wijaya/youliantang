@@ -18,13 +18,14 @@ class User extends EloquentUser
     protected $fillable = [
         'email',
         'password',
-        'last_name',
         'first_name',
-        'mobile',
+        'last_name',
+        'phone_number',
         'profile_photo',
         'created_by',
         'updated_by',
         'permissions',
+        'status',
         'is_deleted',
     ];
 
@@ -34,8 +35,8 @@ class User extends EloquentUser
      * @var array
      */
 
-    function doctor(){
-        return $this->hasOne(Doctor::class);
+    function therapist(){
+        return $this->hasOne(Therapist::class);
     }
 
 }

@@ -16,8 +16,8 @@
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
-                                        <h5 class="text-primary">{{ __("Patient Register") }}</h5>
-                                        <p>Get your free {{ AppSetting('title'); }} Patient account now.</p>
+                                        <h5 class="text-primary">{{ __("Customer Register") }}</h5>
+                                        <p>Get your free {{ AppSetting('title'); }} Customer account now.</p>
                                     </div>
                                 </div>
                                 <div class="col-5 align-self-end">

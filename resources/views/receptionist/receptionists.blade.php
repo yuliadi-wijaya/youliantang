@@ -76,7 +76,7 @@
                                             <i class="mdi mdi-trash-can"></i>
                                         </button>
                                     </a>
-                                    @elseif($role == 'doctor')
+                                    @elseif($role == 'therapist')
                                     <a href="{{ url('receptionist-view/' . $receptionist->id) }}">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
@@ -103,7 +103,7 @@
     <!-- Init js-->
     <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
     <script>
-    //load datatable 
+    //load datatable
         $(document).ready(function() {
             $('#receptionList').DataTable({
                 processing: true,
@@ -123,7 +123,7 @@
                 }
             });
         });
-        
+
         // Delete Prescription
         $(document).on('click', '#delete-receptionist', function() {
             var id = $(this).data('id');

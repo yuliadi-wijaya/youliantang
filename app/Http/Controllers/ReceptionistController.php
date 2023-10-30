@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Appointment;
 use App\Invoice;
-use App\ReceptionListDoctor;
+use App\Receptionist;
 use Exception;
 use App\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
@@ -47,11 +47,11 @@ class ReceptionistController extends Controller
         $role = $user->roles[0]->slug;
         $receptionist_role = Sentinel::findRoleBySlug('receptionist');
         $receptionists = $receptionist_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
-        if($role == 'doctor'){
-            $receptionist_doctor = ReceptionListDoctor::where('doctor_id',$user->id)->pluck('reception_id');
-            $receptionists = User::with('roles')->whereIn('id',$receptionist_doctor)->get();
+        if($role == 'therapist'){
+            $receptionist_therapist = Receptionist::where('therapist_id',$user->id)->pluck('user_id');
+            $receptionists = User::with('roles')->whereIn('id',$receptionist_therapist)->get();
         }
-        
+
         // Load Datatables
         if ($request->ajax()) {
             return Datatables::of($receptionists)
@@ -78,7 +78,7 @@ class ReceptionistController extends Controller
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';
-                    } elseif ($role == 'doctor') {
+                    } elseif ($role == 'therapist') {
                         $option = '
                             <a href="receptionist-view/'.$row->id.'">
                                 <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
@@ -104,9 +104,9 @@ class ReceptionistController extends Controller
         if ($user->hasAccess('receptionist.create')) {
             $role = $user->roles[0]->slug;
             $receptionist = null;
-            $doctor_role = Sentinel::findRoleBySlug('doctor');
-            $doctors = $doctor_role->users()->with(['roles', 'doctor'])->where('is_deleted', 0)->get();
-            return view('receptionist.receptionist-details', compact('user', 'role', 'receptionist', 'doctors'));
+            $therapist_role = Sentinel::findRoleBySlug('therapist');
+            $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
+            return view('receptionist.receptionist-details', compact('user', 'role', 'receptionist', 'therapists'));
         } else {
             return view('error.403');
         }
@@ -122,13 +122,13 @@ class ReceptionistController extends Controller
     {
         $user = Sentinel::getUser();
         if ($user->hasAccess('receptionist.create')) {
-            $doctor_id =  $request->doctor;
+            $therapist_id =  $request->therapist;
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
-                'mobile' => 'required|numeric|digits:10',
+                'phone_number' => 'required',
                 'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'doctor' => 'required',
+                'therapist' => 'required',
                 'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500'
             ]);
             if ($request->profile_photo != null) {
@@ -143,7 +143,7 @@ class ReceptionistController extends Controller
             }
             try {
                 $user = Sentinel::getUser();
-                // Set Default Password for Doctor
+                // Set Default Password for Therapist
                 $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
                 $validatedData['created_by'] = $user->id;
                 $validatedData['updated_by'] = $user->id;
@@ -153,11 +153,11 @@ class ReceptionistController extends Controller
                 $role = Sentinel::findRoleBySlug('receptionist');
                 $role->users()
                     ->attach($receptionist);
-                foreach ($doctor_id as $item) {
-                    $receptionistDoctor  = new ReceptionListDoctor();
-                    $receptionistDoctor->doctor_id = $item;
-                    $receptionistDoctor->reception_id = $receptionist->id;
-                    $receptionistDoctor->save();
+                foreach ($therapist_id as $item) {
+                    $receptionistTherapist  = new Receptionist();
+                    $receptionistTherapist->therapist_id = $item;
+                    $receptionistTherapist->user_id = $receptionist->id;
+                    $receptionistTherapist->save();
                 }
                 return redirect('receptionist')->with('success', 'Receptionist created successfully!');
             } catch (Exception $e) {
@@ -184,17 +184,17 @@ class ReceptionistController extends Controller
             })->where('id', $receptionist->id)->where('is_deleted', 0)->first();
             if ($receptionist) {
                 $role = $user->roles[0]->slug;
-                $receptionists_doctor_id = ReceptionListDoctor::where('reception_id', $user_id)->pluck('doctor_id');
-                $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                    $re->whereIN('appointment_with', $receptionists_doctor_id);
-                    $re->orWhereIN('booked_by', $receptionists_doctor_id);
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
+                $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                    $re->whereIN('appointment_with', $receptionists_therapist_id);
+                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
                     $re->orWhere('booked_by', $user_id);
                 })->get();
 
                 $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$receptionist->id]);
                 $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                    ->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                        $re->whereIN('doctor_id', $receptionists_doctor_id);
+                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                        $re->whereIN('therapist_id', $receptionists_therapist_id);
                         $re->orWhere('created_by', $user_id);
                     })->count();
                 $data = [
@@ -202,21 +202,21 @@ class ReceptionistController extends Controller
                     'revenue' => $revenue[0]->total,
                     'pending_bill' => $pending_bill
                 ];
-                $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                    $re->whereIN('appointment_with', $receptionists_doctor_id);
-                    $re->orWhereIN('booked_by', $receptionists_doctor_id);
+                $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                    $re->whereIN('appointment_with', $receptionists_therapist_id);
+                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
                     $re->orWhere('booked_by', $user_id);
                 })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
                 $invoices = Invoice::with('user')
-                    ->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                        $re->whereIN('doctor_id', $receptionists_doctor_id);
+                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                        $re->whereIN('therapist_id', $receptionists_therapist_id);
                         $re->orWhere('created_by', $user_id);
                     })->paginate($this->limit, '*', 'invoice');
-                $doctor_role = Sentinel::findRoleBySlug('doctor');
-                $doctors = $doctor_role->users()->with(['roles', 'doctor'])->where('is_deleted', 0)->get();
-                $receptionist_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->where('is_deleted', 0)->pluck('doctor_id');
-                $doctor_user = User::whereIn('id', $receptionist_doctor)->get();
-                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'doctor_user'));
+                $therapist_role = Sentinel::findRoleBySlug('therapist');
+                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
+                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
+                $therapist_user = User::whereIn('id', $receptionist_therapist)->get();
+                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'therapist_user'));
             } else {
                 return redirect('/')->with('error', 'Receptionist not found');
             }
@@ -241,12 +241,12 @@ class ReceptionistController extends Controller
 
             if ($user->hasAccess('receptionist.update')) {
                 $role = $user->roles[0]->slug;
-                $doctor_role = Sentinel::findRoleBySlug('doctor');
-                // return $doctor_role;
-                $doctors = $doctor_role->users()->with(['roles', 'doctor'])->where('is_deleted', 0)->get();
-                $receptionist_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->where('is_deleted', 0)->pluck('doctor_id');
-                $doctor_user = User::whereIn('id', $receptionist_doctor)->pluck('id')->toArray();
-                return view('receptionist.receptionist-edit', compact('user', 'role', 'receptionist', 'doctors', 'doctor_user'));
+                $therapist_role = Sentinel::findRoleBySlug('therapist');
+                // return $therapist_role;
+                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
+                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
+                $therapist_user = User::whereIn('id', $receptionist_therapist)->pluck('id')->toArray();
+                return view('receptionist.receptionist-edit', compact('user', 'role', 'receptionist', 'therapists', 'therapist_user'));
             } else {
                 return view('error.403');
             }
@@ -270,9 +270,9 @@ class ReceptionistController extends Controller
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
-                'mobile' => 'required|numeric|digits:10',
+                'phone_number' => 'required',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'doctor' => 'required',
+                'therapist' => 'required',
                 'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500'
             ]);
             try {
@@ -291,40 +291,40 @@ class ReceptionistController extends Controller
                 }
                 $receptionist->first_name = $validatedData['first_name'];
                 $receptionist->last_name = $validatedData['last_name'];
-                $receptionist->mobile = $validatedData['mobile'];
+                $receptionist->phone_number = $validatedData['phone_number'];
                 $receptionist->email = $validatedData['email'];
                 $receptionist->updated_by = $user->id;
-                $old_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->pluck('doctor_id')->toArray();
-                $new_doctor = $request->doctor;
-                $numArray = array_map('intval', $new_doctor);
-                // remove old Doctor
-                $differenceArray1 = array_diff($old_doctor, $numArray);
-                // add New Doctor
-                $differenceArray2 = array_diff($numArray, $old_doctor);
-                $receptionistDoctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->pluck('doctor_id');
+                $old_therapist = Receptionist::where('user_id', $receptionist->id)->pluck('therapist_id')->toArray();
+                $new_therapist = $request->therapist;
+                $numArray = array_map('intval', $new_therapist);
+                // remove old Therapist
+                $differenceArray1 = array_diff($old_therapist, $numArray);
+                // add New Therapist
+                $differenceArray2 = array_diff($numArray, $old_therapist);
+                $receptionistTherapist = Receptionist::where('user_id', $receptionist->id)->pluck('therapist_id');
                 if ($differenceArray1 && $differenceArray2) {
-                    // Add and remove both Doctor
+                    // Add and remove both Therapist
                     if ($differenceArray1) {
-                        $receptionistDoctor = ReceptionListDoctor::whereIn('doctor_id', $differenceArray1)->delete();
+                        $receptionistTherapist = Receptionist::whereIn('therapist_id', $differenceArray1)->delete();
                     }
                     if ($differenceArray2) {
                         foreach ($differenceArray2 as $item) {
-                            $receptionistDoctor = new ReceptionListDoctor();
-                            $receptionistDoctor->doctor_id = $item;
-                            $receptionistDoctor->reception_id = $receptionist->id;
-                            $receptionistDoctor->save();
+                            $receptionistTherapist = new Receptionist();
+                            $receptionistTherapist->therapist_id = $item;
+                            $receptionistTherapist->user_id = $receptionist->id;
+                            $receptionistTherapist->save();
                         }
                     }
                 } elseif ($differenceArray1) {
-                    // only remove Doctor
-                    $receptionistDoctor = ReceptionListDoctor::whereIn('doctor_id', $differenceArray1)->delete();
+                    // only remove Therapist
+                    $receptionistTherapist = Receptionist::whereIn('therapist_id', $differenceArray1)->delete();
                 } elseif ($differenceArray2) {
-                    // only add doctor
+                    // only add therapist
                     foreach ($differenceArray2 as $item) {
-                        $receptionistDoctor = new ReceptionListDoctor();
-                        $receptionistDoctor->doctor_id = $item;
-                        $receptionistDoctor->reception_id = $receptionist->id;
-                        $receptionistDoctor->save();
+                        $receptionistTherapist = new Receptionist();
+                        $receptionistTherapist->therapist_id = $item;
+                        $receptionistTherapist->user_id = $receptionist->id;
+                        $receptionistTherapist->save();
                     }
                 }
                 $receptionist->save();
@@ -354,7 +354,7 @@ class ReceptionistController extends Controller
         try {
             $receptionist = User::where('id',$request->id)->first();
                 if ($receptionist != Null) {
-                    $receptionist->is_deleted = 1;
+                    $receptionist->status = 1;
                     $receptionist->save();
                     return response()->json([
                         'isSuccess' => true,
@@ -386,20 +386,20 @@ class ReceptionistController extends Controller
     public function receptionist_view($id){
         $user = Sentinel::getUser();
             $user_id = $id;
-            $receptionist_doctor = ReceptionListDoctor::where('doctor_id',$user->id)->pluck('reception_id');
-            $receptionist = $user::where('id', $id)->where('is_deleted', 0)->WhereIn('id',$receptionist_doctor)->first();
+            $receptionist_therapist = Receptionist::where('therapist_id',$user->id)->pluck('user_id');
+            $receptionist = $user::where('id', $id)->where('is_deleted', 0)->WhereIn('id',$receptionist_therapist)->first();
             if ($receptionist) {
                 $role = $user->roles[0]->slug;
-                $receptionists_doctor_id = ReceptionListDoctor::where('reception_id', $user_id)->pluck('doctor_id');
-                $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                    $re->whereIN('appointment_with', $receptionists_doctor_id);
-                    $re->orWhereIN('booked_by', $receptionists_doctor_id);
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
+                $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                    $re->whereIN('appointment_with', $receptionists_therapist_id);
+                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
                     $re->orWhere('booked_by', $user_id);
                 })->get();
                 $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$receptionist->id]);
                 $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                    ->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                        $re->whereIN('doctor_id', $receptionists_doctor_id);
+                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                        $re->whereIN('therapist_id', $receptionists_therapist_id);
                         $re->orWhere('created_by', $user_id);
                     })->count();
                 $data = [
@@ -407,21 +407,21 @@ class ReceptionistController extends Controller
                     'revenue' => $revenue[0]->total,
                     'pending_bill' => $pending_bill
                 ];
-                $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                    $re->whereIN('appointment_with', $receptionists_doctor_id);
-                    $re->orWhereIN('booked_by', $receptionists_doctor_id);
+                $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                    $re->whereIN('appointment_with', $receptionists_therapist_id);
+                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
                     $re->orWhere('booked_by', $user_id);
                 })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
                 $invoices = Invoice::with('user')
-                    ->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                        $re->whereIN('doctor_id', $receptionists_doctor_id);
+                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                        $re->whereIN('therapist_id', $receptionists_therapist_id);
                         $re->orWhere('created_by', $user_id);
                     })->paginate($this->limit, '*', 'invoice');
-                $doctor_role = Sentinel::findRoleBySlug('doctor');
-                $doctors = $doctor_role->users()->with(['roles', 'doctor'])->where('is_deleted', 0)->get();
-                $receptionist_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->where('is_deleted', 0)->pluck('doctor_id');
-                $doctor_user = User::whereIn('id', $receptionist_doctor)->get();
-                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'doctor_user'));
+                $therapist_role = Sentinel::findRoleBySlug('therapist');
+                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
+                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
+                $therapist_user = User::whereIn('id', $receptionist_therapist)->get();
+                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'therapist_user'));
             } else {
                 return redirect('/')->with('error', 'receptionist not found');
             }

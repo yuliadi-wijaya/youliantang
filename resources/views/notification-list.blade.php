@@ -28,16 +28,16 @@
                                                     @if ($item->notification_type_id == 4)
                                                         <h6 class="mt-0 mb-1">
                                                             <a
-                                                                href="{{ url('patient/' . $item->invoice_user->patient->id) }}">
-                                                                {{  $role == 'patient' ? '' : $item->invoice_user->patient->first_name . ' ' . $item->invoice_user->patient->first_name . '`s ' }}
+                                                                href="{{ url('customer/' . $item->invoice_user->customer->id) }}">
+                                                                {{  $role == 'customer' ? '' : $item->invoice_user->customer->first_name . ' ' . $item->invoice_user->customer->first_name . '`s ' }}
                                                             </a>
                                                             {{ $item->title }} by
-                                                            @if ($item->user->roles[0]->slug == 'doctor')
+                                                            @if ($item->user->roles[0]->slug == 'therapist')
                                                                 <a
-                                                                    href={{ url('doctor/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
-                                                            @elseif ($item->user->roles[0]->slug == 'patient')
+                                                                    href={{ url('therapist/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
+                                                            @elseif ($item->user->roles[0]->slug == 'customer')
                                                                 <a
-                                                                    href={{ url('patient/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
+                                                                    href={{ url('customer/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
                                                             @elseif ($item->user->roles[0]->slug == 'receptionist')
                                                                 <a
                                                                     href={{ url('receptionist/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
@@ -53,16 +53,16 @@
                                                     @else
                                                         <h6 class="mt-0 mb-1">
                                                             <a
-                                                                href="{{ url('patient/' . $item->appointment_user->patient->id) }}">
-                                                                {{ $role == 'patient' ? '' : $item->appointment_user->patient->first_name . ' ' . $item->appointment_user->patient->last_name . '`s ' }}
+                                                                href="{{ url('customer/' . $item->appointment_user->customer->id) }}">
+                                                                {{ $role == 'customer' ? '' : $item->appointment_user->customer->first_name . ' ' . $item->appointment_user->customer->last_name . '`s ' }}
                                                             </a>
                                                             {{ $item->title }} by
-                                                            @if ($item->user->roles[0]->slug == 'doctor')
+                                                            @if ($item->user->roles[0]->slug == 'therapist')
                                                                 <a
-                                                                    href={{ url('doctor/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
-                                                            @elseif ($item->user->roles[0]->slug == 'patient')
+                                                                    href={{ url('therapist/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
+                                                            @elseif ($item->user->roles[0]->slug == 'customer')
                                                                 <a
-                                                                    href={{ url('patient/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
+                                                                    href={{ url('customer/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>
                                                             @elseif ($item->user->roles[0]->slug == 'receptionist')
                                                                 <a
                                                                     href={{ url('receptionist/' . $item->user->id) }}>{{ $item->user->first_name . ' ' . $item->user->last_name }}</a>

@@ -162,7 +162,7 @@
 
             $(document).ready(function() {
 
-                var total_patient = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                var total_customer = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 var total_revenue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
                 $.ajax({
@@ -172,14 +172,14 @@
                     dataType: 'json',
                     success: function(data) {
 
-                        // console.log(data.total_patient);
+                        // console.log(data.total_customer);
                         var i;
                         for (i = 0; i < 12; i++) {
 
-                            if (data.total_patient[i] !== undefined) {
-                                // data.total_patient;
+                            if (data.total_customer[i] !== undefined) {
+                                // data.total_customer;
 
-                                total_patient.splice(data.total_patient[i].Month - 1, 1, data.total_patient[i].total_patient);
+                                total_customer.splice(data.total_customer[i].Month - 1, 1, data.total_customer[i].total_customer);
 
                             }
 
@@ -191,13 +191,13 @@
 
                         }
 
-                        //console.log(total_patient);
+                        //console.log(total_customer);
 
                         var options = {
                             series: [{
-                                name: 'Patients',
+                                name: 'Customers',
                                 type: 'column',
-                                data: total_patient
+                                data: total_customer
                             }, {
                                 name: 'Revenue',
                                 type: 'line',
@@ -220,7 +220,7 @@
                             },
                             yaxis: [{
                                 title: {
-                                    text: 'No. of Patients',
+                                    text: 'No. of Customers',
                                 },
 
                             }, {

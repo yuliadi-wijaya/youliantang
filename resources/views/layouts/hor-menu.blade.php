@@ -12,26 +12,29 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.doctors') }} <div class="arrow-down">
+                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.therapists') }} <div class="arrow-down">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('doctor') }}" class="dropdown-item">{{ __('translation.list-of-doctors') }}</a>
-                                <a href="{{ route('doctor.create') }}"
-                                    class="dropdown-item">{{ __('translation.add-new-doctor') }}</a>
+                                <a href="{{ url('therapist') }}" class="dropdown-item">{{ __('translation.list-of-therapists') }}</a>
+                                <a href="{{ route('therapist.create') }}"
+                                    class="dropdown-item">{{ __('translation.add-new-therapist') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.patients') }} <div
+                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.customers') }} <div
                                     class="arrow-down"></div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('patient') }}"
-                                    class="dropdown-item">{{ __('translation.list-of-patients') }}</a>
-                                <a href="{{ route('patient.create') }}"
-                                    class="dropdown-item">{{ __('translation.add-new-patient') }}</a>
+                                <a href="{{ url('customer') }}"
+                                    class="dropdown-item">{{ __('translation.list-of-customers') }}</a>
+                                <a href="{{ route('customer.create') }}"
+                                    class="dropdown-item">{{ __('translation.add-new-customer') }}</a>
+                                <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.list-of-memberships') }}</a>
+                                <a href="{{ route('membership.create') }}"
+                                    class="dropdown-item">{{ __('translation.add-new-membership') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -45,18 +48,6 @@
                                     class="dropdown-item">{{ __('translation.list-of-receptionist') }}</a>
                                 <a href="{{ route('receptionist.create') }}"
                                     class="dropdown-item">{{ __('translation.add-new-receptionist') }}</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.memberships') }} <div class="arrow-down">
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.list-of-memberships') }}</a>
-                                <a href="{{ route('membership.create') }}"
-                                    class="dropdown-item">{{ __('translation.add-new-membership') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -105,7 +96,7 @@
                                 <i class='bx bx-list-check mr-2'></i>{{ __('translation.transaction') }}
                             </a>
                         </li>
-                    @elseif ($role == 'doctor')
+                    @elseif ($role == 'therapist')
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('appointment.create') }}">
                                 <i class="bx bx-calendar-plus mr-2"></i>{{ __('translation.appointments') }}
@@ -114,14 +105,14 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.patients') }} <div
+                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.customers') }} <div
                                     class="arrow-down"></div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('patient') }}"
-                                    class="dropdown-item">{{ __('translation.list-of-patients') }}</a>
-                                <a href="{{ route('patient.create') }}"
-                                    class="dropdown-item">{{ __('translation.add-new-patient') }}</a>
+                                <a href="{{ url('customer') }}"
+                                    class="dropdown-item">{{ __('translation.list-of-customers') }}</a>
+                                <a href="{{ route('customer.create') }}"
+                                    class="dropdown-item">{{ __('translation.add-new-customer') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -167,21 +158,21 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('doctor') }}">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.doctors') }}
+                            <a class="nav-link" href="{{ url('therapist') }}">
+                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.therapists') }}
                             </a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.patients') }} <div
+                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.customers') }} <div
                                     class="arrow-down"></div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('patient') }}"
-                                    class="dropdown-item">{{ __('translation.list-of-patients') }}</a>
-                                <a href="{{ route('patient.create') }}"
-                                    class="dropdown-item">{{ __('translation.add-new-patient') }}</a>
+                                <a href="{{ url('customer') }}"
+                                    class="dropdown-item">{{ __('translation.list-of-customers') }}</a>
+                                <a href="{{ route('customer.create') }}"
+                                    class="dropdown-item">{{ __('translation.add-new-customer') }}</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -207,15 +198,15 @@
                                 <i class='bx bx-list-plus mr-2'></i>{{ __('translation.appointment-list') }}
                             </a>
                         </li>
-                    @elseif ($role == 'patient')
+                    @elseif ($role == 'customer')
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('appointment.create') }}">
                                 <i class="bx bx-calendar-plus mr-2"></i>{{ __('translation.appointments') }}
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('doctor') }}">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.doctors') }}
+                            <a class="nav-link" href="{{ url('therapist') }}">
+                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.therapists') }}
                             </a>
                         </li>
                         <li class="nav-item">
@@ -229,7 +220,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('patient-appointment') }}">
+                            <a class="nav-link" href="{{ url('customer-appointment') }}">
                                 <i class='bx bx-list-plus mr-2'></i>{{ __('translation.appointment-list') }}
                             </a>
                         </li>

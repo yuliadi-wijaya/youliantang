@@ -1,12 +1,12 @@
 <?php
     return [
         "dashboards" => "Dashboard",
-        "doctors" => "Doctors",
-        "list-of-doctors" => "List of Doctors",
-        "add-new-doctor" => "Add New Doctor",
-        "patients" => "Patients",
-        "list-of-patients" => "List of Patients",
-        "add-new-patient" => "Add New Patient",
+        "therapists" => "Therapists",
+        "list-of-therapists" => "List of Therapists",
+        "add-new-therapist" => "Add New Therapist",
+        "customers" => "Customers",
+        "list-of-customers" => "List of Customers",
+        "add-new-customer" => "Add New Customer",
         "receptionist" => "Receptionist",
         "list-of-receptionist" => "List of Receptionist",
         "add-new-receptionist" => "Add New Receptionist",
@@ -20,7 +20,7 @@
         "upcoming-appointments" => "Upcoming Appointments",
         "monthly-earning" => "Monthly Earning",
         "monthly-registered-users" => "Monthly Registered Users",
-        "latest-users" => "Latest Users",   
+        "latest-users" => "Latest Users",
         "prescription" => "Prescription",
         "list-of-prescription" => "List of Prescription",
         "create-prescription" => "Create Prescription",
@@ -53,4 +53,3 @@
         "add-new-promo" => "Add New Promo"
     ];
 ?>
-
