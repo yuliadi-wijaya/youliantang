@@ -43,17 +43,17 @@
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('Sr.No.') }}</th>
-                                        @if ($role == 'patient')
-                                            <th>{{ __('Doctor Name') }}</th>
-                                            <th>{{ __('Doctor Number') }}</th>
-                                        @elseif($role == 'doctor')
-                                            <th>{{ __('Patient Name') }}</th>
-                                            <th>{{ __('Patient Number') }}</th>
+                                        <th>{{ __('No.') }}</th>
+                                        @if ($role == 'customer')
+                                            <th>{{ __('Therapist Name') }}</th>
+                                            <th>{{ __('Therapist Number') }}</th>
+                                        @elseif($role == 'therapist')
+                                            <th>{{ __('Customer Name') }}</th>
+                                            <th>{{ __('Customer Number') }}</th>
                                         @else
-                                            <th>{{ __('Patient Name') }}</th>
-                                            <th>{{ __('Doctor Name') }}</th>
-                                            <th>{{ __('Patient Number') }}</th>
+                                            <th>{{ __('Customer Name') }}</th>
+                                            <th>{{ __('Therapist Name') }}</th>
+                                            <th>{{ __('Customer Number') }}</th>
 
                                         @endif
                                         <th>{{ __('Time') }}</th>
@@ -67,11 +67,11 @@
                                         @foreach ($appointments as $appointment)
                                             <tr>
                                                 <td> {{ $i }} </td>
-                                                <td>{{ $appointment->patient->first_name . ' ' . $appointment->patient->last_name }}
+                                                <td>{{ $appointment->customer->first_name . ' ' . $appointment->customer->last_name }}
                                                 </td>
-                                                <td>{{ $appointment->doctor->first_name . ' ' . $appointment->doctor->last_name }}
+                                                <td>{{ $appointment->therapist->first_name . ' ' . $appointment->therapist->last_name }}
                                                 </td>
-                                                <td>{{ $appointment->patient->mobile }}</td>
+                                                <td>{{ $appointment->customer->mobile }}</td>
                                                 <td>
                                                     {{ $appointment->timeSlot->from . ' to ' . $appointment->timeSlot->to }}
                                                 </td>
@@ -80,13 +80,13 @@
                                                 $i++;
                                             @endphp
                                         @endforeach
-                                    @elseif ($role == 'doctor')
+                                    @elseif ($role == 'therapist')
                                         @foreach ($appointments as $appointment)
                                             <tr>
                                                 <td> {{ $i }} </td>
-                                                <td>{{ $appointment->patient->first_name . ' ' . $appointment->patient->last_name }}
+                                                <td>{{ $appointment->customer->first_name . ' ' . $appointment->customer->last_name }}
                                                 </td>
-                                                <td>{{ $appointment->patient->mobile }}</td>
+                                                <td>{{ $appointment->customer->mobile }}</td>
                                                 <td>
                                                     {{ $appointment->timeSlot->from . ' to ' . $appointment->timeSlot->to }}
                                                 </td>
@@ -95,13 +95,13 @@
                                                 $i++;
                                             @endphp
                                         @endforeach
-                                    @elseif ($role == 'patient')
+                                    @elseif ($role == 'customer')
                                         @foreach ($appointments as $appointment)
                                             <tr>
                                                 <td> {{ $i }} </td>
-                                                <td>{{ $appointment->doctor->first_name . ' ' . $appointment->doctor->last_name }}
+                                                <td>{{ $appointment->therapist->first_name . ' ' . $appointment->therapist->last_name }}
                                                 </td>
-                                                <td>{{ $appointment->doctor->mobile }}</td>
+                                                <td>{{ $appointment->therapist->mobile }}</td>
                                                 <td>
                                                     {{ $appointment->timeSlot->from . ' to ' . $appointment->timeSlot->to }}
                                                 </td>

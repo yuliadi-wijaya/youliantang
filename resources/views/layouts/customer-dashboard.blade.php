@@ -132,7 +132,7 @@
                     <table class="table table-centered table-nowrap mb-0">
                         <thead class="thead-light">
                             <tr>
-                                <th>{{ __('Sr.No.') }}</th>
+                                <th>{{ __('No.') }}</th>
                                 <th>{{ __('Therapist Name') }}</th>
                                 <th>{{ __('Date') }}</th>
                                 <th>{{ __('Time') }}</th>

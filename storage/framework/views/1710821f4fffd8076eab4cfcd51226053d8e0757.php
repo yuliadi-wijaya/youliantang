@@ -82,16 +82,12 @@
                                         <td><?php echo e($customer->first_name); ?> <?php echo e($customer->last_name); ?></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?php echo e(__('Contact No:')); ?></th>
-                                        <td> <?php echo e($customer->mobile); ?> </td>
+                                        <th scope="row"><?php echo e(__('Phone Number:')); ?></th>
+                                        <td> <?php echo e($customer->phone_number); ?> </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?php echo e(__('Email:')); ?></th>
                                         <td> <?php echo e($customer->email); ?> </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><?php echo e(__('Age:')); ?></th>
-                                        <td> <?php echo e($customer_info->age); ?> </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?php echo e(__('Gender:')); ?></th>
@@ -166,12 +162,14 @@
                     <div class="card-body">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                            <!--
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#Medical_info" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                                     <span class="d-none d-sm-block"><?php echo e(__('Medical Information')); ?></span>
                                 </a>
                             </li>
+                            -->
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#AppointmentList" role="tab">
                                     <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
@@ -192,53 +190,13 @@
                             </li>
                         </ul>
                         <!-- Tab panes -->
-                        <div class="tab-content p-3 text-muted">
-                            <div class="tab-pane active" id="Medical_info" role="tabpanel">
-                                <div class="table-responsive">
-                                    <table class="table table-striped mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Height')); ?></th>
-                                                <td> <?php echo e($medical_Info->height); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Weight')); ?></th>
-                                                <td> <?php echo e($medical_Info->weight); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Blood Group')); ?></th>
-                                                <td> <?php echo e($medical_Info->b_group); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Blood Pressure')); ?></th>
-                                                <td> <?php echo e($medical_Info->b_pressure); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Pulse')); ?></th>
-                                                <td> <?php echo e($medical_Info->pulse); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Respiration')); ?></th>
-                                                <td> <?php echo e($medical_Info->respiration); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Allergy')); ?></th>
-                                                <td> <?php echo e($medical_Info->allergy); ?> </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><?php echo e(__('Diet')); ?></th>
-                                                <td> <?php echo e($medical_Info->diet); ?> </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="tab-content p-3 text-muted"></div>
                             <div class="tab-pane" id="AppointmentList" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('No.')); ?></th>
                                             <th><?php echo e(__('Therapy Name')); ?></th>
                                             <th><?php echo e(__('Date')); ?></th>
                                             <th><?php echo e(__('Time')); ?></th>
@@ -282,7 +240,7 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('No.')); ?></th>
                                             <th><?php echo e(__('Therapy Name')); ?></th>
                                             <th><?php echo e(__('Date')); ?></th>
                                             <th><?php echo e(__('Option')); ?></th>
@@ -338,7 +296,7 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('No.')); ?></th>
                                             <th><?php echo e(__('Date')); ?></th>
                                             <th><?php echo e(__('Status')); ?></th>
                                             <th><?php echo e(__('Option')); ?></th>

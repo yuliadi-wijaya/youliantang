@@ -46,8 +46,7 @@ class AuthController extends Controller
             $user = Sentinel::authenticate($validatedData, $remember);
             if ($user) {
                 $customer = Customer::where('user_id', '=', $user->id)->count();
-                $medical_info = MedicalInfo::where('user_id', '=', $user->id)->count();
-                if ($user->roles[0]->slug == 'customer' && ($customer == 0 || $medical_info == 0)) {
+                if ($user->roles[0]->slug == 'customer' && ($customer == 0)) {
                     return view('profile-details');
                 } else {
                     return redirect('/');
@@ -98,7 +97,7 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'first_name' => 'required|alpha|max:20',
-            /*'last_name' => 'required|alpha|max:20',*/
+            'last_name' => 'alpha|max:20',
             'phone_number' => 'required',
             'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
             'password' => 'required|min:8|confirmed|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:50'

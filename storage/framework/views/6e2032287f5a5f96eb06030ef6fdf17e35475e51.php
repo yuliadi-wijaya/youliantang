@@ -1,42 +1,22 @@
-<?php $__env->startSection('title'); ?>
-    <?php if($customer ): ?>
-        <?php echo e(__('Update Customer Details')); ?>
-
-    <?php else: ?>
-        <?php echo e(__('Add New Customer')); ?>
-
-    <?php endif; ?>
-<?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?><?php echo e(__('Update Customer')); ?><?php $__env->stopSection(); ?>
 <?php $__env->startSection('body'); ?>
 
     <body data-topbar="dark" data-layout="horizontal">
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('content'); ?>
-        <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <h4 class="mb-0 font-size-18">
-                        <?php if($customer && $customer_info): ?>
-                            <?php echo e(__('Update Customer Details')); ?>
+                        <?php echo e(__('Update Customer Details')); ?>
 
-                        <?php else: ?>
-                            <?php echo e(__('Add New Customer')); ?>
-
-                        <?php endif; ?>
                     </h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="<?php echo e(url('/')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
-                            <li class="breadcrumb-item"><a href="<?php echo e(url('customer')); ?>"><?php echo e(__('Customers')); ?></a></li>
                             <li class="breadcrumb-item active">
-                                <?php if($customer): ?>
-                                    <?php echo e(__('Update Customer Details')); ?>
+                                <?php echo e(__('Update Customer Details')); ?>
 
-                                <?php else: ?>
-                                    <?php echo e(__('Add New Customer')); ?>
-
-                                <?php endif; ?>
                             </li>
                         </ol>
                     </div>
@@ -46,33 +26,12 @@
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
-                <?php if($customer && $customer_info): ?>
-                    <?php if($role == 'customer'): ?>
-                        <a href="<?php echo e(url('/')); ?>">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Dashboard')); ?>
+                <a href="<?php echo e(url('/')); ?>">
+                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Dashboard')); ?>
 
-                            </button>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?php echo e(url('customer/' . $customer->id)); ?>">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Profile')); ?>
-
-                            </button>
-                        </a>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <a href="<?php echo e(url('customer')); ?>">
-                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                            <i
-                                class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Customer List')); ?>
-
-                        </button>
-                    </a>
-                <?php endif; ?>
+                    </button>
+                </a>
             </div>
         </div>
         <div class="row">
@@ -80,11 +39,8 @@
                 <div class="card">
                     <div class="card-body">
                         <blockquote><?php echo e(__('Basic Information')); ?></blockquote>
-                        <form action="<?php if($customer ): ?> <?php echo e(url('customer/' . $customer->id)); ?> <?php else: ?> <?php echo e(route('customer.store')); ?> <?php endif; ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?php echo e(url('profile-update')); ?>" method="post" enctype="multipart/form-data">
                             <?php echo csrf_field(); ?>
-                            <?php if($customer ): ?>
-                                <input type="hidden" name="_method" value="PATCH" />
-                            <?php endif; ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
@@ -446,13 +402,8 @@ unset($__errorArgs, $__bag); ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">
-                                        <?php if($customer && $customer_info): ?>
-                                            <?php echo e(__('Update Customer Details')); ?>
+                                        <?php echo e(__('Update  Details')); ?>
 
-                                        <?php else: ?>
-                                            <?php echo e(__('Add New Customer')); ?>
-
-                                        <?php endif; ?>
                                     </button>
                                 </div>
                             </div>
@@ -482,4 +433,4 @@ unset($__errorArgs, $__bag); ?>
         </script>
     <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/customer/customer-details.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/customer/customer-edit.blade.php ENDPATH**/ ?>

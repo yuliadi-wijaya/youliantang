@@ -80,16 +80,12 @@
                                         <td>{{ $customer->first_name }} {{ $customer->last_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Contact No:') }}</th>
-                                        <td> {{ $customer->mobile }} </td>
+                                        <th scope="row">{{ __('Phone Number:') }}</th>
+                                        <td> {{ $customer->phone_number }} </td>
                                     </tr>
                                     <tr>
                                         <th scope="row">{{ __('Email:') }}</th>
                                         <td> {{ $customer->email }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Age:') }}</th>
-                                        <td> {{ $customer_info->age }} </td>
                                     </tr>
                                     <tr>
                                         <th scope="row">{{ __('Gender:') }}</th>
@@ -164,12 +160,14 @@
                     <div class="card-body">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                            <!--
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#Medical_info" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Medical Information') }}</span>
                                 </a>
                             </li>
+                            -->
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#AppointmentList" role="tab">
                                     <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
@@ -190,47 +188,7 @@
                             </li>
                         </ul>
                         <!-- Tab panes -->
-                        <div class="tab-content p-3 text-muted">
-                            <div class="tab-pane active" id="Medical_info" role="tabpanel">
-                                <div class="table-responsive">
-                                    <table class="table table-striped mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row">{{ __('Height') }}</th>
-                                                <td> {{ $medical_Info->height }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Weight') }}</th>
-                                                <td> {{ $medical_Info->weight }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Blood Group') }}</th>
-                                                <td> {{ $medical_Info->b_group }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Blood Pressure') }}</th>
-                                                <td> {{ $medical_Info->b_pressure }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Pulse') }}</th>
-                                                <td> {{ $medical_Info->pulse }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Respiration') }}</th>
-                                                <td> {{ $medical_Info->respiration }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Allergy') }}</th>
-                                                <td> {{ $medical_Info->allergy }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">{{ __('Diet') }}</th>
-                                                <td> {{ $medical_Info->diet }} </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="tab-content p-3 text-muted"></div>
                             <div class="tab-pane" id="AppointmentList" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">

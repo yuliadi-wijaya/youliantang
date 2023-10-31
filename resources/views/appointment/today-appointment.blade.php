@@ -57,11 +57,11 @@
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
-                                                <th>{{ __('Sr. No') }}</th>
-                                                <th>{{ __('Doctor Name') }}</th>
-                                                <th>{{ __('Patient Name') }}</th>
-                                                <th>{{ __('Patient Contact No') }}</th>
-                                                <th>{{ __('Patient Email') }}</th>
+                                                <th>{{ __('No.') }}</th>
+                                                <th>{{ __('Therapist Name') }}</th>
+                                                <th>{{ __('Customer Name') }}</th>
+                                                <th>{{ __('Customer Contact No') }}</th>
+                                                <th>{{ __('Customer Email') }}</th>
                                                 <th>{{ __('Date') }}</th>
                                                 <th>{{ __('Time') }}</th>
                                                 <th>{{ __('Status') }}</th>
@@ -84,12 +84,12 @@
                                             @foreach ($Today_appointment as $item)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                    <td> {{ $item->doctor->first_name . ' ' . $item->doctor->last_name }}
+                                                    <td> {{ $item->therapist->first_name . ' ' . $item->therapist->last_name }}
                                                     </td>
-                                                    <td> {{ $item->patient->first_name . ' ' . $item->patient->last_name }}
+                                                    <td> {{ $item->customer->first_name . ' ' . $item->customer->last_name }}
                                                     </td>
-                                                    <td> {{ $item->patient->mobile }} </td>
-                                                    <td>{{ $item->patient->email }}</td>
+                                                    <td> {{ $item->customer->mobile }} </td>
+                                                    <td>{{ $item->customer->email }}</td>
                                                     <td>{{ $item->appointment_date }}</td>
                                                     <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>
                                                     <td>
@@ -103,7 +103,7 @@
                                                     </td>
                                                     <td>
                                                         @if ($item->status == 0)
-                                                            @if ($role == 'doctor' || $role == 'receptionist')
+                                                            @if ($role == 'therapist' || $role == 'receptionist')
                                                                 <button type="button" class="btn btn-success complete"
                                                                     data-id="{{ $item->id }}">Complete</button>
                                                             @endif

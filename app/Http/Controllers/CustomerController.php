@@ -52,14 +52,7 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.list')) {
             $role = $user->roles[0]->slug;
             $customer_role = Sentinel::findRoleBySlug('customer');
-            //$customers = $customer_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
-            $customers = DB::table('users')
-            ->join('customers', 'users.id', '=', 'customers.user_id')
-            ->select('users.first_name', 'users.last_name', 'users.phone_number', 'users.email', 'customers.*')
-            ->where('users.is_deleted', 0)
-            ->orderBy('users.id', 'DESC')
-            ->limit(5)
-            ->get();
+            $customers = $customer_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
 
             // Load Datatables
             if ($request->ajax()) {
@@ -301,6 +294,7 @@ class CustomerController extends Controller
                 $customer->last_name = $validatedData['last_name'];
                 $customer->phone_number = $validatedData['phone_number'];
                 $customer->email = $validatedData['email'];
+                $customer->status = $validatedData['status'];
                 $customer->updated_by = $user->id;
                 $customer->save();
                 $customer_info= Customer::where('user_id', '=', $customer->id)->first();
