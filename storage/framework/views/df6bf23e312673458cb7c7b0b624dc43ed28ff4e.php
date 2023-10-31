@@ -41,7 +41,7 @@
                     <table id="therapistList" class="table table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th><?php echo e(__('No')); ?></th>
+                                <th><?php echo e(__('No.')); ?></th>
                                 <th><?php echo e(__('Name')); ?></th>
                                 <th><?php echo e(__('Gender')); ?></th>
                                 <th><?php echo e(__('Phone Number')); ?></th>

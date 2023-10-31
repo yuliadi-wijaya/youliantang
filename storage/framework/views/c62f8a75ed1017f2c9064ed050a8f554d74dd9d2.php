@@ -13,42 +13,14 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i><?php echo e(__('translation.therapists')); ?> <div class="arrow-down">
+                                <i class="bx bx-user-circle mr-2"></i><?php echo e(__('translation.master-data')); ?> <div class="arrow-down">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
                                 <a href="<?php echo e(url('therapist')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-therapists')); ?></a>
-                                <a href="<?php echo e(route('therapist.create')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.add-new-therapist')); ?></a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i><?php echo e(__('translation.customers')); ?> <div
-                                    class="arrow-down"></div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="<?php echo e(url('customer')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.list-of-customers')); ?></a>
-                                <a href="<?php echo e(route('customer.create')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.add-new-customer')); ?></a>
+                                <a href="<?php echo e(url('receptionist')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-receptionist')); ?></a>
+                                <a href="<?php echo e(url('customer')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-customers')); ?></a>
                                 <a href="<?php echo e(url('membership')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-memberships')); ?></a>
-                                <a href="<?php echo e(route('membership.create')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.add-new-membership')); ?></a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i><?php echo e(__('translation.receptionist')); ?> <div
-                                    class="arrow-down"></div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="<?php echo e(url('receptionist')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.list-of-receptionist')); ?></a>
-                                <a href="<?php echo e(route('receptionist.create')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.add-new-receptionist')); ?></a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">

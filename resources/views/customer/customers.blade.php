@@ -37,7 +37,7 @@
                     <table id="customerList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>{{ __('No') }}</th>
+                                <th>{{ __('No.') }}</th>
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Phone Number') }}</th>
                                 <th>{{ __('Email') }}</th>

@@ -1,5 +1,5 @@
 
-<?php $__env->startSection('title'); ?> <?php echo e(__('Pending Appointment list')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('Upcoming Appointment list')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('body'); ?>
 
     <body data-topbar="dark" data-layout="horizontal">
@@ -25,13 +25,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="<?php echo e(url('pending-appointment')); ?>">
+                                <a class="nav-link " href="<?php echo e(url('pending-appointment')); ?>">
                                     <span class="d-block d-sm-none"><i class="far fa-calendar"></i></span>
                                     <span class="d-none d-sm-block"><?php echo e(__('Pending Appointment List')); ?></span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(url('upcoming-appointment')); ?>">
+                                <a class="nav-link active" href="<?php echo e(url('upcoming-appointment')); ?>">
                                     <span class="d-block d-sm-none"><i class="fas fa-calendar-week"></i></span>
                                     <span class="d-none d-sm-block"><?php echo e(__('Upcoming Appointment List')); ?></span>
                                 </a>
@@ -53,7 +53,6 @@
                         <div class="tab-content p-3 text-muted">
                             <div class="tab-pane active" id="PendingAppointmentList" role="tabpanel">
                                 <div class="table-responsive">
-
                                     <table class="table table-bordered dt-responsive nowrap "
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
@@ -65,7 +64,6 @@
                                                 <th><?php echo e(__('Customer Email')); ?></th>
                                                 <th><?php echo e(__('Date')); ?></th>
                                                 <th><?php echo e(__('Time')); ?></th>
-                                                <th><?php echo e(__('Action')); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -79,29 +77,21 @@
                                                 ?>
                                             <?php endif; ?>
                                             <?php
-                                                $currentpage = $pending_appointment->currentPage();
+                                                $currentpage = $Upcoming_appointment->currentPage();
                                             ?>
-                                            <?php $__currentLoopData = $pending_appointment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php $__currentLoopData = $Upcoming_appointment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
                                                     <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
-                                                    <td> <?php echo e($item->therapist->first_name . ' ' . $item->therapist->last_name); ?>
+                                                    <td> <?php echo e($item->doctor->first_name . ' ' . $item->doctor->last_name); ?>
 
                                                     </td>
-                                                    <td> <?php echo e($item->customer->first_name . ' ' . $item->customer->last_name); ?>
+                                                    <td> <?php echo e($item->patient->first_name . ' ' . $item->patient->last_name); ?>
 
                                                     </td>
-                                                    <td> <?php echo e($item->customer->phone_number); ?> </td>
-                                                    <td> <?php echo e($item->customer->email); ?> </td>
+                                                    <td> <?php echo e($item->patient->phone_number); ?> </td>
+                                                    <td><?php echo e($item->patient->email); ?></td>
                                                     <td><?php echo e($item->appointment_date); ?></td>
                                                     <td><?php echo e($item->timeSlot->from . ' to ' . $item->timeSlot->to); ?></td>
-                                                    <td>
-                                                        <?php if($role == 'therapist' || $role == 'receptionist'): ?>
-                                                            <button type="button" class="btn btn-success complete mb-2 mb-md-0"
-                                                                data-id="<?php echo e($item->id); ?>">Complete</button>
-                                                        <?php endif; ?>
-                                                        <button type="button" class="btn btn-danger cancel mb-2 mb-md-0"
-                                                            data-id="<?php echo e($item->id); ?>">Cancel</button>
-                                                    </td>
                                                 </tr>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </tbody>
@@ -109,13 +99,14 @@
                                 </div>
                                 <div class="col-md-12 text-center mt-3">
                                     <div class="d-flex justify-content-start">
-                                        Showing <?php echo e($pending_appointment->firstItem()); ?> to
-                                        <?php echo e($pending_appointment->lastItem()); ?> of <?php echo e($pending_appointment->total()); ?>
+                                        Showing <?php echo e($Upcoming_appointment->firstItem()); ?> to
+                                        <?php echo e($Upcoming_appointment->lastItem()); ?> of
+                                        <?php echo e($Upcoming_appointment->total()); ?>
 
                                         entries
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <?php echo e($pending_appointment->links()); ?>
+                                        <?php echo e($Upcoming_appointment->links()); ?>
 
                                     </div>
                                 </div>
@@ -135,4 +126,4 @@
         <script src="<?php echo e(URL::asset('assets/js/pages/appointment.js')); ?>"></script>
     <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/appointment/pending-appointment.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/appointment/upcoming-appointment.blade.php ENDPATH**/ ?>

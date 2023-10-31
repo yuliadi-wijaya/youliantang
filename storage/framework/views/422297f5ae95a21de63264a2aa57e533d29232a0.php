@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('css'); ?>
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -27,7 +26,7 @@
     <?php echo $__env->renderComponent(); ?>
     <!-- end page title -->
     <div class="row">
-        <div class="col-12">    
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <?php if($role == 'admin'): ?>
@@ -41,7 +40,7 @@
                     <table id="membershipList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th><?php echo e(__('Sr. No')); ?></th>
+                                <th><?php echo e(__('No.')); ?></th>
                                 <th><?php echo e(__('Name')); ?></th>
                                 <th><?php echo e(__('Discount')); ?></th>
                                 <th><?php echo e(__('Total Active Period')); ?></th>
@@ -69,7 +68,7 @@
     <!-- Init js-->
     <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
     <script>
-        //load datatable 
+        //load datatable
         $(document).ready(function() {
             var role = '<?php echo e($role); ?>';
             $('#membershipList').DataTable({
@@ -78,7 +77,7 @@
                 ajax: "<?php echo e(route('membership.index')); ?>",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'name', name: 'name' }, 
+                    { data: 'name', name: 'name' },
                     { data: 'discount', name: 'discount' },
                     { data: 'total_active_period', name: 'total_active_period', orderable: false, searchable: false },
                     { data: 'status', name: 'status', orderable: false },

@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title'); ?>
     <?php if($therapist && $therapist_info): ?>
         <?php echo e(__('Update Therapist Details')); ?>
@@ -653,7 +654,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                tabindex="11" name="status">
+                                                tabindex="13" name="status">
                                                 <option selected disabled><?php echo e(__('-- Select Status --')); ?></option>
                                                 <option value="1" <?php if(($therapist && $therapist_info->status == '1') || old('status') == '1'): ?> selected <?php endif; ?>><?php echo e(__('Active')); ?></option>
                                                 <option value="0" <?php if(($therapist && $therapist_info->status == '0') || old('status') == '0'): ?> selected <?php endif; ?>><?php echo e(__('In Active')); ?></option>

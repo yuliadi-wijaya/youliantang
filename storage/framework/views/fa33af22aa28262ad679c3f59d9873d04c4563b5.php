@@ -1,51 +1,53 @@
-@extends('layouts.master-layouts')
-@section('css')
+<?php $__env->startSection('css'); ?>
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css">
 <style type="text/css">
-    #membershipList_length label {
+    #promoList_length label {
         display: inline-flex;
         align-items: center;
         gap: 04px;
     }
 
 </style>
-@endsection
-@section('title') {{ __('List of Memberships') }} @endsection
-@section('body')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('List of Promo')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
 
 <body data-topbar="dark" data-layout="horizontal">
-    @endsection
-    @section('content')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('content'); ?>
     <!-- start page title -->
-    @component('components.breadcrumb')
-    @slot('title') Membership List @endslot
-    @slot('li_1') Dashboard @endslot
-    @slot('li_2') Memberships @endslot
-    @endcomponent
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->slot('title'); ?> Promo List <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_2'); ?> Promos <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    @if ($role == 'admin')
-                    <a href=" {{ route('membership.create') }} ">
+                    <?php if($role == 'admin'): ?>
+                    <a href=" <?php echo e(route('promo.create')); ?> ">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                            <i class="bx bx-plus font-size-16 align-middle mr-2"></i> {{ __('New Membership') }}
+                            <i class="bx bx-plus font-size-16 align-middle mr-2"></i> <?php echo e(__('New Promo')); ?>
+
                         </button>
                     </a>
-                    @endif
-                    <table id="membershipList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <?php endif; ?>
+                    <table id="promoList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>{{ __('No.') }}</th>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Discount') }}</th>
-                                <th>{{ __('Total Active Period') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Option') }}</th>
+                                <th><?php echo e(__('No.')); ?></th>
+                                <th><?php echo e(__('Name')); ?></th>
+                                <th><?php echo e(__('Discount')); ?></th>
+                                <th><?php echo e(__('Max Discount')); ?></th>
+                                <th><?php echo e(__('Active Period')); ?></th>
+                                <th><?php echo e(__('Reusable Voucher ?')); ?></th>
+                                <th><?php echo e(__('Status')); ?></th>
+                                <th><?php echo e(__('Option')); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,30 +58,32 @@
             </div>
         </div> <!-- end col -->
     </div> <!-- end row -->
-    @endsection
-    @section('script')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('script'); ?>
     <!-- Plugins js -->
-    <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/pdfmake/pdfmake.min.js')); ?>"></script>
 
     <!-- Datatables -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
     <!-- Init js-->
-    <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
     <script>
         //load datatable
         $(document).ready(function() {
-            var role = '{{ $role }}';
-            $('#membershipList').DataTable({
+            var role = '<?php echo e($role); ?>';
+            $('#promoList').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('membership.index') }}",
+                ajax: "<?php echo e(route('promo.index')); ?>",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name' },
-                    { data: 'discount', name: 'discount' },
-                    { data: 'total_active_period', name: 'total_active_period', orderable: false, searchable: false },
+                    { data: 'discount', name: 'discount', orderable: false },
+                    { data: 'discount_max', name: 'discount_max', orderable: false },
+                    { data: 'active_period', name: 'active_period' },
+                    { data: 'is_reuse_voucher', name: 'is_reuse_voucher', orderable: false },
                     { data: 'status', name: 'status', orderable: false },
                     { data: 'option', name: 'option', orderable: false, searchable: false },
                 ],
@@ -92,14 +96,14 @@
         });
 
         // delete data
-        $(document).on('click', '#delete-membership', function() {
+        $(document).on('click', '#delete-promo', function() {
             var id = $(this).data('id');
-            if (confirm('Are you sure want to delete membership, this action will impact to active membership customer?')) {
+            if (confirm('Are you sure want to delete promo, this action will impact to transaciton data?')) {
                 $.ajax({
                     type: "DELETE"
-                    , url: 'membership/' + id
+                    , url: 'promo/' + id
                     , data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                         , id: id
                     , }
                     , beforeSend: function() {
@@ -124,4 +128,6 @@
         });
 
     </script>
-    @endsection
+    <?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/promo/promos.blade.php ENDPATH**/ ?>

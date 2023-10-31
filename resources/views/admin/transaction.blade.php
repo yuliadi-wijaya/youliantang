@@ -21,7 +21,7 @@
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>{{ __('Sr. No') }}</th>
+                                    <th>{{ __('No.') }}</th>
                                     <th>{{ __('Billing name') }}</th>
                                     <th>{{ __('Order id') }}</th>
                                     <th>{{ __('Transaction no') }}</th>

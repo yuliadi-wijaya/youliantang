@@ -57,7 +57,7 @@
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>{{ __('Sr. No') }}</th>
+                                    <th>{{ __('No.') }}</th>
                                     @if ($role != 'customer')
                                         <th>{{ __('Customer Name') }}</th>
                                     @endif

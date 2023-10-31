@@ -50,6 +50,7 @@ return [
     "add-new-room" => "Tambah Kamar Baru",
     "promos" => "Promosi",
     "list-of-promos" => "Daftar Promosi",
-    "add-new-promo" => "Tambah Promosi Baru"
+    "add-new-promo" => "Tambah Promosi Baru",
+    "master-data" => "Data Master"
 ];
 ?>

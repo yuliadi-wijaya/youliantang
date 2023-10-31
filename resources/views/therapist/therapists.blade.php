@@ -41,7 +41,7 @@
                     <table id="therapistList" class="table table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>{{ __('No') }}</th>
+                                <th>{{ __('No.') }}</th>
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Gender') }}</th>
                                 <th>{{ __('Phone Number') }}</th>

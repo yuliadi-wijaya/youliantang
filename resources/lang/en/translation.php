@@ -50,6 +50,7 @@
         "add-new-room" => "Add New Room",
         "promos" => "Promos",
         "list-of-promos" => "List of Promos",
-        "add-new-promo" => "Add New Promo"
+        "add-new-promo" => "Add New Promo",
+        "master-data" => "Master Data"
     ];
 ?>
