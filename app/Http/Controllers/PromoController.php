@@ -82,7 +82,7 @@ class PromoController extends Controller
                                     <i class="mdi mdi-eye"></i>
                                 </button>
                             </a>
-                            <a href="product/'.$row->id.'/edit">
+                            <a href="promo/'.$row->id.'/edit">
                                 <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Product">
                                     <i class="mdi mdi-lead-pencil"></i>
                                 </button>
@@ -167,6 +167,7 @@ class PromoController extends Controller
             $obj->created_by = $user->id;
             $obj->save();
 
+            // Store detail promo voucher
             $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($request));
 
             return redirect('promo')->with('success', 'Promo created successfully!');
@@ -201,7 +202,7 @@ class PromoController extends Controller
         $role = $user->roles[0]->slug;
 
         // Get available data only
-        $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->first();
+        $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->with('promo_vouchers')->first();
 
         // Check user access and available data
         if (!$user->hasAccess('promo.update') || $obj == NULL) {

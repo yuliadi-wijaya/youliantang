@@ -25,6 +25,6 @@ class Promo extends Model
     ];
 
     function promo_vouchers(){
-        return $this->hasMany(PromoVoucher::class)->where('is_deleted',0);
+        return $this->hasMany(PromoVoucher::class);
     }
 }
