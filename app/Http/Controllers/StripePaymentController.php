@@ -79,9 +79,9 @@ class StripePaymentController extends Controller
                     'payment_method' =>$pay->payment_method_types[0],
                 ];
                 $user = Sentinel::getUser();
-                $invoice = Invoice::with('doctor', 'patient', 'invoice_detail', 'appointment', 'appointment.timeSlot','transaction')
+                $invoice = Invoice::with('therapist', 'customer', 'invoice_detail', 'appointment', 'appointment.timeSlot','transaction')
                 ->where('id', $data['invoice_id'])->first();
-                $verify_mail = $invoice->patient->email;
+                $verify_mail = $invoice->customer->email;
                 $app_name =  AppSetting('title');
                 $admin_role = Sentinel::findRoleBySlug('admin');
                 $admin_email = $admin_role->users()->with('roles')->pluck('email')->first();

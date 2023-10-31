@@ -94,7 +94,7 @@
                                             <label class="control-label">{{ __('Contact Number ') }}<span
                                                     class="text-danger">*</span></label>
                                             <input type="tel" class="form-control @error('mobile') is-invalid @enderror"
-                                                name="mobile" id="patientMobile" tabindex="4"
+                                                name="phone_number" id="phone_number" tabindex="4"
                                                 value="{{ old('mobile', $user->mobile) }}"
                                                 placeholder="{{ __('Enter Contact Number') }}">
                                             @error('mobile')

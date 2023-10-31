@@ -23,8 +23,8 @@ class RoleSeeder extends Seeder
         Sentinel::getRoleRepository()
             ->createModel()
             ->create([
-                'name'       => 'Doctor',
-                'slug'       => 'doctor',
+                'name'       => 'Therapist',
+                'slug'       => 'therapist',
             ]);
 
         Sentinel::getRoleRepository()
@@ -37,25 +37,25 @@ class RoleSeeder extends Seeder
         Sentinel::getRoleRepository()
             ->createModel()
             ->create([
-                'name'       => 'Patient',
-                'slug'       => 'patient',
+                'name'       => 'Customer',
+                'slug'       => 'customer',
             ]);
 
         // admin permission add
         $role_admin = Sentinel::findRoleBySlug('admin');
         $role_admin->permissions = [
-            'doctor.list' => true,
-            'doctor.create' => true,
-            'doctor.view' => true,
-            'doctor.update' => true,
-            'doctor.delete' => true,
-            'doctor.time_edit' => true,
+            'therapist.list' => true,
+            'therapist.create' => true,
+            'therapist.view' => true,
+            'therapist.update' => true,
+            'therapist.delete' => true,
+            'therapist.time_edit' => true,
             'profile.update' => true,
-            'patient.list' => true,
-            'patient.create' => true,
-            'patient.update' => true,
-            'patient.delete' => true,
-            'patient.view' => true,
+            'customer.list' => true,
+            'customer.create' => true,
+            'customer.update' => true,
+            'customer.delete' => true,
+            'customer.view' => true,
             'receptionist.list' => true,
             'receptionist.create' => true,
             'receptionist.update' => true,
@@ -70,7 +70,7 @@ class RoleSeeder extends Seeder
             'api.list'=>true,
             'api.delete'=>true,
             'api.update'=>true,
-            'setting.edit'=>true,   
+            'setting.edit'=>true,
             // 'invoice.list' => true,
             'membership.list'=>true,
             'membership.create'=>true,
@@ -91,18 +91,18 @@ class RoleSeeder extends Seeder
         ];
         $role_admin->save();
 
-        // doctor permission add
-        $role_doctor = Sentinel::findRoleBySlug('doctor');
-        $role_doctor->permissions = [
+        // therapist permission add
+        $role_therapist = Sentinel::findRoleBySlug('therapist');
+        $role_therapist->permissions = [
             'receptionist.list' => true,
-            'doctor.time_edit' => true,
-            'doctor.delete' => true,
+            'therapist.time_edit' => true,
+            'therapist.delete' => true,
             'profile.update' => true,
-            'patient.list' => true,
-            'patient.create' => true,
-            'patient.update' => true,
-            'patient.delete' => true,
-            'patient.view' => true,
+            'customer.list' => true,
+            'customer.create' => true,
+            'customer.update' => true,
+            'customer.delete' => true,
+            'customer.view' => true,
             'appointment.list' => true,
             'appointment.create' => true,
             'appointment.status' => true,
@@ -118,31 +118,31 @@ class RoleSeeder extends Seeder
             'invoice.delete' => true,
             'invoice.edit'=>true,
         ];
-        $role_doctor->save();
+        $role_therapist->save();
 
-        // patient permission add
-        $role_patient = Sentinel::findRoleBySlug('patient');
-        $role_patient->permissions = [
-            'doctor.list' => true,
+        // customer permission add
+        $role_customer = Sentinel::findRoleBySlug('customer');
+        $role_customer->permissions = [
+            'therapist.list' => true,
             'profile.update' => true,
-            // 'patient.delete' => true,
-            'patient-appointment.list' => true,
+            // 'customer.delete' => true,
+            'customer-appointment.list' => true,
             'appointment.create' => true,
             'appointment.status' => true,
         ];
-        $role_patient->save();
+        $role_customer->save();
 
         // receptionist permission add
         $role_receptionist = Sentinel::findRoleBySlug('receptionist');
         $role_receptionist->permissions = [
-            'doctor.list' => true,
-            'doctor.view' => true,
-            'patient.list' => true,
+            'therapist.list' => true,
+            'therapist.view' => true,
+            'customer.list' => true,
             'profile.update' => true,
-            'patient.create' => true,
-            'patient.update' => true,
-            'patient.delete' => true,
-            'patient.view' => true,
+            'customer.create' => true,
+            'customer.update' => true,
+            'customer.delete' => true,
+            'customer.view' => true,
             'appointment.list' => true,
             'appointment.create' => true,
             'appointment.status' => true,

@@ -80,6 +80,11 @@
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     @switch(Session::get('lang'))
+                        @case('id')
+                            <img src="{{ URL::asset('/assets/images/flags/id.svg') }}" class="rounded" alt="Header Language"
+                                height="20">
+                        @break
+
                         @case('ru')
                             <img src="{{ URL::asset('/assets/images/flags/russia.svg') }}" class="rounded" alt="Header Language"
                                 height="20">
@@ -130,6 +135,15 @@
                         <span class="align-middle">English</span>
                     </a>
 
+                    <!-- item-->
+                    <a href="{{ url('index/id') }}" class="dropdown-item notify-item language" data-lang="id"
+                        title="Indonesia">
+                        <img src="{{ URL::asset('assets/images/flags/id.svg') }}" alt="user-image"
+                            class="me-2 rounded" height="20">
+                        <span class="align-middle">Indonesia</span>
+                    </a>
+
+                    {{-- remark by febry
                     <!-- item-->
                     <a href="{{ url('index/sp') }}" class="dropdown-item notify-item language" data-lang="sp"
                         title="Spanish">
@@ -183,6 +197,7 @@
                             class="me-2 rounded" height="18">
                         <span class="align-middle">Arabic</span>
                     </a>
+                    --}}
                 </div>
             </div>
             <div class="dropdown d-inline-block">
@@ -243,11 +258,11 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    @if ($role == 'doctor')
+                    @if ($role == 'therapist')
                         <a class="dropdown-item" href="{{ url('profile-view') }}"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
                             {{ __('translation.profile') }}</a>
-                    @elseif($role == 'patient')
+                    @elseif($role == 'customer')
                         <a class="dropdown-item" href="{{ url('profile-view') }}"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
                             {{ __('translation.profile') }}</a>

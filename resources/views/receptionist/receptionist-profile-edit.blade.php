@@ -101,17 +101,17 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Doctor ') }}<span
+                                            <label class="control-label">{{ __('Therapist ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 @error('doctor') is-invalid @enderror"
-                                                name="doctor[]" id="doctor" multiple="multiple">
-                                                @foreach ($doctors as $item)
+                                            <select class="form-control select2 @error('therapist') is-invalid @enderror"
+                                                name="therapist[]" id="therapist" multiple="multiple">
+                                                @foreach ($therapists as $item)
                                                     <option value="{{ $item->id }}"
-                                                        {{ in_array($item->id, $doctor_user) ? 'selected' : '' }}>
+                                                        {{ in_array($item->id, $therapist_user) ? 'selected' : '' }}>
                                                         {{ $item->first_name }} {{ $item->last_name }}</option>
                                                 @endforeach
                                             </select>
-                                            @error('doctor')
+                                            @error('therapist')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -141,7 +141,7 @@
                                             <label class="control-label">{{ __('Contact Number ') }}<span
                                                     class="text-danger">*</span></label>
                                             <input type="tel" class="form-control @error('mobile') is-invalid @enderror"
-                                                tabindex="4" name="mobile" id="patientMobile"
+                                                tabindex="4" name="mobile" id="customerMobile"
                                                 value="{{ old('mobile', $receptionist->mobile) }}"
                                                 placeholder="{{ __('Enter Contact Number') }}">
                                             @error('mobile')

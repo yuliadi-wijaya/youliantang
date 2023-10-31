@@ -16,6 +16,21 @@ class MedicalInfoSeeder extends Seeder
     public function run()
     {
         $faker = faker::create();
+        DB::table('medical_infos')->insert([
+            'user_id' => 3,
+            'height' => 175,
+            'b_group' => 'B+',
+            'pulse' => $faker->address,
+            'allergy' => $faker->address,
+            'weight' => '50',
+            'b_pressure' => 'no',
+            'respiration' => 'no',
+            'diet' => 'Vegetarian',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        /*
         foreach (range(1, 15) as $item) {
             DB::table('medical_infos')->insert([
                 'user_id' => $item + 15,
@@ -31,5 +46,6 @@ class MedicalInfoSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+        */
     }
 }

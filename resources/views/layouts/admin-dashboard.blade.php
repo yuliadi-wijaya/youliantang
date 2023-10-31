@@ -41,16 +41,16 @@
                         <div class="pt-4">
                             <div class="row">
                                 <div class="col-6">
-                                    <a href="{{ url('/doctor') }}" class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0">{{ number_format($data['total_doctors']) }}</h5>
+                                    <a href="{{ url('/therapist') }}" class="mb-0 font-weight-medium font-size-15">
+                                        <h5 class="mb-0">{{ number_format($data['total_therapists']) }}</h5>
                                     </a>
-                                    <p class="text-muted mb-0">{{ __('translation.doctors') }}</p>
+                                    <p class="text-muted mb-0">{{ __('translation.therapists') }}</p>
                                 </div>
                                 <div class="col-6">
-                                    <a href="{{ url('/patient') }}" class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0">{{ number_format($data['total_patients']) }}</h5>
+                                    <a href="{{ url('/customer') }}" class="mb-0 font-weight-medium font-size-15">
+                                        <h5 class="mb-0">{{ number_format($data['total_customers']) }}</h5>
                                     </a>
-                                    <p class="text-muted mb-0">{{ __('translation.patients') }}</p>
+                                    <p class="text-muted mb-0">{{ __('translation.customers') }}</p>
                                 </div>
                             </div>
                             <div class="row mt-4">
@@ -258,9 +258,9 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#Doctors" role="tab">
+                        <a class="nav-link active" data-toggle="tab" href="#Therapists" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-md"></i></span>
-                            <span class="d-none d-sm-block">{{ __('translation.doctors') }}</span>
+                            <span class="d-none d-sm-block">{{ __('translation.therapists') }}</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -270,38 +270,40 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#Patients" role="tab">
+                        <a class="nav-link" data-toggle="tab" href="#Customers" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-injured"></i></span>
-                            <span class="d-none d-sm-block">{{ __('translation.patients') }}</span>
+                            <span class="d-none d-sm-block">{{ __('translation.customers') }}</span>
                         </a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content p-3 text-muted">
-                    <div class="tab-pane active" id="Doctors" role="tabpanel">
+                    <div class="tab-pane active" id="Therapists" role="tabpanel">
                         <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('Sr.No.') }}</th>
+                                        <th>{{ __('No.') }}</th>
                                         <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Degree') }}</th>
-                                        <th>{{ __('Contact No') }}</th>
+                                        <th>{{ __('Gender') }}</th>
+                                        <th>{{ __('Phone Number') }}</th>
                                         <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Status') }}</th>
                                         <th>{{ __('View Details') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($doctors as $item)
+                                    @foreach ($therapists as $item)
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
                                             <td>{{ $item->first_name }} {{ $item->last_name }}</td>
-                                            <td>{{ $item->doctor->degree }}</td>
-                                            <td>{{ $item->mobile }}</td>
+                                            <td>{{ $item->gender }}</td>
+                                            <td>{{ $item->phone_number }}</td>
                                             <td>{{ $item->email }}</td>
+                                            <td>{{ $item->status == 1 ? 'Active' : 'Inactive' }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('doctor/' . $item->id) }}">
+                                                <a href="{{ url('therapist/' . $item->id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
                                                         {{ __('View Details') }}
@@ -320,10 +322,12 @@
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('Sr.No.') }}</th>
+                                        <th>{{ __('No.') }}</th>
                                         <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Contact No') }}</th>
+                                        <th>{{ __('Gender') }}</th>
+                                        <th>{{ __('Phone Number') }}</th>
                                         <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Status') }}</th>
                                         <th>{{ __('View Details') }}</th>
                                     </tr>
                                 </thead>
@@ -333,8 +337,10 @@
                                             <td>{{ $loop->index + 1 }}</td>
                                             <td>{{ $receptionist->first_name }} {{ $receptionist->last_name }}
                                             </td>
-                                            <td>{{ $receptionist->mobile }}</td>
+                                            <td>{{ $receptionist->gender }}</td>
+                                            <td>{{ $receptionist->phone_number }}</td>
                                             <td>{{ $receptionist->email }}</td>
+                                            <td>{{ $receptionist->status == 1 ? 'Active' : 'Inactive' }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->
                                                 <a href="{{ url('receptionist/' . $receptionist->id) }}">
@@ -352,28 +358,32 @@
                         </div>
                         <!-- end table-responsive -->
                     </div>
-                    <div class="tab-pane" id="Patients" role="tabpanel">
+                    <div class="tab-pane" id="Customers" role="tabpanel">
                         <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('Sr.No.') }}</th>
+                                        <th>{{ __('No.') }}</th>
                                         <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Contact No') }}</th>
+                                        <th>{{ __('Gender') }}</th>
+                                        <th>{{ __('Phone Number') }}</th>
                                         <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Status') }}</th>
                                         <th>{{ __('View Details') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($patients as $patient)
+                                    @foreach ($customers as $customer)
                                         <tr>
                                             <td> {{ $loop->index + 1 }} </td>
-                                            <td> {{ $patient->first_name }} {{ $patient->last_name }} </td>
-                                            <td> {{ $patient->mobile }} </td>
-                                            <td> {{ $patient->email }} </td>
+                                            <td> {{ $customer->first_name }} {{ $customer->last_name }} </td>
+                                            <td> {{ $customer->gender }} </td>
+                                            <td> {{ $customer->phone_number }} </td>
+                                            <td> {{ $customer->email }} </td>
+                                            <td> {{ $customer->status == 1 ? 'Active' : 'Inactive' }} </td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('patient/' . $patient->id) }}">
+                                                <a href="{{ url('customer/' . $customer->id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">

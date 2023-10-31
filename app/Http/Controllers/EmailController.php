@@ -11,9 +11,9 @@ class EmailController extends Controller
 {
     public function invoice_email_send($id)
     {
-        $invoice = Invoice::with('doctor', 'patient', 'invoice_detail', 'appointment', 'appointment.timeSlot','transaction')->where('id', $id)->first();
+        $invoice = Invoice::with('therapist', 'customer', 'invoice_detail', 'appointment', 'appointment.timeSlot','transaction')->where('id', $id)->first();
         if($invoice){
-            $verify_mail = $invoice->patient->email;
+            $verify_mail = $invoice->customer->email;
             if($verify_mail != null){
                 $app_name =  AppSetting('title');
                 Mail::send('emails.invoice', ['invoice' => $invoice, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
@@ -41,9 +41,9 @@ class EmailController extends Controller
     }
     public function prescription_email_send($id)
     {
-        $prescription = Prescription::with('patient', 'appointment', 'appointment.doctor')->where('id', $id)->where('is_deleted', 0)->first();
+        $prescription = Prescription::with('customer', 'appointment', 'appointment.therapist')->where('id', $id)->where('is_deleted', 0)->first();
         if ($prescription) {
-            $verify_mail = $prescription->patient->email;
+            $verify_mail = $prescription->customer->email;
             if($verify_mail != null){
                 $app_name =  AppSetting('title');
                 $medicines = Medicine::where('prescription_id', $prescription->id)->where('is_deleted', 0)->get();

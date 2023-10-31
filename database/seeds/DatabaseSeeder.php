@@ -3,9 +3,9 @@
 use Database\Seeders\AppSettingSeeder;
 use Database\Seeders\MedicalInfoSeeder;
 use Database\Seeders\NotificationTypeSeeder;
-use Database\Seeders\DoctorAvailableDaySeeder;
-use Database\Seeders\DoctorAvailableSlotSeeder;
-use Database\Seeders\DoctorAvailableTimeSeeder;
+use Database\Seeders\TherapistAvailableDaySeeder;
+use Database\Seeders\TherapistAvailableSlotSeeder;
+use Database\Seeders\TherapistAvailableTimeSeeder;
 use Database\Seeders\MembershipSeeder;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\RoomSeeder;
@@ -24,14 +24,14 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             AdminSeeder::class,
-            DoctorSeeder::class,
-            PatientSeeder::class,
+            TherapistSeeder::class,
+            CustomerSeeder::class,
             ReceptionistSeeder::class,
             MedicalInfoSeeder::class,
             NotificationTypeSeeder::class,
-            DoctorAvailableDaySeeder::class,
-            DoctorAvailableTimeSeeder::class,
-            DoctorAvailableSlotSeeder::class,
+            TherapistAvailableDaySeeder::class,
+            TherapistAvailableTimeSeeder::class,
+            TherapistAvailableSlotSeeder::class,
             MembershipSeeder::class,
             ProductSeeder::class,
             RoomSeeder::class,
@@ -39,3 +39,4 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 }
+

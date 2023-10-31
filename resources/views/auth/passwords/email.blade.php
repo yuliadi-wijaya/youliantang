@@ -21,7 +21,7 @@
                                     </div>
                                 </div>
                                 <div class="col-5 align-self-end">
-                                    <img src="{{ URL::asset('images/profile-img.png') }}" alt="Doctorly"
+                                    <img src="{{ URL::asset('images/profile-img.png') }}" alt="You Lian tAng"
                                         class="img-fluid">
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                 <a href="{{ url('/') }}">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
-                                            <img src="{{ URL::asset('images/logo.png') }}" alt="Doctorly"
+                                            <img src="{{ URL::asset('images/logo.png') }}" alt="You Lian tAng"
                                                 class="rounded-circle" height="34">
                                         </span>
                                     </div>
