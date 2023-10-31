@@ -19,8 +19,8 @@ class AdminSeeder extends Seeder
             'last_name' => 'Admin',
             'phone_number' => '5142323114',
             'profile_photo' =>'avatar-5.jpg',
-            'email' => 'admin@example.com',
-            'password' => '123456',
+            'email' => 'admin@youliantang.com',
+            'password' => 'youliantang123',
             'status' => 1,
         ];
         $user = Sentinel::registerAndActivate( $credentials );

@@ -16,7 +16,7 @@ class CreateTherapistsTable extends Migration
         Schema::create('therapists', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('ktp', 16);
+            $table->string('ktp', 16)->nullable();;
             $table->enum('gender', ['Male', 'Female']);
             $table->string('place_of_birth', 50)->nullable();
             $table->date('birth_date')->nullable();

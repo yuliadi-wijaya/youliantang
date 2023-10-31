@@ -16,10 +16,10 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('therapist') }}" class="dropdown-item">{{ __('translation.list-of-therapists') }}</a>
-                                <a href="{{ url('receptionist') }}" class="dropdown-item">{{ __('translation.list-of-receptionist') }}</a>
-                                <a href="{{ url('customer') }}" class="dropdown-item">{{ __('translation.list-of-customers') }}</a>
-                                <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.list-of-memberships') }}</a>
+                                <a href="{{ url('therapist') }}" class="dropdown-item">{{ __('translation.therapists') }}</a>
+                                <a href="{{ url('receptionist') }}" class="dropdown-item">{{ __('translation.receptionist') }}</a>
+                                <a href="{{ url('customer') }}" class="dropdown-item">{{ __('translation.customers') }}</a>
+                                <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.memberships') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">

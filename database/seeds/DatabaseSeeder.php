@@ -3,6 +3,7 @@
 use Database\Seeders\AppSettingSeeder;
 use Database\Seeders\MedicalInfoSeeder;
 use Database\Seeders\NotificationTypeSeeder;
+use Database\Seeders\TherapistSeeder;
 use Database\Seeders\TherapistAvailableDaySeeder;
 use Database\Seeders\TherapistAvailableSlotSeeder;
 use Database\Seeders\TherapistAvailableTimeSeeder;
@@ -35,7 +36,7 @@ class DatabaseSeeder extends Seeder
             MembershipSeeder::class,
             ProductSeeder::class,
             RoomSeeder::class,
-            PromoSeeder::class,
+            PromoSeeder::class
         ]);
     }
 }
