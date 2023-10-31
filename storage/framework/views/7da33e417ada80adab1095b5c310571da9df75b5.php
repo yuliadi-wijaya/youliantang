@@ -303,7 +303,8 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            <?php echo e(old('active_period_start', date('Y-m-d'))); ?> placeholder="<?php echo e(__('Enter Start Date')); ?>">
+                                                            <?php echo e(old('active_period_start', date('Y-m-d'))); ?> placeholder="<?php echo e(__('Enter Start Date')); ?>" 
+                                                            value="<?php if($promo ): ?><?php echo e(old('active_period_start', $promo->active_period_start)); ?><?php elseif(old('active_period_start')): ?><?php echo e(old('active_period_start')); ?><?php endif; ?>">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -334,7 +335,8 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            <?php echo e(old('active_period_end', date('Y-m-d'))); ?> placeholder="<?php echo e(__('Enter End Date')); ?>">
+                                                            <?php echo e(old('active_period_end', date('Y-m-d'))); ?> placeholder="<?php echo e(__('Enter End Date')); ?>" 
+                                                            value="<?php if($promo ): ?><?php echo e(old('active_period_end', $promo->active_period_end)); ?><?php elseif(old('active_period_end')): ?><?php echo e(old('active_period_end')); ?><?php endif; ?>">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -389,6 +391,11 @@ unset($__errorArgs, $__bag); ?>
                                     <label for="" class="d-block" style="margin-bottom: 15px"><?php echo e(__("Voucher List")); ?><span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;"><?php echo e(__("(will be generated automatically after click the generate voucher button)")); ?></span></label>
                                     <div class="btn-group voucher_list d-block">
+                                        <?php if($promo->promo_vouchers): ?>
+                                            <?php $__currentLoopData = $promo->promo_vouchers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <label class="btn btn-outline-secondary m-1"><?php echo e($item->voucher_code); ?><input type="hidden" name="voucher_list[]" value="<?php echo e($item->voucher_code); ?>"></label>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                         <?php $__errorArgs = ['voucher_list'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

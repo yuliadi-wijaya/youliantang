@@ -192,7 +192,8 @@
                                                             class="form-control active_period @error('active_period_start') is-invalid @enderror"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_start', date('Y-m-d')) }} placeholder="{{ __('Enter Start Date') }}">
+                                                            {{ old('active_period_start', date('Y-m-d')) }} placeholder="{{ __('Enter Start Date') }}" 
+                                                            value="@if ($promo ){{ old('active_period_start', $promo->active_period_start) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -209,7 +210,8 @@
                                                             class="form-control active_period @error('active_period_end') is-invalid @enderror"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_end', date('Y-m-d')) }} placeholder="{{ __('Enter End Date') }}">
+                                                            {{ old('active_period_end', date('Y-m-d')) }} placeholder="{{ __('Enter End Date') }}" 
+                                                            value="@if ($promo ){{ old('active_period_end', $promo->active_period_end) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -257,6 +259,11 @@
                                     <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}<span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(will be generated automatically after click the generate voucher button)") }}</span></label>
                                     <div class="btn-group voucher_list d-block">
+                                        @if ($promo->promo_vouchers)
+                                            @foreach ($promo->promo_vouchers as $item)
+                                            <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
+                                            @endforeach
+                                        @endif
                                         @error('voucher_list')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
