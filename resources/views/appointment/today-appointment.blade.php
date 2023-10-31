@@ -88,7 +88,7 @@
                                                     </td>
                                                     <td> {{ $item->customer->first_name . ' ' . $item->customer->last_name }}
                                                     </td>
-                                                    <td> {{ $item->customer->mobile }} </td>
+                                                    <td> {{ $item->customer->phone_number }} </td>
                                                     <td>{{ $item->customer->email }}</td>
                                                     <td>{{ $item->appointment_date }}</td>
                                                     <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>

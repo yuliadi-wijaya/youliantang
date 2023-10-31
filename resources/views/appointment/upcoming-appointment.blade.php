@@ -57,11 +57,11 @@
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
-                                                <th>{{ __('Sr. No') }}</th>
-                                                <th>{{ __('Doctor Name') }}</th>
-                                                <th>{{ __('Patient Name') }}</th>
-                                                <th>{{ __('Patient Contact No') }}</th>
-                                                <th>{{ __('Patient Email') }}</th>
+                                                <th>{{ __('No.') }}</th>
+                                                <th>{{ __('Therapist Name') }}</th>
+                                                <th>{{ __('Customer Name') }}</th>
+                                                <th>{{ __('Customer Phone Number') }}</th>
+                                                <th>{{ __('Customer Email') }}</th>
                                                 <th>{{ __('Date') }}</th>
                                                 <th>{{ __('Time') }}</th>
                                             </tr>

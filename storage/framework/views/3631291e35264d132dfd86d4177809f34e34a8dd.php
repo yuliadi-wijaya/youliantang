@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?> <?php echo e(__('Book Appointment')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <!-- Calender -->
@@ -44,17 +43,17 @@
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th><?php echo e(__('Sr.No.')); ?></th>
-                                        <?php if($role == 'patient'): ?>
-                                            <th><?php echo e(__('Doctor Name')); ?></th>
-                                            <th><?php echo e(__('Doctor Number')); ?></th>
-                                        <?php elseif($role == 'doctor'): ?>
-                                            <th><?php echo e(__('Patient Name')); ?></th>
-                                            <th><?php echo e(__('Patient Number')); ?></th>
+                                        <th><?php echo e(__('No.')); ?></th>
+                                        <?php if($role == 'customer'): ?>
+                                            <th><?php echo e(__('Therapist Name')); ?></th>
+                                            <th><?php echo e(__('Therapist Number')); ?></th>
+                                        <?php elseif($role == 'therapist'): ?>
+                                            <th><?php echo e(__('Customer Name')); ?></th>
+                                            <th><?php echo e(__('Customer Number')); ?></th>
                                         <?php else: ?>
-                                            <th><?php echo e(__('Patient Name')); ?></th>
-                                            <th><?php echo e(__('Doctor Name')); ?></th>
-                                            <th><?php echo e(__('Patient Number')); ?></th>
+                                            <th><?php echo e(__('Customer Name')); ?></th>
+                                            <th><?php echo e(__('Therapist Name')); ?></th>
+                                            <th><?php echo e(__('Customer Number')); ?></th>
 
                                         <?php endif; ?>
                                         <th><?php echo e(__('Time')); ?></th>
@@ -68,13 +67,13 @@
                                         <?php $__currentLoopData = $appointments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $appointment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td> <?php echo e($i); ?> </td>
-                                                <td><?php echo e($appointment->patient->first_name . ' ' . $appointment->patient->last_name); ?>
+                                                <td><?php echo e($appointment->customer->first_name . ' ' . $appointment->customer->last_name); ?>
 
                                                 </td>
-                                                <td><?php echo e($appointment->doctor->first_name . ' ' . $appointment->doctor->last_name); ?>
+                                                <td><?php echo e($appointment->therapist->first_name . ' ' . $appointment->therapist->last_name); ?>
 
                                                 </td>
-                                                <td><?php echo e($appointment->patient->mobile); ?></td>
+                                                <td><?php echo e($appointment->customer->mobile); ?></td>
                                                 <td>
                                                     <?php echo e($appointment->timeSlot->from . ' to ' . $appointment->timeSlot->to); ?>
 
@@ -84,14 +83,14 @@
                                                 $i++;
                                             ?>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <?php elseif($role == 'doctor'): ?>
+                                    <?php elseif($role == 'therapist'): ?>
                                         <?php $__currentLoopData = $appointments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $appointment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td> <?php echo e($i); ?> </td>
-                                                <td><?php echo e($appointment->patient->first_name . ' ' . $appointment->patient->last_name); ?>
+                                                <td><?php echo e($appointment->customer->first_name . ' ' . $appointment->customer->last_name); ?>
 
                                                 </td>
-                                                <td><?php echo e($appointment->patient->mobile); ?></td>
+                                                <td><?php echo e($appointment->customer->mobile); ?></td>
                                                 <td>
                                                     <?php echo e($appointment->timeSlot->from . ' to ' . $appointment->timeSlot->to); ?>
 
@@ -101,14 +100,14 @@
                                                 $i++;
                                             ?>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <?php elseif($role == 'patient'): ?>
+                                    <?php elseif($role == 'customer'): ?>
                                         <?php $__currentLoopData = $appointments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $appointment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td> <?php echo e($i); ?> </td>
-                                                <td><?php echo e($appointment->doctor->first_name . ' ' . $appointment->doctor->last_name); ?>
+                                                <td><?php echo e($appointment->therapist->first_name . ' ' . $appointment->therapist->last_name); ?>
 
                                                 </td>
-                                                <td><?php echo e($appointment->doctor->mobile); ?></td>
+                                                <td><?php echo e($appointment->therapist->mobile); ?></td>
                                                 <td>
                                                     <?php echo e($appointment->timeSlot->from . ' to ' . $appointment->timeSlot->to); ?>
 
