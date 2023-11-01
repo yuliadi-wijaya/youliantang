@@ -35,23 +35,13 @@
         <div class="row">
             <div class="col-12">
                 <?php if($therapist && $therapist_info): ?>
-                    <?php if($role == 'therapist'): ?>
-                        <a href="<?php echo e(url('/')); ?>">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Dashboard')); ?>
+                <a href="<?php echo e(url('therapist')); ?>">
+                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <i
+                            class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Therapist List')); ?>
 
-                            </button>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?php echo e(url('therapist/' . $therapist->id)); ?>">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Profile')); ?>
-
-                            </button>
-                        </a>
-                    <?php endif; ?>
+                    </button>
+                </a>
                 <?php else: ?>
                     <a href="<?php echo e(url('therapist')); ?>">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">

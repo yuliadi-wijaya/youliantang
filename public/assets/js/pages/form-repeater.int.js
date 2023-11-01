@@ -112,6 +112,7 @@ $(document).ready(function () {
     show: function show() {
       console.log('Item Created');
       $(this).slideDown();
+      $(this).find(".select2").select2();
     },
     hide: function hide(deleteElement) {
         $(this).slideUp(deleteElement);

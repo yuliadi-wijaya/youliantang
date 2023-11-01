@@ -98,8 +98,7 @@ unset($__errorArgs, $__bag); ?>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Room ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control <?php $__errorArgs = ['room'];
+                                            <select class="form-control select2 <?php $__errorArgs = ['room'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -107,9 +106,12 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="room" id="room" tabindex="1"
-                                                value="<?php echo e(old('room')); ?>"
-                                                placeholder="<?php echo e(__('Enter Room')); ?>">
+                                                name="room">
+                                                <option selected disabled><?php echo e(__('-- Select Room --')); ?></option>
+                                                <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
+                                                    <option value="<?php echo e($item->name); ?>" <?php if(old('room') == '<?php echo e($item->name); ?>'): ?> selected <?php endif; ?>><?php echo e($item->name); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </select>
                                             <?php $__errorArgs = ['room'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

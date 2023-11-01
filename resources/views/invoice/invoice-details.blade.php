@@ -70,11 +70,13 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Room ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control @error('room') is-invalid @enderror"
-                                                name="room" id="room" tabindex="1"
-                                                value="{{ old('room') }}"
-                                                placeholder="{{ __('Enter Room') }}">
+                                            <select class="form-control select2 @error('room') is-invalid @enderror"
+                                                name="room">
+                                                <option selected disabled>{{ __('-- Select Room --') }}</option>
+                                                @foreach($rooms as $item) 
+                                                    <option value="{{ $item->name }}" @if (old('room') == '{{ $item->name }}') selected @endif>{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
                                             @error('room')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>

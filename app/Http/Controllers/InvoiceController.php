@@ -9,6 +9,8 @@ use App\InvoiceDetail;
 use App\Notification;
 use App\Receptionist;
 use App\Transaction;
+use App\Room;
+use App\Product;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Support\Facades\Config;
@@ -80,8 +82,10 @@ class InvoiceController extends Controller
 
         // Default data null
         $invoice = null;
+        $rooms = Room::where('is_deleted',0)->orderBy('id','ASC')->get();
+        $products = Product::where('is_deleted',0)->orderBy('id','ASC')->get();
         
-        return view('invoice.invoice-details', compact('user', 'role', 'invoice'));
+        return view('invoice.invoice-details', compact('user', 'role', 'invoice', 'rooms', 'products'));
     }
 
     /**

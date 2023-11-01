@@ -31,9 +31,6 @@
 
             /** For screen preview **/
             @media screen {
-                body {
-                    background: #e0e0e0;
-                }
                 .sheet {
                     background: white;
                     margin: 5mm;
