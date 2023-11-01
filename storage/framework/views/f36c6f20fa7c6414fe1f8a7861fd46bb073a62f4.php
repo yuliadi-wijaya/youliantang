@@ -39,9 +39,9 @@
                     <table id="receptionList" class="table table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th><?php echo e(__('Sr. No')); ?></th>
+                                <th><?php echo e(__('No.')); ?></th>
                                 <th><?php echo e(__('Name')); ?></th>
-                                <th><?php echo e(__('Contact No')); ?></th>
+                                <th><?php echo e(__('Phone Number')); ?></th>
                                 <th><?php echo e(__('Email')); ?></th>
                                 <th><?php echo e(__('Option')); ?></th>
                             </tr>
@@ -58,7 +58,7 @@
 
                                         <?php echo e($receptionist->last_name); ?></a>
                                 </td>
-                                <td><?php echo e($receptionist->mobile); ?></td>
+                                <td><?php echo e($receptionist->phone_number); ?></td>
                                 <td><?php echo e($receptionist->email); ?></td>
                                 <td>
                                     <?php if($role == 'admin'): ?>
@@ -77,7 +77,7 @@
                                             <i class="mdi mdi-trash-can"></i>
                                         </button>
                                     </a>
-                                    <?php elseif($role == 'doctor'): ?>
+                                    <?php elseif($role == 'therapist'): ?>
                                     <a href="<?php echo e(url('receptionist-view/' . $receptionist->id)); ?>">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
@@ -104,7 +104,7 @@
     <!-- Init js-->
     <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
     <script>
-    //load datatable 
+    //load datatable
         $(document).ready(function() {
             $('#receptionList').DataTable({
                 processing: true,
@@ -113,7 +113,7 @@
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name', sortable : false, visible:true },
-                    { data: 'mobile', name: 'mobile' },
+                    { data: 'phone_number', name: 'phone_number' },
                     { data: 'email', name: 'email' },
                     { data: 'option', name: 'option', orderable: false, searchable: false },
                 ],
@@ -124,7 +124,7 @@
                 }
             });
         });
-        
+
         // Delete Prescription
         $(document).on('click', '#delete-receptionist', function() {
             var id = $(this).data('id');

@@ -18,9 +18,10 @@ class CreateInvoiceDetailsTable extends Migration
             $table->unsignedBigInteger('invoice_id');
             $table->string('title');
             $table->double('amount');
-            $table->tinyInteger('is_deleted')->default(0)->comment('0=>active,1=>inactive');
+            $table->tinyInteger('status')->default(0)->comment('0=>inactive,1=>active');
             $table->foreign('invoice_id')->references('id')->on('invoices');
             $table->timestamps();
+            $table->tinyInteger('is_deleted')->default(0);
         });
     }
 

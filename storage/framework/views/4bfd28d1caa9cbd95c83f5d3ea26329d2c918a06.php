@@ -6,12 +6,12 @@
     <?php $__env->startSection('content'); ?>
         <?php if($role == 'admin'): ?>
             <?php echo $__env->make('layouts.admin-dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php elseif($role == 'doctor'): ?>
-            <?php echo $__env->make('layouts.doctor-dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif($role == 'therapist'): ?>
+            <?php echo $__env->make('layouts.therapist-dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         <?php elseif($role == 'receptionist'): ?>
             <?php echo $__env->make('layouts.receptionist-dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php elseif($role == 'patient'): ?>
-            <?php echo $__env->make('layouts.patient-dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+        <?php elseif($role == 'customer'): ?>
+            <?php echo $__env->make('layouts.customer-dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         <?php endif; ?>
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('script'); ?>

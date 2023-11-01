@@ -15,20 +15,21 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('patient_id');
-            $table->unsignedBigInteger('doctor_id');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('therapist_id');
             $table->unsignedBigInteger('appointment_id');
             $table->string('payment_mode');
             $table->string('payment_status');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
-            $table->tinyInteger('is_deleted')->default(0)->comment('0=>active,1=>inactive');
-            $table->foreign('patient_id')->references('id')->on('users');
+            $table->tinyInteger('status')->default(0)->comment('0=>inactive,1=>active');
+            $table->foreign('customer_id')->references('id')->on('users');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('doctor_id')->references('id')->on('users');
+            $table->foreign('therapist_id')->references('id')->on('users');
             $table->foreign('appointment_id')->references('id')->on('appointments');
             $table->timestamps();
+            $table->tinyInteger('is_deleted')->default(0);
         });
     }
 

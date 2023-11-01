@@ -8,7 +8,7 @@ use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Exception;
 use App\User;
-use App\Patient;
+use App\Customer;
 use App\MedicalInfo;
 use Cartalyst\Sentinel\Laravel\Facades\Reminder;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
@@ -45,9 +45,8 @@ class AuthController extends Controller
             $remember = $request->remember == 'On' ? true : false;
             $user = Sentinel::authenticate($validatedData, $remember);
             if ($user) {
-                $patient = Patient::where('user_id', '=', $user->id)->count();
-                $medical_info = MedicalInfo::where('user_id', '=', $user->id)->count();
-                if ($user->roles[0]->slug == 'patient' && ($patient == 0 || $medical_info == 0)) {
+                $customer = Customer::where('user_id', '=', $user->id)->count();
+                if ($user->roles[0]->slug == 'customer' && ($customer == 0)) {
                     return view('profile-details');
                 } else {
                     return redirect('/');
@@ -98,8 +97,8 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'first_name' => 'required|alpha|max:20',
-            'last_name' => 'required|alpha|max:20',
-            'mobile' => 'required|numeric|digits:10',
+            'last_name' => 'alpha|max:20',
+            'phone_number' => 'required',
             'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
             'password' => 'required|min:8|confirmed|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:50'
         ]);
@@ -109,7 +108,7 @@ class AuthController extends Controller
             //Create a new user
             $user = Sentinel::registerAndActivate($validatedData);
             //Attach the user to the role
-            $role = Sentinel::findRoleBySlug('patient');
+            $role = Sentinel::findRoleBySlug('customer');
             $role->users()->attach($user);
             User::setEventDispatcher($dispatcher);
             $Auth_user = Sentinel::authenticate($validatedData);

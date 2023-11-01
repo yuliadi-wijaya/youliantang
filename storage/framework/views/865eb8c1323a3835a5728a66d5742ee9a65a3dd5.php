@@ -20,7 +20,7 @@
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th><?php echo e(__('Sr. No')); ?></th>
+                                    <th><?php echo e(__('No.')); ?></th>
                                     <th><?php echo e(__('Billing name')); ?></th>
                                     <th><?php echo e(__('Order id')); ?></th>
                                     <th><?php echo e(__('Transaction no')); ?></th>

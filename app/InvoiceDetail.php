@@ -12,6 +12,7 @@ class InvoiceDetail extends Model
         'invoice_id',
         'title',
         'amount',
+        'status',
         'is_deleted',
     ];
     function invoice(){

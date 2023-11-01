@@ -57,7 +57,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                            <?php if(old('email')): ?> value="<?php echo e(old('email')); ?>" <?php else: ?> value="admin@themesbrand.website" <?php endif; ?> id="username" placeholder="Enter username"
+                                            <?php if(old('email')): ?> value="<?php echo e(old('email')); ?>" <?php else: ?> value="" <?php endif; ?> id="username" placeholder="Enter username"
                                             autocomplete="email" autofocus>
                                         <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -83,7 +83,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                            id="userpassword" <?php if(old('password')): ?> value="<?php echo e(old('password')); ?>" <?php else: ?> value="admin@123456" <?php endif; ?> placeholder="Enter password">
+                                            id="userpassword" <?php if(old('password')): ?> value="<?php echo e(old('password')); ?>" <?php else: ?> value="" <?php endif; ?> placeholder="Enter password">
                                         <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

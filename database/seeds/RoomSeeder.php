@@ -15,32 +15,34 @@ class RoomSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('rooms')->insert([
-            'name' => "VIP Room 1",
-            'description' => "VIP 1",
-            'status' => 1,
-            'created_at' => now(),
-        ]);
+        // Regular Room
+        foreach(range(301, 315) as $item) {
+            // ignore this
+            if ($item == 304 || $item == 313 || $item == 314) {
+                continue;
+            }
 
-        DB::table('rooms')->insert([
-            'name' => "VIP Room 2",
-            'description' => "VIP 2",
-            'status' => 1,
-            'created_at' => now(),
-        ]);
+            DB::table('rooms')->insert([
+                'name' => 'Room ' . $item,
+                'description' => 'Room ' . $item,
+                'status' => 1,
+                'created_at' => now(),
+            ]);
+        }
 
-        DB::table('rooms')->insert([
-            'name' => "Regular Room 1",
-            'description' => "Regular 1",
-            'status' => 1,
-            'created_at' => now(),
-        ]);
+        // VIP Room 
+        foreach(range(1, 5) as $item) {
+            // ignore this
+            if ($item == 4) {
+                continue;
+            }
 
-        DB::table('rooms')->insert([
-            'name' => "Regular Room 1",
-            'description' => "Regular 1",
-            'status' => 1,
-            'created_at' => now(),
-        ]);
+            DB::table('rooms')->insert([
+                'name' => "VIP " . $item,
+                'description' => "VIP " . $item,
+                'status' => 1,
+                'created_at' => now(),
+            ]);
+        }
     }
 }

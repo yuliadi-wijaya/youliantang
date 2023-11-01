@@ -150,9 +150,9 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Doctor ')); ?><span
+                                            <label class="control-label"><?php echo e(__('Therapist ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 <?php $__errorArgs = ['doctor'];
+                                            <select class="form-control select2 <?php $__errorArgs = ['therapist'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -160,13 +160,13 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="doctor[]" id="doctor" multiple="multiple">
-                                                <?php $__currentLoopData = $doctors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($item->id); ?>" <?php if(old('doctor') == $item->id): ?> selected <?php endif; ?>>
+                                                name="therapist[]" id="therapist" multiple="multiple">
+                                                <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($item->id); ?>" <?php if(old('therapist') == $item->id): ?> selected <?php endif; ?>>
                                                         <?php echo e($item->first_name); ?> <?php echo e($item->last_name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
-                                            <?php $__errorArgs = ['doctor'];
+                                            <?php $__errorArgs = ['therapist'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -222,7 +222,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                tabindex="4" name="mobile" id="patientMobile"
+                                                tabindex="4" name="mobile" id="customerMobile"
                                                 value="<?php if($receptionist): ?><?php echo e($receptionist->mobile); ?><?php elseif(old('mobile')): ?><?php echo e(old('mobile')); ?><?php endif; ?>"
                                                 placeholder="<?php echo e(__('Enter Contact Number')); ?>">
                                             <?php $__errorArgs = ['mobile'];

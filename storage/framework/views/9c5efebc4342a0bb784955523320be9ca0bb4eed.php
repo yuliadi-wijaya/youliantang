@@ -26,7 +26,7 @@
     <?php echo $__env->renderComponent(); ?>
     <!-- end page title -->
     <div class="row">
-        <div class="col-12">    
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <?php if($role == 'admin'): ?>
@@ -40,14 +40,14 @@
                     <table id="productList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th><?php echo e(__('Sr. No')); ?></th>
+                                <th><?php echo e(__('No.')); ?></th>
                                 <th><?php echo e(__('Name')); ?></th>
                                 <th><?php echo e(__('Duration')); ?></th>
                                 <th><?php echo e(__('Price')); ?></th>
                                 <th><?php echo e(__('Commission Fee')); ?></th>
                                 <th><?php echo e(__('Status')); ?></th>
                                 <th><?php echo e(__('Option')); ?></th>
-                            </tr>   
+                            </tr>
                         </thead>
                         <tbody>
                             <!-- load data using yajra datatables -->
@@ -69,7 +69,7 @@
     <!-- Init js-->
     <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
     <script>
-        //load datatable 
+        //load datatable
         $(document).ready(function() {
             var role = '<?php echo e($role); ?>';
             $('#productList').DataTable({
@@ -78,7 +78,7 @@
                 ajax: "<?php echo e(route('product.index')); ?>",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'name', name: 'name' }, 
+                    { data: 'name', name: 'name' },
                     { data: 'duration', name: 'duration', searchable: false },
                     { data: 'price', name: 'price', searchable: false },
                     { data: 'commission_fee', name: 'commission_fee', searchable: false, visible: (role == 'admin') ? true : false },
@@ -93,7 +93,7 @@
             });
         });
 
-        // delete Doctor
+        // delete data
         $(document).on('click', '#delete-product', function() {
             var id = $(this).data('id');
             if (confirm('Are you sure want to delete product, this action will impact to transaciton data?')) {

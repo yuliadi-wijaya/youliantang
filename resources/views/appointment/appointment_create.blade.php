@@ -37,17 +37,17 @@
                         <blockquote>{{ __('Book Appointment') }}</blockquote>
                         <form action="{{ url('appointment-store') }}" id="" method="POST">
                             @csrf
-                            @if ($role != 'patient')
+                            @if ($role != 'customer')
                                 <div class="row">
                                     <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Patient ') }}<span
+                                        <label class="control-label">{{ __('Customer ') }}<span
                                                 class="text-danger">*</span></label>
                                         <select class="form-control select2 @error('appointment_for') is-invalid @enderror"
-                                            name="appointment_for" id="patient">
+                                            name="appointment_for" id="customer">
                                             <option hidden selected disabled>{{ __('Select') }}</option>
-                                            @foreach ($patients as $patient)
-                                                <option value="{{ $patient->id }}">{{ $patient->first_name }}
-                                                    {{ $patient->last_name }}</option>
+                                            @foreach ($customers as $customer)
+                                                <option value="{{ $customer->id }}">{{ $customer->first_name }}
+                                                    {{ $customer->last_name }}</option>
                                             @endforeach
                                         </select>
                                         @error('appointment_for')
@@ -60,20 +60,20 @@
                             @else
                                 <input type="hidden" name="appointment_for" value="{{ $user->id }}">
                             @endif
-                            @if ($role != 'doctor')
+                            @if ($role != 'therapist')
                                 <div class="row">
                                     <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Doctor ') }}<span
+                                        <label class="control-label">{{ __('Therapist ') }}<span
                                                 class="text-danger">*</span></label>
                                         <select
-                                            class="form-control select2 sel-doctor @error('appointment_with') is-invalid @enderror"
-                                            name="appointment_with" id="doctor">
+                                            class="form-control select2 sel-therapist @error('appointment_with') is-invalid @enderror"
+                                            name="appointment_with" id="therapist">
                                             <option hidden selected disabled>{{ __('Select') }}</option>
-                                            @foreach ($doctors as $doctor)
-                                                <option value="{{ $doctor->id }}"
-                                                    {{ old('appointment_with') == $doctor->id ? 'selected' : '' }}>
-                                                    {{ $doctor->first_name }}
-                                                    {{ $doctor->last_name }}</option>
+                                            @foreach ($therapists as $therapist)
+                                                <option value="{{ $therapist->id }}"
+                                                    {{ old('appointment_with') == $therapist->id ? 'selected' : '' }}>
+                                                    {{ $therapist->first_name }}
+                                                    {{ $therapist->last_name }}</option>
                                             @endforeach
                                         </select>
                                         @error('appointment_with')
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             @else
-                                <input type="hidden" name="appointment_with" value="{{ $user->id }}" id="doctor">
+                                <input type="hidden" name="appointment_with" value="{{ $user->id }}" id="therapist">
                             @endif
                             <div class="row">
                                 <div class="col-md-12 form-group">
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if ($role !== 'doctor')
+                            @if ($role !== 'therapist')
                                 <div class="row">
                                     <div class="col-md-12 form-group">
                                         <label for="" class="d-block">{{ __("Available Time") }}<span
@@ -128,13 +128,13 @@
                                     </div>
                                 </div>
 
-                            @elseif ($role == 'doctor')
+                            @elseif ($role == 'therapist')
                                 <div class="row">
                                     <div class="col-md-12 form-group">
                                         <label for="" class="d-block">{{ __("Available Time") }} <span
                                                 class="text-danger">*</span></label>
                                         <div class="btn-group btn-group-toggle availble_time" data-toggle="buttons">
-                                            @foreach ($doctor_available_time as $item)
+                                            @foreach ($therapist_available_time as $item)
                                                 <label class="btn btn-outline-secondary mr-2 ">
                                                     <input type="radio" name="available_time"
                                                         class="available-time @error('available_time') is-invalid @enderror"
@@ -205,12 +205,12 @@
         <script>
             let datep = $('#datepicker');
             var roles = '{{ $role }}';
-            if (roles == 'doctor') {
-                var day_doctor = '{{ $dayArray }}';
+            if (roles == 'therapist') {
+                var day_therapist = '{{ $dayArray }}';
                 $(".datepickerdiv").prepend(datep);
                 $('#datepicker').datepicker({
                     startDate: new Date(),
-                    daysOfWeekDisabled: day_doctor
+                    daysOfWeekDisabled: day_therapist
                 });
             }
             function days(day) {
@@ -221,17 +221,17 @@
                     daysOfWeekDisabled: day
                 });
             }
-            $('.sel-doctor').change(function(e) {
+            $('.sel-therapist').change(function(e) {
                 e.preventDefault();
                 $('.day').removeClass('disabled disabled-date');
                 $('.availble_time').empty();
-                var doctorId = $(this).val();
+                var therapistId = $(this).val();
                 var token = $("input[name='_token']").val();
                 $.ajax({
                     type: "post",
-                    url: "{{ route('doctor_by_day_time') }}",
+                    url: "{{ route('therapist_by_day_time') }}",
                     data: {
-                        doctor_id: doctorId,
+                        therapist_id: therapistId,
                         _token: token,
                     },
                     success: function(response) {
@@ -268,13 +268,13 @@
             $(document).on('change', '#datepicker', function() {
                 $('.availble_slot').empty();
             });
-            // doctor available time show
+            // therapist available time show
             $(document).on('click', '.available-time', function() {
                 $('.availble_slot').empty();
                 var token = $("input[name='_token']").val();
                 var timeId = $(this).val();
                 var dates = $('#datepicker').val();
-                var doctorId = $("#doctor").val();
+                var therapistId = $("#therapist").val();
                 $.ajax({
                     type: "post",
                     url: "{{ route('timeBySlot') }}",
@@ -282,7 +282,7 @@
                         timeId: timeId,
                         _token: token,
                         dates: dates,
-                        doctorId: doctorId
+                        therapistId: therapistId
                     },
                     success: function(response) {
                         var available_slot = response.data[0];

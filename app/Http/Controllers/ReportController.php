@@ -29,23 +29,23 @@ class ReportController extends Controller
      */
     public function getMonthlyUsersRevenue()
     {
-        $patients =  User::whereHas('roles', function ($q) {
-            $q->where('slug', 'patient');
-        })->select(DB::raw('count(id) as `total_patient`'), DB::raw('MONTH(created_at) Month'))
+        $customers =  User::whereHas('roles', function ($q) {
+            $q->where('slug', 'customer');
+        })->select(DB::raw('count(id) as `total_customer`'), DB::raw('MONTH(created_at) Month'))
             ->whereYear('created_at', Carbon::now()->year)->groupBy(DB::raw('MONTH(created_at)'))->get();
 
         $revenue = DB::select('SELECT MONTH(invoices.created_at) AS Month,SUM(invoice_details.amount) AS total_revenue
         FROM invoices, invoice_details WHERE invoices.id = invoice_details.invoice_id AND YEAR(invoices.created_at) = YEAR(CURDATE())
         GROUP BY MONTH(invoices.created_at)');
         $data = [
-            'total_patient' => $patients,
+            'total_customer' => $customers,
             'total_revenue' => $revenue
         ];
         return $data;
     }
 
     /**
-     * Get Monthly Appointments for each doctor.
+     * Get Monthly Appointments for each therapist.
      *
      * @return Array
      */
@@ -67,16 +67,16 @@ class ReportController extends Controller
         $user = Sentinel::getUser();
         $role = $user->roles[0]->slug;
         $userId = $user->id;
-        if ($role == 'patient') {
+        if ($role == 'customer') {
             $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', date('m'))->where('patient_id', $userId)->pluck('id');
+            }])->whereMonth('created_at', date('m'))->where('customer_id', $userId)->pluck('id');
             $currentMonthEarning = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
             $preInvoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', Carbon::now()->subMonth()->month)->where('patient_id', $userId)->pluck('id');
+            }])->whereMonth('created_at', Carbon::now()->subMonth()->month)->where('customer_id', $userId)->pluck('id');
             $prevMonthEarning = InvoiceDetail::whereIn('invoice_id', $preInvoice)->sum('amount');
-        } elseif ($role == 'doctor') {
+        } elseif ($role == 'therapist') {
             $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
             }])->whereMonth('created_at', date('m'))->where('created_by', $userId)->pluck('id');

@@ -46,14 +46,14 @@ Route::get('profile-view', 'UserController@profile_view');
 // resource routes
 Route::get('user/profile-details', 'UserController@userProfileDetails');
 Route::resource('user', 'UserController');
-Route::resource('doctor', 'DoctorController');
-Route::resource('patient', 'PatientController');
+Route::resource('therapist', 'TherapistController');
+Route::resource('customer', 'CustomerController');
 Route::resource('receptionist', 'ReceptionistController');
 Route::resource('appointment', 'AppointmentController');
 Route::resource('prescription', 'PrescriptionController');
 Route::resource('invoice', 'InvoiceController');
 Route::get('receptionist-view/{id}', 'ReceptionistController@receptionist_view');
-Route::get('doctor-view/{id}', 'DoctorController@doctor_view');
+Route::get('therapist-view/{id}', 'TherapistController@therapist_view');
 Route::resource('membership', 'MembershipController');
 Route::resource('product', 'ProductController');
 Route::resource('room', 'RoomController');
@@ -63,9 +63,9 @@ Route::resource('promo', 'PromoController');
 Route::get('appointmentList', 'AppointmentController@appointment_list');
 Route::post('appointment-status/{id}', 'AppointmentController@appointment_status');
 Route::get('getMonthlyAppointments', 'ReportController@getMonthlyAppointments');
-Route::post('patient-by-appointment', 'InvoiceController@patient_by_appointment')->name('patient_by_appointment');
-Route::post('appointment-by-doctor', 'InvoiceController@appointment_by_doctor')->name('appointment_by_doctor');
-Route::post('/doctor-by-day-time', 'AppointmentController@doctor_by_day_time')->name('doctor_by_day_time');
+Route::post('customer-by-appointment', 'InvoiceController@customer_by_appointment')->name('customer_by_appointment');
+Route::post('appointment-by-therapist', 'InvoiceController@appointment_by_therapist')->name('appointment_by_therapist');
+Route::post('/therapist-by-day-time', 'AppointmentController@therapist_by_day_time')->name('therapist_by_day_time');
 Route::post('/appointment-time-by-appointment-slot', 'AppointmentController@time_by_slot')->name('timeBySlot');
 Route::get('appointment-create', 'AppointmentController@appointment_create');
 Route::post('appointment-store', 'AppointmentController@appointment_store');
@@ -75,7 +75,7 @@ Route::get('upcoming-appointment', 'AppointmentController@upcoming_appointment')
 Route::get('complete-appointment', 'AppointmentController@complete_appointment');
 Route::get('cancel-appointment', 'AppointmentController@cancel_appointment');
 Route::get('today-appointment', 'AppointmentController@today_appointment');
-Route::get('patient-appointment', 'AppointmentController@patient_appointment');
+Route::get('customer-appointment', 'AppointmentController@customer_appointment');
 
 // Revenue / Earning / calender
 Route::get('getMonthlyUsersRevenue', 'ReportController@getMonthlyUsersRevenue');
@@ -89,9 +89,9 @@ Route::post('/top-notification', 'NotificationController@notification_top');
 Route::get('/notification-count', 'NotificationController@notificationCount');
 
 // Time slot
-Route::get('/time-edit/{id}', 'DoctorController@time_edit');
-Route::post('/time-update/{id}', 'DoctorController@time_update');
-Route::get('/time-update-ajax/{id}', 'DoctorController@time_update_ajax');
+Route::get('/time-edit/{id}', 'TherapistController@time_edit');
+Route::post('/time-update/{id}', 'TherapistController@time_update');
+Route::get('/time-update-ajax/{id}', 'TherapistController@time_update_ajax');
 
 // Invoice routes
 Route::get('invoice-email/{id}', 'EmailController@invoice_email_send');

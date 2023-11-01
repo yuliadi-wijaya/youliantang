@@ -80,7 +80,12 @@
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     <?php switch(Session::get('lang')):
-                        case ('ru'): ?>
+                        case ('id'): ?>
+                            <img src="<?php echo e(URL::asset('/assets/images/flags/id.svg')); ?>" class="rounded" alt="Header Language"
+                                height="20">
+                        <?php break; ?>
+
+                        <?php case ('ru'): ?>
                             <img src="<?php echo e(URL::asset('/assets/images/flags/russia.svg')); ?>" class="rounded" alt="Header Language"
                                 height="20">
                         <?php break; ?>
@@ -131,58 +136,14 @@
                     </a>
 
                     <!-- item-->
-                    <a href="<?php echo e(url('index/sp')); ?>" class="dropdown-item notify-item language" data-lang="sp"
-                        title="Spanish">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/spain.svg')); ?>" alt="user-image"
+                    <a href="<?php echo e(url('index/id')); ?>" class="dropdown-item notify-item language" data-lang="id"
+                        title="Indonesia">
+                        <img src="<?php echo e(URL::asset('assets/images/flags/id.svg')); ?>" alt="user-image"
                             class="me-2 rounded" height="20">
-                        <span class="align-middle">Española</span>
+                        <span class="align-middle">Indonesia</span>
                     </a>
 
-                    <!-- item-->
-                    <a href="<?php echo e(url('index/gr')); ?>" class="dropdown-item notify-item language" data-lang="gr"
-                        title="German">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/germany.svg')); ?>" alt="user-image"
-                            class="me-2 rounded" height="20"> <span class="align-middle">Deutsche</span>
-                    </a>
-
-                    <!-- item-->
-                    <a href="<?php echo e(url('index/it')); ?>" class="dropdown-item notify-item language" data-lang="it"
-                        title="Italian">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/italy.svg')); ?>" alt="user-image"
-                            class="me-2 rounded" height="20">
-                        <span class="align-middle">Italiana</span>
-                    </a>
-
-                    <!-- item-->
-                    <a href="<?php echo e(url('index/ru')); ?>" class="dropdown-item notify-item language" data-lang="ru"
-                        title="Russian">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/russia.svg')); ?>" alt="user-image"
-                            class="me-2 rounded" height="20">
-                        <span class="align-middle">русский</span>
-                    </a>
-
-                    <!-- item-->
-                    <a href="<?php echo e(url('index/ch')); ?>" class="dropdown-item notify-item language" data-lang="ch"
-                        title="Chinese">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/china.svg')); ?>" alt="user-image"
-                            class="me-2 rounded" height="20">
-                        <span class="align-middle">中国人</span>
-                    </a>
-
-                    <!-- item-->
-                    <a href="<?php echo e(url('index/fr')); ?>" class="dropdown-item notify-item language" data-lang="fr"
-                        title="French">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/french.svg')); ?>" alt="user-image"
-                            class="me-2 rounded" height="20">
-                        <span class="align-middle">français</span>
-                    </a>
-                    <!-- item-->
-                    <a href="<?php echo e(url('index/ae')); ?>" class="dropdown-item notify-item language" data-lang="ae"
-                        title="Arabic">
-                        <img src="<?php echo e(URL::asset('assets/images/flags/ae.svg')); ?>" alt="user-image"
-                            class="me-2 rounded" height="18">
-                        <span class="align-middle">Arabic</span>
-                    </a>
+                    
                 </div>
             </div>
             <div class="dropdown d-inline-block">
@@ -244,11 +205,11 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <?php if($role == 'doctor'): ?>
+                    <?php if($role == 'therapist'): ?>
                         <a class="dropdown-item" href="<?php echo e(url('profile-view')); ?>"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
                             <?php echo e(__('translation.profile')); ?></a>
-                    <?php elseif($role == 'patient'): ?>
+                    <?php elseif($role == 'customer'): ?>
                         <a class="dropdown-item" href="<?php echo e(url('profile-view')); ?>"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
                             <?php echo e(__('translation.profile')); ?></a>

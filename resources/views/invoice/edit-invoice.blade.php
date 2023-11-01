@@ -35,18 +35,18 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 form-group">
-                                    <label class="control-label">{{ __('Patient') }}<span
+                                    <label class="control-label">{{ __('Customer') }}<span
                                             class="text-danger">*</span></label>
                                     <select
-                                        class="form-control select2 sel_patient @error('patient_id') is-invalid @enderror"
-                                        name="patient_id" id="patient">
-                                        <option disabled selected>{{ __('Select Patient') }}</option>
-                                        @foreach ($patients as $patient)
-                                            <option value="{{ $patient->id }}" {{ $invoice_detail->patient->id == $patient->id?'selected':'' }}>
-                                                {{ $patient->first_name }} {{ $patient->last_name }}</option>
+                                        class="form-control select2 sel_customer @error('customer_id') is-invalid @enderror"
+                                        name="customer_id" id="customer">
+                                        <option disabled selected>{{ __('Select Customer') }}</option>
+                                        @foreach ($customers as $customer)
+                                            <option value="{{ $customer->id }}" {{ $invoice_detail->customer->id == $customer->id?'selected':'' }}>
+                                                {{ $customer->first_name }} {{ $customer->last_name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('patient_id')
+                                    @error('customer_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="col-md-6 form-group">
                                 </div>
-                                @if ($role == 'doctor')
+                                @if ($role == 'therapist')
                                     <div class="col-md-6 form-group">
                                         <label class="control-label">{{ __('Appointment ') }}<span
                                                 class="text-danger">*</span></label>
@@ -97,11 +97,11 @@
                                     </div>
                                 @endif
                                 <div class="col-md-6 form-group">
-                                    <label class="control-label">{{ __('Doctor ') }}</label>
-                                    <input type="text" class="form-control sel_doctor" readonly
-                                    value="{{ $invoice_detail->appointment->doctor->first_name .' '.$invoice_detail->appointment->doctor->last_name }}">
-                                    <input type="hidden" name="doctor_id" class="form-control sel_doctor_id">
-                                    @error('doctor_id')
+                                    <label class="control-label">{{ __('Therapist ') }}</label>
+                                    <input type="text" class="form-control sel_therapist" readonly
+                                    value="{{ $invoice_detail->appointment->therapist->first_name .' '.$invoice_detail->appointment->therapist->last_name }}">
+                                    <input type="hidden" name="therapist_id" class="form-control sel_therapist_id">
+                                    @error('therapist_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -198,16 +198,16 @@
         <script src="{{ URL::asset('assets/js/pages/form-advanced.init.js') }}"></script>
         <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
         <script>
-            // Patient by appointment select
-            $('.sel_patient').on('change', function(e) {
+            // Customer by appointment select
+            $('.sel_customer').on('change', function(e) {
                 e.preventDefault();
-                var patientId = $(this).val();
+                var customerId = $(this).val();
                 var token = $("input[name='_token']").val();
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('patient_by_appointment') }}",
+                    url: "{{ route('customer_by_appointment') }}",
                     data: {
-                        patient_id: patientId,
+                        customer_id: customerId,
                         _token: token,
                     },
                     success: function(res) {
@@ -219,22 +219,22 @@
                     }
                 });
             });
-            // appointment by doctor select
+            // appointment by therapist select
             $('.sel_appointment').change(function(e) {
                 e.preventDefault();
                 var appointmentID = $(this).val();
                 var token = $("input[name='_token']").val();
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('appointment_by_doctor') }}",
+                    url: "{{ route('appointment_by_therapist') }}",
                     data: {
                         appointment_id: appointmentID,
                         _token: token,
                     },
                     success: function(res) {
                         var rd = res.data[0];
-                        $('.sel_doctor').val(rd.first_name + ' ' + rd.last_name);
-                        $('.sel_doctor_id').val(rd.id);
+                        $('.sel_therapist').val(rd.first_name + ' ' + rd.last_name);
+                        $('.sel_therapist_id').val(rd.id);
                     },
                     error: function(res) {
                         console.log(res);

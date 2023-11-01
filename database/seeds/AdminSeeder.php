@@ -15,12 +15,13 @@ class AdminSeeder extends Seeder
     public function run()
     {
         $credentials = [
-            'first_name' => 'Doctorly',
-            'last_name'  => 'Admin',
-            'mobile'     => '5142323114',
-            'profile_photo'=>'avatar-5.jpg',
-            'email'      => 'admin@themesbrand.website',
-            'password' => 'admin@123456',
+            'first_name' => 'Super',
+            'last_name' => 'Admin',
+            'phone_number' => '5142323114',
+            'profile_photo' =>'avatar-5.jpg',
+            'email' => 'admin@youliantang.com',
+            'password' => 'youliantang123',
+            'status' => 1,
         ];
         $user = Sentinel::registerAndActivate( $credentials );
         $role = Sentinel::findRoleBySlug('admin');

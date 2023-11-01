@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Appointment;
-use App\Doctor;
-use App\DoctorAvailableDay;
-use App\DoctorAvailableTime;
+use App\Therapist;
+use App\TherapistAvailableDay;
+use App\TherapistAvailableTime;
 use App\Invoice;
 use App\InvoiceDetail;
 use Illuminate\Http\Request;
-use App\Patient;
+use App\Customer;
 use App\MedicalInfo;
 use App\Prescription;
-use App\ReceptionListDoctor;
+use App\Receptionist;
 use App\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Config;
 class UserController extends Controller
 {
 
-    protected $patient, $medical_info, $MedicalInfo;
+    protected $customer, $medical_info, $MedicalInfo;
     /**
      * Create a new controller instance.
      *
@@ -31,7 +31,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->patient = new Patient();
+        $this->customer = new Customer();
         $this->medical_info = new MedicalInfo();
         $this->middleware(function ($request, $next) {
             if (session()->has('page_limit')) {
@@ -96,9 +96,9 @@ class UserController extends Controller
         ]);
         try {
             $user = Sentinel::getUser();
-            $patient = Sentinel::getUser();
+            $customer = Sentinel::getUser();
             if ($request->hasFile('profile_photo')) {
-                $des = 'storage/images/users/.' . $patient->profile_photo;
+                $des = 'storage/images/users/.' . $customer->profile_photo;
                 if (File::exists($des)) {
                     File::delete($des);
                 }
@@ -106,20 +106,20 @@ class UserController extends Controller
                 $extention = $file->getClientOriginalExtension();
                 $imageName = time() . '.' . $extention;
                 $file->move(public_path('storage/images/users'), $imageName);
-                $patient->profile_photo = $imageName;
+                $customer->profile_photo = $imageName;
             }
-            $patient->save();
-            // patient details save
-            $patient_id = $patient->id;
-            $patient_Details = new Patient();
-            $patient_Details->user_id = $patient_id;
-            $patient_Details->age = $request->age;
-            $patient_Details->gender = $request->gender;
-            $patient_Details->address = $request->address;
-            $patient_Details->save();
+            $customer->save();
+            // customer details save
+            $customer_id = $customer->id;
+            $customer_Details = new Customer();
+            $customer_Details->user_id = $customer_id;
+            $customer_Details->age = $request->age;
+            $customer_Details->gender = $request->gender;
+            $customer_Details->address = $request->address;
+            $customer_Details->save();
             // medical info save
             $medical_info = new MedicalInfo();
-            $medical_info->user_id = $patient_id;
+            $medical_info->user_id = $customer_id;
             $medical_info->height = $request->height;
             $medical_info->b_group = $request->b_group;
             $medical_info->pulse = $request->pulse;
@@ -159,30 +159,30 @@ class UserController extends Controller
             $role = $user->roles[0]->slug;
             if ($role == 'admin') {
                 return view('admin.admin-edit', compact('user', 'role'));
-            } elseif ($role == 'doctor') {
-                $doctor = Sentinel::getUser();
-                $doctor_info = Doctor::where('user_id', '=', $doctor->id)->first();
-                if ($doctor_info) {
-                    $availableDay = DoctorAvailableDay::where('doctor_id', $doctor->id)->first();
-                    $availableTime = DoctorAvailableTime::where('doctor_id', $doctor->id)->get();
-                    return view('doctor.doctor-profile-edit', compact('user', 'role', 'doctor', 'doctor_info', 'availableDay', 'availableTime'));
+            } elseif ($role == 'therapist') {
+                $therapist = Sentinel::getUser();
+                $therapist_info = Therapist::where('user_id', '=', $therapist->id)->first();
+                if ($therapist_info) {
+                    $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
+                    $availableTime = TherapistAvailableTime::where('therapist_id', $therapist->id)->get();
+                    return view('therapist.therapist-profile-edit', compact('user', 'role', 'therapist', 'therapist_info', 'availableDay', 'availableTime'));
                 } else {
-                    return redirect('/')->with('error', 'Doctor details not found');
+                    return redirect('/')->with('error', 'Therapist details not found');
                 }
             } elseif ($role == 'receptionist') {
                 $receptionist = Sentinel::getUser();
                 $role = $user->roles[0]->slug;
-                $doctor_role = Sentinel::findRoleBySlug('doctor');
-                $doctors = $doctor_role->users()->with(['roles', 'doctor'])->where('is_deleted', 0)->get();
-                $receptionist_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->where('is_deleted', 0)->pluck('doctor_id');
-                $doctor_user = User::whereIn('id', $receptionist_doctor)->pluck('id')->toArray();
-                return view('receptionist.receptionist-profile-edit', compact('user', 'role', 'receptionist', 'doctors', 'doctor_user'));
-            } elseif ($role == 'patient') {
-                $patient = Sentinel::getUser();
-                $patient_info = Patient::where('user_id', '=', $patient->id)->first();
-                $medical_info = MedicalInfo::where('user_id', '=', $patient->id)->first();
-                // return $patient;
-                return view('patient.patient-edit', compact('user', 'role', 'patient', 'patient_info', 'medical_info'));
+                $therapist_role = Sentinel::findRoleBySlug('therapist');
+                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
+                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
+                $therapist_user = User::whereIn('id', $receptionist_therapist)->pluck('id')->toArray();
+                return view('receptionist.receptionist-profile-edit', compact('user', 'role', 'receptionist', 'therapists', 'therapist_user'));
+            } elseif ($role == 'customer') {
+                $customer = Sentinel::getUser();
+                $customer_info = Customer::where('user_id', '=', $customer->id)->first();
+                $medical_info = MedicalInfo::where('user_id', '=', $customer->id)->first();
+                // return $customer;
+                return view('customer.customer-edit', compact('user', 'role', 'customer', 'customer_info', 'medical_info'));
             }
         } else {
             return view('error.403');
@@ -205,7 +205,7 @@ class UserController extends Controller
                 $validatedData = $request->validate([
                     'first_name' => 'required|alpha',
                     'last_name' => 'required|alpha',
-                    'mobile' => 'required|numeric|digits:10',
+                    'phone_number' => 'required',
                     'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
                     'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 ]);
@@ -226,26 +226,24 @@ class UserController extends Controller
                     $user->last_name = $request->last_name;
                     $user->email = $request->email;
                     $user->last_name = $request->last_name;
-                    $user->mobile = $request->mobile;
+                    $user->phone_number = $request->phone_number;
                     $user->updated_by = $userId;
                     $user->save();
                     return redirect('/')->with('success', 'Profile updated successfully!');
                 } catch (Exception $e) {
                     return redirect('/')->with('error', 'Something went wrong!!! ' . $e->getMessage());
                 }
-            } elseif ($role == 'doctor') {
-                $doctor = Sentinel::getUser();
+            } elseif ($role == 'therapist') {
+                $therapist = Sentinel::getUser();
                 $user = Sentinel::getUser();
                 $validatedData = $request->validate([
                     'first_name' => 'required|alpha',
-                    'last_name' => 'required|alpha',
-                    'mobile' => 'required|numeric|digits:10',
+                    'last_name' => 'alpha',
+                    'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                     'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                    'title' => 'required|regex:/^[a-zA-Z ]+$/',
-                    'fees' => 'required|numeric',
-                    'degree' => 'required',
-                    'experience' => 'required|numeric',
-                    'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
+                    'gender' => 'required',
+                    'phone_number' => 'required',
+                    'rekening_number' => 'required|numeric',
                     'mon' => 'required_without_all:tue,wen,thu,fri,sat,sun',
                     'tue' => 'required_without_all:mon,wen,thu,fri,sat,sun',
                     'wen' => 'required_without_all:mon,tue,thu,fri,sat,sun',
@@ -253,12 +251,13 @@ class UserController extends Controller
                     'fri' => 'required_without_all:wen,tue,mon,thu,sat,sun',
                     'sat' => 'required_without_all:wen,tue,mon,thu,fri,sun',
                     'sun' => 'required_without_all:wen,tue,mon,thu,fri,sat',
+                    'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 ]);
                 try {
                     $user = Sentinel::getUser();
                     $role = $user->roles[0]->slug;
                     if ($request->hasFile('profile_photo')) {
-                        $des = 'storage/images/users/.' . $doctor->profile_photo;
+                        $des = 'storage/images/users/.' . $therapist->profile_photo;
                         if (File::exists($des)) {
                             File::delete($des);
                         }
@@ -266,23 +265,27 @@ class UserController extends Controller
                         $extention = $file->getClientOriginalExtension();
                         $imageName = time() . '.' . $extention;
                         $file->move(public_path('storage/images/users'), $imageName);
-                        $doctor->profile_photo = $imageName;
+                        $therapist->profile_photo = $imageName;
                     }
-                    $doctor->first_name = $validatedData['first_name'];
-                    $doctor->last_name = $validatedData['last_name'];
-                    $doctor->mobile = $validatedData['mobile'];
-                    $doctor->email = $validatedData['email'];
-                    $doctor->updated_by = $user->id;
-                    $doctor->save();
-                    Doctor::where('user_id', $doctor->id)
+                    $therapist->first_name = $validatedData['first_name'];
+                    $therapist->last_name = $validatedData['last_name'];
+                    $therapist->phone_number = $validatedData['phone_number'];
+                    $therapist->email = $validatedData['email'];
+                    $therapist->updated_by = $user->id;
+                    $therapist->save();
+                    Therapist::where('user_id', $therapist->id)
                         ->update([
-                            'title' => $validatedData['title'],
-                            'degree' => $validatedData['degree'],
-                            'experience' => $validatedData['experience'],
-                            'fees' => $validatedData['fees'],
+                            'ktp' => $validatedData['ktp'],
+                            'gender' => $validatedData['gender'],
+                            'place_of_birth' =>$request->place_of_birth,
+                            'birth_date' => $request->birth_date,
+                            'address' => $request->address,
+                            'rekening_number' => $request->rekening_number,
+                            'emergency_contact' => $request->emergency_contact,
+                            'emergency_name' => $request->emergency_name,
                         ]);
-                    $availableDay = DoctorAvailableDay::where('doctor_id', $doctor->id)->first();
-                    $availableDay->doctor_id = $doctor->id;
+                    $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
+                    $availableDay->therapist_id = $therapist->id;
                     if ($availableDay->mon = $request->mon !== Null) {
                         $availableDay->mon = $request->mon;
                     }
@@ -305,22 +308,22 @@ class UserController extends Controller
                         $availableDay->sun = $request->sun;
                     }
                     $availableDay->save();
-                    if ($role == 'doctor') {
+                    if ($role == 'therapist') {
                         return redirect('/')->with('success', 'Profile updated successfully!');
                     } else {
-                        return redirect('doctor')->with('success', 'Profile updated successfully!');
+                        return redirect('therapist')->with('success', 'Profile updated successfully!');
                     }
                 } catch (Exception $e) {
-                    return redirect('doctor')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+                    return redirect('therapist')->with('error', 'Something went wrong!!! ' . $e->getMessage());
                 }
             } elseif ($role == 'receptionist') {
                 $receptionist = Sentinel::getUser();
                 $validatedData = $request->validate([
                     'first_name' => 'required|alpha',
                     'last_name' => 'required|alpha',
-                    'mobile' => 'required|numeric|digits:10',
+                    'phone_number' => 'required',
                     'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                    'doctor' => 'required',
+                    'therapist' => 'required',
                     'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500'
                 ]);
                 try {
@@ -339,41 +342,41 @@ class UserController extends Controller
                     }
                     $receptionist->first_name = $validatedData['first_name'];
                     $receptionist->last_name = $validatedData['last_name'];
-                    $receptionist->mobile = $validatedData['mobile'];
+                    $receptionist->phone_number = $validatedData['phone_number'];
                     $receptionist->email = $validatedData['email'];
                     $receptionist->updated_by = $user->id;
 
-                    $old_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->pluck('doctor_id')->toArray();
-                    $new_doctor = $request->doctor;
-                    $numArray = array_map('intval', $new_doctor);
-                    // remove doctor
-                    $differenceArray1 = array_diff($old_doctor, $numArray);
-                    // add doctor
-                    $differenceArray2 = array_diff($numArray, $old_doctor);
-                    $receptionistDoctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->pluck('doctor_id');
+                    $old_therapist = Receptionist::where('user_id', $receptionist->id)->pluck('therapist_id')->toArray();
+                    $new_therapist = $request->therapist;
+                    $numArray = array_map('intval', $new_therapist);
+                    // remove therapist
+                    $differenceArray1 = array_diff($old_therapist, $numArray);
+                    // add therapist
+                    $differenceArray2 = array_diff($numArray, $old_therapist);
+                    $receptionistTherapist = Receptionist::where('user_id', $receptionist->id)->pluck('therapist_id');
                     if ($differenceArray1 && $differenceArray2) {
-                        // add and remove both doctor
+                        // add and remove both therapist
                         if ($differenceArray1) {
-                            $receptionistDoctor = ReceptionListDoctor::whereIn('doctor_id', $differenceArray1)->delete();
+                            $receptionistTherapist = Receptionist::whereIn('therapist_id', $differenceArray1)->delete();
                         }
                         if ($differenceArray2) {
                             foreach ($differenceArray2 as $item) {
-                                $receptionistDoctor = new ReceptionListDoctor();
-                                $receptionistDoctor->doctor_id = $item;
-                                $receptionistDoctor->reception_id = $receptionist->id;
-                                $receptionistDoctor->save();
+                                $receptionistTherapist = new Receptionist();
+                                $receptionistTherapist->therapist_id = $item;
+                                $receptionistTherapist->user_id = $receptionist->id;
+                                $receptionistTherapist->save();
                             }
                         }
                     } elseif ($differenceArray1) {
-                        // only remove doctor
-                        $receptionistDoctor = ReceptionListDoctor::whereIn('doctor_id', $differenceArray1)->delete();
+                        // only remove therapist
+                        $receptionistTherapist = Receptionist::whereIn('therapist_id', $differenceArray1)->delete();
                     } elseif ($differenceArray2) {
-                        // only add doctor
+                        // only add therapist
                         foreach ($differenceArray2 as $item) {
-                            $receptionistDoctor = new ReceptionListDoctor();
-                            $receptionistDoctor->doctor_id = $item;
-                            $receptionistDoctor->reception_id = $receptionist->id;
-                            $receptionistDoctor->save();
+                            $receptionistTherapist = new Receptionist();
+                            $receptionistTherapist->therapist_id = $item;
+                            $receptionistTherapist->user_id = $receptionist->id;
+                            $receptionistTherapist->save();
                         }
                     }
                     $receptionist->save();
@@ -385,12 +388,12 @@ class UserController extends Controller
                 } catch (Exception $e) {
                     return redirect('receptionist')->with('error', 'Something went wrong!!! ' . $e->getMessage());
                 }
-            } elseif ($role == 'patient') {
-                $patient = Sentinel::getUser();
+            } elseif ($role == 'customer') {
+                $customer = Sentinel::getUser();
                 $validatedData = $request->validate([
                     'first_name' => 'required|alpha',
                     'last_name' => 'required|alpha',
-                    'mobile' => 'required|numeric|digits:10',
+                    'phone_number' => 'required',
                     'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
                     'age' => 'required|numeric',
                     'address' => 'required',
@@ -409,7 +412,7 @@ class UserController extends Controller
                     $user = Sentinel::getUser();
                     $role = $user->roles[0]->slug;
                     if ($request->hasFile('profile_photo')) {
-                        $des = 'storage/images/users/.' . $patient->profile_photo;
+                        $des = 'storage/images/users/.' . $customer->profile_photo;
                         if (File::exists($des)) {
                             File::delete($des);
                         }
@@ -417,31 +420,31 @@ class UserController extends Controller
                         $extention = $file->getClientOriginalExtension();
                         $imageName = time() . '.' . $extention;
                         $file->move(public_path('storage/images/users'), $imageName);
-                        $patient->profile_photo = $imageName;
+                        $customer->profile_photo = $imageName;
                     }
-                    $patient->first_name = $request->first_name;
-                    $patient->last_name = $request->last_name;
-                    $patient->mobile = $request->mobile;
-                    $patient->email = $request->email;
-                    $patient->updated_by = $user->id;
-                    $patient->save();
-                    $patient_info= Patient::where('user_id', '=', $user->id)->first();
-                    if($patient_info == null){
-                        $patient_info = new Patient();
-                        $patient_info->age = $request->age;
-                        $patient_info->gender = $request->gender;
-                        $patient_info->address = $request->address;
-                        $patient_info->user_id = $user->id;
-                        $patient_info->save();
+                    $customer->first_name = $request->first_name;
+                    $customer->last_name = $request->last_name;
+                    $customer->phone_number = $request->phone_number;
+                    $customer->email = $request->email;
+                    $customer->updated_by = $user->id;
+                    $customer->save();
+                    $customer_info= Customer::where('user_id', '=', $user->id)->first();
+                    if($customer_info == null){
+                        $customer_info = new Customer();
+                        $customer_info->age = $request->age;
+                        $customer_info->gender = $request->gender;
+                        $customer_info->address = $request->address;
+                        $customer_info->user_id = $user->id;
+                        $customer_info->save();
                     }
                     else{
-                        $patient_info->age = $request->age;
-                        $patient_info->gender = $request->gender;
-                        $patient_info->address = $request->address;
-                        $patient_info->user_id = $user->id;
-                        $patient_info->save();
+                        $customer_info->age = $request->age;
+                        $customer_info->gender = $request->gender;
+                        $customer_info->address = $request->address;
+                        $customer_info->user_id = $user->id;
+                        $customer_info->save();
                     }
-                    $medical_info = MedicalInfo::where('user_id', '=', $patient->id)->first();
+                    $medical_info = MedicalInfo::where('user_id', '=', $customer->id)->first();
                     if($medical_info == null){
                         $medical_info = new MedicalInfo();
                         $medical_info->height = $request->height;
@@ -467,13 +470,13 @@ class UserController extends Controller
                         $medical_info->user_id = $user->id;
                         $medical_info->save();
                     }
-                    if ($role == 'patient') {
+                    if ($role == 'customer') {
                         return redirect('/')->with('success', 'Profile updated successfully!');
                     } else {
-                        return redirect('patient')->with('success', 'Profile updated successfully!');
+                        return redirect('customer')->with('success', 'Profile updated successfully!');
                     }
                 } catch (Exception $e) {
-                    return redirect('patient')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+                    return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
                 }
             }
         } else {
@@ -494,89 +497,89 @@ class UserController extends Controller
     {
         $user = Sentinel::getUser();
         $role = $user->roles[0]->slug;
-        if ($role == 'patient') {
-            $patient = Sentinel::getUser();
-            $patient_info = Patient::where('user_id', '=', $patient->id)->first();
-            if ($patient) {
-                $medical_Info = MedicalInfo::where('user_id', '=', $patient->id)->first();
-                $patient_role = Sentinel::findRoleBySlug('patient');
-                $patients = $patient_role->users()->with('roles')->get();
-                $appointments = Appointment::with('doctor')->where('appointment_for', $patient->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'appointment');
-                $prescriptions = Prescription::with('doctor')->where('patient_id', $patient->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'prescription');
-                $invoices = Invoice::where('patient_id', $patient->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'invoice');
-                $tot_appointment = Appointment::where('appointment_for', $patient->id)->get();
+        if ($role == 'customer') {
+            $customer = Sentinel::getUser();
+            $customer_info = Customer::where('user_id', '=', $customer->id)->first();
+            if ($customer) {
+                $medical_Info = MedicalInfo::where('user_id', '=', $customer->id)->first();
+                $customer_role = Sentinel::findRoleBySlug('customer');
+                $customers = $customer_role->users()->with('roles')->get();
+                $appointments = Appointment::with('therapist')->where('appointment_for', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'appointment');
+                $prescriptions = Prescription::with('therapist')->where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'prescription');
+                $invoices = Invoice::where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'invoice');
+                $tot_appointment = Appointment::where('appointment_for', $customer->id)->get();
                 $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                     $re->select(DB::raw('SUM(amount)'));
-                }])->where('patient_id', $patient->id)->pluck('id');
+                }])->where('customer_id', $customer->id)->pluck('id');
                 $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
-                $pending_bill = Invoice::where(['patient_id' => $patient->id, 'payment_status' => 'Unpaid'])->count();
+                $pending_bill = Invoice::where(['customer_id' => $customer->id, 'payment_status' => 'Unpaid'])->count();
                 $data = [
                     'total_appointment' => $tot_appointment->count(),
                     'revenue' => $revenue,
                     'pending_bill' => $pending_bill
                 ];
-                return view('patient.patient-profile-view', compact('user', 'role', 'patient', 'patient_info', 'medical_Info', 'data', 'appointments', 'prescriptions', 'invoices'));
+                return view('customer.customer-profile-view', compact('user', 'role', 'customer', 'customer_info', 'medical_Info', 'data', 'appointments', 'prescriptions', 'invoices'));
             } else {
-                return redirect('/')->with('error', 'Patient not found');
+                return redirect('/')->with('error', 'Customer not found');
             }
-        } elseif ($role == 'doctor') {
-            $doctor = Sentinel::getUser();
-            $doctor_id = $doctor->id;
+        } elseif ($role == 'therapist') {
+            $therapist = Sentinel::getUser();
+            $therapist_id = $therapist->id;
             $role = $user->roles[0]->slug;
-            $doctor_info = Doctor::where('user_id', '=', $doctor->id)->first();
-            if ($doctor_info) {
-                $appointments = Appointment::where(function ($re) use ($doctor_id) {
-                    $re->orWhere('appointment_with', $doctor_id);
-                    $re->orWhere('booked_by', $doctor_id);
+            $therapist_info = Therapist::where('user_id', '=', $therapist->id)->first();
+            if ($therapist_info) {
+                $appointments = Appointment::where(function ($re) use ($therapist_id) {
+                    $re->orWhere('appointment_with', $therapist_id);
+                    $re->orWhere('booked_by', $therapist_id);
                 })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
-                $prescriptions = Prescription::with('patient')->where('created_by', $doctor->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
-                $invoices = Invoice::with('user')->where('invoices.created_by', '=', $doctor->id)->orderby('id', 'desc')->get();
-                $receptionists_doctor_id = ReceptionListDoctor::where('doctor_id', $doctor_id)->pluck('reception_id');
-                $invoices = Invoice::with('user')->where('doctor_id', $doctor_id)->paginate($this->limit, '*', 'invoices');
-                $tot_appointment = Appointment::where(function ($re) use ($doctor_id) {
-                    $re->orWhere('appointment_with', $doctor_id);
-                    $re->orWhere('booked_by', $doctor_id);
+                $prescriptions = Prescription::with('customer')->where('created_by', $therapist->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
+                $invoices = Invoice::with('user')->where('invoices.created_by', '=', $therapist->id)->orderby('id', 'desc')->get();
+                $receptionists_therapist_id = Receptionist::where('therapist_id', $therapist_id)->pluck('user_id');
+                $invoices = Invoice::with('user')->where('therapist_id', $therapist_id)->paginate($this->limit, '*', 'invoices');
+                $tot_appointment = Appointment::where(function ($re) use ($therapist_id) {
+                    $re->orWhere('appointment_with', $therapist_id);
+                    $re->orWhere('booked_by', $therapist_id);
                 })->get();
                 $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                     $re->select(DB::raw('SUM(amount)'));
-                }])->where('doctor_id', $doctor_id)->pluck('id');
+                }])->where('therapist_id', $therapist_id)->pluck('id');
                 $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
 
-                $pending_bill = Invoice::where(['doctor_id' => $doctor_id, 'payment_status' => 'Unpaid'])->count();
+                $pending_bill = Invoice::where(['therapist_id' => $therapist_id, 'payment_status' => 'Unpaid'])->count();
 
                 $data = [
                     'total_appointment' => $tot_appointment->count(),
                     'revenue' => $revenue,
                     'pending_bill' => $pending_bill
                 ];
-                $availableDay = DoctorAvailableDay::where('doctor_id', $doctor->id)->first();
-                $availableTime = DoctorAvailableTime::where('doctor_id', $doctor->id)->where('is_deleted', 0)->get();
-                return view('doctor.doctor-profile-view', compact('user', 'role', 'doctor', 'doctor_info', 'data', 'appointments', 'availableTime', 'prescriptions', 'invoices', 'availableDay'));
+                $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
+                $availableTime = TherapistAvailableTime::where('therapist_id', $therapist->id)->where('is_deleted', 0)->get();
+                return view('therapist.therapist-profile-view', compact('user', 'role', 'therapist', 'therapist_info', 'data', 'appointments', 'availableTime', 'prescriptions', 'invoices', 'availableDay'));
             } else {
-                return redirect('/')->with('error', 'Doctors details not found');
+                return redirect('/')->with('error', 'Therapists details not found');
             }
         } elseif ($role == 'receptionist') {
             $receptionist = Sentinel::getUser();
             $user_id = $receptionist->id;
             $role = $user->roles[0]->slug;
-            $receptionists_doctor_id = ReceptionListDoctor::where('reception_id', $user_id)->pluck('doctor_id');
-            $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                $re->whereIN('appointment_with', $receptionists_doctor_id);
-                $re->orWhereIN('booked_by', $receptionists_doctor_id);
+            $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
+            $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                $re->whereIN('appointment_with', $receptionists_therapist_id);
+                $re->orWhereIN('booked_by', $receptionists_therapist_id);
                 $re->orWhere('booked_by', $user_id);
             })->get();
 
             $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
-            }])->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                $re->orWhereIN('created_by', $receptionists_doctor_id);
+            }])->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                $re->orWhereIN('created_by', $receptionists_therapist_id);
                 $re->orWhere('created_by', $user_id);
             })->pluck('id');
             $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
 
             $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                ->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                    $re->whereIN('doctor_id', $receptionists_doctor_id);
+                ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                    $re->whereIN('therapist_id', $receptionists_therapist_id);
                     $re->orWhere('created_by', $user_id);
                 })->count();
             $data = [
@@ -584,21 +587,21 @@ class UserController extends Controller
                 'revenue' => $revenue,
                 'pending_bill' => $pending_bill
             ];
-            $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                $re->whereIN('appointment_with', $receptionists_doctor_id);
-                $re->orWhereIN('booked_by', $receptionists_doctor_id);
+            $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                $re->whereIN('appointment_with', $receptionists_therapist_id);
+                $re->orWhereIN('booked_by', $receptionists_therapist_id);
                 $re->orWhere('booked_by', $user_id);
             })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
             $invoices = Invoice::with('user')
-                ->where(function ($re) use ($user_id, $receptionists_doctor_id) {
-                    $re->whereIN('doctor_id', $receptionists_doctor_id);
+                ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
+                    $re->whereIN('therapist_id', $receptionists_therapist_id);
                     $re->orWhere('created_by', $user_id);
                 })->paginate($this->limit, '*', 'invoice');
-            $doctor_role = Sentinel::findRoleBySlug('doctor');
-            $doctors = $doctor_role->users()->with(['roles', 'doctor'])->where('is_deleted', 0)->get();
-            $receptionist_doctor = ReceptionListDoctor::where('reception_id', $receptionist->id)->where('is_deleted', 0)->pluck('doctor_id');
-            $doctor_user = User::whereIn('id', $receptionist_doctor)->get();
-            return view('receptionist.receptionist-profile-view', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'doctor_user'));
+            $therapist_role = Sentinel::findRoleBySlug('therapist');
+            $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
+            $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
+            $therapist_user = User::whereIn('id', $receptionist_therapist)->get();
+            return view('receptionist.receptionist-profile-view', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'therapist_user'));
         } else {
             return redirect('/')->with('error', 'role not found');
         }

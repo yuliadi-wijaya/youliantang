@@ -42,7 +42,7 @@ class RazorpayPaymentController extends Controller
                 'razorpayId' => $razorpay->key,
                 'amount' => $sum,
                 'email' =>$email,
-                'name' => 'Doctorly Invoice',
+                'name' => 'You Lian tAng Invoice',
                 'currency' => 'USD',
             ];
             return view('payment.razorpayView',compact('response'));
@@ -68,8 +68,8 @@ class RazorpayPaymentController extends Controller
             $sub_total=0;
             $cart =session()->get('invoice_id');
             // return $cart;
-            $invoice = Invoice::with('doctor', 'patient', 'invoice_detail', 'appointment', 'appointment.timeSlot','transaction')->where('id', $cart)->first();
-            $verify_mail = $invoice->patient->email;
+            $invoice = Invoice::with('therapist', 'customer', 'invoice_detail', 'appointment', 'appointment.timeSlot','transaction')->where('id', $cart)->first();
+            $verify_mail = $invoice->customer->email;
             $app_name =  AppSetting('title');
 
             foreach ($invoice->invoice_detail as $item) {

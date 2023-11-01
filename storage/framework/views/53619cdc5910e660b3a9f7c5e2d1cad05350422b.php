@@ -57,11 +57,11 @@
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead>
                                             <tr>
-                                                <th><?php echo e(__('Sr. No')); ?></th>
-                                                <th><?php echo e(__('Doctor Name')); ?></th>
-                                                <th><?php echo e(__('Patient Name')); ?></th>
-                                                <th><?php echo e(__('Patient Contact No')); ?></th>
-                                                <th><?php echo e(__('Patient Email')); ?></th>
+                                                <th><?php echo e(__('No.')); ?></th>
+                                                <th><?php echo e(__('Therapist Name')); ?></th>
+                                                <th><?php echo e(__('Customer Name')); ?></th>
+                                                <th><?php echo e(__('Customer Phone Number')); ?></th>
+                                                <th><?php echo e(__('Customer Email')); ?></th>
                                                 <th><?php echo e(__('Date')); ?></th>
                                                 <th><?php echo e(__('Time')); ?></th>
                                                 <th><?php echo e(__('Action')); ?></th>
@@ -83,18 +83,18 @@
                                             <?php $__currentLoopData = $pending_appointment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
                                                     <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
-                                                    <td> <?php echo e($item->doctor->first_name . ' ' . $item->doctor->last_name); ?>
+                                                    <td> <?php echo e($item->therapist->first_name . ' ' . $item->therapist->last_name); ?>
 
                                                     </td>
-                                                    <td> <?php echo e($item->patient->first_name . ' ' . $item->patient->last_name); ?>
+                                                    <td> <?php echo e($item->customer->first_name . ' ' . $item->customer->last_name); ?>
 
                                                     </td>
-                                                    <td> <?php echo e($item->patient->mobile); ?> </td>
-                                                    <td> <?php echo e($item->patient->email); ?> </td>
+                                                    <td> <?php echo e($item->customer->phone_number); ?> </td>
+                                                    <td> <?php echo e($item->customer->email); ?> </td>
                                                     <td><?php echo e($item->appointment_date); ?></td>
                                                     <td><?php echo e($item->timeSlot->from . ' to ' . $item->timeSlot->to); ?></td>
                                                     <td>
-                                                        <?php if($role == 'doctor' || $role == 'receptionist'): ?>
+                                                        <?php if($role == 'therapist' || $role == 'receptionist'): ?>
                                                             <button type="button" class="btn btn-success complete mb-2 mb-md-0"
                                                                 data-id="<?php echo e($item->id); ?>">Complete</button>
                                                         <?php endif; ?>

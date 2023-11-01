@@ -42,7 +42,7 @@ class PaymentApiController extends Controller
     public function store(Request $request)
     {
         $user = Sentinel::getUser();
-        if ($user->hasAccess('doctor.create')) {
+        if ($user->hasAccess('therapist.create')) {
             if($request->gateway_type == 1){
                 $validatedData = $request->validate([
                     'razorpay_key' => 'required',
@@ -129,11 +129,11 @@ class PaymentApiController extends Controller
     {
         //
         $user = Sentinel::getUser();
-        if ($user->hasAccess('doctor.delete')) {
+        if ($user->hasAccess('therapist.delete')) {
             try {
                 $paymentApi = PaymentApi::where('id',$request->id)->first();
                 if ($paymentApi !=null) {
-                    $paymentApi->is_deleted = 1;
+                    $paymentApi->status = 1;
                     $paymentApi->save();
                     return response()->json([
                         'success' => true,

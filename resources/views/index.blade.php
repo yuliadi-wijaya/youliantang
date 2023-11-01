@@ -7,12 +7,12 @@
     @section('content')
         @if ($role == 'admin')
             @include('layouts.admin-dashboard')
-        @elseif ($role == 'doctor')
-            @include('layouts.doctor-dashboard')
+        @elseif ($role == 'therapist')
+            @include('layouts.therapist-dashboard')
         @elseif ($role == 'receptionist')
             @include('layouts.receptionist-dashboard')
-        @elseif ($role == 'patient')
-            @include('layouts.patient-dashboard')
+        @elseif ($role == 'customer')
+            @include('layouts.customer-dashboard')
         @endif
     @endsection
     @section('script')

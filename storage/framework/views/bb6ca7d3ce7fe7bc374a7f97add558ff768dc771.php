@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="utf-8" />
-    <title><?php echo $__env->yieldContent('title'); ?> | <?php echo e(AppSetting('title')); ?> - Hospital & Clinic Management Laravel System.</title>
+    <title><?php echo $__env->yieldContent('title'); ?> | <?php echo e(AppSetting('title')); ?> - Reflexology & Massage Therapy.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Hospital Management System" name="description" />
-    <meta content="Doctorly" name="author" />
+    <meta content="Reflexology & Massage Therapy" name="description" />
+    <meta content="You Lian tAng" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="<?php echo e(URL::asset('assets/images/')."/". AppSetting('favicon')); ?>">
     <?php echo $__env->make('layouts.head', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>

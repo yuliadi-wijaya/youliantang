@@ -41,16 +41,16 @@
                         <div class="pt-4">
                             <div class="row">
                                 <div class="col-6">
-                                    <a href="<?php echo e(url('/doctor')); ?>" class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0"><?php echo e(number_format($data['total_doctors'])); ?></h5>
+                                    <a href="<?php echo e(url('/therapist')); ?>" class="mb-0 font-weight-medium font-size-15">
+                                        <h5 class="mb-0"><?php echo e(number_format($data['total_therapists'])); ?></h5>
                                     </a>
-                                    <p class="text-muted mb-0"><?php echo e(__('translation.doctors')); ?></p>
+                                    <p class="text-muted mb-0"><?php echo e(__('translation.therapists')); ?></p>
                                 </div>
                                 <div class="col-6">
-                                    <a href="<?php echo e(url('/patient')); ?>" class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0"><?php echo e(number_format($data['total_patients'])); ?></h5>
+                                    <a href="<?php echo e(url('/customer')); ?>" class="mb-0 font-weight-medium font-size-15">
+                                        <h5 class="mb-0"><?php echo e(number_format($data['total_customers'])); ?></h5>
                                     </a>
-                                    <p class="text-muted mb-0"><?php echo e(__('translation.patients')); ?></p>
+                                    <p class="text-muted mb-0"><?php echo e(__('translation.customers')); ?></p>
                                 </div>
                             </div>
                             <div class="row mt-4">
@@ -261,9 +261,9 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#Doctors" role="tab">
+                        <a class="nav-link active" data-toggle="tab" href="#Therapists" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-md"></i></span>
-                            <span class="d-none d-sm-block"><?php echo e(__('translation.doctors')); ?></span>
+                            <span class="d-none d-sm-block"><?php echo e(__('translation.therapists')); ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -273,38 +273,40 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#Patients" role="tab">
+                        <a class="nav-link" data-toggle="tab" href="#Customers" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-injured"></i></span>
-                            <span class="d-none d-sm-block"><?php echo e(__('translation.patients')); ?></span>
+                            <span class="d-none d-sm-block"><?php echo e(__('translation.customers')); ?></span>
                         </a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content p-3 text-muted">
-                    <div class="tab-pane active" id="Doctors" role="tabpanel">
+                    <div class="tab-pane active" id="Therapists" role="tabpanel">
                         <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th><?php echo e(__('Sr.No.')); ?></th>
+                                        <th><?php echo e(__('No.')); ?></th>
                                         <th><?php echo e(__('Name')); ?></th>
-                                        <th><?php echo e(__('Degree')); ?></th>
-                                        <th><?php echo e(__('Contact No')); ?></th>
+                                        <th><?php echo e(__('Gender')); ?></th>
+                                        <th><?php echo e(__('Phone Number')); ?></th>
                                         <th><?php echo e(__('Email')); ?></th>
+                                        <th><?php echo e(__('Status')); ?></th>
                                         <th><?php echo e(__('View Details')); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $__currentLoopData = $doctors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td><?php echo e($loop->index + 1); ?></td>
                                             <td><?php echo e($item->first_name); ?> <?php echo e($item->last_name); ?></td>
-                                            <td><?php echo e($item->doctor->degree); ?></td>
-                                            <td><?php echo e($item->mobile); ?></td>
+                                            <td><?php echo e($item->gender); ?></td>
+                                            <td><?php echo e($item->phone_number); ?></td>
                                             <td><?php echo e($item->email); ?></td>
+                                            <td><?php echo e($item->status == 1 ? 'Active' : 'Inactive'); ?></td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="<?php echo e(url('doctor/' . $item->id)); ?>">
+                                                <a href="<?php echo e(url('therapist/' . $item->id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
                                                         <?php echo e(__('View Details')); ?>
@@ -324,10 +326,12 @@
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th><?php echo e(__('Sr.No.')); ?></th>
+                                        <th><?php echo e(__('No.')); ?></th>
                                         <th><?php echo e(__('Name')); ?></th>
-                                        <th><?php echo e(__('Contact No')); ?></th>
+                                        <th><?php echo e(__('Gender')); ?></th>
+                                        <th><?php echo e(__('Phone Number')); ?></th>
                                         <th><?php echo e(__('Email')); ?></th>
+                                        <th><?php echo e(__('Status')); ?></th>
                                         <th><?php echo e(__('View Details')); ?></th>
                                     </tr>
                                 </thead>
@@ -338,8 +342,10 @@
                                             <td><?php echo e($receptionist->first_name); ?> <?php echo e($receptionist->last_name); ?>
 
                                             </td>
-                                            <td><?php echo e($receptionist->mobile); ?></td>
+                                            <td><?php echo e($receptionist->gender); ?></td>
+                                            <td><?php echo e($receptionist->phone_number); ?></td>
                                             <td><?php echo e($receptionist->email); ?></td>
+                                            <td><?php echo e($receptionist->status == 1 ? 'Active' : 'Inactive'); ?></td>
                                             <td>
                                                 <!-- Button trigger modal -->
                                                 <a href="<?php echo e(url('receptionist/' . $receptionist->id)); ?>">
@@ -358,28 +364,32 @@
                         </div>
                         <!-- end table-responsive -->
                     </div>
-                    <div class="tab-pane" id="Patients" role="tabpanel">
+                    <div class="tab-pane" id="Customers" role="tabpanel">
                         <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th><?php echo e(__('Sr.No.')); ?></th>
+                                        <th><?php echo e(__('No.')); ?></th>
                                         <th><?php echo e(__('Name')); ?></th>
-                                        <th><?php echo e(__('Contact No')); ?></th>
+                                        <th><?php echo e(__('Gender')); ?></th>
+                                        <th><?php echo e(__('Phone Number')); ?></th>
                                         <th><?php echo e(__('Email')); ?></th>
+                                        <th><?php echo e(__('Status')); ?></th>
                                         <th><?php echo e(__('View Details')); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $__currentLoopData = $patients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $patient): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td> <?php echo e($loop->index + 1); ?> </td>
-                                            <td> <?php echo e($patient->first_name); ?> <?php echo e($patient->last_name); ?> </td>
-                                            <td> <?php echo e($patient->mobile); ?> </td>
-                                            <td> <?php echo e($patient->email); ?> </td>
+                                            <td> <?php echo e($customer->first_name); ?> <?php echo e($customer->last_name); ?> </td>
+                                            <td> <?php echo e($customer->gender); ?> </td>
+                                            <td> <?php echo e($customer->phone_number); ?> </td>
+                                            <td> <?php echo e($customer->email); ?> </td>
+                                            <td> <?php echo e($customer->status == 1 ? 'Active' : 'Inactive'); ?> </td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="<?php echo e(url('patient/' . $patient->id)); ?>">
+                                                <a href="<?php echo e(url('customer/' . $customer->id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">
