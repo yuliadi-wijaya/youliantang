@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title'); ?> <?php echo e(__('Book Appointment')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <!-- Calender -->

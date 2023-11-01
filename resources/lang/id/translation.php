@@ -13,6 +13,8 @@ return [
     "appointment-list" => "Daftar Janji",
     "appointments" => "Janji",
     "transaction" => "Transaksi",
+    "list-of-transaction" => "Daftar Transaksi",
+    "add-new-transaction" => "Tambah Transaksi Baru",
     "revenue" => "Pendapatan",
     "today's-earning" => "Pendapatan Hari Ini",
     "today's-appointments" => "Janji Hari Ini",

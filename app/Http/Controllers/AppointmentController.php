@@ -73,7 +73,7 @@ class AppointmentController extends Controller
             } elseif ($role == 'customer') {
                 $appointments = Appointment::with('therapist', 'timeSlot')->where('appointment_for', $userId)->where('appointment_date', Carbon::today())->get();
             } else {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $userId)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $userId)->pluck('therapist_id');
                 $appointments = Appointment::with('therapist', 'customer', 'timeSlot')
                     ->where(function ($re) use ($userId, $receptionists_therapist_id) {
                         $re->whereIN('appointment_with', $receptionists_therapist_id);
@@ -150,7 +150,7 @@ class AppointmentController extends Controller
         } elseif ($role == 'customer') {
             $res = Appointment::with('therapist', 'timeSlot')->where('appointment_for', $userId)->where('appointment_date', $request->date)->get();
         } else {
-            $receptionists_therapist_id = Receptionist::where('reception_id', $userId)->pluck('therapist_id');
+            $receptionists_therapist_id = Receptionist::where('user_id', $userId)->pluck('therapist_id');
             $res = Appointment::with('customer', 'timeSlot', 'therapist')->where('appointment_date', $request->date)
                 ->where(function ($re) use ($userId, $receptionists_therapist_id) {
                     $re->whereIN('appointment_with', $receptionists_therapist_id);
@@ -228,7 +228,7 @@ class AppointmentController extends Controller
                     ->get();
                 $Cancel_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(['status' => 2, 'appointment_for' => $user_id])->get();
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $user_id)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
                 $pending_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(function ($re) use ($user_id, $receptionists_therapist_id) {
                     $re->whereIN('appointment_with', $receptionists_therapist_id);
                     $re->orWhereIN('booked_by', $receptionists_therapist_id);
@@ -282,7 +282,7 @@ class AppointmentController extends Controller
                 // complete appointment notification send
                 if ($request->status == 1) {
                     if ($role == 'therapist') {
-                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $customer_id = $appointment->appointment_for;
                         $admin_role = Sentinel::findRoleBySlug('admin');
                         $admin_id = $admin_role->users()->with('roles')->pluck('id');
@@ -335,7 +335,7 @@ class AppointmentController extends Controller
                     $MailAppointment = Appointment::with('therapist','customer','BookedBy','timeSlot')->where('id',$appointment->id)->first();
                     $CancelBy = User::find($userId);
                     if ($role == 'therapist') {
-                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $customer_id = $appointment->appointment_for;
                         $admin_role = Sentinel::findRoleBySlug('admin');
                         $admin_id = $admin_role->users()->with('roles')->pluck('id');
@@ -353,7 +353,7 @@ class AppointmentController extends Controller
                             $notification->from_user = $userId;
                             $notification->save();
                         }
-                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $reception_email = User::whereIN('id', $receptionists_therapist_mail)->pluck('email');
                         $customer_email = User::where('id',$customer_id)->pluck('email');
                         $admin_email = $admin_role->users()->with('roles')->pluck('email');
@@ -369,7 +369,7 @@ class AppointmentController extends Controller
 
                     } elseif ($role == 'customer') {
                         $therapist_id = $appointment->appointment_with;
-                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $admin_role = Sentinel::findRoleBySlug('admin');
                         $admin_id = $admin_role->users()->with('roles')->pluck('id');
                         $fromId = collect();
@@ -386,7 +386,7 @@ class AppointmentController extends Controller
                             $notification->from_user = $userId;
                             $notification->save();
                         }
-                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $receptionists_email = User::whereIN('id', $receptionists_therapist_mail)->pluck('email');
                         $admin_email = $admin_role->users()->with('roles')->pluck('email');
                         $receptionists_therapist_email = User::where('id', $therapist_id)->pluck('email');
@@ -402,7 +402,7 @@ class AppointmentController extends Controller
                     } elseif ($role == 'admin') {
                         $customer_id = $appointment->appointment_for;
                         $therapist_id = $appointment->appointment_with;
-                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $fromId = collect();
                         $fromId->push($therapist_id);
                         $fromId->push($customer_id);
@@ -417,7 +417,7 @@ class AppointmentController extends Controller
                             $notification->from_user = $userId;
                             $notification->save();
                         }
-                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $receptionists_email = User::whereIN('id', $receptionists_therapist_mail)->pluck('email');
                         $admin_role = Sentinel::findRoleBySlug('admin');
                         $admin_email = $admin_role->users()->with('roles')->pluck('email');
@@ -521,7 +521,7 @@ class AppointmentController extends Controller
             $therapist_role = Sentinel::findRoleBySlug('therapist');
             $therapists = $therapist_role->users()->with('roles')->where('is_deleted', 0)->get();
             if ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $userId)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $userId)->pluck('therapist_id');
                 $therapists = $therapist_role->users()->with('roles')->whereIN('id', $receptionists_therapist_id)->where('is_deleted', 0)->get();
             }
             $dayArray = collect();
@@ -590,7 +590,7 @@ class AppointmentController extends Controller
                     $MailAppointment = Appointment::with('therapist','customer','BookedBy','timeSlot')->where('id',$appointment->id)->first();
                     if ($role == 'customer') {
                         $therapist_id = $appointment->appointment_with;
-                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $admin_role = Sentinel::findRoleBySlug('admin');
                         $admin_id = $admin_role->users()->with('roles')->pluck('id');
                         $fromId = collect();
@@ -607,7 +607,7 @@ class AppointmentController extends Controller
                             $notification->from_user = $userId;
                             $notification->save();
                         }
-                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $receptionists_email = User::whereIN('id', $receptionists_therapist_mail)->pluck('email');
                         $admin_email = $admin_role->users()->with('roles')->pluck('email');
                         $receptionists_therapist_email = User::where('id', $therapist_id)->pluck('email');
@@ -654,7 +654,7 @@ class AppointmentController extends Controller
                         });
 
                     } elseif ($role == 'therapist') {
-                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_id = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $customer_id = $appointment->appointment_for;
                         $admin_role = Sentinel::findRoleBySlug('admin');
                         $admin_id = $admin_role->users()->with('roles')->pluck('id');
@@ -672,7 +672,7 @@ class AppointmentController extends Controller
                             $notification->from_user = $userId;
                             $notification->save();
                         }
-                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('reception_id');
+                        $receptionists_therapist_mail = Receptionist::where('therapist_id', $appointment->appointment_with)->pluck('user_id');
                         $reception_email = User::whereIN('id', $receptionists_therapist_mail)->pluck('email');
                         $customer_email = User::where('id',$customer_id)->pluck('email');
                         $admin_email = $admin_role->users()->with('roles')->pluck('email');
@@ -738,7 +738,7 @@ class AppointmentController extends Controller
                     ->whereDate('appointment_date',   '<=', $request->end)
                     ->groupBy(DB::raw('appointment_date'))->where('appointment_for', $user->id)->get();
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $userId)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $userId)->pluck('therapist_id');
                 $appointment = Appointment::select(DB::raw('count(id) as `total_appointment`'), DB::raw('appointment_date'))
                     ->whereDate('appointment_date', '>=', $request->start)
                     ->whereDate('appointment_date',   '<=', $request->end)
@@ -780,7 +780,7 @@ class AppointmentController extends Controller
             } elseif ($role == 'customer') {
                 $pending_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(['status' => 0, 'appointment_for' => $user_id])->orderBy('id', 'DESC')->paginate($this->limit);
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $user_id)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
                 $pending_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(function ($re) use ($user_id, $receptionists_therapist_id) {
                     $re->whereIN('appointment_with', $receptionists_therapist_id);
                     $re->orWhereIN('booked_by', $receptionists_therapist_id);
@@ -832,7 +832,7 @@ class AppointmentController extends Controller
                     })->where('status', 0)
                     ->paginate($this->limit);
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $user_id)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
                 $Upcoming_appointment = Appointment::with('customer', 'therapist', 'timeSlot')->where(function ($re) use ($user_id, $receptionists_therapist_id) {
                     $re->orWhereIN('appointment_with', $receptionists_therapist_id);
                     $re->orWhere('booked_by', $user_id);
@@ -874,7 +874,7 @@ class AppointmentController extends Controller
             } elseif ($role == 'customer') {
                 $Complete_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(['status' => 1, 'appointment_for' => $user_id])->orderBy('id', 'DESC')->paginate($this->limit);
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $user_id)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
                 $Complete_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(function ($re) use ($user_id, $receptionists_therapist_id) {
                     $re->whereIN('appointment_with', $receptionists_therapist_id);
                     $re->orWhereIN('booked_by', $receptionists_therapist_id);
@@ -910,7 +910,7 @@ class AppointmentController extends Controller
             } elseif ($role == 'customer') {
                 $Cancel_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(['status' => 2, 'appointment_for' => $user_id])->paginate($this->limit);
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $user_id)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
                 $Cancel_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(function ($re) use ($user_id, $receptionists_therapist_id) {
                     $re->whereIN('appointment_with', $receptionists_therapist_id);
                     $re->orWhereIN('booked_by', $receptionists_therapist_id);
@@ -945,7 +945,7 @@ class AppointmentController extends Controller
             } elseif ($role == 'customer') {
                 $Today_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(['appointment_for' => $user_id])->whereDate('appointment_date', Carbon::today())->paginate($this->limit);
             } elseif ($role == 'receptionist') {
-                $receptionists_therapist_id = Receptionist::where('reception_id', $user_id)->pluck('therapist_id');
+                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
                 $Today_appointment = Appointment::with('therapist', 'customer', 'timeSlot')->where(function ($re) use ($user_id, $receptionists_therapist_id) {
                     $re->whereIN('appointment_with', $receptionists_therapist_id);
                     $re->orWhereIN('booked_by', $receptionists_therapist_id);

@@ -88,6 +88,11 @@ class RoleSeeder extends Seeder
             'promo.create'=>true,
             'promo.update'=>true,
             'promo.delete'=>true,
+            'transaction.list'=>true,
+            'transaction.show'=>true,
+            'transaction.create'=>true,
+            'transaction.update'=>true,
+            'transaction.delete'=>true,
         ];
         $role_admin->save();
 
