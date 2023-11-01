@@ -83,12 +83,12 @@ class PromoController extends Controller
                                 </button>
                             </a>
                             <a href="promo/'.$row->id.'/edit">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Product">
+                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Promo">
                                     <i class="mdi mdi-lead-pencil"></i>
                                 </button>
                             </a>
                             <a href="javascript:void(0)">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Product" data-id="'.$row->id.'" id="delete-product">
+                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Promo" data-id="'.$row->id.'" id="delete-promo">
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';
@@ -153,8 +153,7 @@ class PromoController extends Controller
             'name' => 'required',
             'discount_type' => 'required|numeric',
             'discount_value' => 'required|numeric',
-            'discount_max_value' => 'numeric',
-            'active_period_start' => 'required|date|after:yesterday',
+            'active_period_start' => 'required|date',
             'active_period_end' => 'required|date|after:active_period_start',
             'is_reuse_voucher' => 'required|numeric',
             'status' => 'required|numeric',
@@ -168,9 +167,9 @@ class PromoController extends Controller
             $obj->save();
 
             // Store detail promo voucher
-            $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($request));
+            $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($obj, $request));
 
-            return redirect('promo')->with('success', 'Promo created successfully!');
+            return redirect('promo/' . $request->id)->with('success', 'Promo created successfully!');
         } catch (Exception $e) {
             return redirect('promo')->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }
@@ -184,7 +183,21 @@ class PromoController extends Controller
      */
     public function show(Promo $promo)
     {
-        //
+        // Get user session data
+        $user = Sentinel::getUser();
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Get available data only
+        $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->with('promo_vouchers')->first();
+
+        // Check user access and available data
+        if (!$user->hasAccess('promo.update') || $obj == NULL) {
+            return view('error.403');
+        }
+
+        return view('promo.promo-vouchers', compact('user', 'role', 'promo'));
     }
 
     /**
@@ -234,11 +247,11 @@ class PromoController extends Controller
             'name' => 'required',
             'discount_type' => 'required|numeric',
             'discount_value' => 'required|numeric',
-            'discount_max_value' => 'numeric',
-            'active_period_start' => 'required|date|after:yesterday',
+            'active_period_start' => 'required|date',
             'active_period_end' => 'required|date|after:active_period_start',
             'is_reuse_voucher' => 'required|numeric',
-            'status' => 'required|numeric'
+            'status' => 'required|numeric',
+            'voucher_list.*' => 'required'
         ]);
 
         try {
@@ -246,6 +259,9 @@ class PromoController extends Controller
             $obj = $this->toObject($request, $promo);
             $obj->updated_by = $user->id;
             $obj->save();
+
+             // Store detail promo voucher
+             $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($promo, $request));
 
             return redirect('promo')->with('success', 'Promo updated successfully!');
         } catch (Exception $e) {
@@ -261,7 +277,46 @@ class PromoController extends Controller
      */
     public function destroy(Promo $promo)
     {
-        //
+        // Get user session data
+        $user = Sentinel::getUser();
+
+        // Get available data only
+        $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->first();
+
+        // Check user access and available data
+        if (!$user->hasAccess('promo.delete') || $obj == NULL) {
+            return response()->json([
+                'success' =>false,
+                'message' =>'You have no permission to delete promo.',
+                'data'=> [],
+            ],409);
+        }
+
+        try {
+            if ($obj != NULL) {
+                // Set available data to false
+                $obj->is_deleted = 1;
+                $obj->save();
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Promo deleted successfully.',
+                    'data' => $obj,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Promo not found.',
+                    'data' => [],
+                ], 409); 
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong!!! ' . $e->getMessage(),
+                'data' => [], 
+            ], 409);
+        }
     }
 
     /**
@@ -276,16 +331,25 @@ class PromoController extends Controller
         $promo->discount_type = $request->input('discount_type');
         $promo->discount_value = $request->input('discount_value');
         $promo->discount_max_value = $request->input('discount_max_value');
-        $promo->active_period_start = $request->input('active_period_start');
-        $promo->active_period_end = $request->input('active_period_end');
+        $promo->active_period_start = date('Y-m-d', strtotime($request->input('active_period_start')));
+        $promo->active_period_end = date('Y-m-d', strtotime($request->input('active_period_end')));
         $promo->is_reuse_voucher = $request->input('is_reuse_voucher');
         $promo->status = $request->input('status');
 
         return $promo;
     }
 
-    private function toObjectVoucherList(Request $request) {
+    private function toObjectVoucherList(Promo $promo, Request $request) {
         $promoVouchers = [];
+
+        if ($request->is_generated == 0) {
+            return $promoVouchers;
+        }
+        // For update check the voucher list, if generated replace the existing vouchers with the new one
+        if ($promo->id != null && $promo->id > 0 && $request->is_generated == 1) {
+            PromoVoucher::where('promo_id', $promo->id)->delete();
+        }
+
         foreach($request->input('voucher_list') as $item) {
             $obj = new PromoVoucher();
             $obj->voucher_code = $item;

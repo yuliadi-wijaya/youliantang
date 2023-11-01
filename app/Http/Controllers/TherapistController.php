@@ -51,11 +51,10 @@ class TherapistController extends Controller
     public function index(Request $request)
     {
         $user = Sentinel::getUser();
+        $role = $user->roles[0]->slug;
+
         if ($user->hasAccess('therapist.list')) {
-            $role = $user->roles[0]->slug;
-            $user = Sentinel::getUser();
             $user_id = $user->id;
-            $role = $user->roles[0]->slug;
             $therapist_role = Sentinel::findRoleBySlug('therapist');
             if ($role == 'receptionist') {
                 $prescriptions_therapist = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
@@ -166,8 +165,9 @@ class TherapistController extends Controller
     {
 
         $user = Sentinel::getUser();
+        $role = $user->roles[0]->slug;
+
         if ($user->hasAccess('therapist.create')) {
-            $role = $user->roles[0]->slug;
             $therapist = null;
             $therapist_info = null;
             return view('therapist.therapist-details', compact('user', 'role', 'therapist', 'therapist_info'));
@@ -221,6 +221,7 @@ class TherapistController extends Controller
                 $file->move(public_path('storage/images/users'), $validatedData['profile_photo']);
                 $validatedData['profile_photo']= $validatedData['profile_photo'];
             }
+            
             try {
                 $user = Sentinel::getUser();
                 if ($request->TimeSlot[0]['from'] == null && $request->TimeSlot[0]['to'] == null) {

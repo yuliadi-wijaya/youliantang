@@ -119,13 +119,16 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Email ') }}<span
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Gender ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                name="email" id="email" tabindex="3" value="@if ($therapist && $therapist_info){{ $therapist->email }}@elseif(old('email')){{ old('email') }}@endif"
-                                                placeholder="{{ __('Enter Email') }}">
-                                            @error('email')
+                                            <select class="form-control select2 @error('gender') is-invalid @enderror"
+                                                name="gender" id="gender">
+                                                <option selected disabled>{{ __('-- Select Gender --') }}</option>
+                                                <option value="{{ 'Male' }}" {{ old('gender') == 'Male' ? 'selected' : '' }}>{{ 'Male' }}</option>
+                                                <option value="{{ 'Female' }}" {{ old('gender') == 'Female' ? 'selected' : '' }}>{{ 'Female' }}</option>
+                                            </select>
+                                            @error('gender')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -133,12 +136,23 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Place Of Birth ') }}</label>
                                             <input type="text" class="form-control @error('place_of_birth') is-invalid @enderror"
                                                 name="place_of_birth" id="place_of_birth" tabindex="4" value="@if ($therapist && $therapist_info){{ $therapist_info->place_of_birth }}@elseif(old('place_of_birth')){{ old('place_of_birth') }}@endif"
                                                 placeholder="{{ __('Enter Place Of Birth') }}">
                                             @error('place_of_birth')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Birth Date ') }}</label>
+                                            <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
+                                                name="birth_date" id="birth_date" tabindex="10" value="@if ($therapist && $therapist_info){{ $therapist_info->birth_date }}@elseif(old('birth_date')){{ old('birth_date') }}@endif"
+                                                placeholder="{{ __('Enter Birth Date') }}">
+                                            @error('birth_date')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -153,32 +167,6 @@
                                                 name="address" tabindex="5" id="address"
                                                 placeholder="{{ __('Enter Address') }}">@if ($therapist && $therapist_info){{ $therapist_info->address }}@elseif(old('address')){{ old('address') }}@endif</textarea>
                                             @error('address')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Emergency Contact ') }}</label>
-                                            <input type="text" class="form-control @error('emergency_contact') is-invalid @enderror"
-                                                name="emergency_contact" id="emergency_contact" tabindex="6" value="@if ($therapist && $therapist_info){{ $therapist_info->emergency_contact }}@elseif(old('emergency_contact')){{ old('emergency_contact') }}@endif"
-                                                placeholder="{{ __('Enter Emergency Contact') }}">
-                                            @error('emergency_contact')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Emergency Name ') }}</label>
-                                            <input type="text" class="form-control @error('emergency_name') is-invalid @enderror"
-                                                name="emergency_name" id="emergency_name" tabindex="7" value="@if ($therapist && $therapist_info){{ $therapist_info->emergency_name }}@elseif(old('emergency_name')){{ old('emergency_name') }}@endif"
-                                                placeholder="{{ __('Enter Emergency Name') }}">
-                                            @error('emergency_name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -232,74 +220,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4 form-group">
-                                            <label class="control-label">{{ __('Slots Time (In Minute) ') }}<span
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Status ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 @error('slot_time') is-invalid @enderror"
-                                                name="slot_time" id="slot_time">
-                                                <option value="" disabled selected>00</option>
-                                                @for ($i = 1; $i <= 60; $i++)
-                                                    <option value="{{ $i }}"
-                                                        {{ old('slot_time') == $i ? 'selected' : '' }}>
-                                                        {{ $i }}</option>
-                                                @endfor
+                                            <select class="form-control @error('status') is-invalid @enderror"
+                                                tabindex="13" name="status">
+                                                <option selected disabled>{{ __('-- Select Status --') }}</option>
+                                                <option value="1" @if (($therapist && $therapist_info->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
+                                                <option value="0" @if (($therapist && $therapist_info->status == '0') || old('status') == '0') selected @endif>{{ __('In Active') }}</option>
                                             </select>
-                                            @error('slot_time')
+                                            @error('status')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class='repeater mb-4'>
-                                                <div data-repeater-list="TimeSlot" class="form-group">
-
-                                                    <label>{{ __('Available Time ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <div data-repeater-item class="mb-3 row">
-                                                        <div class="col-md-5 col-6">
-                                                            <label class="label-control">From:</label>
-                                                            <div class="input-group">
-                                                                <input type="time" name="from"
-                                                                    class="form-control timecount timepicker @error('TimeSlot.*.from') is-invalid @enderror"
-                                                                    value="@if ($therapist && $therapist_info){{ $therapist_info->time_from }}@elseif(old('time_from')){{ old('time_from') }}@endif"
-                                                                    placeholder="{{ __('From time') }}" id="time_from" />
-                                                                @error('TimeSlot.*')
-                                                                    <span class="invalid-feedback" role="alert">
-                                                                        <strong>{{ $message }}</strong>
-                                                                    </span>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-5 col-6">
-                                                            <label class="label-control">To:</label>
-                                                            <div class="input-group">
-                                                                <input type="time" name="to"
-                                                                    class="form-control  @error('TimeSlot.*.to') is-invalid @enderror"
-                                                                    value="@if ($therapist && $therapist_info){{ $therapist_info->time_to }}@elseif(old('time_to')){{ old('time_to') }}@endif"
-                                                                    placeholder="{{ __('To time') }}"
-                                                                    onchange="valinput0()" id="time_to" />
-                                                                @error('TimeSlot.*.to')
-                                                                    <span class="invalid-feedback" role="alert">
-                                                                        <strong>{{ $message }}</strong>
-                                                                    </span>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-2 col-4">
-                                                            <input data-repeater-delete type="button" onclick="cf--"
-                                                                class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
-                                                                value="X" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p class="para error d-none"></p>
-                                                <input data-repeater-create type="button" class="btn btn-primary"
-                                                    value="Add Time" onclick="change()" />
-
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -319,16 +253,13 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Gender ') }}<span
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Email ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 @error('gender') is-invalid @enderror"
-                                                name="gender" id="gender">
-                                                <option selected disabled>{{ __('-- Select Gender --') }}</option>
-                                                <option value="{{ 'Male' }}" {{ old('gender') == 'Male' ? 'selected' : '' }}>{{ 'Male' }}</option>
-                                                <option value="{{ 'Female' }}" {{ old('gender') == 'Female' ? 'selected' : '' }}>{{ 'Female' }}</option>
-                                            </select>
-                                            @error('gender')
+                                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                                name="email" id="email" tabindex="3" value="@if ($therapist && $therapist_info){{ $therapist->email }}@elseif(old('email')){{ old('email') }}@endif"
+                                                placeholder="{{ __('Enter Email @youliantang.com') }}">
+                                            @error('email')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -351,22 +282,8 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Birth Date ') }}</label>
-                                            <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
-                                                name="birth_date" id="birth_date" tabindex="10" value="@if ($therapist && $therapist_info){{ $therapist_info->birth_date }}@elseif(old('birth_date')){{ old('birth_date') }}@endif"
-                                                placeholder="{{ __('Enter Birth Date') }}">
-                                            @error('birth_date')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Rekening Number ') }}<span
-                                                    class="text-danger">*</span></label>
+                                            <label class="control-label">{{ __('Rekening Number ') }}</label>
                                             <input type="text" class="form-control @error('rekening_number') is-invalid @enderror"
                                                 name="rekening_number" id="rekening_number" tabindex="11" value="@if ($therapist && $therapist_info){{ $therapist_info->rekening_number }}@elseif(old('rekening_number')){{ old('rekening_number') }}@endif"
                                                 placeholder="{{ __('Enter Rekening Number') }}">
@@ -395,17 +312,34 @@
                                             @enderror
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <br>
+                            <blockquote>{{ __('Emergency Information') }}</blockquote>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Status ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <select class="form-control @error('status') is-invalid @enderror"
-                                                tabindex="13" name="status">
-                                                <option selected disabled>{{ __('-- Select Status --') }}</option>
-                                                <option value="1" @if (($therapist && $therapist_info->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
-                                                <option value="0" @if (($therapist && $therapist_info->status == '0') || old('status') == '0') selected @endif>{{ __('In Active') }}</option>
-                                            </select>
-                                            @error('status')
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Emergency Name ') }}</label>
+                                            <input type="text" class="form-control @error('emergency_name') is-invalid @enderror"
+                                                name="emergency_name" id="emergency_name" tabindex="7" value="@if ($therapist && $therapist_info){{ $therapist_info->emergency_name }}@elseif(old('emergency_name')){{ old('emergency_name') }}@endif"
+                                                placeholder="{{ __('Enter Emergency Name') }}">
+                                            @error('emergency_name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Emergency Contact ') }}</label>
+                                            <input type="text" class="form-control @error('emergency_contact') is-invalid @enderror"
+                                                name="emergency_contact" id="emergency_contact" tabindex="6" value="@if ($therapist && $therapist_info){{ $therapist_info->emergency_contact }}@elseif(old('emergency_contact')){{ old('emergency_contact') }}@endif"
+                                                placeholder="{{ __('Enter Emergency Contact') }}">
+                                            @error('emergency_contact')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -457,81 +391,6 @@
                         document.querySelector('#profile_display').setAttribute('src', e.target.result);
                     }
                     reader.readAsDataURL(e.files[0]);
-                }
-            }
-            // Time Validation
-            var timecount = $('.timecount').length
-            let cf = 0;
-            let error = 0;
-
-            function valinput0() {
-                var startTime = $('input[name="TimeSlot[0][from]"]').val();
-                var endTime = $('input[name="TimeSlot[0][to]"]').val();
-                var st = startTime.split(":");
-                var et = endTime.split(":");
-                var sst = new Date();
-                sst.setHours(st[0]);
-                sst.setMinutes(st[1]);
-                var eet = new Date();
-                eet.setHours(et[0]);
-                eet.setMinutes(et[1]);
-                if (sst > eet) {
-                    error = 1;
-                    $('.para').html('to value is bigger then from');
-                    $('.para').addClass('d-block');
-                } else {
-                    error = 0;
-                    $('.para').removeClass('d-block');
-                }
-            }
-
-            function change() {
-                cf++;
-                setTimeout(function() {
-                    $(document).on('change', `input[name="TimeSlot[${cf}][to]"]`, function() {
-                        validate1();
-                    });
-                }, 100);
-            }
-
-            function validate1() {
-                timecount = $('.timecount').length;
-                for (let i = 0; i < timecount; i++) {
-                    var startTime = $('input[name="TimeSlot[' + i + '][from]"]').val();
-                    var endTime = $('input[name="TimeSlot[' + i + '][to]"]').val();
-                    currenttime = $(`input[name="TimeSlot[${cf}][from]"]`).val();
-                    currentto = $(`input[name="TimeSlot[${cf}][to]"]`).val();
-                    var st = startTime.split(":");
-                    var et = endTime.split(":");
-                    var ct = currenttime.split(":");
-                    var cft = currentto.split(":");
-                    var sst = new Date();
-                    sst.setHours(st[0]);
-                    sst.setMinutes(st[1]);
-                    var eet = new Date();
-                    eet.setHours(et[0]);
-                    eet.setMinutes(et[1]);
-                    var cct = new Date();
-                    cct.setHours(ct[0]);
-                    cct.setMinutes(ct[1]);
-                    var cff = new Date();
-                    cff.setHours(cft[0]);
-                    cff.setMinutes(cft[1]);
-                    if (cct < cff) {
-                        if (sst < cct && eet > cct) {
-                            error = 1;
-                            $('.para').html('Value not accepted');
-                            $('.para').addClass('d-block');
-                            break
-                        } else {
-                            error = 0;
-                            $('.para').removeClass('d-block');
-                        }
-                    } else {
-                        $('.para').html('to value is bigger then from');
-                        $('.para').addClass('d-block');
-                        break
-                    }
                 }
             }
 

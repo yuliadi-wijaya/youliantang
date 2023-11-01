@@ -141,7 +141,7 @@
                                             <label class="control-label">{{ __('Discount Type ') }}<span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control @error('discount_type') is-invalid @enderror"
-                                                tabindex="11" name="discount_type">
+                                                tabindex="11" name="discount_type" id="DiscountType">
                                                 <option selected disabled>{{ __('-- Select Discount Type --') }}</option>
                                                 <option value="0" @if (($promo && $promo->discount_type == '0') || old('discount_type') == '0') selected @endif>{{ __('Fix Rate (Rp)') }}</option>
                                                 <option value="1" @if (($promo && $promo->discount_type == '1') || old('discount_type') == '1') selected @endif>{{ __('Percentage (%)') }}</option>
@@ -155,11 +155,19 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Total Discount ') }}<span
-                                                    class="text-danger">*</span></label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="control-label">{{ __('Total Discount ') }}<span
+                                                        class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="control-label discount-max-value">{{ __('Max Discount ') }}<span
+                                                        class="text-danger">*</span></label>
+                                                </div>
+                                            </div>
                                             <div class="row"> 
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control @error('discount_value') is-invalid @enderror"
+                                                    <input type="number" class="form-control @error('discount_value') is-invalid @enderror"
                                                         tabindex="4" name="discount_value" id="DiscountValue" value="@if ($promo ){{ old('discount_value', $promo->discount_value) }}@elseif(old('discount_value')){{ old('discount_value') }}@endif"
                                                         placeholder="{{ __('Enter Total Discount Based On Type') }}">
                                                     @error('discount_value')
@@ -169,7 +177,7 @@
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control @error('discount_max_value') is-invalid @enderror"
+                                                    <input type="number" class="form-control discount-max-value @error('discount_max_value') is-invalid @enderror"
                                                         tabindex="4" name="discount_max_value" id="DiscountMaxValue" value="@if ($promo ){{ old('discount_max_value', $promo->discount_max_value) }}@elseif(old('discount_max_value')){{ old('discount_max_value') }}@endif"
                                                         placeholder="{{ __('Enter Max Discount (Fix Rate)') }}">
                                                     @error('discount_max_value')
@@ -192,8 +200,8 @@
                                                             class="form-control active_period @error('active_period_start') is-invalid @enderror"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_start', date('Y-m-d')) }} placeholder="{{ __('Enter Start Date') }}" 
-                                                            value="@if ($promo ){{ old('active_period_start', $promo->active_period_start) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
+                                                            {{ old('active_period_start', date('d/m/Y')) }} placeholder="{{ __('Enter Start Date') }}" 
+                                                            value="@if ($promo ){{ old('active_period_start', date('d/m/Y', strtotime($promo->active_period_start))) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -210,8 +218,8 @@
                                                             class="form-control active_period @error('active_period_end') is-invalid @enderror"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_end', date('Y-m-d')) }} placeholder="{{ __('Enter End Date') }}" 
-                                                            value="@if ($promo ){{ old('active_period_end', $promo->active_period_end) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
+                                                            {{ old('active_period_end', date('d/m/Y')) }} placeholder="{{ __('Enter End Date') }}" 
+                                                            value="@if ($promo ){{ old('active_period_end', date('d/m/Y', strtotime($promo->active_period_end))) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -249,6 +257,7 @@
                                                 placeholder="{{ __('Enter Prefix Voucher') }}">
                                         </div>
                                         <div class="col-md-4 form-group">
+                                            <input type="hidden" id="IsGenerated" name="is_generated" value="0">
                                             <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
                                         </div>
                                     </div>
@@ -259,7 +268,7 @@
                                     <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}<span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(will be generated automatically after click the generate voucher button)") }}</span></label>
                                     <div class="btn-group voucher_list d-block">
-                                        @if ($promo->promo_vouchers)
+                                        @if ($promo != null && $promo->promo_vouchers)
                                             @foreach ($promo->promo_vouchers as $item)
                                             <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
                                             @endforeach
@@ -298,10 +307,29 @@
         <script src="{{ URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js') }}"></script>
         <script>
+            $(document).ready(function() {
+                if ($("#DiscountType").val() == 0) {
+                    $("#DiscountMaxValue").val('');
+                    $(".discount-max-value").fadeOut();
+                } else {
+                    $(".discount-max-value").fadeIn();
+                }
+            });
+
+            $(document).on('change', '#DiscountType', function() {
+                if ($(this).val() != undefined) {
+                    if ($(this).val() == 0) {
+                        $("#DiscountMaxValue").val('');
+                        $(".discount-max-value").fadeOut();
+                    } else {
+                        $(".discount-max-value").fadeIn();
+                    }
+                }
+            });
             // Script
             $('.active_period').datepicker({
                 startDate: new Date(),
-                format: 'yyyy-mm-dd'
+                format: 'dd/mm/yyyy'
             });
 
             $(document).on('click', '#GenerateVoucher', function() {
@@ -310,13 +338,10 @@
 
                 if (!voucherTotal || !voucherPrefix) {
                     alert('Input filters are required.');
+                    return
                 }
 
                 today = new Date();
-
-                console.log(today.getFullYear());
-                console.log(today.getMonth());
-                console.log(today.getDate());
 
                 $('.voucher_list').html('');
                 for(var i = 1; i <= voucherTotal; i++) {
@@ -324,6 +349,8 @@
                     //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
                     $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
                 }
+                
+                $('#IsGenerated').val(1);
             });
         </script>
     @endsection

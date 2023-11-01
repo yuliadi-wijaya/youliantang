@@ -26,8 +26,8 @@ class TherapistSeeder extends Seeder
             'last_name' => Str::after($fakerName, ' '),
             'phone_number' => '0857' . $faker->numberBetween(10000000, 20000000),
             'profile_photo' => 'Male_doctor.png',
-            'email' => 'therapist@example.com',
-            'password' => '123456',
+            'email' => 'therapist@youliantang.com',
+            'password' => 'youliantang123',
             'status' => 1,
         ];
         $user = Sentinel::registerAndActivate($user);
