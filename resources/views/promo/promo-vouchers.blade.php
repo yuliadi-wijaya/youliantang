@@ -101,7 +101,7 @@
                                 <div class="row">
                                     <div class="col-md-12 form-group">
                                         <label class="control-label">{{ __('Active Period: ') }} </label>
-                                        {{ date('d/m/Y', strtotime($promo->active_period_start)) . " - " . date('d/m/Y', strtotime($promo->active_period_end)) }}
+                                        {{ date('Y-m-d', strtotime($promo->active_period_start)) . " to " . date('Y-m-d', strtotime($promo->active_period_end)) }}
                                     </div>
                                 </div>
                             </div>

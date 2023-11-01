@@ -43,25 +43,21 @@ class InvoiceController extends Controller
      */
     public function index()
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('invoice.list')) {
-            $user_id = Sentinel::getUser()->id;
-            $role = $user->roles[0]->slug;
-            if ($role == 'therapist') {
-                $receptionists_therapist_id = ReceptionListTherapist::where('therapist_id', $user_id)->pluck('reception_id');
-                $invoices = Invoice::with('user')->where('therapist_id', $user_id)->orderBy('id', 'DESC')->paginate($this->limit);
-            } elseif ($role == 'customer') {
-                $invoices = Invoice::with('appointment', 'appointment.timeSlot')->where('customer_id', $user_id)->orderBy('id', 'DESC')->paginate($this->limit);
-            } elseif ($role = 'receptionist') {
-                $receptionists_therapist_id = ReceptionListTherapist::where('reception_id', $user_id)->pluck('therapist_id');
-                $invoices = Invoice::with('user', 'appointment', 'appointment.timeSlot')->where('created_by', $user_id)->orWhereIn('created_by', $receptionists_therapist_id)->orderBy('id', 'DESC')->paginate($this->limit);
-            } else {
-                $invoices = Invoice::with('user')->paginate($this->limit);
-            }
-            return view('invoice.invoices', compact('user', 'role', 'invoices'));
-        } else {
+        
+        // Check user access
+        if (!$user->hasAccess('invoice.list')) {
             return view('error.403');
         }
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Get available data only
+        $invoices = Invoice::where('is_deleted', 0)->paginate($this->limit);
+
+        return view('invoice.invoices', compact('user', 'role', 'invoices'));
     }
 
     /**
@@ -71,17 +67,21 @@ class InvoiceController extends Controller
      */
     public function create()
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('invoice.create')) {
-            $role = $user->roles[0]->slug;
-            $customer_role = Sentinel::findRoleBySlug('customer');
-            $customers = $customer_role->users()->with('roles')->get();
-            $therapist_role = Sentinel::findRoleBySlug('therapist');
-            $therapist = $therapist_role->users()->with('roles')->get();
-            return view('invoice.invoice-details', compact('user', 'role', 'customers', 'therapist'));
-        } else {
+
+        // Check user access
+        if (!$user->hasAccess('invoice.create')) {
             return view('error.403');
         }
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Default data null
+        $invoice = null;
+        
+        return view('invoice.invoice-details', compact('user', 'role', 'invoice'));
     }
 
     /**
@@ -92,63 +92,43 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('invoice.create')) {
-            $request->validate([
-                'customer_id' => 'required',
-                'appointment_id' => 'required',
-                'payment_mode' => 'required',
-                'payment_status' => 'required'
-            ]);
-            try {
-                $user = Sentinel::getUser();
-                if ($request->invoices[0]['title'] == null && $request->invoices[0]['amount'] == null) {
-                    return redirect()->back()->with('error', 'Add at least one Invoice title and amount to create invoice!!!');
-                } else {
-                    $appointment = Appointment::with('therapist', 'customer')->where('id', $request->appointment_id)->first();
-                    if ($appointment->therapist->id == $request->therapist_id) {
-                        $this->invoice->customer_id = $request->customer_id;
-                        $this->invoice->payment_mode = $request->payment_mode;
-                        $this->invoice->payment_status = $request->payment_status;
-                        $this->invoice->appointment_id = $request->appointment_id;
-                        if ($request->therapist_id !== Null) {
-                            $this->invoice->therapist_id = $request->therapist_id;
-                        } else {
-                            $this->invoice->therapist_id = $request->created_by;
-                        }
-                        if ($request->created_by == Null) {
-                            $this->invoice->created_by = $request->created_by;
-                        } else {
-                            $this->invoice->created_by = $request->created_by;
-                        }
-                        $this->invoice->created_by = $request->created_by;
-                        $this->invoice->updated_by = $user->id;
-                        $this->invoice->save();
-                        foreach ($request->invoices as $item) {
-                            $this->invoice_detail = new InvoiceDetail();
-                            $this->invoice_detail->invoice_id = $this->invoice->id;
-                            $this->invoice_detail->title = $item['title'];
-                            $this->invoice_detail->amount = $item['amount'];
-                            $this->invoice_detail->save();
-                        }
-                        // Invoice generated notification send
-                        $notification = new Notification();
-                        $notification->notification_type_id = 4;
-                        $notification->title = 'New invoice Generated';
-                        $notification->data = $this->invoice->id;
-                        $notification->from_user = $this->invoice->created_by;
-                        $notification->to_user = $this->invoice->customer_id;
-                        $notification->save();
-                        return redirect('invoice')->with('success', 'Invoice created successfully!');
-                    } else {
-                        return redirect()->back()->with('error', 'Something went wrong !! please try again');
-                    }
-                }
-            } catch (Exception $e) {
-                return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());
-            }
-        } else {
+
+        // Check user access
+        if (!$user->hasAccess('invoice.create')) {
             return view('error.403');
+        }
+
+        // Validate input data
+        $request->validate([
+            'customer_name' => 'required',
+            'therapist_name' => 'required',
+            'room' => 'required',
+            'treatment_date' => 'required|date',
+            'treatment_time_from' => 'required',
+            'treatment_time_to' => 'required',
+            'payment_mode' => 'required',
+            'payment_status' => 'required'
+        ]);
+
+        try {
+            // Validate invoices
+            if ($request->invoices[0]['title'] == null && $request->invoices[0]['amount'] == null) {
+                return redirect()->back()->with('error', 'Add at least one Invoice title and amount to create invoice!!!');
+            } 
+
+            // Mapping request to object and store data
+            $obj = $this->toObject($request, new Invoice());
+            $obj->created_by = $user->id;
+            $obj->save();
+
+            // Store invoice detail
+            $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
+
+            return redirect('invoice')->with('success', 'Invoice created successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }
     }
 
@@ -160,16 +140,21 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('invoice.show')) {
-            $user = Sentinel::getUser();
-            $role = $user->roles[0]->slug;
-            $invoice_detail = Invoice::with('invoice_detail', 'customer', 'therapist', 'appointment', 'appointment.timeSlot', 'transaction')->where('id', $invoice->id)->first();
-            // return $invoice_detail;
-            return view('invoice.view-invoice', compact('user', 'role', 'invoice', 'invoice_detail'));
-        } else {
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Get available data only
+        $invoice_detail = Invoice::with('invoice_detail')->where('id', $invoice->id)->first();
+
+        // Check user access and available data
+        if (!$user->hasAccess('invoice.show') || $invoice_detail == NULL) {
             return view('error.403');
         }
+
+        return view('invoice.view-invoice', compact('user', 'role', 'invoice', 'invoice_detail'));
     }
 
     /**
@@ -335,5 +320,38 @@ class InvoiceController extends Controller
         $role = $user->roles[0]->slug;
         $transaction = Transaction::paginate($this->limit);
         return view('admin.transaction', compact('transaction', 'user', 'role'));
+    }
+
+    /**
+     * Mapping request to object.
+     *
+     * @param  \Illuminate\Http\Request
+     * @return \App\Invoice $invoice
+     */
+    private function toObject(Request $request, Invoice $invoice) {
+        $invoice->customer_name = $request->customer_name;
+        $invoice->therapist_name = $request->therapist_name;
+        $invoice->room = $request->room;
+        $invoice->treatment_date = date('Y-m-d', strtotime($request->treatment_date));
+        $invoice->treatment_time_from = $request->treatment_time_from;
+        $invoice->treatment_time_to = $request->treatment_time_to;
+        $invoice->payment_mode = $request->payment_mode;
+        $invoice->payment_status = $request->payment_status;
+        $invoice->note = $request->note;
+
+        return $invoice;
+    }
+
+    private function toObjectDetails(Request $request, Invoice $invoice) {
+        $invoiceDetails = [];
+
+        foreach ($request->invoices as $item) {
+            $obj = new InvoiceDetail();
+            $obj->title = $item['title'];
+            $obj->amount = $item['amount'];
+            $invoiceDetails[] = $obj;
+        }
+
+        return $invoiceDetails;
     }
 }

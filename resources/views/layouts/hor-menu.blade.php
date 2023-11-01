@@ -5,14 +5,14 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/') }}">
-                            <i class="bx bx-home-circle mr-2"></i>{{__('translation.dashboards')}}
+                            <i class="fa fa-home mr-2"></i>{{__('translation.dashboards')}}
                         </a>
                     </li>
                     @if ($role == 'admin')
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.master-data') }} <div class="arrow-down">
+                                <i class="fa fa-pen-fancy mr-2"></i>{{ __('translation.master-data') }} <div class="arrow-down">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
@@ -25,7 +25,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.products') }} <div class="arrow-down">
+                                <i class="fa fa-clipboard-list mr-2"></i>{{ __('translation.products') }} <div class="arrow-down">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
@@ -37,7 +37,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.promos') }} <div class="arrow-down">
+                                <i class="fa fa-gifts mr-2"></i>{{ __('translation.promos') }} <div class="arrow-down">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
@@ -49,7 +49,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-user-circle mr-2"></i>{{ __('translation.customers') }} <div class="arrow-down">
+                                <i class="fa fa-person-booth mr-2"></i>{{ __('translation.customers') }} <div class="arrow-down">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
@@ -62,11 +62,19 @@
                             <a class="nav-link" href="{{ url('pending-appointment') }}">
                                 <i class='bx bx-list-plus mr-2'></i>{{ __('translation.appointment-list') }}
                             </a>
-                        </li> --}}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('transaction') }}">
-                                <i class='bx bx-list-check mr-2'></i>{{ __('translation.transaction') }}
+                        </li>
+                        --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-file-invoice-dollar mr-2"></i>{{ __('translation.invoice') }} <div class="arrow-down">
+                                </div>
                             </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
+                                <a href="{{ url('invoice') }}" class="dropdown-item">{{ __('translation.list-of-invoice') }}</a>
+                                <a href="{{ route('invoice.create') }}"
+                                    class="dropdown-item">{{ __('translation.create-invoice') }}</a>
+                            </div>
                         </li>
                     {{-- @elseif ($role == 'therapist')
                         <li class="nav-item">

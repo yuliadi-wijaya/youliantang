@@ -193,7 +193,7 @@ class PromoController extends Controller
         $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->with('promo_vouchers')->first();
 
         // Check user access and available data
-        if (!$user->hasAccess('promo.update') || $obj == NULL) {
+        if (!$user->hasAccess('promo.show') || $obj == NULL) {
             return view('error.403');
         }
 
@@ -342,6 +342,7 @@ class PromoController extends Controller
     private function toObjectVoucherList(Promo $promo, Request $request) {
         $promoVouchers = [];
 
+        // If voucher wasn't generated, keep exists the promo voucher
         if ($request->is_generated == 0) {
             return $promoVouchers;
         }

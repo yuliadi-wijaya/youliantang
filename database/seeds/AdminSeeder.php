@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
             'phone_number' => '5142323114',
             'profile_photo' =>'avatar-5.jpg',
             'email' => 'admin@youliantang.com',
-            'password' => 'youliantang123',
+            'password' => 'admin123',
             'status' => 1,
         ];
         $user = Sentinel::registerAndActivate( $credentials );

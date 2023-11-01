@@ -85,9 +85,21 @@ class RoleSeeder extends Seeder
             'room.update'=>true,
             'room.delete'=>true,
             'promo.list'=>true,
+            'promo.show'=>true,
             'promo.create'=>true,
             'promo.update'=>true,
             'promo.delete'=>true,
+            'transaction.list'=>true,
+            'transaction.show'=>true,
+            'transaction.create'=>true,
+            'transaction.update'=>true,
+            'transaction.delete'=>true,
+            'invoice.show' => true,
+            'invoice.list' => true,
+            'invoice.create' => true,
+            'invoice.update' => true,
+            'invoice.delete' => true,
+            'invoice.edit'=>true,
         ];
         $role_admin->save();
 

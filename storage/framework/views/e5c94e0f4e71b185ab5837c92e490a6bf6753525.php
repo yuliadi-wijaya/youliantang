@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title'); ?> <?php echo e(__('Update Therapist Time Slot')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/libs/select2/select2.min.css')); ?>">

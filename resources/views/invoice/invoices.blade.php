@@ -58,12 +58,10 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('No.') }}</th>
-                                    @if ($role != 'customer')
-                                        <th>{{ __('Customer Name') }}</th>
-                                    @endif
-                                    <th>{{ __('Appointment Date') }}</th>
-                                    <th>{{ __('Appointment Time') }}</th>
-                                    <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Customer Name') }}</th>
+                                    <th>{{ __('Therapist Name') }}</th>
+                                    <th>{{ __('Room') }}</th>
+                                    <th>{{ __('Treatment Date') }}</th>
                                     <th>{{ __('Option') }}</th>
                                 </tr>
                             </thead>
@@ -83,13 +81,10 @@
                                 @foreach ($invoices as $invoice)
                                     <tr>
                                         <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                        @if ($role != 'customer')
-                                            <td>{{ $invoice->user->first_name }} {{ $invoice->user->last_name }}</td>
-                                        @endif
-                                        <td>{{ $invoice->appointment->appointment_date }}</td>
-                                        <td>{{ $invoice->appointment->timeSlot->from . ' to ' . $invoice->appointment->timeSlot->to }}
-                                        </td>
-                                        <td>{{ $invoice->payment_status }}</td>
+                                        <td>{{ $invoice->customer_name }}</td>
+                                        <td>{{ $invoice->therapist_name }}</td>
+                                        <td>{{ $invoice->room }}</td>
+                                        <td>{{ date('Y-m-d', strtotime($invoice->treatment_date)) }} ( {{ $invoice->treatment_time_from }} to {{ $invoice->treatment_time_to }} )</td>
                                         <td>
                                             <a href="{{ url('invoice/' . $invoice->id) }}">
                                                 <button type="button"
@@ -98,23 +93,6 @@
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
                                             </a>
-                                            <a href="{{ url('invoice/' . $invoice->id . '/edit') }}">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="Update invoice">
-                                                    <i class="mdi mdi-lead-pencil"></i>
-                                                </button>
-                                            </a>
-                                            @if ($role != 'customer')
-                                                <a href="javascript:void(0)">
-                                                    <button type="button"
-                                                        class="btn btn-primary btn-sm btn-rounded waves-effect waves-light
-                                                                send-mail"
-                                                        title="Send Email" data-id="{{ $invoice->id }}">
-                                                        <i class="mdi mdi-email"></i>
-                                                    </button>
-                                                </a>
-                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

@@ -15,7 +15,7 @@
         <!-- end page title -->
         <div class="row d-print-none">
             <div class="col-12">
-                <a href="{{ url('invoice') }}">
+                <a href="{{ url('transaction') }}">
                     <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Invoice List') }}
                     </button>
@@ -29,37 +29,37 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="invoice-title">
-                            <h4 class="float-right font-size-16">{{ __('Invoice #') }} {{ $invoice_detail->id }}</h4>
+                        <div class="transaction-title">
+                            <h4 class="float-right font-size-16">{{ __('Invoice #') }} {{ $transaction_detail->id }}</h4>
                             <div class="mb-4">
-                                <h3>YOU LIAN tANG</h3>
-                                <h6>Family Refleksi & Massage</h6>
+                                {{-- <img src="{{ URL::asset('assets/images/logo-dark.png') }}" alt="logo" height="20" /> --}}
+                                <h2>YOU LIAN tANG</h2>
+                                <h5>Family Refleksi & Massage</h5>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-3">
                                 <address>
-                                    <strong>{{ __('Treatment date : ') }}</strong>{{ $invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to }}<br>
-                                    <strong>{{ __('Customer : ') }}</strong>{{ $invoice_detail->customer_name }}<br>
-                                    <strong>{{ __('Therapist : ') }}</strong>{{ $invoice_detail->therapist_name }}<br>
+                                    <strong>{{ __('Customer Details') }}</strong><br>
+                                    {{ $transaction_detail->customer_name }}<br>
                                 </address>
                             </div>
                             <div class="col-3">
                                 <address>
-                                   
+                                    <strong>{{ __('Therapist Details') }}</strong><br>
+                                    {{ $transaction_detail->therapist_name }}<br>
                                 </address>
                             </div>
                             <div class="col-3">
                                 <address>
-                                    
+                                    <strong>{{ __('Payment Details') }}</strong><br>
+                                    {{ __('Payment Mode :') }} {{ $transaction_detail->payment_method }}<br>
                                 </address>
                             </div>
                             <div class="col-3 pull-right">
                                 <address>
-                                    <strong>{{ __('Invoice date : ') }}</strong>{{ $invoice->created_at }}<br>
-                                    <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoice_detail->payment_mode }}<br>
-                                    <strong>{{ __('Payment Status : ') }}</strong>{{ $invoice_detail->payment_status }}<br>
+                                    <strong>{{ __('Invoice date: ') }}</strong>{{ $transaction_detail->created_at }}<br>
                                 </address>
                             </div>
                         </div>
@@ -72,34 +72,40 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 70px;">{{ __('No.') }}</th>
-                                        <th>{{ __('Title') }}</th>
+                                        <th>{{ __('Product') }}</th>
                                         <th class="text-right">{{ __('Amount') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $sub_total = 0;
-                                    @endphp
-                                    @foreach ($invoice_detail->invoice_detail as $item)
-                                        <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $item->title }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->amount) }}</td>
-                                        </tr>
-                                        @php
-                                            $sub_total += $item->amount;
-                                        @endphp
-                                    @endforeach
                                     <tr>
+                                        <td>1</td>
+                                        <td>{{ $transaction_detail->product }}</td>
+                                        <td class="text-right">Rp. {{ number_format($transaction_detail->total_cost, 2, '.', ',') }}</td>
+                                    </tr>
+                                    {{-- <tr>
                                         <td colspan="2" class="text-right">{{ __('Sub Total') }}</td>
-                                        <td class="text-right">Rp {{ number_format($sub_total) }}</td>
+                                        <td class="text-right">Rp. {{ number_format($transaction_detail->total_cost, 2, '.', ',') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="border-0 text-right">
+                                            <strong>{{ __('Tax (10%)') }}</strong>
+                                        </td>
+                                        <td class="border-0 text-right">Rp. {{ number_format(($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" class="border-0 text-right">
                                             <strong>{{ __('Total') }}</strong>
                                         </td>
                                         <td class="border-0 text-right">
-                                            <h4 class="m-0">Rp {{ number_format($sub_total) }}</h4>
+                                            <h4 class="m-0">Rp. {{ number_format($transaction_detail->total_cost + ($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</h4>
+                                        </td>
+                                    </tr> --}}
+                                    <tr>
+                                        <td colspan="2" class="border-0 text-right">
+                                            <strong>{{ __('Total') }}</strong>
+                                        </td>
+                                        <td class="border-0 text-right">
+                                            <h4 class="m-0">Rp. {{ number_format($transaction_detail->total_cost + ($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</h4>
                                         </td>
                                     </tr>
                                 </tbody>

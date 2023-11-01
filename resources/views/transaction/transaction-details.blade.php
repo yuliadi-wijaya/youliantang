@@ -9,16 +9,28 @@
     @endsection
     @section('content')
         <!-- start page title -->
-        @component('components.breadcrumb')
-            @slot('title') Create Invoice @endslot
-            @slot('li_1') Dashboard @endslot
-            @slot('li_2') Invoice @endslot
-            @slot('li_3') Create Invoice @endslot
-        @endcomponent
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">
+                        {{ __('Create Invoice') }}
+                    </h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('Dashboard') }}</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('transaction') }}">{{ __('Invoice') }}</a></li>
+                            <li class="breadcrumb-item active">
+                                {{ __('Create Invoice') }}
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
-                <a href="{{ url('invoice') }}">
+                <a href="{{ url('transaction') }}">
                     <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Invoice List') }}
                     </button>
@@ -30,8 +42,11 @@
                 <div class="card">
                     <div class="card-body">
                         <blockquote>{{ __('Invoice Details') }}</blockquote>
-                        <form class="outer-repeater" action="{{ route('invoice.store') }}" method="post">
+                        <form action="@if ($transaction ) {{ url('transaction/' . $transaction->id) }} @else {{ route('transaction.store') }} @endif" method="post" enctype="multipart/form-data">
                             @csrf
+                            @if ($transaction )
+                                <input type="hidden" name="_method" value="PATCH" />
+                            @endif
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
@@ -41,7 +56,7 @@
                                             <input type="text"
                                                 class="form-control @error('customer_name') is-invalid @enderror"
                                                 name="customer_name" id="customer_name" tabindex="1"
-                                                value="{{ old('customer_name') }}"
+                                                value="@if ($transaction){{ old('customer_name', $transaction->customer_name) }}@elseif(old('customer_name')){{ old('customer_name') }}@endif"
                                                 placeholder="{{ __('Enter Customer Name') }}">
                                             @error('customer_name')
                                                 <span class="invalid-feedback" role="alert">
@@ -57,7 +72,7 @@
                                             <input type="text"
                                                 class="form-control @error('therapist_name') is-invalid @enderror"
                                                 name="therapist_name" id="therapist_name" tabindex="1"
-                                                value="{{ old('therapist_name') }}"
+                                                value="@if ($transaction){{ old('therapist_name', $transaction->therapist_name) }}@elseif(old('therapist_name')){{ old('therapist_name') }}@endif"
                                                 placeholder="{{ __('Enter Therapist Name') }}">
                                             @error('therapist_name')
                                                 <span class="invalid-feedback" role="alert">
@@ -73,7 +88,7 @@
                                             <input type="text"
                                                 class="form-control @error('room') is-invalid @enderror"
                                                 name="room" id="room" tabindex="1"
-                                                value="{{ old('room') }}"
+                                                value="@if ($transaction){{ old('room', $transaction->room) }}@elseif(old('room')){{ old('room') }}@endif"
                                                 placeholder="{{ __('Enter Room') }}">
                                             @error('room')
                                                 <span class="invalid-feedback" role="alert">
@@ -85,71 +100,26 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <label class="control-label">{{ __('Treatment Date ') }}<span
-                                                class="text-danger">*</span></label>
-                                            <div class="input-group datepickerdiv">
-                                                <input type="text"
-                                                    class="form-control @error('treatment_date') is-invalid @enderror"
-                                                    name="treatment_date" id="TreatmentDate" data-provide="datepicker"
-                                                    data-date-autoclose="true" autocomplete="off" placeholder="{{ __('Enter Date') }}" 
-                                                    value="{{ old('treatment_date') }}">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                                                </div>
-                                                @error('treatment_date')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 form-group">
-                                            <label class="control-label">{{ __('From ') }}<span
-                                                class="text-danger">*</span></label>
-                                            <input type="time"
-                                                class="form-control @error('treatment_time_from') is-invalid @enderror"
-                                                name="treatment_time_from" id="TreatmentTimeFrom" tabindex="1"
-                                                value="{{ old('treatment_time_from') }}">
-                                            @error('treatment_time_from')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="col-md-3 form-group">
-                                            <label class="control-label">{{ __('To ') }}<span
-                                                class="text-danger">*</span></label>
-                                            <input type="time"
-                                                class="form-control @error('treatment_time_to') is-invalid @enderror"
-                                                name="treatment_time_to" id="treatment_time_to" tabindex="1"
-                                                value="{{ old('treatment_time_to') }}">
-                                            @error('treatment_end')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
                                         <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Payment Mode ') }}<span
-                                                class="text-danger">*</span></label>
-                                            <select class="form-control @error('payment_mode') is-invalid @enderror"
-                                                name="payment_mode">
-                                                <option selected disabled>{{ __('-- Select Payment Mode --') }}</option>
-                                                <option value="Cash Payement" @if (old('payment_mode') == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
-                                                <option value="Debit/Credit Card" @if (old('payment_mode') == 'Debit/Credit Card') selected @endif>{{ __('Debit/Credit Card') }}</option>
-                                                <option value="QRIS" @if (old('payment_mode') == 'QRIS') selected @endif>{{ __('QRIS') }} </option>
-                                                <option value="GoPay" @if (old('payment_mode') == 'GoPay') selected @endif>{{ __('GoPay') }} </option>
-                                                <option value="OVO" @if (old('payment_mode') == 'OVO') selected @endif>{{ __('OVO') }} </option>
+                                            <label class="control-label">{{ __('Payment Method ') }}<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control @error('payment_method') is-invalid @enderror"
+                                                tabindex="11" name="payment_method">
+                                                <option selected disabled>{{ __('-- Select Payment Method --') }}</option>
+                                                <option value="Cash" @if (($transaction && $transaction->payment_method == 'Cash') || old('payment_method') == 'Cash') selected @endif>{{ __('Cash')}}</option>
+                                                <option value="Debit" @if (($transaction && $transaction->payment_method == 'Debit') || old('payment_method') == 'Debit') selected @endif>{{ __('Debit')}}</option>
+                                                <option value="GoPay" @if (($transaction && $transaction->payment_method == 'GoPay') || old('payment_method') == 'GoPay') selected @endif>{{ __('GoPay')}}</option>
+                                                <option value="QRIS" @if (($transaction && $transaction->payment_method == 'QRIS') || old('payment_method') == 'QRIS') selected @endif>{{ __('QRIS')}}</option>
+                                                <option value="Credit Card" @if (($transaction && $transaction->payment_method == 'Credit Card') || old('payment_method') == 'Credit Card') selected @endif>{{ __('Credit Card')}}</option>
                                             </select>
-                                            @error('payment_mode')
+                                            @error('payment_method')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
                                         <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Payment Status') }}<span
+                                            <label class="control-label">{{ __('Payment Status ') }}<span
                                                 class="text-danger">*</span></label>
                                             <select class="form-control @error('payment_status') is-invalid @enderror"
                                                 name="payment_status">
@@ -168,8 +138,8 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Note') }}</label>
                                                     <textarea id="Note" name="note" tabindex="7"
-                                                    class="form-control @error('note') is-invalid @enderror" rows="1"
-                                                    placeholder="{{ __('Enter Note') }}">{{ old('note') }}</textarea>
+                                                    class="form-control @error('note') is-invalid @enderror" rows="5"
+                                                    placeholder="{{ __('Enter Note') }}">@if ($transaction){{ $transaction->note }}@elseif(old('note')){{ old('note') }}@endif</textarea>
                                             @error('note')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -230,12 +200,4 @@
         <script src="{{ URL::asset('assets/js/pages/form-repeater.int.js') }}"></script>
         <script src="{{ URL::asset('assets/js/pages/form-advanced.init.js') }}"></script>
         <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
-        <script src="{{ URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-        <script src="{{ URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js') }}"></script>
-        <script>
-            $('#TreatmentDate').datepicker({
-                startDate: new Date(),
-                format: 'dd/mm/yyyy'
-            });
-        </script>
     @endsection

@@ -20,7 +20,7 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th><?php echo e(__('Sr. No')); ?></th>
+                                            <th><?php echo e(__('No.')); ?></th>
                                             <th><?php echo e(__('Therapist Name')); ?></th>
                                             <th><?php echo e(__('Date')); ?></th>
                                             <th><?php echo e(__('Time')); ?></th>
@@ -44,7 +44,7 @@
                                         <?php $__empty_1 = true; $__currentLoopData = $appointment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                             <tr>
                                                 <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
-                                                <td> <?php echo e($item->Therapy->first_name . ' ' . $item->Therapy->last_name); ?>
+                                                <td> <?php echo e($item->therapist->first_name . ' ' . $item->therapist->last_name); ?>
 
                                                 </td>
                                                 <td><?php echo e($item->appointment_date); ?></td>

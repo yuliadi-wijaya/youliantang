@@ -13,6 +13,8 @@
         "appointment-list" => "Appointment List",
         "appointments" => "Appointments",
         "transaction" => "Transaction",
+        "list-of-transaction" => "List of Transaction",
+        "add-new-transaction" => "Add New Transaction",
         "revenue" => "Revenue",
         "today's-earning" => "Today's Earning",
         "today's-appointments" => "Today's Appointments",

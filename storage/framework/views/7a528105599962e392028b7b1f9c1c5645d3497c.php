@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title'); ?>
     <?php echo e(__('Update Therapist Details')); ?>
 

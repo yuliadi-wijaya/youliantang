@@ -15,19 +15,20 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('therapist_id');
-            $table->unsignedBigInteger('appointment_id');
+            $table->string('customer_name');
+            $table->string('therapist_name');
+            $table->string('room');
             $table->string('payment_mode');
             $table->string('payment_status');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
-            $table->tinyInteger('status')->default(0)->comment('0=>inactive,1=>active');
-            $table->foreign('customer_id')->references('id')->on('users');
+            $table->date('treatment_date')->default(now());
+            $table->time('treatment_time_from');
+            $table->time('treatment_time_to');
+            $table->string('note')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->tinyInteger('status')->default(1)->comment('0=>inactive,1=>active');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('therapist_id')->references('id')->on('users');
-            $table->foreign('appointment_id')->references('id')->on('appointments');
             $table->timestamps();
             $table->tinyInteger('is_deleted')->default(0);
         });

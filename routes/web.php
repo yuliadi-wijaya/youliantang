@@ -58,6 +58,7 @@ Route::resource('membership', 'MembershipController');
 Route::resource('product', 'ProductController');
 Route::resource('room', 'RoomController');
 Route::resource('promo', 'PromoController');
+Route::resource('transaction', 'TransactionController');
 
 // appointment routes
 Route::get('appointmentList', 'AppointmentController@appointment_list');
@@ -97,7 +98,9 @@ Route::get('/time-update-ajax/{id}', 'TherapistController@time_update_ajax');
 Route::get('invoice-email/{id}', 'EmailController@invoice_email_send');
 Route::get('invoice-list', 'InvoiceController@invoice_list');
 Route::get('invoice-view/{id}', 'InvoiceController@invoice_view');
-Route::get('transaction', 'InvoiceController@transaction');
+// Route::get('transaction', 'InvoiceController@transaction');
+
+//Transaction routes
 
 // Prescription routes
 Route::get('prescription-email/{id}', 'EmailController@prescription_email_send');
@@ -106,7 +109,6 @@ Route::get('prescription-view/{id}', 'PrescriptionController@prescription_view')
 
 // Pagination
 Route::post('per-page-item', 'HomeController@per_page_item');
-
 
 // Razorpay Payment
 Route::post('payment-complete', [RazorpayPaymentController::class, 'payment_complete']);
