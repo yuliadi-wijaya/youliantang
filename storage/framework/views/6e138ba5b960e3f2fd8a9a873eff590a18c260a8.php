@@ -93,6 +93,14 @@
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
                                             </a>
+                                            <a href="<?php echo e(url('invoice/' . $invoice->id . '/edit')); ?>">
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                                    title="Update invoice">
+                                                    <i class="mdi mdi-lead-pencil"></i>
+                                                </button>
+                                            </a>
+                                            
                                         </td>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

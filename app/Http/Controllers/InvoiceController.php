@@ -169,20 +169,23 @@ class InvoiceController extends Controller
      */
     public function edit($id)
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('invoice.edit')) {
-            $user = Sentinel::getUser();
-            $role = $user->roles[0]->slug;
-            $customer_role = Sentinel::findRoleBySlug('customer');
-            $customers = $customer_role->users()->with('roles')->get();
-            $invoice_detail = Invoice::with('invoice_detail', 'customer', 'therapist', 'appointment', 'appointment.timeSlot', 'appointment.therapist')->where('id', $id)->first();
-            $customer_id = $invoice_detail->customer->id;
-            $appointment = Appointment::where('appointment_for', $customer_id)->where('is_deleted', 0)->get();
-            // return $invoice_detail;
-            return view('invoice.edit-invoice', compact('user', 'role', 'invoice_detail', 'customers', 'appointment'));
-        } else {
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Get available data only
+        $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
+        $rooms = Room::where('is_deleted',0)->orderBy('id','ASC')->get();
+        $products = Product::where('is_deleted',0)->orderBy('id','ASC')->get();
+
+        // Check user access and available data
+        if (!$user->hasAccess('invoice.update') || $invoice_detail == NULL) {
             return view('error.403');
         }
+
+        return view('invoice.edit-invoice', compact('user', 'role', 'invoice_detail', 'rooms', 'products'));
     }
 
     /**
@@ -192,49 +195,43 @@ class InvoiceController extends Controller
      * @param  \App\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Invoice $invoice)
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('invoice.edit')) {
-            $request->validate([
-                'customer_id' => 'required',
-                'appointment_id' => 'required',
-                'payment_mode' => 'required',
-                'payment_status' => 'required'
-            ]);
-            try {
-                $user = Sentinel::getUser();
-                if ($request->invoices[0]['title'] == null && $request->invoices[0]['amount'] == null) {
-                    return redirect()->back()->with('error', 'Add at least one Invoice title and amount to create invoice!!!');
-                } else {
-                    $invoice = Invoice::find($id);
-                    $invoice->customer_id = $request->customer_id;
-                    $invoice->payment_mode = $request->payment_mode;
-                    $invoice->payment_status = $request->payment_status;
-                    $invoice->appointment_id = $request->appointment_id;
-                    if ($request->therapist_id !== Null) {
-                        $invoice->therapist_id = $request->therapist_id;
-                    } else {
-                        $invoice->therapist_id = $request->created_by;
-                    }
-                    $invoice->updated_by = $user->id;
-                    $invoice->save();
-                    // old invoice_list details delete
-                    $invoice_detail = InvoiceDetail::where('invoice_id', $invoice->id)->update(['status' => 1]);
-                    foreach ($request->invoices as $item) {
-                        $invoice_detail = new InvoiceDetail();
-                        $invoice_detail->invoice_id = $invoice->id;
-                        $invoice_detail->title = $item['title'];
-                        $invoice_detail->amount = $item['amount'];
-                        $invoice_detail->save();
-                    }
-                    return redirect('invoice')->with('success', 'Invoice updated successfully!');
-                }
-            } catch (Exception $e) {
-                return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());
-            }
-        } else {
+
+        // Check user access
+        if (!$user->hasAccess('invoice.update')) {
             return view('error.403');
+        }
+
+        // Validate input data
+        $request->validate([
+            'customer_name' => 'required',
+            'therapist_name' => 'required',
+            'room' => 'required',
+            'treatment_date' => 'required|date',
+            'treatment_time_from' => 'required',
+            'treatment_time_to' => 'required',
+            'payment_mode' => 'required',
+            'payment_status' => 'required'
+        ]);
+
+        try {
+        // Mapping request to object and store data
+        $obj = $this->toObject($request, $invoice);
+        $obj->updated_by = $user->id;
+        $obj->save();
+
+        // old invoice_list details delete
+        InvoiceDetail::where('invoice_id', $invoice->id)->update(['is_deleted' => 1]);
+
+        // Store invoice detail
+        $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
+
+        return redirect('invoice')->with('success', 'Invoice updated successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }
     }
 

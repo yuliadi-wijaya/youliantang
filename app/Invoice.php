@@ -22,7 +22,7 @@ class Invoice extends Model
         'is_deleted',
     ];
     function invoice_detail(){
-        return $this->hasMany(InvoiceDetail::class);
+        return $this->hasMany(InvoiceDetail::class)->where('is_deleted',0);
     }
     function user(){
         return $this->hasOne(user::class,'id','customer_id');

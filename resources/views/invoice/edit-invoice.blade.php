@@ -30,121 +30,159 @@
                 <div class="card">
                     <div class="card-body">
                         <blockquote>{{ __('Invoice Details') }}</blockquote>
-                        <form class="outer-repeater" action="{{ url('invoice/' . '' . $invoice_detail->id) }}" method="post">
-                            @method('PATCH')
+                        <form class="outer-repeater" action="{{ url('invoice/' . $invoice_detail->id) }}" method="post">
                             @csrf
+                            <input type="hidden" name="_method" value="PATCH" />
                             <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">{{ __('Customer') }}<span
-                                            class="text-danger">*</span></label>
-                                    <select
-                                        class="form-control select2 sel_customer @error('customer_id') is-invalid @enderror"
-                                        name="customer_id" id="customer">
-                                        <option disabled selected>{{ __('Select Customer') }}</option>
-                                        @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}" {{ $invoice_detail->customer->id == $customer->id?'selected':'' }}>
-                                                {{ $customer->first_name }} {{ $customer->last_name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('customer_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                </div>
-                                @if ($role == 'therapist')
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">{{ __('Appointment ') }}<span
-                                                class="text-danger">*</span></label>
-                                        <select
-                                            class="form-control select2 sel_appointment @error('appointment_id') is-invalid @enderror"
-                                            name="appointment_id" id="appointment">
-                                            <option disabled selected>{{ __('Select Appointment') }}</option>
-                                            @foreach ($appointment as $item)
-                                            <option value="{{ $item->id }}"
-                                                {{ $item->id == $invoice_detail->appointment->id ? 'selected' : '' }}>
-                                                {{ $item->appointment_date }}</option>
-                                             @endforeach
-                                        </select>
-                                        @error('appointment_id')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Customer ') }}<span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control @error('customer_name') is-invalid @enderror"
+                                                name="customer_name" id="customer_name" tabindex="1"
+                                                value="{{ $invoice_detail->customer_name }}"
+                                                placeholder="{{ __('Enter Customer Name') }}">
+                                            @error('customer_name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                @endif
-                                @if ($role == 'receptionist')
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">{{ __('Appointment ') }}<span
-                                                class="text-danger">*</span></label>
-                                        <select
-                                            class="form-control select2 sel_appointment @error('appointment_id') is-invalid @enderror"
-                                            name="appointment_id" id="appointment">
-                                            <option disabled selected>{{ __('Select Appointment') }}</option>
-                                            @foreach ($appointment as $item)
-                                            <option value="{{ $item->id }}"
-                                                {{ $item->id == $invoice_detail->appointment->id ? 'selected' : '' }}>
-                                                {{ $item->appointment_date }}</option>
-                                             @endforeach
-                                        </select>
-                                        @error('appointment_id')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Therapist ') }}<span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control @error('therapist_name') is-invalid @enderror"
+                                                name="therapist_name" id="therapist_name" tabindex="1"
+                                                value="{{ $invoice_detail->therapist_name }}"
+                                                placeholder="{{ __('Enter Therapist Name') }}">
+                                            @error('therapist_name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                @endif
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">{{ __('Therapist ') }}</label>
-                                    <input type="text" class="form-control sel_therapist" readonly
-                                    value="{{ $invoice_detail->appointment->therapist->first_name .' '.$invoice_detail->appointment->therapist->last_name }}">
-                                    <input type="hidden" name="therapist_id" class="form-control sel_therapist_id">
-                                    @error('therapist_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Room ') }}<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control select2 @error('room') is-invalid @enderror"
+                                                name="room">
+                                                <option selected disabled>{{ __('-- Select Room --') }}</option>
+                                                @foreach($rooms as $item) 
+                                                    <option value="{{ $item->name }}" @if ($invoice_detail->room == $item->name) selected @endif>{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('room')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="hidden" name="created_by" value="{{ $user->id }}">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="control-label">{{ __('Treatment Date ') }}<span
+                                                class="text-danger">*</span></label>
+                                            <div class="input-group datepickerdiv">
+                                                <input type="text"
+                                                    class="form-control @error('treatment_date') is-invalid @enderror"
+                                                    name="treatment_date" id="TreatmentDate" data-provide="datepicker"
+                                                    data-date-autoclose="true" autocomplete="off" placeholder="{{ __('Enter Date') }}" 
+                                                    value="{{ date('d/m/Y', strtotime($invoice_detail->treatment_date)) }}">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                </div>
+                                                @error('treatment_date')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label">{{ __('From ') }}<span
+                                                class="text-danger">*</span></label>
+                                            <input type="time"
+                                                class="form-control @error('treatment_time_from') is-invalid @enderror"
+                                                name="treatment_time_from" id="TreatmentTimeFrom" tabindex="1"
+                                                value="{{ $invoice_detail->treatment_time_from }}">
+                                            @error('treatment_time_from')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label">{{ __('To ') }}<span
+                                                class="text-danger">*</span></label>
+                                            <input type="time"
+                                                class="form-control @error('treatment_time_to') is-invalid @enderror"
+                                                name="treatment_time_to" id="treatment_time_to" tabindex="1"
+                                                value="{{ $invoice_detail->treatment_time_to }}">
+                                            @error('treatment_end')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Payment Mode ') }}<span
+                                                class="text-danger">*</span></label>
+                                            <select class="form-control @error('payment_mode') is-invalid @enderror"
+                                                name="payment_mode">
+                                                <option selected disabled>{{ __('-- Select Payment Mode --') }}</option>
+                                                <option value="Cash Payement" @if ($invoice_detail->payment_mode == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
+                                                <option value="Debit/Credit Card" @if ($invoice_detail->payment_mode == 'Debit/Credit Card') selected @endif>{{ __('Debit/Credit Card') }}</option>
+                                                <option value="QRIS" @if ($invoice_detail->payment_mode == 'QRIS') selected @endif>{{ __('QRIS') }} </option>
+                                                <option value="GoPay" @if ($invoice_detail->payment_mode == 'GoPay') selected @endif>{{ __('GoPay') }} </option>
+                                                <option value="OVO" @if ($invoice_detail->payment_mode == 'OVO') selected @endif>{{ __('OVO') }} </option>
+                                            </select>
+                                            @error('payment_mode')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Payment Status') }}<span
+                                                class="text-danger">*</span></label>
+                                            <select class="form-control @error('payment_status') is-invalid @enderror"
+                                                name="payment_status">
+                                                <option selected disabled>{{ __('-- Select Payment Status --') }}</option>
+                                                <option value="Paid" @if ($invoice_detail->payment_status == 'Paid') selected @endif>{{ __('Paid') }}</option>
+                                                <option value="Unpaid" @if ($invoice_detail->payment_status == 'Unpaid') selected @endif>{{ __('Unpaid') }}</option>
+                                            </select>
+                                            @error('payment_status')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Note') }}</label>
+                                                    <textarea id="Note" name="note" tabindex="7"
+                                                    class="form-control @error('note') is-invalid @enderror" rows="1"
+                                                    placeholder="{{ __('Enter Note') }}">{{ $invoice_detail->note }}</textarea>
+                                            @error('note')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">{{ __('Payment Mode ') }}<span
-                                            class="text-danger">*</span></label>
-                                    <select class="form-control @error('payment_mode') is-invalid @enderror"
-                                        name="payment_mode">
-                                        <option selected disabled>{{ __('Select Payment Mode') }}</option>
-                                        <option value="Cash Payement" @if ($invoice_detail->payment_mode == 'Cash Payement') selected @endif>{{ __('Cash Payment') }}
-                                        </option>
-                                        <option value="Cheque" @if ($invoice_detail->payment_mode == 'Cheque') selected @endif>{{ __('Cheque') }}</option>
-                                        <option value="Debit/Credit Card" @if ($invoice_detail->payment_mode == 'Debit/Credit Card') selected @endif>
-                                            {{ __('Debit/Credit Card') }}
-                                        </option>
-                                    </select>
-                                    @error('payment_mode')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">{{ __('Payment Status ') }}<span
-                                            class="text-danger">*</span></label>
-                                    <select class="form-control @error('payment_status') is-invalid @enderror"
-                                        name="payment_status">
-                                        <option selected disabled>{{ __('Select Payment Status') }}</option>
-                                        <option value="Paid" @if ($invoice_detail->payment_status == 'Paid') selected @endif>{{ __('Paid') }}</option>
-                                        <option value="Unpaid" @if ($invoice_detail->payment_status == 'Unpaid') selected @endif>{{ __('Unpaid') }}</option>
-                                    </select>
-                                    @error('payment_status')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
+                            <br>
                             <blockquote>{{ __('Invoice Summary') }}</blockquote>
                             <div class="row">
                                 <div class="col-md-12">
@@ -152,23 +190,23 @@
                                         <div data-repeater-list="invoices" class="form-group">
                                             <label>{{ __('Invoice Items ') }}<span
                                                     class="text-danger">*</span></label>
-                                            @foreach ($invoice_detail->invoice_detail as $item)
-                                                <div data-repeater-item class="mb-3 row">
-                                                    <div class="col-md-5 col-6">
-                                                        <input type="text" name="title" class="form-control"
-                                                            placeholder="{{ __('Item title') }}" value="{{ $item->title }}"/>
+                                                @foreach ($invoice_detail->invoice_detail as $item)
+                                                    <div data-repeater-item class="mb-3 row">
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="text" name="title" class="form-control"
+                                                                placeholder="{{ __('Item title') }}" value="{{ $item->title }}"/>
+                                                        </div>
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="text" name="amount" class="form-control"
+                                                                placeholder="{{ __('Enter Amount') }}" value="{{ $item->amount }}" />
+                                                        </div>
+                                                        <div class="col-md-2 col-4">
+                                                            <input data-repeater-delete type="button"
+                                                                class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
+                                                                value="X" />
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-5 col-6">
-                                                        <input type="text" name="amount" class="form-control"
-                                                            placeholder="{{ __('Enter Amount') }}" value="{{ $item->amount }}" />
-                                                    </div>
-                                                    <div class="col-md-2 col-4">
-                                                        <input data-repeater-delete type="button"
-                                                            class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
-                                                            value="X" />
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
                                         </div>
                                         <input data-repeater-create type="button" class="btn btn-primary"
                                             value="Add Item" />
@@ -178,7 +216,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Updated Invoice') }}
+                                        {{ __('Update Invoice') }}
                                     </button>
                                 </div>
                             </div>
@@ -197,49 +235,12 @@
         <script src="{{ URL::asset('assets/js/pages/form-repeater.int.js') }}"></script>
         <script src="{{ URL::asset('assets/js/pages/form-advanced.init.js') }}"></script>
         <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
+        <script src="{{ URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js') }}"></script>
         <script>
-            // Customer by appointment select
-            $('.sel_customer').on('change', function(e) {
-                e.preventDefault();
-                var customerId = $(this).val();
-                var token = $("input[name='_token']").val();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('customer_by_appointment') }}",
-                    data: {
-                        customer_id: customerId,
-                        _token: token,
-                    },
-                    success: function(res) {
-                        $('.sel_appointment').html('');
-                        $('.sel_appointment').html(res.options);
-                    },
-                    error: function(res) {
-                        console.log(res);
-                    }
-                });
-            });
-            // appointment by therapist select
-            $('.sel_appointment').change(function(e) {
-                e.preventDefault();
-                var appointmentID = $(this).val();
-                var token = $("input[name='_token']").val();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('appointment_by_therapist') }}",
-                    data: {
-                        appointment_id: appointmentID,
-                        _token: token,
-                    },
-                    success: function(res) {
-                        var rd = res.data[0];
-                        $('.sel_therapist').val(rd.first_name + ' ' + rd.last_name);
-                        $('.sel_therapist_id').val(rd.id);
-                    },
-                    error: function(res) {
-                        console.log(res);
-                    }
-                });
+            $('#TreatmentDate').datepicker({
+                startDate: new Date(),
+                format: 'dd/mm/yyyy'
             });
         </script>
     @endsection

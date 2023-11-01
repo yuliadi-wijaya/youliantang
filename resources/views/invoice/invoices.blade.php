@@ -93,6 +93,23 @@
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
                                             </a>
+                                            <a href="{{ url('invoice/' . $invoice->id . '/edit') }}">
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                                    title="Update invoice">
+                                                    <i class="mdi mdi-lead-pencil"></i>
+                                                </button>
+                                            </a>
+                                            {{-- @if ($role != 'customer')
+                                                <a href="javascript:void(0)">
+                                                    <button type="button"
+                                                        class="btn btn-primary btn-sm btn-rounded waves-effect waves-light
+                                                                send-mail"
+                                                        title="Send Email" data-id="{{ $invoice->id }}">
+                                                        <i class="mdi mdi-email"></i>
+                                                    </button>
+                                                </a>
+                                            @endif --}}
                                         </td>
                                     </tr>
                                 @endforeach
