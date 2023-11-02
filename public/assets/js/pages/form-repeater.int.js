@@ -148,6 +148,26 @@ $(document).ready(function () {
   //     }
   //   }]
   // });
+
+  $('.repeater-product').repeater({
+    initEmpty: false,
+    defaultValues: {
+      'text-input': 'foo'
+    },
+    show: function show() {
+      console.log('Item Created');
+      $(this).slideDown();
+      $(this).find("#item").select2();
+      $(this).find("#item").find('option:contains("-- Select Product --")').prop('selected', true).trigger('change');
+      $(this).find("#item").trigger("change");
+    },
+    hide: function hide(deleteElement) {
+        $(this).slideUp(deleteElement);
+    },
+    ready: function ready(setIndexes) {},
+    isFirstItemUndeletable: true
+  });
+
 });
 
 /***/ }),
