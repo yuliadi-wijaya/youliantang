@@ -195,7 +195,7 @@
             <td>:</td>
             <td>{{ $invoice_detail->payment_status }}</td>
         </tr>
-    </table><br>
+    </table>
 
     {{ str_repeat("=", 37) }} <br>
 
@@ -222,6 +222,9 @@
                 $sub_total += $item->amount;
             @endphp
         @endforeach
+        <tr>
+            <td></td>
+        </tr>
         <tr>
             <td colspan="2" align="right">{{ __('Sub Total') }}</td>
             <td class="text-right">Rp {{ number_format($sub_total) }}</td>
