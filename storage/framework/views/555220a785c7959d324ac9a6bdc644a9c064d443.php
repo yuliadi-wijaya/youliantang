@@ -156,10 +156,10 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Email ')); ?><span
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Gender ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <input type="email" class="form-control <?php $__errorArgs = ['email'];
+                                            <select class="form-control select2 <?php $__errorArgs = ['gender'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -167,9 +167,12 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="email" id="email" tabindex="3" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist->email); ?><?php elseif(old('email')): ?><?php echo e(old('email')); ?><?php endif; ?>"
-                                                placeholder="<?php echo e(__('Enter Email')); ?>">
-                                            <?php $__errorArgs = ['email'];
+                                                name="gender" id="gender">
+                                                <option selected disabled><?php echo e(__('-- Select Gender --')); ?></option>
+                                                <option value="<?php echo e('Male'); ?>" <?php echo e(old('gender') == 'Male' ? 'selected' : ''); ?>><?php echo e('Male'); ?></option>
+                                                <option value="<?php echo e('Female'); ?>" <?php echo e(old('gender') == 'Female' ? 'selected' : ''); ?>><?php echo e('Female'); ?></option>
+                                            </select>
+                                            <?php $__errorArgs = ['gender'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -184,7 +187,7 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-6 form-group">
                                             <label class="control-label"><?php echo e(__('Place Of Birth ')); ?></label>
                                             <input type="text" class="form-control <?php $__errorArgs = ['place_of_birth'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -197,6 +200,31 @@ unset($__errorArgs, $__bag); ?>"
                                                 name="place_of_birth" id="place_of_birth" tabindex="4" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->place_of_birth); ?><?php elseif(old('place_of_birth')): ?><?php echo e(old('place_of_birth')); ?><?php endif; ?>"
                                                 placeholder="<?php echo e(__('Enter Place Of Birth')); ?>">
                                             <?php $__errorArgs = ['place_of_birth'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong><?php echo e($message); ?></strong>
+                                                </span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Birth Date ')); ?></label>
+                                            <input type="date" class="form-control <?php $__errorArgs = ['birth_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                                name="birth_date" id="birth_date" tabindex="10" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->birth_date); ?><?php elseif(old('birth_date')): ?><?php echo e(old('birth_date')); ?><?php endif; ?>"
+                                                placeholder="<?php echo e(__('Enter Birth Date')); ?>">
+                                            <?php $__errorArgs = ['birth_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -225,60 +253,6 @@ unset($__errorArgs, $__bag); ?>"
                                                 name="address" tabindex="5" id="address"
                                                 placeholder="<?php echo e(__('Enter Address')); ?>"><?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->address); ?><?php elseif(old('address')): ?><?php echo e(old('address')); ?><?php endif; ?></textarea>
                                             <?php $__errorArgs = ['address'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong><?php echo e($message); ?></strong>
-                                                </span>
-                                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Emergency Contact ')); ?></label>
-                                            <input type="text" class="form-control <?php $__errorArgs = ['emergency_contact'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                                name="emergency_contact" id="emergency_contact" tabindex="6" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->emergency_contact); ?><?php elseif(old('emergency_contact')): ?><?php echo e(old('emergency_contact')); ?><?php endif; ?>"
-                                                placeholder="<?php echo e(__('Enter Emergency Contact')); ?>">
-                                            <?php $__errorArgs = ['emergency_contact'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong><?php echo e($message); ?></strong>
-                                                </span>
-                                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Emergency Name ')); ?></label>
-                                            <input type="text" class="form-control <?php $__errorArgs = ['emergency_name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                                name="emergency_name" id="emergency_name" tabindex="7" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->emergency_name); ?><?php elseif(old('emergency_name')): ?><?php echo e(old('emergency_name')); ?><?php endif; ?>"
-                                                placeholder="<?php echo e(__('Enter Emergency Name')); ?>">
-                                            <?php $__errorArgs = ['emergency_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -346,10 +320,10 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4 form-group">
-                                            <label class="control-label"><?php echo e(__('Slots Time (In Minute) ')); ?><span
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Status ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 <?php $__errorArgs = ['slot_time'];
+                                            <select class="form-control <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -357,15 +331,12 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="slot_time" id="slot_time">
-                                                <option value="" disabled selected>00</option>
-                                                <?php for($i = 1; $i <= 60; $i++): ?>
-                                                    <option value="<?php echo e($i); ?>"
-                                                        <?php echo e(old('slot_time') == $i ? 'selected' : ''); ?>>
-                                                        <?php echo e($i); ?></option>
-                                                <?php endfor; ?>
+                                                tabindex="13" name="status">
+                                                <option selected disabled><?php echo e(__('-- Select Status --')); ?></option>
+                                                <option value="1" <?php if(($therapist && $therapist_info->status == '1') || old('status') == '1'): ?> selected <?php endif; ?>><?php echo e(__('Active')); ?></option>
+                                                <option value="0" <?php if(($therapist && $therapist_info->status == '0') || old('status') == '0'): ?> selected <?php endif; ?>><?php echo e(__('In Active')); ?></option>
                                             </select>
-                                            <?php $__errorArgs = ['slot_time'];
+                                            <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -377,85 +348,6 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class='repeater mb-4'>
-                                                <div data-repeater-list="TimeSlot" class="form-group">
-
-                                                    <label><?php echo e(__('Available Time ')); ?><span
-                                                            class="text-danger">*</span></label>
-                                                    <div data-repeater-item class="mb-3 row">
-                                                        <div class="col-md-5 col-6">
-                                                            <label class="label-control">From:</label>
-                                                            <div class="input-group">
-                                                                <input type="time" name="from"
-                                                                    class="form-control timecount timepicker <?php $__errorArgs = ['TimeSlot.*.from'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                                                    value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->time_from); ?><?php elseif(old('time_from')): ?><?php echo e(old('time_from')); ?><?php endif; ?>"
-                                                                    placeholder="<?php echo e(__('From time')); ?>" id="time_from" />
-                                                                <?php $__errorArgs = ['TimeSlot.*'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                                    <span class="invalid-feedback" role="alert">
-                                                                        <strong><?php echo e($message); ?></strong>
-                                                                    </span>
-                                                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-5 col-6">
-                                                            <label class="label-control">To:</label>
-                                                            <div class="input-group">
-                                                                <input type="time" name="to"
-                                                                    class="form-control  <?php $__errorArgs = ['TimeSlot.*.to'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                                                    value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->time_to); ?><?php elseif(old('time_to')): ?><?php echo e(old('time_to')); ?><?php endif; ?>"
-                                                                    placeholder="<?php echo e(__('To time')); ?>"
-                                                                    onchange="valinput0()" id="time_to" />
-                                                                <?php $__errorArgs = ['TimeSlot.*.to'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                                    <span class="invalid-feedback" role="alert">
-                                                                        <strong><?php echo e($message); ?></strong>
-                                                                    </span>
-                                                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-2 col-4">
-                                                            <input data-repeater-delete type="button" onclick="cf--"
-                                                                class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
-                                                                value="X" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p class="para error d-none"></p>
-                                                <input data-repeater-create type="button" class="btn btn-primary"
-                                                    value="Add Time" onclick="change()" />
-
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -489,10 +381,10 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label"><?php echo e(__('Gender ')); ?><span
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label"><?php echo e(__('Email ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 <?php $__errorArgs = ['gender'];
+                                            <input type="email" class="form-control <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -500,12 +392,9 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="gender" id="gender">
-                                                <option selected disabled><?php echo e(__('-- Select Gender --')); ?></option>
-                                                <option value="<?php echo e('Male'); ?>" <?php echo e(old('gender') == 'Male' ? 'selected' : ''); ?>><?php echo e('Male'); ?></option>
-                                                <option value="<?php echo e('Female'); ?>" <?php echo e(old('gender') == 'Female' ? 'selected' : ''); ?>><?php echo e('Female'); ?></option>
-                                            </select>
-                                            <?php $__errorArgs = ['gender'];
+                                                name="email" id="email" tabindex="3" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist->email); ?><?php elseif(old('email')): ?><?php echo e(old('email')); ?><?php endif; ?>"
+                                                placeholder="<?php echo e(__('Enter Email @youliantang.com')); ?>">
+                                            <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -549,36 +438,8 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label"><?php echo e(__('Birth Date ')); ?></label>
-                                            <input type="date" class="form-control <?php $__errorArgs = ['birth_date'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                                name="birth_date" id="birth_date" tabindex="10" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->birth_date); ?><?php elseif(old('birth_date')): ?><?php echo e(old('birth_date')); ?><?php endif; ?>"
-                                                placeholder="<?php echo e(__('Enter Birth Date')); ?>">
-                                            <?php $__errorArgs = ['birth_date'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong><?php echo e($message); ?></strong>
-                                                </span>
-                                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Rekening Number ')); ?><span
-                                                    class="text-danger">*</span></label>
+                                            <label class="control-label"><?php echo e(__('Rekening Number ')); ?></label>
                                             <input type="text" class="form-control <?php $__errorArgs = ['rekening_number'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -642,11 +503,16 @@ endif;
 unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <br>
+                            <blockquote><?php echo e(__('Emergency Information')); ?></blockquote>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label"><?php echo e(__('Status ')); ?><span
-                                                    class="text-danger">*</span></label>
-                                            <select class="form-control <?php $__errorArgs = ['status'];
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label"><?php echo e(__('Emergency Name ')); ?></label>
+                                            <input type="text" class="form-control <?php $__errorArgs = ['emergency_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -654,12 +520,38 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                tabindex="13" name="status">
-                                                <option selected disabled><?php echo e(__('-- Select Status --')); ?></option>
-                                                <option value="1" <?php if(($therapist && $therapist_info->status == '1') || old('status') == '1'): ?> selected <?php endif; ?>><?php echo e(__('Active')); ?></option>
-                                                <option value="0" <?php if(($therapist && $therapist_info->status == '0') || old('status') == '0'): ?> selected <?php endif; ?>><?php echo e(__('In Active')); ?></option>
-                                            </select>
-                                            <?php $__errorArgs = ['status'];
+                                                name="emergency_name" id="emergency_name" tabindex="7" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->emergency_name); ?><?php elseif(old('emergency_name')): ?><?php echo e(old('emergency_name')); ?><?php endif; ?>"
+                                                placeholder="<?php echo e(__('Enter Emergency Name')); ?>">
+                                            <?php $__errorArgs = ['emergency_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong><?php echo e($message); ?></strong>
+                                                </span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label"><?php echo e(__('Emergency Contact ')); ?></label>
+                                            <input type="text" class="form-control <?php $__errorArgs = ['emergency_contact'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                                name="emergency_contact" id="emergency_contact" tabindex="6" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->emergency_contact); ?><?php elseif(old('emergency_contact')): ?><?php echo e(old('emergency_contact')); ?><?php endif; ?>"
+                                                placeholder="<?php echo e(__('Enter Emergency Contact')); ?>">
+                                            <?php $__errorArgs = ['emergency_contact'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -720,81 +612,6 @@ unset($__errorArgs, $__bag); ?>
                         document.querySelector('#profile_display').setAttribute('src', e.target.result);
                     }
                     reader.readAsDataURL(e.files[0]);
-                }
-            }
-            // Time Validation
-            var timecount = $('.timecount').length
-            let cf = 0;
-            let error = 0;
-
-            function valinput0() {
-                var startTime = $('input[name="TimeSlot[0][from]"]').val();
-                var endTime = $('input[name="TimeSlot[0][to]"]').val();
-                var st = startTime.split(":");
-                var et = endTime.split(":");
-                var sst = new Date();
-                sst.setHours(st[0]);
-                sst.setMinutes(st[1]);
-                var eet = new Date();
-                eet.setHours(et[0]);
-                eet.setMinutes(et[1]);
-                if (sst > eet) {
-                    error = 1;
-                    $('.para').html('to value is bigger then from');
-                    $('.para').addClass('d-block');
-                } else {
-                    error = 0;
-                    $('.para').removeClass('d-block');
-                }
-            }
-
-            function change() {
-                cf++;
-                setTimeout(function() {
-                    $(document).on('change', `input[name="TimeSlot[${cf}][to]"]`, function() {
-                        validate1();
-                    });
-                }, 100);
-            }
-
-            function validate1() {
-                timecount = $('.timecount').length;
-                for (let i = 0; i < timecount; i++) {
-                    var startTime = $('input[name="TimeSlot[' + i + '][from]"]').val();
-                    var endTime = $('input[name="TimeSlot[' + i + '][to]"]').val();
-                    currenttime = $(`input[name="TimeSlot[${cf}][from]"]`).val();
-                    currentto = $(`input[name="TimeSlot[${cf}][to]"]`).val();
-                    var st = startTime.split(":");
-                    var et = endTime.split(":");
-                    var ct = currenttime.split(":");
-                    var cft = currentto.split(":");
-                    var sst = new Date();
-                    sst.setHours(st[0]);
-                    sst.setMinutes(st[1]);
-                    var eet = new Date();
-                    eet.setHours(et[0]);
-                    eet.setMinutes(et[1]);
-                    var cct = new Date();
-                    cct.setHours(ct[0]);
-                    cct.setMinutes(ct[1]);
-                    var cff = new Date();
-                    cff.setHours(cft[0]);
-                    cff.setMinutes(cft[1]);
-                    if (cct < cff) {
-                        if (sst < cct && eet > cct) {
-                            error = 1;
-                            $('.para').html('Value not accepted');
-                            $('.para').addClass('d-block');
-                            break
-                        } else {
-                            error = 0;
-                            $('.para').removeClass('d-block');
-                        }
-                    } else {
-                        $('.para').html('to value is bigger then from');
-                        $('.para').addClass('d-block');
-                        break
-                    }
                 }
             }
 

@@ -47,7 +47,7 @@ class InvoiceController extends Controller
     {
         // Get user session data
         $user = Sentinel::getUser();
-        
+
         // Check user access
         if (!$user->hasAccess('invoice.list')) {
             return view('error.403');
@@ -83,8 +83,8 @@ class InvoiceController extends Controller
         // Default data null
         $invoice = null;
         $rooms = Room::where('is_deleted',0)->orderBy('id','ASC')->get();
-        $products = Product::where('is_deleted',0)->orderBy('id','ASC')->get();
-        
+        $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
+
         return view('invoice.invoice-details', compact('user', 'role', 'invoice', 'rooms', 'products'));
     }
 
@@ -120,7 +120,7 @@ class InvoiceController extends Controller
             // Validate invoices
             if ($request->invoices[0]['title'] == null && $request->invoices[0]['amount'] == null) {
                 return redirect()->back()->with('error', 'Add at least one Invoice title and amount to create invoice!!!');
-            } 
+            }
 
             // Mapping request to object and store data
             $obj = $this->toObject($request, new Invoice());

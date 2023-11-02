@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?> <?php echo e(__('Create New Invoice')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/libs/select2/select2.min.css')); ?>">
@@ -99,8 +98,7 @@ unset($__errorArgs, $__bag); ?>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Room ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control <?php $__errorArgs = ['room'];
+                                            <select class="form-control select2 <?php $__errorArgs = ['room'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -108,9 +106,12 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="room" id="room" tabindex="1"
-                                                value="<?php echo e(old('room')); ?>"
-                                                placeholder="<?php echo e(__('Enter Room')); ?>">
+                                                name="room">
+                                                <option selected disabled><?php echo e(__('-- Select Room --')); ?></option>
+                                                <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($item->name); ?>" <?php if(old('room') == '<?php echo e($item->name); ?>'): ?> selected <?php endif; ?>><?php echo e($item->name); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </select>
                                             <?php $__errorArgs = ['room'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -142,7 +143,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
                                                     name="treatment_date" id="TreatmentDate" data-provide="datepicker"
-                                                    data-date-autoclose="true" autocomplete="off" placeholder="<?php echo e(__('Enter Date')); ?>" 
+                                                    data-date-autoclose="true" autocomplete="off" placeholder="<?php echo e(__('Enter Date')); ?>"
                                                     value="<?php echo e(old('treatment_date')); ?>">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -310,14 +311,25 @@ unset($__errorArgs, $__bag); ?>
                             <blockquote><?php echo e(__('Invoice Summary')); ?></blockquote>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class='repeater mb-4'>
+                                    <div class='repeater-product mb-4'>
                                         <div data-repeater-list="invoices" class="form-group">
                                             <label><?php echo e(__('Invoice Items ')); ?><span
                                                     class="text-danger">*</span></label>
                                             <div data-repeater-item class="mb-3 row">
                                                 <div class="col-md-5 col-6">
-                                                    <input type="text" name="title" class="form-control"
-                                                        placeholder="<?php echo e(__('Enter Product')); ?>" />
+                                                    <select class="form-control <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="title" id="title">
+                                                        <option selected><?php echo e(__('-- Select Product --')); ?></option>
+                                                        <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <option value="<?php echo e($item->name); ?>" <?php if(old('title') == '<?php echo e($item->name); ?>'): ?> selected <?php endif; ?>><?php echo e($item->name); ?></option>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </select>
                                                 </div>
                                                 <div class="col-md-5 col-6">
                                                     <input type="text" name="amount" class="form-control"
@@ -365,6 +377,8 @@ unset($__errorArgs, $__bag); ?>
                 startDate: new Date(),
                 format: 'dd/mm/yyyy'
             });
+
+            // $("#product").select2();
         </script>
     <?php $__env->stopSection(); ?>
 

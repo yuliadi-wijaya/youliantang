@@ -73,7 +73,7 @@
                                             <select class="form-control select2 @error('room') is-invalid @enderror"
                                                 name="room">
                                                 <option selected disabled>{{ __('-- Select Room --') }}</option>
-                                                @foreach($rooms as $item) 
+                                                @foreach($rooms as $item)
                                                     <option value="{{ $item->name }}" @if (old('room') == '{{ $item->name }}') selected @endif>{{ $item->name }}</option>
                                                 @endforeach
                                             </select>
@@ -94,7 +94,7 @@
                                                 <input type="text"
                                                     class="form-control @error('treatment_date') is-invalid @enderror"
                                                     name="treatment_date" id="TreatmentDate" data-provide="datepicker"
-                                                    data-date-autoclose="true" autocomplete="off" placeholder="{{ __('Enter Date') }}" 
+                                                    data-date-autoclose="true" autocomplete="off" placeholder="{{ __('Enter Date') }}"
                                                     value="{{ old('treatment_date') }}">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -185,14 +185,18 @@
                             <blockquote>{{ __('Invoice Summary') }}</blockquote>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class='repeater mb-4'>
+                                    <div class='repeater-product mb-4'>
                                         <div data-repeater-list="invoices" class="form-group">
                                             <label>{{ __('Invoice Items ') }}<span
                                                     class="text-danger">*</span></label>
                                             <div data-repeater-item class="mb-3 row">
                                                 <div class="col-md-5 col-6">
-                                                    <input type="text" name="title" class="form-control"
-                                                        placeholder="{{ __('Enter Product') }}" />
+                                                    <select class="form-control @error('title') is-invalid @enderror" name="title" id="title">
+                                                        <option selected>{{ __('-- Select Product --') }}</option>
+                                                        @foreach($products as $item)
+                                                            <option value="{{ $item->name }}" @if (old('title') == '{{ $item->name }}') selected @endif>{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                                 <div class="col-md-5 col-6">
                                                     <input type="text" name="amount" class="form-control"
@@ -239,5 +243,7 @@
                 startDate: new Date(),
                 format: 'dd/mm/yyyy'
             });
+
+            // $("#product").select2();
         </script>
     @endsection
