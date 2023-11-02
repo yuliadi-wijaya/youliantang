@@ -323,7 +323,7 @@ unset($__errorArgs, $__bag); ?>
                                                                 placeholder="<?php echo e(__('Item title')); ?>" value="<?php echo e($item->title); ?>"/>
                                                         </div>
                                                         <div class="col-md-5 col-6">
-                                                            <input type="text" name="amount" class="form-control"
+                                                            <input type="number" name="amount" class="form-control"
                                                                 placeholder="<?php echo e(__('Enter Amount')); ?>" value="<?php echo e($item->amount); ?>" />
                                                         </div>
                                                         <div class="col-md-2 col-4">

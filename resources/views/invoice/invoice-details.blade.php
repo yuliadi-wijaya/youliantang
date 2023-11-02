@@ -195,7 +195,7 @@
                                                         placeholder="{{ __('Enter Product') }}" />
                                                 </div>
                                                 <div class="col-md-5 col-6">
-                                                    <input type="text" name="amount" class="form-control"
+                                                    <input type="number" name="amount" class="form-control"
                                                         placeholder="{{ __('Enter Amount') }}" />
                                                 </div>
                                                 <div class="col-md-2 col-4">

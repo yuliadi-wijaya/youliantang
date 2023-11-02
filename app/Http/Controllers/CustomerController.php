@@ -99,16 +99,22 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('customer.create')) {
-            $role = $user->roles[0]->slug;
-            $customer = null;
-            $customer_info = null;
-            return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
-        } else {
-            return view('error.403');
 
+        // Check user access
+        if (!$user->hasAccess('customer.create')) {
+            return view('error.403');
         }
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Default data null
+        $customer = null;
+        $customer_info = null;
+        
+        return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
     }
 
     /**
@@ -119,18 +125,28 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('customer.create')) {
-            $validatedData = $request->validate([
-                'first_name' => 'required|alpha',
-                'last_name' => 'alpha',
-                'phone_number' => 'required',
-                'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'address' => 'required|max:100',
-                'gender' => 'required',
-                'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
-                'status' => 'required'
-            ]);
+
+        // Check user access
+        if (!$user->hasAccess('customer.create')) {
+            return view('error.403');
+        }
+
+        // Validate input data
+        $validatedData = $request->validate([
+            'first_name' => 'required|alpha',
+            'last_name' => 'alpha',
+            'phone_number' => 'required',
+            'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
+            'address' => 'required|max:100',
+            'gender' => 'required',
+            'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
+            'status' => 'required'
+        ]);
+
+        try {
+            // Upload profile foto
             if ($request->profile_photo != null) {
                 $request->validate([
                     'profile_photo' => 'image'
@@ -141,46 +157,40 @@ class CustomerController extends Controller
                 $file->move(public_path('storage/images/users'), $imageName);
                 $validatedData['profile_photo'] = $imageName;
             }
-            try {
-                $user = Sentinel::getUser();
-                // Set Default Password for Customer
-                $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
-                $validatedData['created_by'] = $user->id;
-                $validatedData['updated_by'] = $user->id;
-                //Create a new user
-                $customer = Sentinel::registerAndActivate($validatedData);
-                //Attach the user to the role
-                $role = Sentinel::findRoleBySlug('customer');
-                $role->users()->attach($customer);
-                $validatedData['user_id'] = $customer->id;
 
-                $customer_info = new Customer();
-                $customer_info->user_id = $customer->id;
-                $customer_info->gender = $request->gender;
-                $customer_info->place_of_birth = $request->place_of_birth;
-                $customer_info->birth_date = $request->birth_date;
-                $customer_info->address = $request->address;
-                $customer_info->emergency_contact = $request->emergency_contact;
-                $customer_info->emergency_name = $request->emergency_name;
-                $customer_info->created_by = $user->id;
-                $customer_info->updated_by = $user->id;
-                $customer_info->status = $request->status;
-                $customer_info->save();
+            // Set Default Password for Customer
+            $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
+            $validatedData['created_by'] = $user->id;
+            $validatedData['updated_by'] = $user->id;
+            //Create a new user
+            $customer = Sentinel::registerAndActivate($validatedData);
+            //Attach the user to the role
+            $role = Sentinel::findRoleBySlug('customer');
+            $role->users()->attach($customer);
+            $validatedData['user_id'] = $customer->id;
 
-                $app_name =  AppSetting('title');
-                $verify_mail = trim($request->email);
-                Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
-                    $message->to($verify_mail);
-                    $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
-                });
-                return redirect('/customer')->with('success', 'Customer created successfully!');
-            } catch (Exception $e) {
-                return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
-                //dd($e->getMessage());
-            }
-        } else {
-            return view('error.403');
+            $customer_info = new Customer();
+            $customer_info->user_id = $customer->id;
+            $customer_info->gender = $request->gender;
+            $customer_info->place_of_birth = $request->place_of_birth;
+            $customer_info->birth_date = $request->birth_date;
+            $customer_info->address = $request->address;
+            $customer_info->emergency_contact = $request->emergency_contact;
+            $customer_info->emergency_name = $request->emergency_name;
+            $customer_info->created_by = $user->id;
+            $customer_info->updated_by = $user->id;
+            $customer_info->status = $request->status;
+            $customer_info->save();
 
+            $app_name =  AppSetting('title');
+            $verify_mail = trim($request->email);
+            Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
+                $message->to($verify_mail);
+                $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
+            });
+            return redirect('customer')->with('success', 'Customer created successfully!');
+        } catch (Exception $e) {
+            return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }
     }
 
