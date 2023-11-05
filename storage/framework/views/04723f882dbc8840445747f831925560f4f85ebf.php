@@ -58,6 +58,9 @@
         <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light mb-4">
             <i class="fa fa-print"></i>
         </a>
+        <a href="<?php echo e(url('invoice-pdf/' . $invoice->id)); ?>" class="btn btn-success waves-effect waves-light mb-4">
+            <i class="fa fa-file-pdf"></i>
+        </a>
     </div>
 </div>
 <div class="view-invoice">
@@ -148,23 +151,21 @@
 </div>
 
 <div class="print-invoice">
-    <table cellpadding="0" cellspacing="0">
+    <table cellpadding="0" cellspacing="0" style="margin-left: 20px">
         <tr>
-            <td><h4><strong>YOU LIAN tANG</strong></h4></td>
+            <td style="text-align:center"><span style="font-weight: bold; font-size:13pt">YOU LIAN tANG<span>
+                <span style="font-weight: bold; font-size:10pt;">FAMILY REFLEXOLOGY AND MASSAGE</span></td>
         </tr>
         <tr>
-            <td><h5>Family Refleksi & Massage</h5></td>
+            <td style="text-align:center"><span>RUKO INKOPAL BLOK C6-C7</span>
+                <span>KELAPA GADING BARAT JAKARTA UTARA</span>
+            </td>
         </tr>
     </table>
 
-    <?php echo e(str_repeat("=", 37)); ?> <br>
+    <?php echo e(str_repeat("-", 37)); ?> <br>
 
     <table cellpadding="0" cellspacing="0">
-        <tr>
-            <td>Invoice Date</td>
-            <td>:</td>
-            <td><?php echo e($invoice->created_at); ?></td>
-        </tr>
         <tr>
             <td>Treatment Date</td>
             <td>:</td>
@@ -195,14 +196,14 @@
             <td>:</td>
             <td><?php echo e($invoice_detail->payment_status); ?></td>
         </tr>
-    </table><br>
+    </table>
 
-    <?php echo e(str_repeat("=", 37)); ?> <br>
+    <?php echo e(str_repeat("-", 37)); ?> <br>
 
     <h6><strong>Invoice summary</strong></h6>
 
     <table cellpadding="0" cellspacing="0">
-        <tr>
+        <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
             <td>No</td>
             <td width="200px">Product</td>
             <td>Amount</td>
@@ -223,10 +224,17 @@
             ?>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         <tr>
+            <td></td>
+        </tr>
+        <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
             <td colspan="2" align="right"><?php echo e(__('Sub Total')); ?></td>
             <td class="text-right">Rp <?php echo e(number_format($sub_total)); ?></td>
         </tr>
         <tr>
+            <td colspan="2" align="right">Discount</td>
+            <td class="text-right">0</td>
+        </tr>
+        <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
             <td colspan="2" align="right"><strong><?php echo e(__('Total')); ?></strong></td>
             <td align="right"><strong>Rp <?php echo e(number_format($sub_total)); ?></strong></td>
         </tr>

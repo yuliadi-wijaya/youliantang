@@ -58,6 +58,9 @@
         <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light mb-4">
             <i class="fa fa-print"></i>
         </a>
+        <a href="{{ url('invoice-pdf/' . $invoice->id) }}" class="btn btn-success waves-effect waves-light mb-4">
+            <i class="fa fa-file-pdf"></i>
+        </a>
     </div>
 </div>
 <div class="view-invoice">

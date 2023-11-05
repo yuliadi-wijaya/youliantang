@@ -98,6 +98,7 @@ Route::get('/time-update-ajax/{id}', 'TherapistController@time_update_ajax');
 Route::get('invoice-email/{id}', 'EmailController@invoice_email_send');
 Route::get('invoice-list', 'InvoiceController@invoice_list');
 Route::get('invoice-view/{id}', 'InvoiceController@invoice_view');
+Route::get('invoice-pdf/{id}', 'InvoiceController@invoice_pdf');
 // Route::get('transaction', 'InvoiceController@transaction');
 
 //Transaction routes
