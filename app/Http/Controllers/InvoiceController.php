@@ -14,7 +14,7 @@ use App\Product;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Support\Facades\Config;
-
+use PDF;
 
 class InvoiceController extends Controller
 {
@@ -159,6 +159,22 @@ class InvoiceController extends Controller
         }
 
         return view('invoice.view-invoice', compact('user', 'role', 'invoice', 'invoice_detail'));
+    }
+
+    public function invoice_pdf($id)
+    {
+        $user = Sentinel::getUser();
+        $role = $user->roles[0]->slug;
+        $invoice = Invoice::where('id', $id)->first();
+        $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
+
+        // Check user access and available data
+        if (!$user->hasAccess('invoice.invoice_pdf') || $invoice_detail == NULL) {
+            return view('error.403');
+        }
+
+        $pdf = PDF::loadView('invoice.invoice-pdf', compact('user', 'role', 'invoice', 'invoice_detail'));
+        return $pdf->download('invoice_' . date('Y-m-d') . '_' . $id . '.pdf');
     }
 
     /**

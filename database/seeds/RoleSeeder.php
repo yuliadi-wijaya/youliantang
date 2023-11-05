@@ -100,6 +100,7 @@ class RoleSeeder extends Seeder
             'invoice.update' => true,
             'invoice.delete' => true,
             'invoice.edit'=>true,
+            'invoice.invoice_pdf'=>true,
         ];
         $role_admin->save();
 
