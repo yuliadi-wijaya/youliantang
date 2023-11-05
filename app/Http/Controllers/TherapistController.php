@@ -187,6 +187,7 @@ class TherapistController extends Controller
         $user = Sentinel::getUser();
         if ($user->hasAccess('therapist.create')) {
             $slot_time = $request->slot_time;
+            
             $validatedData = $request->validate(
                 [
                     'first_name' => 'required|alpha',
@@ -195,8 +196,6 @@ class TherapistController extends Controller
                     'gender' => 'required',
                     'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
                     'phone_number' => 'required',
-                    'rekening_number' => 'required|numeric',
-                    'slot_time' => 'required',
                     'mon' => 'required_without_all:tue,wen,thu,fri,sat,sun',
                     'tue' => 'required_without_all:mon,wen,thu,fri,sat,sun',
                     'wen' => 'required_without_all:mon,tue,thu,fri,sat,sun',
@@ -204,8 +203,6 @@ class TherapistController extends Controller
                     'fri' => 'required_without_all:wen,tue,mon,thu,sat,sun',
                     'sat' => 'required_without_all:wen,tue,mon,thu,fri,sun',
                     'sun' => 'required_without_all:wen,tue,mon,thu,fri,sat',
-                    'TimeSlot.*.from' => 'required',
-                    'TimeSlot.*.to' => 'required',
                     'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                     'status' => 'required'
                 ],
@@ -223,95 +220,65 @@ class TherapistController extends Controller
             }
             
             try {
-                $user = Sentinel::getUser();
-                if ($request->TimeSlot[0]['from'] == null && $request->TimeSlot[0]['to'] == null) {
-                    return redirect()->back()->with('error', 'Add available time');
-                } else {
-                    $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
-                    $validatedData['created_by'] = $user->id;
-                    $validatedData['updated_by'] = $user->id;
-                    //Create a new user
-                    $therapist = Sentinel::registerAndActivate($validatedData);
-                    //Attach the user to the role
-                    $role = Sentinel::findRoleBySlug('therapist');
-                    $role->users()->attach($therapist);
-                    $therapist_details = new Therapist();
-                    $therapist_details->user_id = $therapist->id;
-                    $therapist_details->ktp = $request->ktp;
-                    $therapist_details->gender = $request->gender;
-                    $therapist_details->place_of_birth = $request->place_of_birth;
-                    $therapist_details->birth_date = $request->birth_date;
-                    $therapist_details->address = $request->address;
-                    $therapist_details->rekening_number = $request->rekening_number;
-                    $therapist_details->emergency_contact = $request->emergency_contact;
-                    $therapist_details->emergency_name = $request->emergency_name;
-                    $therapist_details->slot_time = $request->slot_time;
-                    $therapist_details->created_by = $user->id;
-                    $therapist_details->updated_by = $user->id;
-                    $therapist_details->status = $request->status;
-                    $therapist_details->save();
-                    // Therapist Available day record add
-                    $availableDay = new TherapistAvailableDay();
-                    $availableDay->therapist_id = $therapist->id;
-                    if ($availableDay->mon = $request->mon !== Null) {
-                        $availableDay->mon = $request->mon;
-                    }
-                    if ($availableDay->tue = $request->tue !== Null) {
-                        $availableDay->tue = $request->tue;
-                    }
-                    if ($availableDay->wen = $request->wen !== Null) {
-                        $availableDay->wen = $request->wen;
-                    }
-                    if ($availableDay->thu = $request->thu !== Null) {
-                        $availableDay->thu = $request->thu;
-                    }
-                    if ($availableDay->fri = $request->fri !== Null) {
-                        $availableDay->fri = $request->fri;
-                    }
-                    if ($availableDay->sat = $request->sat !== Null) {
-                        $availableDay->sat = $request->sat;
-                    }
-                    if ($availableDay->sun = $request->sun !== Null) {
-                        $availableDay->sun = $request->sun;
-                    }
-                    $availableDay->save();
-                    foreach ($request->TimeSlot as $key => $item) {
-                        $availableTime = new TherapistAvailableTime();
-                        $availableTime->therapist_id = $therapist->id;
-                        $availableTime->from = $item['from'];
-                        $availableTime->to = $item['to'];
-                        $availableTime->save();
-                        $start_datetime = Carbon::parse($item['from'])->format('H:i:s');
-                        $end_datetime = Carbon::parse($item['to'])->format('H:i:s');
-                        $start_datetime_carbon = Carbon::parse($item['from']);
-                        $end_datetime_carbon = Carbon::parse($item['to']);
-                        $totalDuration = $end_datetime_carbon->diffInMinutes($start_datetime_carbon);
-                        $totalSlots = $totalDuration / $slot_time;
-                        for ($a = 0; $a <= $totalSlots; $a++) {
-                            $slot_time_start_min = $a * $slot_time;
-                            $slot_time_end_min = $slot_time_start_min + $slot_time;
-                            $slot_time_start = Carbon::parse($start_datetime)->addMinute($slot_time_start_min)->format('H:i:s');
-                            $slot_time_end = Carbon::parse($start_datetime)->addMinute($slot_time_end_min)->format('H:i:s');
-                            if ($slot_time_end <= $end_datetime) {
-                                // add time slot here
-                                $time = $slot_time_start . '<=' . $slot_time_end . '<br>';
-                                $availableSlot = new TherapistAvailableSlot();
-                                $availableSlot->therapist_id = $therapist->id;
-                                $availableSlot->therapist_available_time_id = $availableTime->id;
-                                $availableSlot->from = $slot_time_start;
-                                $availableSlot->to = $slot_time_end;
-                                $availableSlot->save();
-                            }
-                        }
-                    }
-                    $app_name = AppSetting('title');
-                    $verify_mail = trim($request->email);
-                    Mail::send('emails.WelcomeEmail', ['user' => $therapist, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
-                        $message->to($verify_mail);
-                        $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
-                    });
-                    return redirect('therapist')->with('success', 'Therapist created successfully!');
+                $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
+                $validatedData['created_by'] = $user->id;
+                $validatedData['updated_by'] = $user->id;
+
+                //Create a new user
+                $therapist = Sentinel::registerAndActivate($validatedData);
+
+                //Attach the user to the role
+                $role = Sentinel::findRoleBySlug('therapist');
+                $role->users()->attach($therapist);
+
+                $therapist_details = new Therapist();
+                $therapist_details->user_id = $therapist->id;
+                $therapist_details->ktp = $request->ktp;
+                $therapist_details->gender = $request->gender;
+                $therapist_details->place_of_birth = $request->place_of_birth;
+                $therapist_details->birth_date = $request->birth_date;
+                $therapist_details->address = $request->address;
+                $therapist_details->rekening_number = $request->rekening_number;
+                $therapist_details->emergency_contact = $request->emergency_contact;
+                $therapist_details->emergency_name = $request->emergency_name;
+                $therapist_details->created_by = $user->id;
+                $therapist_details->updated_by = $user->id;
+                $therapist_details->status = $request->status;
+                $therapist_details->save();
+
+                // Therapist Available day record add
+                $availableDay = new TherapistAvailableDay();
+                $availableDay->therapist_id = $therapist->id;
+                if ($availableDay->mon = $request->mon !== Null) {
+                    $availableDay->mon = $request->mon;
                 }
+                if ($availableDay->tue = $request->tue !== Null) {
+                    $availableDay->tue = $request->tue;
+                }
+                if ($availableDay->wen = $request->wen !== Null) {
+                    $availableDay->wen = $request->wen;
+                }
+                if ($availableDay->thu = $request->thu !== Null) {
+                    $availableDay->thu = $request->thu;
+                }
+                if ($availableDay->fri = $request->fri !== Null) {
+                    $availableDay->fri = $request->fri;
+                }
+                if ($availableDay->sat = $request->sat !== Null) {
+                    $availableDay->sat = $request->sat;
+                }
+                if ($availableDay->sun = $request->sun !== Null) {
+                    $availableDay->sun = $request->sun;
+                }
+                $availableDay->save();
+                
+                $app_name = AppSetting('title');
+                $verify_mail = trim($request->email);
+                Mail::send('emails.WelcomeEmail', ['user' => $therapist, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
+                    $message->to($verify_mail);
+                    $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
+                });
+                return redirect('therapist')->with('success', 'Therapist created successfully!');
             } catch (Exception $e) {
                 return redirect('therapist')->with('error', 'Something went wrong!!! ' . $e->getMessage());
             }
@@ -389,16 +356,15 @@ class TherapistController extends Controller
                 $therapist_info = Therapist::where('user_id', '=', $therapist->id)->first();
                 if ($therapist_info) {
                     $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
-                    $availableTime = TherapistAvailableTime::where('therapist_id', $therapist->id)->get();
-                    return view('therapist.therapist-edit', compact('user', 'role', 'therapist', 'therapist_info', 'availableDay', 'availableTime'));
+                    return view('therapist.therapist-details', compact('user', 'role', 'therapist', 'therapist_info', 'availableDay'));
                 } else {
-                    return redirect('/')->with('error', 'Therapist details not found');
+                    return redirect('therapist')->with('error', 'Therapist details not found');
                 }
             } else {
                 return view('error.403');
             }
         }else{
-            return redirect('/')->with('error', 'Therapists details not found');
+            return redirect('therapist')->with('error', 'Therapists details not found');
         }
     }
     /**

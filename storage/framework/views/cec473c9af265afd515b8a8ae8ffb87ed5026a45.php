@@ -53,33 +53,13 @@
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
-                <?php if($therapist && $therapist_info): ?>
-                    <?php if($role == 'therapist'): ?>
-                        <a href="<?php echo e(url('/')); ?>">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Dashboard')); ?>
+                <a href="<?php echo e(url('therapist')); ?> ">
+                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <i
+                            class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Therapist List')); ?>
 
-                            </button>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?php echo e(url('therapist/' . $therapist->id)); ?>">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Profile')); ?>
-
-                            </button>
-                        </a>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <a href="<?php echo e(url('therapist')); ?> ">
-                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                            <i
-                                class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Therapist List')); ?>
-
-                        </button>
-                    </a>
-                <?php endif; ?>
+                    </button>
+                </a>
             </div>
         </div>
         <div class="row">
@@ -127,7 +107,7 @@ unset($__errorArgs, $__bag); ?>
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('ID Card ')); ?><span
+                                            <label class="control-label"><?php echo e(__('KTP ')); ?><span
                                                 class="text-danger">*</span></label>
                                             <input type="text"
                                                 class="form-control <?php $__errorArgs = ['ktp'];
@@ -138,7 +118,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="ktp" id="lastname" tabindex="2" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist->ktp); ?><?php elseif(old('ktp')): ?><?php echo e(old('ktp')); ?><?php endif; ?>"
+                                                name="ktp" id="lastname" tabindex="2" value="<?php if($therapist && $therapist_info): ?><?php echo e($therapist_info->ktp); ?><?php elseif(old('ktp')): ?><?php echo e(old('ktp')); ?><?php endif; ?>"
                                                 placeholder="<?php echo e(__('Enter ID Card')); ?>">
                                             <?php $__errorArgs = ['ktp'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -168,8 +148,8 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                                 name="gender" id="gender">
                                                 <option selected disabled><?php echo e(__('-- Select Gender --')); ?></option>
-                                                <option value="<?php echo e('Male'); ?>" <?php echo e(old('gender') == 'Male' ? 'selected' : ''); ?>><?php echo e('Male'); ?></option>
-                                                <option value="<?php echo e('Female'); ?>" <?php echo e(old('gender') == 'Female' ? 'selected' : ''); ?>><?php echo e('Female'); ?></option>
+                                                <option value="<?php echo e('Male'); ?>" <?php echo e(($therapist && $therapist_info->gender == 'Male') || old('gender') == 'Male' ? 'selected' : ''); ?>><?php echo e('Male'); ?></option>
+                                                <option value="<?php echo e('Female'); ?>" <?php echo e(($therapist && $therapist_info->gender == 'Female') || old('gender') == 'Female' ? 'selected' : ''); ?>><?php echo e('Female'); ?></option>
                                             </select>
                                             <?php $__errorArgs = ['gender'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -270,39 +250,39 @@ unset($__errorArgs, $__bag); ?>
                                             <label class="control-label d-block"><?php echo e(__("Therapist available days ")); ?><span
                                                     class="text-danger">*</span></label>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
-                                                    value="1" name="sun" <?php echo e(old('sun') ? 'checked' : ''); ?>>
-                                                <label class="form-check-label" for="inlineCheckbox1">Sun</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="1" name="mon" <?php echo e(old('mon') ? 'checked' : ''); ?>>
+                                                    value="1" name="mon" <?php if($therapist && $availableDay->mon == 1): ?><?php echo e('checked'); ?><?php elseif(old('mon')): ?><?php echo e('checked'); ?><?php endif; ?>>
                                                 <label class="form-check-label" for="inlineCheckbox2">Mon</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox3"
-                                                    value="1" name="tue" <?php echo e(old('tue') ? 'checked' : ''); ?>>
+                                                    value="1" name="tue" <?php if($therapist && $availableDay->tue == 1): ?><?php echo e('checked'); ?><?php elseif(old('tue')): ?><?php echo e('checked'); ?><?php endif; ?>>
                                                 <label class="form-check-label" for="inlineCheckbox3">Tue</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox4"
-                                                    value="1" name="wen" <?php echo e(old('wen') ? 'checked' : ''); ?>>
+                                                    value="1" name="wen" <?php if($therapist && $availableDay->wen == 1): ?><?php echo e('checked'); ?><?php elseif(old('wen')): ?><?php echo e('checked'); ?><?php endif; ?>>
                                                 <label class="form-check-label" for="inlineCheckbox4">Wen</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox5"
-                                                    value="1" name="thu" <?php echo e(old('thu') ? 'checked' : ''); ?>>
+                                                    value="1" name="thu" <?php if($therapist && $availableDay->thu == 1): ?><?php echo e('checked'); ?><?php elseif(old('thu')): ?><?php echo e('checked'); ?><?php endif; ?>>
                                                 <label class="form-check-label" for="inlineCheckbox5">Thu</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox6"
-                                                    value="1" name="fri" <?php echo e(old('fri') ? 'checked' : ''); ?>>
+                                                    value="1" name="fri" <?php if($therapist && $availableDay->fri == 1): ?><?php echo e('checked'); ?><?php elseif(old('fri')): ?><?php echo e('checked'); ?><?php endif; ?>>
                                                 <label class="form-check-label" for="inlineCheckbox6">Fri</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox7"
-                                                    value="1" name="sat" <?php echo e(old('sat') ? 'checked' : ''); ?>>
+                                                    value="1" name="sat" <?php if($therapist && $availableDay->sat == 1): ?><?php echo e('checked'); ?><?php elseif(old('sat')): ?><?php echo e('checked'); ?><?php endif; ?>>
                                                 <label class="form-check-label" for="inlineCheckbox7">Sat</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                                    value="1" name="sun" <?php if($therapist && $availableDay->sun == 1): ?><?php echo e('checked'); ?><?php elseif(old('sun')): ?><?php echo e('checked'); ?><?php endif; ?>>
+                                                <label class="form-check-label" for="inlineCheckbox1">Sun</label>
                                             </div>
                                             <?php $__errorArgs = ['mon'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -322,7 +302,7 @@ unset($__errorArgs, $__bag); ?>
                                         <div class="col-md-6 form-group">
                                             <label class="control-label"><?php echo e(__('Status ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control <?php $__errorArgs = ['status'];
+                                            <select class="form-control select2 <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -439,7 +419,7 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Rekening Number ')); ?></label>
-                                            <input type="text" class="form-control <?php $__errorArgs = ['rekening_number'];
+                                            <input type="number" class="form-control <?php $__errorArgs = ['rekening_number'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }

@@ -162,12 +162,13 @@ class CustomerController extends Controller
             $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
             $validatedData['created_by'] = $user->id;
             $validatedData['updated_by'] = $user->id;
+
             //Create a new user
             $customer = Sentinel::registerAndActivate($validatedData);
+
             //Attach the user to the role
             $role = Sentinel::findRoleBySlug('customer');
             $role->users()->attach($customer);
-            $validatedData['user_id'] = $customer->id;
 
             $customer_info = new Customer();
             $customer_info->user_id = $customer->id;
