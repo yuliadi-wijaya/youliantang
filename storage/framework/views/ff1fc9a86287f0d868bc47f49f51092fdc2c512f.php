@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>How To Generate Invoice PDF In Laravel 9 - Techsolutionstuff</title>
+    <title>Invoice PDF</title>
 </head>
 <style type="text/css">
     html, body {
@@ -95,95 +95,96 @@
     }
 </style>
 <body>
-<div class="head-title">
-    <h1 class="text-center m-15 p-0">YOU LIAN tANG</h1>
-    <h3 class="text-center m-0 p-0">Family Refleksi & Massage</h3><br>
-    <p class="text-center m-0 p-0">RUKO INKOPAL BLOK C6-C7</p>
-    <p class="text-center m-0 p-0">KELAPA GADING BARAT JAKARTA UTARA</p>
-</div>
+    <div class="head-title">
+        <h1 class="text-center m-15 p-0">YOU LIAN tANG</h1>
+        <h3 class="text-center m-0 p-0">Family Refleksi &amp; Massage</h3>
+        <p class="text-center m-0 p-0">RUKO INKOPAL BLOK C6-C7</p>
+        <p class="text-center m-0 p-0">KELAPA GADING BARAT JAKARTA UTARA</p>
+    </div>
 
-<hr class="dashed">
+    <hr class="dashed">
 
-<div class="table-section bill-tbl w-100 mt-10">
-    <div class="w-100 float-left mt-10">
+    <div class="table-section bill-tbl w-100 mt-10">
+        <div class="w-100 float-left mt-10">
+            <table class="table w-100 mt-10">
+                <tr>
+                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Treatment date')); ?></td>
+                    <td class="m-0 pt-5 text-bold w-5">:</td>
+                    <td class="m-0 pt-5 text-bold"><?php echo e($invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to); ?></td>
+                </tr>
+                <tr>
+                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Customer')); ?></td>
+                    <td class="m-0 pt-5 text-bold w-5">:</td>
+                    <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->customer_name); ?></td>
+                </tr>
+                <tr>
+                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Therapist')); ?></td>
+                    <td class="m-0 pt-5 text-bold w-5">:</td>
+                    <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->therapist_name); ?></td>
+                </tr>
+                <tr>
+                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Invoice date')); ?></td>
+                    <td class="m-0 pt-5 text-bold w-5">:</td>
+                    <td class="m-0 pt-5 text-bold"><?php echo e($invoice->created_at); ?></td>
+                </tr>
+                <tr>
+                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Payment Mode')); ?></td>
+                    <td class="m-0 pt-5 text-bold w-5">:</td>
+                    <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->payment_mode); ?></td>
+                </tr>
+                <tr>
+                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Payment Status')); ?></td>
+                    <td class="m-0 pt-5 text-bold w-5">:</td>
+                    <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->payment_status); ?></td>
+                </tr>
+            </table>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <hr class="dashed">
+
+    <div class="table-section bill-tbl w-100 mt-10">
+        <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4>
+
         <table class="table w-100 mt-10">
+            <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
+                <td>No</td>
+                <td>Product</td>
+                <td>Amount</td>
+            </tr>
+
+            <?php
+                $sub_total = 0;
+            ?>
+
+            <?php $__currentLoopData = $invoice_detail->invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr>
+                    <td><?php echo e($loop->index + 1); ?></td>
+                    <td><?php echo e($item->title); ?></td>
+                    <td class="text-right">Rp <?php echo e(number_format($item->amount)); ?></td>
+                </tr>
+                <?php
+                    $sub_total += $item->amount;
+                ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Treatment date')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to); ?></td>
+                <td></td>
+            </tr>
+            <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
+                <td colspan="2" class="text-right"><?php echo e(__('Sub Total')); ?></td>
+                <td class="text-right">Rp <?php echo e(number_format($sub_total)); ?></td>
             </tr>
             <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Customer')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->customer_name); ?></td>
+                <td colspan="2" class="text-right">Discount</td>
+                <td class="text-right">0</td>
             </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Therapist')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->therapist_name); ?></td>
-            </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Invoice date')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoice->created_at); ?></td>
-            </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Payment Mode')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->payment_mode); ?></td>
-            </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Payment Status')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoice_detail->payment_status); ?></td>
+            <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
+                <td colspan="2" class="text-right"><strong><?php echo e(__('Total')); ?></strong></td>
+                <td class="text-right"><strong>Rp <?php echo e(number_format($sub_total)); ?></strong></td>
             </tr>
         </table>
     </div>
-    <div style="clear: both;"></div>
-</div>
-
-<hr class="dashed">
-
-<div class="table-section bill-tbl w-100 mt-10">
-    <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4>
-
-    <table class="table w-100 mt-10">
-        <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
-            <td>No</td>
-            <td>Product</td>
-            <td>Amount</td>
-        </tr>
-
-        <?php
-            $sub_total = 0;
-        ?>
-
-        <?php $__currentLoopData = $invoice_detail->invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <tr>
-                <td><?php echo e($loop->index + 1); ?></td>
-                <td><?php echo e($item->title); ?></td>
-                <td class="text-right">Rp <?php echo e(number_format($item->amount)); ?></td>
-            </tr>
-            <?php
-                $sub_total += $item->amount;
-            ?>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        <tr>
-            <td></td>
-        </tr>
-        <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
-            <td colspan="2" class="text-right"><?php echo e(__('Sub Total')); ?></td>
-            <td class="text-right">Rp <?php echo e(number_format($sub_total)); ?></td>
-        </tr>
-        <tr>
-            <td colspan="2" class="text-right">Discount</td>
-            <td class="text-right">0</td>
-        </tr>
-        <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
-            <td colspan="2" class="text-right"><strong><?php echo e(__('Total')); ?></strong></td>
-            <td class="text-right"><strong>Rp <?php echo e(number_format($sub_total)); ?></strong></td>
-        </tr>
-    </table>
-</div>
+</body>
 </html>
 <?php /**PATH E:\Data\Project\youliantang\resources\views/invoice/invoice-pdf.blade.php ENDPATH**/ ?>

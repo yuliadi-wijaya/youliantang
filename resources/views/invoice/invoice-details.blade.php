@@ -191,16 +191,15 @@
                                                     class="text-danger">*</span></label>
                                             <div data-repeater-item class="mb-3 row">
                                                 <div class="col-md-5 col-6">
-                                                    <select class="form-control @error('title') is-invalid @enderror" name="title" id="title">
+                                                    <select class="form-control select2 @error('title') is-invalid @enderror" name="title" id="title" onchange="getAmount(this)">
                                                         <option selected>{{ __('-- Select Product --') }}</option>
                                                         @foreach($products as $item)
-                                                            <option value="{{ $item->name }}" @if (old('title') == '{{ $item->name }}') selected @endif>{{ $item->name }}</option>
+                                                            <option value="{{ $item->price }}|{{ $item->id }}" @if (old('title') == '{{ $item->price }}|{{ $item->id }}') selected @endif>{{ $item->name }} - Rp. {{ number_format($item->price) }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                                 <div class="col-md-5 col-6">
-                                                    <input type="number" name="amount" class="form-control"
-                                                        placeholder="{{ __('Enter Amount') }}" />
+                                                    <input type="text" name="amount" class="form-control" placeholder="{{ __('Enter Amount') }}" readonly/>
                                                 </div>
                                                 <div class="col-md-2 col-4">
                                                     <input data-repeater-delete type="button"
@@ -244,6 +243,29 @@
                 format: 'dd/mm/yyyy'
             });
 
-            // $("#product").select2();
+            function getAmount(obj) {
+                var titleName = obj.getAttribute('name');
+                var titleVal = obj.value;
+
+                var amountName = titleName.replace('title', 'amount');
+                var amountInput = document.querySelector('[name="' + amountName + '"]');
+
+                if (amountInput) {
+                    var parts = titleVal.split('|');
+                    var amount = parseFloat(parts[0]);
+
+                    if (!isNaN(amount)) {
+                        amountInput.value = amount;
+
+                        var formattedAmount = new Intl.NumberFormat('en-US', {
+                            currency: 'USD'
+                        }).format(amount);
+
+                        amountInput.value = formattedAmount;
+                    } else {
+                        amountInput.value = '';
+                    }
+                }
+            }
         </script>
     @endsection

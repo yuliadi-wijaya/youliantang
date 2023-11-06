@@ -61,6 +61,9 @@
         <a href="<?php echo e(url('invoice-pdf/' . $invoice->id)); ?>" class="btn btn-success waves-effect waves-light mb-4">
             <i class="fa fa-file-pdf"></i>
         </a>
+        <a href="<?php echo e(url('invoice-word/' . $invoice->id)); ?>" class="btn btn-success waves-effect waves-light mb-4">
+            <i class="fa fa-file-word"></i>
+        </a>
     </div>
 </div>
 <div class="view-invoice">

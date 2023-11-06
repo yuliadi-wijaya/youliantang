@@ -317,23 +317,22 @@ unset($__errorArgs, $__bag); ?>
                                                     class="text-danger">*</span></label>
                                             <div data-repeater-item class="mb-3 row">
                                                 <div class="col-md-5 col-6">
-                                                    <select class="form-control <?php $__errorArgs = ['title'];
+                                                    <select class="form-control select2 <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" name="title" id="title">
+unset($__errorArgs, $__bag); ?>" name="title" id="title" onchange="getAmount(this)">
                                                         <option selected><?php echo e(__('-- Select Product --')); ?></option>
                                                         <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <option value="<?php echo e($item->name); ?>" <?php if(old('title') == '<?php echo e($item->name); ?>'): ?> selected <?php endif; ?>><?php echo e($item->name); ?></option>
+                                                            <option value="<?php echo e($item->price); ?>|<?php echo e($item->id); ?>" <?php if(old('title') == '<?php echo e($item->price); ?>|<?php echo e($item->id); ?>'): ?> selected <?php endif; ?>><?php echo e($item->name); ?> - Rp. <?php echo e(number_format($item->price)); ?></option>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-5 col-6">
-                                                    <input type="text" name="amount" class="form-control"
-                                                        placeholder="<?php echo e(__('Enter Amount')); ?>" />
+                                                    <input type="text" name="amount" class="form-control" placeholder="<?php echo e(__('Enter Amount')); ?>" readonly/>
                                                 </div>
                                                 <div class="col-md-2 col-4">
                                                     <input data-repeater-delete type="button"
@@ -378,7 +377,30 @@ unset($__errorArgs, $__bag); ?>" name="title" id="title">
                 format: 'dd/mm/yyyy'
             });
 
-            // $("#product").select2();
+            function getAmount(obj) {
+                var titleName = obj.getAttribute('name');
+                var titleVal = obj.value;
+
+                var amountName = titleName.replace('title', 'amount');
+                var amountInput = document.querySelector('[name="' + amountName + '"]');
+
+                if (amountInput) {
+                    var parts = titleVal.split('|');
+                    var amount = parseFloat(parts[0]);
+
+                    if (!isNaN(amount)) {
+                        amountInput.value = amount;
+
+                        var formattedAmount = new Intl.NumberFormat('en-US', {
+                            currency: 'USD'
+                        }).format(amount);
+
+                        amountInput.value = formattedAmount;
+                    } else {
+                        amountInput.value = '';
+                    }
+                }
+            }
         </script>
     <?php $__env->stopSection(); ?>
 

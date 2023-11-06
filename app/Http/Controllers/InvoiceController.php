@@ -364,8 +364,11 @@ class InvoiceController extends Controller
 
         foreach ($request->invoices as $item) {
             $obj = new InvoiceDetail();
-            $obj->title = $item['title'];
-            $obj->amount = $item['amount'];
+            $itemTitle = $item['title'];
+            $parts = explode('|', $itemTitle);
+            $obj->title = $parts[1];
+
+            $obj->amount = str_replace(',', '', $item['amount']);
             $invoiceDetails[] = $obj;
         }
 

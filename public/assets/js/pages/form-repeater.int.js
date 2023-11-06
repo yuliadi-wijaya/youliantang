@@ -155,12 +155,20 @@ $(document).ready(function () {
       'text-input': 'foo'
     },
     show: function show() {
-      console.log('Item Created');
-      $(this).slideDown();
-      $(this).find("#item").select2();
-      $(this).find("#item").find('option:contains("-- Select Product --")').prop('selected', true).trigger('change');
-      $(this).find("#item").trigger("change");
+        $(this).slideDown();
+        $(this).find('select').find('option:contains("-- Select Product --")').prop('selected', true).trigger('change');
+        $(this).find('select').each(function() {
+          if (typeof $(this).attr('id') === "undefined") {
+            // ...
+          } else {
+            $('.select2').removeAttr("id").removeAttr("data-select2-id");
+            $('.select2').select2();
+            $('.select2-container').css('width','100%');
+            $('.select2').next().next().remove();
+          }
+        });
     },
+
     hide: function hide(deleteElement) {
         $(this).slideUp(deleteElement);
     },
