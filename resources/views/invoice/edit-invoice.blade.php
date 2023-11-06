@@ -74,7 +74,7 @@
                                             <select class="form-control select2 @error('room') is-invalid @enderror"
                                                 name="room">
                                                 <option selected disabled>{{ __('-- Select Room --') }}</option>
-                                                @foreach($rooms as $item) 
+                                                @foreach($rooms as $item)
                                                     <option value="{{ $item->name }}" @if ($invoice_detail->room == $item->name) selected @endif>{{ $item->name }}</option>
                                                 @endforeach
                                             </select>
@@ -95,7 +95,7 @@
                                                 <input type="text"
                                                     class="form-control @error('treatment_date') is-invalid @enderror"
                                                     name="treatment_date" id="TreatmentDate" data-provide="datepicker"
-                                                    data-date-autoclose="true" autocomplete="off" placeholder="{{ __('Enter Date') }}" 
+                                                    data-date-autoclose="true" autocomplete="off" placeholder="{{ __('Enter Date') }}"
                                                     value="{{ date('d/m/Y', strtotime($invoice_detail->treatment_date)) }}">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -186,27 +186,31 @@
                             <blockquote>{{ __('Invoice Summary') }}</blockquote>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class='repeater mb-4'>
+                                    <div class='repeater-product mb-4'>
                                         <div data-repeater-list="invoices" class="form-group">
                                             <label>{{ __('Invoice Items ') }}<span
                                                     class="text-danger">*</span></label>
-                                                @foreach ($invoice_detail->invoice_detail as $item)
-                                                    <div data-repeater-item class="mb-3 row">
-                                                        <div class="col-md-5 col-6">
-                                                            <input type="text" name="title" class="form-control"
-                                                                placeholder="{{ __('Item title') }}" value="{{ $item->title }}"/>
-                                                        </div>
-                                                        <div class="col-md-5 col-6">
-                                                            <input type="number" name="amount" class="form-control"
-                                                                placeholder="{{ __('Enter Amount') }}" value="{{ $item->amount }}" />
-                                                        </div>
-                                                        <div class="col-md-2 col-4">
-                                                            <input data-repeater-delete type="button"
-                                                                class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
-                                                                value="X" />
-                                                        </div>
+                                            @foreach ($invoice_detail->invoice_detail as $item)
+                                                <div data-repeater-item class="mb-3 row">
+                                                    <div class="col-md-5 col-6">
+                                                        <select class="form-control select2 @error('title') is-invalid @enderror" name="title" id="title" onchange="getAmount(this)">
+                                                            <option selected>{{ __('-- Select Product --') }}</option>
+                                                            @foreach($products as $row)
+                                                                <option value="{{ $row->price }}|{{ $row->id }}" @if ($item->title == $row->id) selected @endif>{{ $row->name }} - Rp. {{ number_format($row->price) }}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
-                                                @endforeach
+                                                    <div class="col-md-5 col-6">
+                                                        <input type="text" name="amount" class="form-control"
+                                                            placeholder="{{ __('Enter Amount') }}" value="{{ number_format($item->amount) }}" readonly/>
+                                                    </div>
+                                                    <div class="col-md-2 col-4">
+                                                        <input data-repeater-delete type="button"
+                                                            class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
+                                                            value="X" />
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                         <input data-repeater-create type="button" class="btn btn-primary"
                                             value="Add Item" />
@@ -242,5 +246,43 @@
                 startDate: new Date(),
                 format: 'dd/mm/yyyy'
             });
+
+            $(document).ready(function() {
+                $(this).find('select').each(function() {
+                    if (typeof $(this).attr('id') === "undefined") {
+                        // ...
+                    } else {
+                        $('.select2').removeAttr("id").removeAttr("data-select2-id");
+                        $('.select2').select2();
+                        $('.select2-container').css('width','100%');
+                        $('.select2').next().next().remove();
+                    }
+                });
+            });
+
+            function getAmount(obj) {
+                var titleName = obj.getAttribute('name');
+                var titleVal = obj.value;
+
+                var amountName = titleName.replace('title', 'amount');
+                var amountInput = document.querySelector('[name="' + amountName + '"]');
+
+                if (amountInput) {
+                    var parts = titleVal.split('|');
+                    var amount = parseFloat(parts[0]);
+
+                    if (!isNaN(amount)) {
+                        amountInput.value = amount;
+
+                        var formattedAmount = new Intl.NumberFormat('en-US', {
+                            currency: 'USD'
+                        }).format(amount);
+
+                        amountInput.value = formattedAmount;
+                    } else {
+                        amountInput.value = '';
+                    }
+                }
+            }
         </script>
     @endsection

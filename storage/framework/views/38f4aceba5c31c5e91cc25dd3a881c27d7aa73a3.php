@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?> <?php echo e(__('Update Invoice')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/libs/select2/select2.min.css')); ?>">
@@ -110,7 +109,7 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                                 name="room">
                                                 <option selected disabled><?php echo e(__('-- Select Room --')); ?></option>
-                                                <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
+                                                <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($item->name); ?>" <?php if($invoice_detail->room == $item->name): ?> selected <?php endif; ?>><?php echo e($item->name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
@@ -145,7 +144,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
                                                     name="treatment_date" id="TreatmentDate" data-provide="datepicker"
-                                                    data-date-autoclose="true" autocomplete="off" placeholder="<?php echo e(__('Enter Date')); ?>" 
+                                                    data-date-autoclose="true" autocomplete="off" placeholder="<?php echo e(__('Enter Date')); ?>"
                                                     value="<?php echo e(date('d/m/Y', strtotime($invoice_detail->treatment_date))); ?>">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -313,27 +312,38 @@ unset($__errorArgs, $__bag); ?>
                             <blockquote><?php echo e(__('Invoice Summary')); ?></blockquote>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class='repeater mb-4'>
+                                    <div class='repeater-product mb-4'>
                                         <div data-repeater-list="invoices" class="form-group">
                                             <label><?php echo e(__('Invoice Items ')); ?><span
                                                     class="text-danger">*</span></label>
-                                                <?php $__currentLoopData = $invoice_detail->invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <div data-repeater-item class="mb-3 row">
-                                                        <div class="col-md-5 col-6">
-                                                            <input type="text" name="title" class="form-control"
-                                                                placeholder="<?php echo e(__('Item title')); ?>" value="<?php echo e($item->title); ?>"/>
-                                                        </div>
-                                                        <div class="col-md-5 col-6">
-                                                            <input type="number" name="amount" class="form-control"
-                                                                placeholder="<?php echo e(__('Enter Amount')); ?>" value="<?php echo e($item->amount); ?>" />
-                                                        </div>
-                                                        <div class="col-md-2 col-4">
-                                                            <input data-repeater-delete type="button"
-                                                                class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
-                                                                value="X" />
-                                                        </div>
+                                            <?php $__currentLoopData = $invoice_detail->invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div data-repeater-item class="mb-3 row">
+                                                    <div class="col-md-5 col-6">
+                                                        <select class="form-control select2 <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="title" id="title" onchange="getAmount(this)">
+                                                            <option selected><?php echo e(__('-- Select Product --')); ?></option>
+                                                            <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($row->price); ?>|<?php echo e($row->id); ?>" <?php if($item->title == $row->id): ?> selected <?php endif; ?>><?php echo e($row->name); ?> - Rp. <?php echo e(number_format($row->price)); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
                                                     </div>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="col-md-5 col-6">
+                                                        <input type="text" name="amount" class="form-control"
+                                                            placeholder="<?php echo e(__('Enter Amount')); ?>" value="<?php echo e(number_format($item->amount)); ?>" readonly/>
+                                                    </div>
+                                                    <div class="col-md-2 col-4">
+                                                        <input data-repeater-delete type="button"
+                                                            class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
+                                                            value="X" />
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                         <input data-repeater-create type="button" class="btn btn-primary"
                                             value="Add Item" />
@@ -370,6 +380,44 @@ unset($__errorArgs, $__bag); ?>
                 startDate: new Date(),
                 format: 'dd/mm/yyyy'
             });
+
+            $(document).ready(function() {
+                $(this).find('select').each(function() {
+                    if (typeof $(this).attr('id') === "undefined") {
+                        // ...
+                    } else {
+                        $('.select2').removeAttr("id").removeAttr("data-select2-id");
+                        $('.select2').select2();
+                        $('.select2-container').css('width','100%');
+                        $('.select2').next().next().remove();
+                    }
+                });
+            });
+
+            function getAmount(obj) {
+                var titleName = obj.getAttribute('name');
+                var titleVal = obj.value;
+
+                var amountName = titleName.replace('title', 'amount');
+                var amountInput = document.querySelector('[name="' + amountName + '"]');
+
+                if (amountInput) {
+                    var parts = titleVal.split('|');
+                    var amount = parseFloat(parts[0]);
+
+                    if (!isNaN(amount)) {
+                        amountInput.value = amount;
+
+                        var formattedAmount = new Intl.NumberFormat('en-US', {
+                            currency: 'USD'
+                        }).format(amount);
+
+                        amountInput.value = formattedAmount;
+                    } else {
+                        amountInput.value = '';
+                    }
+                }
+            }
         </script>
     <?php $__env->stopSection(); ?>
 

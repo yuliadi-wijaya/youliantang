@@ -194,7 +194,7 @@ class InvoiceController extends Controller
         // Get available data only
         $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
         $rooms = Room::where('is_deleted',0)->orderBy('id','ASC')->get();
-        $products = Product::where('is_deleted',0)->orderBy('id','ASC')->get();
+        $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
 
         // Check user access and available data
         if (!$user->hasAccess('invoice.update') || $invoice_detail == NULL) {

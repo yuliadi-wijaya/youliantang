@@ -199,7 +199,8 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-5 col-6">
-                                                    <input type="text" name="amount" class="form-control" placeholder="{{ __('Enter Amount') }}" readonly/>
+                                                    <input type="text" name="amount" class="form-control"
+                                                        placeholder="{{ __('Enter Amount') }}" readonly/>
                                                 </div>
                                                 <div class="col-md-2 col-4">
                                                     <input data-repeater-delete type="button"
