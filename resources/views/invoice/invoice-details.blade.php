@@ -38,12 +38,14 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Customer ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control @error('customer_name') is-invalid @enderror"
-                                                name="customer_name" id="customer_name" tabindex="1"
-                                                value="{{ old('customer_name') }}"
-                                                placeholder="{{ __('Enter Customer Name') }}">
-                                            @error('customer_name')
+                                            <select class="form-control select2 @error('customer_id') is-invalid @enderror"
+                                                name="customer_id">
+                                                <option selected disabled>{{ __('-- Select Customer --') }}</option>
+                                                @foreach($customers as $row)
+                                                    <option value="{{ $row->id }}" @if (old('customer_id') == {{ $row->id }}) selected @endif>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('customer_id')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -54,12 +56,14 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Therapist ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control @error('therapist_name') is-invalid @enderror"
-                                                name="therapist_name" id="therapist_name" tabindex="1"
-                                                value="{{ old('therapist_name') }}"
-                                                placeholder="{{ __('Enter Therapist Name') }}">
-                                            @error('therapist_name')
+                                            <select class="form-control select2 @error('therapist_id') is-invalid @enderror"
+                                                name="therapist_id">
+                                                <option selected disabled>{{ __('-- Select Therapist --') }}</option>
+                                                @foreach($therapists as $row)
+                                                    <option value="{{ $row->id }}" @if (old('therapist_id') == {{ $row->id }}) selected @endif>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('therapist_id')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -191,10 +195,10 @@
                                                     class="text-danger">*</span></label>
                                             <div data-repeater-item class="mb-3 row">
                                                 <div class="col-md-5 col-6">
-                                                    <select class="form-control select2 @error('title') is-invalid @enderror" name="title" id="title" onchange="getAmount(this)">
+                                                    <select class="form-control select2 @error('product_id') is-invalid @enderror" name="product_id" id="product_id" onchange="getAmount(this)">
                                                         <option selected>{{ __('-- Select Product --') }}</option>
-                                                        @foreach($products as $item)
-                                                            <option value="{{ $item->price }}|{{ $item->id }}" @if (old('title') == '{{ $item->price }}|{{ $item->id }}') selected @endif>{{ $item->name }} - Rp. {{ number_format($item->price) }}</option>
+                                                        @foreach($products as $row)
+                                                            <option value="{{ $row->price }}|{{ $row->id }}" @if (old('product_id') == '{{ $row->price }}|{{ $row->id }}') selected @endif>{{ $row->name }} - Rp. {{ number_format($row->price) }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -209,8 +213,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <input data-repeater-create type="button" class="btn btn-primary"
-                                            value="Add Item" />
+                                        <input data-repeater-create type="button" class="btn btn-primary" value="Add Item" />
                                     </div>
                                 </div>
                             </div>
@@ -245,14 +248,14 @@
             });
 
             function getAmount(obj) {
-                var titleName = obj.getAttribute('name');
-                var titleVal = obj.value;
+                var productName = obj.getAttribute('name');
+                var productVal = obj.value;
 
-                var amountName = titleName.replace('title', 'amount');
+                var amountName = productName.replace('product_id', 'amount');
                 var amountInput = document.querySelector('[name="' + amountName + '"]');
 
                 if (amountInput) {
-                    var parts = titleVal.split('|');
+                    var parts = productVal.split('|');
                     var amount = parseFloat(parts[0]);
 
                     if (!isNaN(amount)) {

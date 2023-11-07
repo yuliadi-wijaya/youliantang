@@ -33,14 +33,30 @@
                         <form class="outer-repeater" action="<?php echo e(url('invoice/' . $invoice_detail->id)); ?>" method="post">
                             <?php echo csrf_field(); ?>
                             <input type="hidden" name="_method" value="PATCH" />
+                            <input type="hidden" name="old_data" value="<?php echo e($invoice_detail->old_data); ?>" />
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Customer ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control <?php $__errorArgs = ['customer_name'];
+                                            <?php if($invoice_detail->old_data == 'N'): ?>
+                                                <select class="form-control select2 <?php $__errorArgs = ['customer_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="customer_id">
+                                                    <option selected disabled><?php echo e(__('-- Select Customer --')); ?></option>
+                                                    <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($row->id); ?>" <?php if($invoice_detail->customer_id == $row->id): ?> selected <?php endif; ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            <?php else: ?>
+                                                <input type="text"
+                                                    class="form-control <?php $__errorArgs = ['customer_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -48,9 +64,10 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="customer_name" id="customer_name" tabindex="1"
-                                                value="<?php echo e($invoice_detail->customer_name); ?>"
-                                                placeholder="<?php echo e(__('Enter Customer Name')); ?>">
+                                                    name="customer_name" id="customer_name" tabindex="1"
+                                                    value="<?php echo e($invoice_detail->customer_name); ?>"
+                                                    placeholder="<?php echo e(__('Enter Customer Name')); ?>">
+                                            <?php endif; ?>
                                             <?php $__errorArgs = ['customer_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -69,8 +86,23 @@ unset($__errorArgs, $__bag); ?>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Therapist ')); ?><span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control <?php $__errorArgs = ['therapist_name'];
+                                            <?php if($invoice_detail->old_data == 'N'): ?>
+                                                <select class="form-control select2 <?php $__errorArgs = ['therapist_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="therapist_id">
+                                                    <option selected disabled><?php echo e(__('-- Select Therapist --')); ?></option>
+                                                    <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($row->id); ?>" <?php if($invoice_detail->therapist_id == $row->id): ?> selected <?php endif; ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            <?php else: ?>
+                                                <input type="text"
+                                                    class="form-control <?php $__errorArgs = ['therapist_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -78,9 +110,10 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="therapist_name" id="therapist_name" tabindex="1"
-                                                value="<?php echo e($invoice_detail->therapist_name); ?>"
-                                                placeholder="<?php echo e(__('Enter Therapist Name')); ?>">
+                                                    name="therapist_name" id="therapist_name" tabindex="1"
+                                                    value="<?php echo e($invoice_detail->therapist_name); ?>"
+                                                    placeholder="<?php echo e(__('Enter Therapist Name')); ?>">
+                                            <?php endif; ?>
                                             <?php $__errorArgs = ['therapist_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -318,25 +351,36 @@ unset($__errorArgs, $__bag); ?>
                                                     class="text-danger">*</span></label>
                                             <?php $__currentLoopData = $invoice_detail->invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <div data-repeater-item class="mb-3 row">
-                                                    <div class="col-md-5 col-6">
-                                                        <select class="form-control select2 <?php $__errorArgs = ['title'];
+                                                    <?php if($invoice_detail->old_data == 'N'): ?>
+                                                        <div class="col-md-5 col-6">
+                                                            <select class="form-control select2 <?php $__errorArgs = ['product_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" name="title" id="title" onchange="getAmount(this)">
-                                                            <option selected><?php echo e(__('-- Select Product --')); ?></option>
-                                                            <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($row->price); ?>|<?php echo e($row->id); ?>" <?php if($item->title == $row->id): ?> selected <?php endif; ?>><?php echo e($row->name); ?> - Rp. <?php echo e(number_format($row->price)); ?></option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-5 col-6">
-                                                        <input type="text" name="amount" class="form-control"
-                                                            placeholder="<?php echo e(__('Enter Amount')); ?>" value="<?php echo e(number_format($item->amount)); ?>" readonly/>
-                                                    </div>
+unset($__errorArgs, $__bag); ?>" name="product_id" id="product_id" onchange="getAmount(this)">
+                                                                <option selected><?php echo e(__('-- Select Product --')); ?></option>
+                                                                <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                    <option value="<?php echo e($row->price); ?>|<?php echo e($row->id); ?>" <?php if($item->product_id == $row->id): ?> selected <?php endif; ?>><?php echo e($row->name); ?> - Rp. <?php echo e(number_format($row->price)); ?></option>
+                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="text" name="amount" class="form-control"
+                                                                placeholder="<?php echo e(__('Enter Amount')); ?>" value="<?php echo e(number_format($item->amount)); ?>" readonly/>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="text" name="title" class="form-control"
+                                                                placeholder="<?php echo e(__('Enter Product')); ?>" value="<?php echo e($item->title); ?>" />
+                                                        </div>
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="number" name="amount" class="form-control"
+                                                                placeholder="<?php echo e(__('Enter Amount')); ?>" value="<?php echo e($item->amount); ?>" />
+                                                        </div>
+                                                    <?php endif; ?>
                                                     <div class="col-md-2 col-4">
                                                         <input data-repeater-delete type="button"
                                                             class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
@@ -395,14 +439,14 @@ unset($__errorArgs, $__bag); ?>" name="title" id="title" onchange="getAmount(thi
             });
 
             function getAmount(obj) {
-                var titleName = obj.getAttribute('name');
-                var titleVal = obj.value;
+                var productName = obj.getAttribute('name');
+                var productVal = obj.value;
 
-                var amountName = titleName.replace('title', 'amount');
+                var amountName = productName.replace('product_id', 'amount');
                 var amountInput = document.querySelector('[name="' + amountName + '"]');
 
                 if (amountInput) {
-                    var parts = titleVal.split('|');
+                    var parts = productVal.split('|');
                     var amount = parseFloat(parts[0]);
 
                     if (!isNaN(amount)) {

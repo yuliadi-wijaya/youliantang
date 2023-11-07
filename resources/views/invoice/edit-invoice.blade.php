@@ -33,17 +33,27 @@
                         <form class="outer-repeater" action="{{ url('invoice/' . $invoice_detail->id) }}" method="post">
                             @csrf
                             <input type="hidden" name="_method" value="PATCH" />
+                            <input type="hidden" name="old_data" value="{{ $invoice_detail->old_data }}" />
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Customer ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control @error('customer_name') is-invalid @enderror"
-                                                name="customer_name" id="customer_name" tabindex="1"
-                                                value="{{ $invoice_detail->customer_name }}"
-                                                placeholder="{{ __('Enter Customer Name') }}">
+                                            @if ($invoice_detail->old_data == 'N')
+                                                <select class="form-control select2 @error('customer_id') is-invalid @enderror" name="customer_id">
+                                                    <option selected disabled>{{ __('-- Select Customer --') }}</option>
+                                                    @foreach($customers as $row)
+                                                        <option value="{{ $row->id }}" @if ($invoice_detail->customer_id == $row->id) selected @endif>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                <input type="text"
+                                                    class="form-control @error('customer_name') is-invalid @enderror"
+                                                    name="customer_name" id="customer_name" tabindex="1"
+                                                    value="{{ $invoice_detail->customer_name }}"
+                                                    placeholder="{{ __('Enter Customer Name') }}">
+                                            @endif
                                             @error('customer_name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -55,11 +65,20 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Therapist ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control @error('therapist_name') is-invalid @enderror"
-                                                name="therapist_name" id="therapist_name" tabindex="1"
-                                                value="{{ $invoice_detail->therapist_name }}"
-                                                placeholder="{{ __('Enter Therapist Name') }}">
+                                            @if ($invoice_detail->old_data == 'N')
+                                                <select class="form-control select2 @error('therapist_id') is-invalid @enderror" name="therapist_id">
+                                                    <option selected disabled>{{ __('-- Select Therapist --') }}</option>
+                                                    @foreach($therapists as $row)
+                                                        <option value="{{ $row->id }}" @if ($invoice_detail->therapist_id == $row->id) selected @endif>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                <input type="text"
+                                                    class="form-control @error('therapist_name') is-invalid @enderror"
+                                                    name="therapist_name" id="therapist_name" tabindex="1"
+                                                    value="{{ $invoice_detail->therapist_name }}"
+                                                    placeholder="{{ __('Enter Therapist Name') }}">
+                                            @endif
                                             @error('therapist_name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -192,18 +211,29 @@
                                                     class="text-danger">*</span></label>
                                             @foreach ($invoice_detail->invoice_detail as $item)
                                                 <div data-repeater-item class="mb-3 row">
-                                                    <div class="col-md-5 col-6">
-                                                        <select class="form-control select2 @error('title') is-invalid @enderror" name="title" id="title" onchange="getAmount(this)">
-                                                            <option selected>{{ __('-- Select Product --') }}</option>
-                                                            @foreach($products as $row)
-                                                                <option value="{{ $row->price }}|{{ $row->id }}" @if ($item->title == $row->id) selected @endif>{{ $row->name }} - Rp. {{ number_format($row->price) }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-5 col-6">
-                                                        <input type="text" name="amount" class="form-control"
-                                                            placeholder="{{ __('Enter Amount') }}" value="{{ number_format($item->amount) }}" readonly/>
-                                                    </div>
+                                                    @if ($invoice_detail->old_data == 'N')
+                                                        <div class="col-md-5 col-6">
+                                                            <select class="form-control select2 @error('product_id') is-invalid @enderror" name="product_id" id="product_id" onchange="getAmount(this)">
+                                                                <option selected>{{ __('-- Select Product --') }}</option>
+                                                                @foreach($products as $row)
+                                                                    <option value="{{ $row->price }}|{{ $row->id }}" @if ($item->product_id == $row->id) selected @endif>{{ $row->name }} - Rp. {{ number_format($row->price) }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="text" name="amount" class="form-control"
+                                                                placeholder="{{ __('Enter Amount') }}" value="{{ number_format($item->amount) }}" readonly/>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="text" name="title" class="form-control"
+                                                                placeholder="{{ __('Enter Product') }}" value="{{ $item->title }}" />
+                                                        </div>
+                                                        <div class="col-md-5 col-6">
+                                                            <input type="number" name="amount" class="form-control"
+                                                                placeholder="{{ __('Enter Amount') }}" value="{{ $item->amount }}" />
+                                                        </div>
+                                                    @endif
                                                     <div class="col-md-2 col-4">
                                                         <input data-repeater-delete type="button"
                                                             class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner"
@@ -261,14 +291,14 @@
             });
 
             function getAmount(obj) {
-                var titleName = obj.getAttribute('name');
-                var titleVal = obj.value;
+                var productName = obj.getAttribute('name');
+                var productVal = obj.value;
 
-                var amountName = titleName.replace('title', 'amount');
+                var amountName = productName.replace('product_id', 'amount');
                 var amountInput = document.querySelector('[name="' + amountName + '"]');
 
                 if (amountInput) {
-                    var parts = titleVal.split('|');
+                    var parts = productVal.split('|');
                     var amount = parseFloat(parts[0]);
 
                     if (!isNaN(amount)) {
