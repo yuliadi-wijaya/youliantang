@@ -53,6 +53,8 @@
         "promos" => "Promos",
         "list-of-promos" => "List of Promos",
         "add-new-promo" => "Add New Promo",
-        "master-data" => "Master Data"
+        "master-data" => "Master Data",
+        "customermember" => "Customer Members",
+        "list-of-customermember" => "List of Customer Members"
     ];
 ?>

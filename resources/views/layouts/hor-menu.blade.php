@@ -20,6 +20,7 @@
                                 <a href="{{ url('receptionist') }}" class="dropdown-item">{{ __('translation.receptionist') }}</a>
                                 <a href="{{ url('room') }}" class="dropdown-item">{{ __('translation.rooms') }}</a>
                                 <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.memberships') }}</a>
+                                <a href="{{ url('customermember') }}" class="dropdown-item">{{ __('translation.customermember') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">

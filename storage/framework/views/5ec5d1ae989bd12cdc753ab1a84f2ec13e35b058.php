@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?> <?php echo e(__('List of Invoices')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <style>
@@ -83,8 +82,29 @@
                                     <tr>
                                         <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
                                         <td><?php echo e($invoice->customer_name); ?></td>
-                                        <td><?php echo e($invoice->therapist_name); ?></td>
-                                        <td><?php echo e($invoice->room); ?></td>
+                                        <?php if($invoice->old_data == 'Y'): ?>
+                                            <td><?php echo e($invoice->therapist_name); ?></td>
+                                            <td><?php echo e($invoice->room); ?></td>
+                                        <?php else: ?>
+                                            <td>
+                                                <?php $__currentLoopData = $invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php echo e($detail->therapist_name); ?>
+
+                                                    <?php if (! ($loop->last)): ?>
+                                                    ,
+                                                    <?php endif; ?>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </td>
+                                            <td>
+                                                <?php $__currentLoopData = $invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php echo e($detail->room); ?>
+
+                                                    <?php if (! ($loop->last)): ?>
+                                                    ,
+                                                    <?php endif; ?>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </td>
+                                        <?php endif; ?>
                                         <td><?php echo e(date('Y-m-d', strtotime($invoice->treatment_date))); ?> ( <?php echo e($invoice->treatment_time_from); ?> to <?php echo e($invoice->treatment_time_to); ?> )</td>
                                         <td>
                                             <a href="<?php echo e(url('invoice/' . $invoice->id)); ?>">

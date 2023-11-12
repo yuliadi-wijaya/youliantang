@@ -21,6 +21,7 @@
                                 <a href="<?php echo e(url('receptionist')); ?>" class="dropdown-item"><?php echo e(__('translation.receptionist')); ?></a>
                                 <a href="<?php echo e(url('room')); ?>" class="dropdown-item"><?php echo e(__('translation.rooms')); ?></a>
                                 <a href="<?php echo e(url('membership')); ?>" class="dropdown-item"><?php echo e(__('translation.memberships')); ?></a>
+                                <a href="<?php echo e(url('customermember')); ?>" class="dropdown-item"><?php echo e(__('translation.customermember')); ?></a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">

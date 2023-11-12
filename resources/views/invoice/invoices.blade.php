@@ -82,8 +82,27 @@
                                     <tr>
                                         <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
                                         <td>{{ $invoice->customer_name }}</td>
-                                        <td>{{ $invoice->therapist_name }}</td>
-                                        <td>{{ $invoice->room }}</td>
+                                        @if ($invoice->old_data == 'Y')
+                                            <td>{{ $invoice->therapist_name }}</td>
+                                            <td>{{ $invoice->room }}</td>
+                                        @else
+                                            <td>
+                                                @foreach ($invoice_detail as $detail)
+                                                    {{ $detail->therapist_name }}
+                                                    @unless ($loop->last)
+                                                    ,
+                                                    @endunless
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @foreach ($invoice_detail as $detail)
+                                                    {{ $detail->room }}
+                                                    @unless ($loop->last)
+                                                    ,
+                                                    @endunless
+                                                @endforeach
+                                            </td>
+                                        @endif
                                         <td>{{ date('Y-m-d', strtotime($invoice->treatment_date)) }} ( {{ $invoice->treatment_time_from }} to {{ $invoice->treatment_time_to }} )</td>
                                         <td>
                                             <a href="{{ url('invoice/' . $invoice->id) }}">

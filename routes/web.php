@@ -55,6 +55,7 @@ Route::resource('invoice', 'InvoiceController');
 Route::get('receptionist-view/{id}', 'ReceptionistController@receptionist_view');
 Route::get('therapist-view/{id}', 'TherapistController@therapist_view');
 Route::resource('membership', 'MembershipController');
+Route::resource('customermember', 'CustomerMemberController');
 Route::resource('product', 'ProductController');
 Route::resource('room', 'RoomController');
 Route::resource('promo', 'PromoController');

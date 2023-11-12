@@ -156,7 +156,10 @@ $(document).ready(function () {
     },
     show: function show() {
         $(this).slideDown();
+
         $(this).find('select').find('option:contains("-- Select Product --")').prop('selected', true).trigger('change');
+        $(this).find('select').find('option:contains("-- Select Therapist --")').prop('selected', true).trigger('change');
+        $(this).find('select').find('option:contains("-- Select Room --")').prop('selected', true).trigger('change');
         $(this).find('select').each(function() {
           if (typeof $(this).attr('id') === "undefined") {
             // ...
@@ -169,9 +172,21 @@ $(document).ready(function () {
         });
     },
 
-    hide: function hide(deleteElement) {
-        $(this).slideUp(deleteElement);
+    hide: function (deleteElement) {
+        $(this).find('select').each(function() {
+            var selectId = $(this).attr('id');
+
+            if (typeof selectId !== "undefined") {
+                $(this).select2('destroy');
+            }
+        });
+
+        $(this).slideUp(deleteElement, function() {
+            $(this).remove();
+            calTotal();
+        });
     },
+
     ready: function ready(setIndexes) {},
     isFirstItemUndeletable: true
   });

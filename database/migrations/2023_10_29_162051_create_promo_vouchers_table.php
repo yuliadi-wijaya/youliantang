@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('promo_id');
             $table->foreign('promo_id')->references('id')->on('promos');
             $table->string('voucher_code');
+            $table->tinyInteger('is_used')->default(0);
             $table->timestamps();
         });
     }
