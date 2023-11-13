@@ -130,7 +130,7 @@ class InvoiceController extends Controller
             ->where('users.status', 1)
             ->orderBy('users.first_name', 'ASC')
             ->get();
-        $rooms = Room::where('is_deleted',0)->orderBy('id','ASC')->get();
+        $rooms = Room::where('is_deleted',0)->where('status',1)->orderBy('id','ASC')->get();
         $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
         $promos = Promo::select(
                 \DB::raw('(SELECT voucher_code
@@ -217,14 +217,53 @@ class InvoiceController extends Controller
         $role = $user->roles[0]->slug;
 
         // Get available data only
-        $invoice_detail = Invoice::with('invoice_detail')->where('id', $invoice->id)->first();
+        if($invoice->old_data == 'Y') {
+            $invoice_detail = Invoice::with('invoice_detail')->where('id', $invoice->id)->first();
+        }else{
+            $invoices = Invoice::select(
+                    'invoices.id',
+                    \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
+                    'invoices.treatment_date',
+                    'invoices.created_at',
+                    'invoices.payment_mode',
+                    'invoices.payment_status',
+                    'invoices.is_member',
+                    'invoices.use_member',
+                    'invoices.member_plan',
+                    'invoices.voucher_code',
+                    'invoices.total_price',
+                    'invoices.discount',
+                    'invoices.grand_total'
+                )
+                ->join('users', 'invoices.customer_id', '=', 'users.id')
+                ->where('invoices.is_deleted', 0)
+                ->where('invoices.id', $invoice->id)
+                ->first();
+
+            $invoice_detail = InvoiceDetail::select(
+                    'products.name as product_name',
+                    'amount',
+                    'treatment_time_from',
+                    'treatment_time_to',
+                    'room',
+                    \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS therapist_name")
+                )
+                ->join('products', 'products.id', '=', 'invoice_details.product_id')
+                ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+                ->where('invoice_details.invoice_id', $invoice->id)
+                ->get();
+        }
 
         // Check user access and available data
         if (!$user->hasAccess('invoice.show') || $invoice_detail == NULL) {
             return view('error.403');
         }
 
-        return view('invoice.view-invoice', compact('user', 'role', 'invoice', 'invoice_detail'));
+        if($invoice->old_data == 'Y') {
+            return view('invoice.view-invoice-old', compact('user', 'role', 'invoice', 'invoice_detail'));
+        }else{
+            return view('invoice.view-invoice-new', compact('user', 'role', 'invoices', 'invoice_detail'));
+        }
     }
 
     public function invoice_pdf($id)
@@ -232,14 +271,53 @@ class InvoiceController extends Controller
         $user = Sentinel::getUser();
         $role = $user->roles[0]->slug;
         $invoice = Invoice::where('id', $id)->first();
-        $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
 
         // Check user access and available data
-        if (!$user->hasAccess('invoice.invoice_pdf') || $invoice_detail == NULL) {
+        if (!$user->hasAccess('invoice.invoice_pdf')) {
             return view('error.403');
         }
 
-        $pdf = PDF::loadView('invoice.invoice-pdf', compact('user', 'role', 'invoice', 'invoice_detail'));
+        if($invoice->old_data == 'Y') {
+            $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
+
+            $pdf = PDF::loadView('invoice.invoice-pdf-old', compact('user', 'role', 'invoice', 'invoice_detail'));
+        }else{
+            $invoices = Invoice::select(
+                'invoices.id',
+                \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
+                'invoices.treatment_date',
+                'invoices.created_at',
+                'invoices.payment_mode',
+                'invoices.payment_status',
+                'invoices.is_member',
+                'invoices.use_member',
+                'invoices.member_plan',
+                'invoices.voucher_code',
+                'invoices.total_price',
+                'invoices.discount',
+                'invoices.grand_total'
+            )
+            ->join('users', 'invoices.customer_id', '=', 'users.id')
+            ->where('invoices.is_deleted', 0)
+            ->where('invoices.id', $id)
+            ->first();
+
+            $invoice_detail = InvoiceDetail::select(
+                'products.name as product_name',
+                'amount',
+                'treatment_time_from',
+                'treatment_time_to',
+                'room',
+                \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS therapist_name")
+            )
+            ->join('products', 'products.id', '=', 'invoice_details.product_id')
+            ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+            ->where('invoice_details.invoice_id', $id)
+            ->get();
+
+            $pdf = PDF::loadView('invoice.invoice-pdf-new', compact('user', 'role', 'invoices', 'invoice_detail'));
+        }
+
         return $pdf->download('invoice_' . date('Y-m-d') . '_' . $id . '.pdf');
     }
 
@@ -253,33 +331,72 @@ class InvoiceController extends Controller
     {
         // Get user session data
         $user = Sentinel::getUser();
-
-        // Get user role
         $role = $user->roles[0]->slug;
+        $invoice = Invoice::where('id', $id)->first();
 
-        // Get available data only
-        $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
-        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name')
-            ->join('users', 'users.id', '=', 'customers.user_id')
-            ->orderBy('users.first_name', 'ASC')
-            ->where('users.is_deleted', 0)
-            ->where('users.status', 1)
-            ->get();
-        $therapists = Therapist::select('users.id', 'users.first_name', 'users.last_name')
-            ->join('users', 'users.id', '=', 'therapists.user_id')
-            ->where('users.is_deleted', 0)
-            ->where('users.status', 1)
-            ->orderBy('users.first_name', 'ASC')
-            ->get();
-        $rooms = Room::where('is_deleted',0)->orderBy('id','ASC')->get();
-        $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
+        $rooms = Room::where('is_deleted',0)->where('status',1)->orderBy('id','ASC')->get();
+
+        if($invoice->old_data == 'Y') {
+            $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
+        }else{
+            $invoice_detail = InvoiceDetail::where('invoice_id', $id)->where('is_deleted', 0)->where('status', 1)->get();
+            $customers = Customer::select('users.id', 'users.first_name', 'users.last_name',
+                    \DB::raw('CASE WHEN COALESCE(customer_members.id, 0) = 0 THEN 0 ELSE 1 END AS is_member'),
+                    'customer_members.expired_date',
+                    'memberships.name as member_plan',
+                    'memberships.discount_type',
+                    'memberships.discount_value'
+                )
+                ->join('users', 'users.id', '=', 'customers.user_id')
+                ->leftJoin('customer_members', function($join) {
+                    $join->on('customer_members.customer_id', '=', 'users.id')
+                        ->where('customer_members.status', '=', 1);
+                })
+                ->leftJoin('memberships', function($join) {
+                    $join->on('memberships.id', '=', 'customer_members.membership_id')
+                        ->whereRaw('TIMESTAMPADD(DAY, memberships.total_active_period, memberships.created_at) >= NOW()')
+                        ->where('memberships.status', '=', 1)
+                        ->where('memberships.is_deleted', '=', 0);
+                })
+                ->where('users.is_deleted', '=', 0)
+                ->where('users.status', '=', 1)
+                ->orderBy('users.first_name', 'asc')
+                ->get();
+            $therapists = Therapist::select('users.id', 'users.first_name', 'users.last_name')
+                ->join('users', 'users.id', '=', 'therapists.user_id')
+                ->where('users.is_deleted', 0)
+                ->where('users.status', 1)
+                ->orderBy('users.first_name', 'ASC')
+                ->get();
+            $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
+            $promos = Promo::select(
+                    \DB::raw('(SELECT voucher_code
+                            FROM promo_vouchers AS a
+                            WHERE a.is_used = 0 AND a.promo_id = promos.id
+                            ORDER BY a.voucher_code
+                            LIMIT 1) AS voucher_code'),
+                    'promos.name',
+                    'promos.discount_type',
+                    'promos.discount_value',
+                    'promos.discount_max_value'
+                )
+                ->where('promos.status', 1)
+                ->where('promos.is_deleted', 0)
+                ->where('promos.active_period_start', '<=', now())
+                ->where('promos.active_period_end', '>=', now())
+                ->get();
+        }
 
         // Check user access and available data
         if (!$user->hasAccess('invoice.update') || $invoice_detail == NULL) {
             return view('error.403');
         }
 
-        return view('invoice.edit-invoice', compact('user', 'role', 'invoice_detail', 'customers', 'therapists', 'rooms', 'products'));
+        if($invoice->old_data == 'Y') {
+            return view('invoice.edit-invoice-old', compact('user', 'role', 'invoice_detail', 'rooms'));
+        }else{
+            return view('invoice.edit-invoice-new', compact('user', 'role', 'invoice', 'invoice_detail', 'customers', 'therapists', 'rooms', 'products', 'promos'));
+        }
     }
 
     /**
@@ -300,19 +417,31 @@ class InvoiceController extends Controller
         }
 
         // Validate input data
-        $request->validate([
-            'customer_id' => 'sometimes|required|numeric',
-            'customer_name' => 'sometimes|required|string',
-            'ctherapist_id' => 'sometimes|required|numeric',
-            'therapist_name' => 'sometimes|required|string',
-            'room' => 'required',
-            'treatment_date' => 'required|date',
-            'treatment_time_from' => 'required',
-            'treatment_time_to' => 'required',
-            'payment_mode' => 'required',
-            'payment_status' => 'required'
-        ]);
+        if($request->old_data == 'Y') {
+            $request->validate([
+                'customer_name' => 'required|string',
+                'therapist_name' => 'required|string',
+                'room' => 'required',
+                'treatment_date' => 'required|date',
+                'treatment_time_from' => 'required',
+                'treatment_time_to' => 'required',
+                'payment_mode' => 'required',
+                'payment_status' => 'required'
+            ]);
+        }else{
+            $request->validate([
+                'customer_id' => 'required',
+                'treatment_date' => 'required|date',
+                'payment_mode' => 'required',
+                'payment_status' => 'required',
 
+                'invoices' => 'required|array',
+                'invoices.*.product_id' => 'required',
+                'invoices.*.time_from' => 'required',
+                'invoices.*.therapist_id' => 'required',
+                'invoices.*.room' => 'required'
+            ]);
+        }
         try {
         // Mapping request to object and store data
         $obj = $this->toObject($request, $invoice);
@@ -440,6 +569,7 @@ class InvoiceController extends Controller
                 $invoice->voucher_code = NULL;
             }else{
                 $invoice->use_member = 0;
+                $invoice->member_plan = NULL;
                 $invoice->voucher_code = $request->voucher_code;
             }
             $invoice->total_price = str_replace(',', '', $request->total_price);

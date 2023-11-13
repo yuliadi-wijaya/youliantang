@@ -1,4 +1,4 @@
-<?php $__env->startSection('title'); ?> <?php echo e(__('Create New Invoice')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('Update Invoice')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/libs/select2/select2.min.css')); ?>">
 <?php $__env->stopSection(); ?>
@@ -9,10 +9,10 @@
     <?php $__env->startSection('content'); ?>
         <!-- start page title -->
         <?php $__env->startComponent('components.breadcrumb'); ?>
-            <?php $__env->slot('title'); ?> Create Invoice <?php $__env->endSlot(); ?>
+            <?php $__env->slot('title'); ?> Update Invoice <?php $__env->endSlot(); ?>
             <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
             <?php $__env->slot('li_2'); ?> Invoice <?php $__env->endSlot(); ?>
-            <?php $__env->slot('li_3'); ?> Create Invoice <?php $__env->endSlot(); ?>
+            <?php $__env->slot('li_3'); ?> Update Invoice <?php $__env->endSlot(); ?>
         <?php echo $__env->renderComponent(); ?>
         <!-- end page title -->
         <div class="row">
@@ -29,10 +29,11 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <blockquote><?php echo e(__('Invoice Header')); ?></blockquote>
-                        <form class="outer-repeater" action="<?php echo e(route('invoice.store')); ?>" method="post">
+                        <blockquote><?php echo e(__('Invoice Details')); ?></blockquote>
+                        <form class="outer-repeater" action="<?php echo e(url('invoice/' . $invoice->id)); ?>" method="post">
                             <?php echo csrf_field(); ?>
-                            <input type="hidden" name="old_data" value="N">
+                            <input type="hidden" name="_method" value="PATCH" />
+                            <input type="hidden" name="old_data" value="<?php echo e($invoice->old_data); ?>" />
                             <input type="hidden" name="is_member" id="is_member">
                             <div class="row">
                                 <div class="col-md-6">
@@ -55,7 +56,7 @@ unset($__errorArgs, $__bag); ?>"
                                                         data-member_plan="<?php echo e($row->member_plan); ?>"
                                                         data-discount_type="<?php echo e($row->discount_type); ?>"
                                                         data-discount_value="<?php echo e($row->discount_value); ?>"
-                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                        <?php echo e(old('customer_id', $invoice->customer_id) == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <?php $__errorArgs = ['customer_id'];
@@ -87,11 +88,11 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                                 name="payment_mode">
                                                 <option selected disabled><?php echo e(__('-- Select Payment Mode --')); ?></option>
-                                                <option value="Cash Payement" <?php if(old('payment_mode') == 'Cash Payement'): ?> selected <?php endif; ?>><?php echo e(__('Cash Payment')); ?> </option>
-                                                <option value="Debit/Credit Card" <?php if(old('payment_mode') == 'Debit/Credit Card'): ?> selected <?php endif; ?>><?php echo e(__('Debit/Credit Card')); ?></option>
-                                                <option value="QRIS" <?php if(old('payment_mode') == 'QRIS'): ?> selected <?php endif; ?>><?php echo e(__('QRIS')); ?> </option>
-                                                <option value="GoPay" <?php if(old('payment_mode') == 'GoPay'): ?> selected <?php endif; ?>><?php echo e(__('GoPay')); ?> </option>
-                                                <option value="OVO" <?php if(old('payment_mode') == 'OVO'): ?> selected <?php endif; ?>><?php echo e(__('OVO')); ?> </option>
+                                                <option value="Cash Payement" <?php if(old('payment_mode', $invoice->payment_mode) == 'Cash Payement'): ?> selected <?php endif; ?>><?php echo e(__('Cash Payment')); ?> </option>
+                                                <option value="Debit/Credit Card" <?php if(old('payment_mode', $invoice->payment_mode) == 'Debit/Credit Card'): ?> selected <?php endif; ?>><?php echo e(__('Debit/Credit Card')); ?></option>
+                                                <option value="QRIS" <?php if(old('payment_mode', $invoice->payment_mode) == 'QRIS'): ?> selected <?php endif; ?>><?php echo e(__('QRIS')); ?> </option>
+                                                <option value="GoPay" <?php if(old('payment_mode', $invoice->payment_mode) == 'GoPay'): ?> selected <?php endif; ?>><?php echo e(__('GoPay')); ?> </option>
+                                                <option value="OVO" <?php if(old('payment_mode', $invoice->payment_mode) == 'OVO'): ?> selected <?php endif; ?>><?php echo e(__('OVO')); ?> </option>
                                             </select>
                                             <?php $__errorArgs = ['payment_mode'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -119,8 +120,8 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                                 name="payment_status">
                                                 <option selected disabled><?php echo e(__('-- Select Payment Status --')); ?></option>
-                                                <option value="Paid" <?php if(old('payment_status') == 'Paid'): ?> selected <?php endif; ?>><?php echo e(__('Paid')); ?></option>
-                                                <option value="Unpaid" <?php if(old('payment_status') == 'Unpaid'): ?> selected <?php endif; ?>><?php echo e(__('Unpaid')); ?></option>
+                                                <option value="Paid" <?php if(old('payment_status', $invoice->payment_status) == 'Paid'): ?> selected <?php endif; ?>><?php echo e(__('Paid')); ?></option>
+                                                <option value="Unpaid" <?php if(old('payment_status', $invoice->payment_status) == 'Unpaid'): ?> selected <?php endif; ?>><?php echo e(__('Unpaid')); ?></option>
                                             </select>
                                             <?php $__errorArgs = ['payment_status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -152,7 +153,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
                                                     name="treatment_date" placeholder="<?php echo e(__('Enter Date')); ?>"
-                                                    value="<?php echo e(now()->format('Y-m-d')); ?>" readonly>
+                                                    value="<?php echo e($invoice->treatment_date); ?>" readonly>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                 </div>
@@ -181,7 +182,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" rows="2" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note')); ?></textarea>
+unset($__errorArgs, $__bag); ?>" rows="2" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note', $invoice->note)); ?></textarea>
                                             <?php $__errorArgs = ['note'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -204,7 +205,7 @@ unset($__errorArgs, $__bag); ?>
                                 <div class="col-md-12">
                                     <div class="repeater-product mb-4">
                                         <div data-repeater-list="invoices" class="form-group">
-                                            <?php $__currentLoopData = old('invoices', [0 => []]); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php $__currentLoopData = old('invoices', $invoice_detail, [0 => []]); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <div data-repeater-item class="mb-12 row">
                                                     <div class="col-md-6">
                                                         <div class="row">
@@ -223,7 +224,7 @@ unset($__errorArgs, $__bag); ?>"
                                                                     onchange="getAmount(this)">
                                                                     <option selected disabled><?php echo e(__('-- Select Product --')); ?></option>
                                                                     <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                        <option value="<?php echo e($row->id); ?>" data-price="<?php echo e($row->price); ?>" data-duration="<?php echo e($row->duration); ?>" <?php echo e(old('invoices.' . $index . '.product_id') == $row->id ? 'selected' : ''); ?>>
+                                                                        <option value="<?php echo e($row->id); ?>" data-price="<?php echo e($row->price); ?>" data-duration="<?php echo e($row->duration); ?>" <?php echo e(old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : ''); ?>>
                                                                             <?php echo e($row->name); ?> - Rp. <?php echo e(number_format($row->price)); ?>
 
                                                                         </option>
@@ -256,7 +257,7 @@ endif;
 unset($__errorArgs, $__bag); ?>" name="invoices[<?php echo e($index); ?>][therapist_id]">
                                                                     <option selected disabled><?php echo e(__('-- Select Therapist --')); ?></option>
                                                                     <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                        <option value="<?php echo e($row->id); ?>" <?php echo e(old('invoices.' . $index . '.therapist_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                                        <option value="<?php echo e($row->id); ?>" <?php echo e(old('invoices.' . $index . '.therapist_id', $item->therapist_id) == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 </select>
                                                                 <?php $__errorArgs = ['invoices.' . $index . '.therapist_id'];
@@ -278,7 +279,7 @@ unset($__errorArgs, $__bag); ?>
                                                         <div class="row">
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label"><?php echo e(__('Price ')); ?><span class="text-info"><?php echo e(__('(Auto-Fill)')); ?></span></label>
-                                                                <input type="text" name="invoices[<?php echo e($index); ?>][amount]" class="form-control" value="<?php echo e(old('invoices.' . $index . '.amount')); ?>" placeholder="<?php echo e(__('Enter Price')); ?>" readonly />
+                                                                <input type="text" name="invoices[<?php echo e($index); ?>][amount]" class="form-control" value="<?php echo e(old('invoices.' . $index . '.amount', number_format($item->amount))); ?>" placeholder="<?php echo e(__('Enter Price')); ?>" readonly />
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label"><?php echo e(__('Time From ')); ?><span class="text-danger">*</span></label>
@@ -291,7 +292,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                                    value="<?php echo e(old('invoices.' . $index . '.time_from')); ?>"
+                                                                    value="<?php echo e(old('invoices.' . $index . '.time_from', $item->treatment_time_from)); ?>"
                                                                     onchange="getTimeTo(this,'')" />
                                                                 <?php $__errorArgs = ['invoices.' . $index . '.time_from'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -308,7 +309,7 @@ unset($__errorArgs, $__bag); ?>
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label"><?php echo e(__('Time To ')); ?><span class="text-info"><?php echo e(__('(Auto-Fill)')); ?></span></label>
-                                                                <input type="time" name="invoices[<?php echo e($index); ?>][time_to]" class="form-control" value="<?php echo e(old('invoices.' . $index . '.time_to')); ?>" readonly />
+                                                                <input type="time" name="invoices[<?php echo e($index); ?>][time_to]" class="form-control" value="<?php echo e(old('invoices.' . $index . '.time_to', $item->treatment_time_to)); ?>" readonly />
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -324,7 +325,7 @@ endif;
 unset($__errorArgs, $__bag); ?>" name="invoices[<?php echo e($index); ?>][room]">
                                                                     <option selected disabled><?php echo e(__('-- Select Room --')); ?></option>
                                                                     <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                        <option value="<?php echo e($row->name); ?>" <?php echo e(old('invoices.' . $index . '.room') == $row->name ? 'selected' : ''); ?>><?php echo e($row->name); ?></option>
+                                                                        <option value="<?php echo e($row->name); ?>" <?php echo e(old('invoices.' . $index . '.room', $item->room) == $row->name ? 'selected' : ''); ?>><?php echo e($row->name); ?></option>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 </select>
                                                                 <?php $__errorArgs = ['invoices.' . $index . '.room'];
@@ -357,25 +358,28 @@ unset($__errorArgs, $__bag); ?>
                             <blockquote><?php echo e(__('Invoice Summary')); ?></blockquote>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="row" id="row_member" style="display: none">
+                                    <div class="row" id="row_member" <?php if($invoice->is_member != 1): ?> style="display: none" <?php endif; ?>>
                                         <div class="col-md-12 form-group">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" value="1" name="use_member" id="use_member" onchange="useMember(this)">
+                                                <input type="checkbox" class="form-check-input" value="1"
+                                                    name="use_member" id="use_member"
+                                                    <?php if($invoice->use_member == 1): ?> checked <?php endif; ?>
+                                                    onchange="useMember(this)">
                                                 <label class="form-check-label" for="use_member">
                                                     Use Membership
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row" id="row_member_plan" style="display: none">
+                                    <div class="row" id="row_member_plan" <?php if($invoice->use_member != 1): ?> style="display: none" <?php endif; ?>>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Member Plan ')); ?></label>
                                             <input type="text"
                                                 class="form-control" name="member_plan" id="member_plan"
-                                                value="<?php if(old('member_plan')): ?><?php echo e(old('member_plan')); ?><?php endif; ?>" readonly>
+                                                value="<?php echo e(old('member_plan', $invoice->member_plan)); ?>" readonly>
                                         </div>
                                     </div>
-                                    <div class="row" id="row_voucher_code" style="display: block">
+                                    <div class="row" id="row_voucher_code" <?php if($invoice->use_member != 1): ?> style="display: block" <?php else: ?> style="display: none" <?php endif; ?>>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Voucher Code ')); ?></label>
                                             <select class="form-control select2"
@@ -388,7 +392,7 @@ unset($__errorArgs, $__bag); ?>
                                                         data-type = "<?php echo e($row->discount_type); ?>"
                                                         data-value = "<?php echo e($row->discount_value); ?>"
                                                         data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
-                                                        <?php echo e(old('voucher_code') == $row->voucher_code ? 'selected' : ''); ?>>
+                                                        <?php echo e(old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : ''); ?>>
                                                         <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
                                                     </option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -411,7 +415,7 @@ unset($__errorArgs, $__bag); ?>
                                             <input type="text"
                                                 class="form-control"
                                                 name="total_price" id="total_price"
-                                                value="<?php echo e(old('total_price', 0)); ?>" readonly>
+                                                value="<?php echo e(old('total_price', number_format($invoice->total_price))); ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -420,7 +424,7 @@ unset($__errorArgs, $__bag); ?>
                                             <input type="text"
                                                 class="form-control"
                                                 name="discount" id="discount"
-                                                value="<?php echo e(old('discount', 0)); ?>" readonly>
+                                                value="<?php echo e(old('discount', number_format($invoice->discount))); ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -429,7 +433,7 @@ unset($__errorArgs, $__bag); ?>
                                             <input type="text"
                                                 class="form-control"
                                                 name="grand_total" id="grand_total"
-                                                value="<?php echo e(old('grand_total', 0)); ?>" readonly>
+                                                value="<?php echo e(old('grand_total', number_format($invoice->grand_total))); ?>" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -437,7 +441,7 @@ unset($__errorArgs, $__bag); ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">
-                                        <?php echo e(__('Create New Invoice')); ?>
+                                        <?php echo e(__('Update Invoice')); ?>
 
                                     </button>
                                 </div>
@@ -464,6 +468,21 @@ unset($__errorArgs, $__bag); ?>
             //     startDate: new Date(),
             //     format: 'dd/mm/yyyy'
             // });
+
+            $(document).ready(function() {
+                $(this).find('select').each(function() {
+                    if (typeof $(this).attr('id') === "undefined") {
+                        // ...
+                    } else {
+                        $('.select2').removeAttr("id").removeAttr("data-select2-id");
+                        $('.select2').select2();
+                        $('.select2-container').css('width','100%');
+                        $('.select2').next().next().remove();
+                    }
+                });
+
+                getMember();
+            });
 
             function getMember() {
                 var select = document.querySelector('select[name="customer_id"]');
@@ -681,4 +700,4 @@ unset($__errorArgs, $__bag); ?>
         </script>
     <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/invoice/invoice-details.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/invoice/edit-invoice-new.blade.php ENDPATH**/ ?>

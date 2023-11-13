@@ -1,5 +1,5 @@
 @extends('layouts.master-layouts')
-@section('title') {{ __('Create New Invoice') }} @endsection
+@section('title') {{ __('Update Invoice') }} @endsection
 @section('css')
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/libs/select2/select2.min.css') }}">
 @endsection
@@ -10,10 +10,10 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Create Invoice @endslot
+            @slot('title') Update Invoice @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Invoice @endslot
-            @slot('li_3') Create Invoice @endslot
+            @slot('li_3') Update Invoice @endslot
         @endcomponent
         <!-- end page title -->
         <div class="row">
@@ -29,10 +29,11 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <blockquote>{{ __('Invoice Header') }}</blockquote>
-                        <form class="outer-repeater" action="{{ route('invoice.store') }}" method="post">
+                        <blockquote>{{ __('Invoice Details') }}</blockquote>
+                        <form class="outer-repeater" action="{{ url('invoice/' . $invoice->id) }}" method="post">
                             @csrf
-                            <input type="hidden" name="old_data" value="N">
+                            <input type="hidden" name="_method" value="PATCH" />
+                            <input type="hidden" name="old_data" value="{{ $invoice->old_data }}" />
                             <input type="hidden" name="is_member" id="is_member">
                             <div class="row">
                                 <div class="col-md-6">
@@ -48,7 +49,7 @@
                                                         data-member_plan="{{ $row->member_plan }}"
                                                         data-discount_type="{{ $row->discount_type }}"
                                                         data-discount_value="{{ $row->discount_value }}"
-                                                        {{ old('customer_id') == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                        {{ old('customer_id', $invoice->customer_id) == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
                                                 @endforeach
                                             </select>
                                             @error('customer_id')
@@ -66,11 +67,11 @@
                                             <select class="form-control @error('payment_mode') is-invalid @enderror"
                                                 name="payment_mode">
                                                 <option selected disabled>{{ __('-- Select Payment Mode --') }}</option>
-                                                <option value="Cash Payement" @if (old('payment_mode') == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
-                                                <option value="Debit/Credit Card" @if (old('payment_mode') == 'Debit/Credit Card') selected @endif>{{ __('Debit/Credit Card') }}</option>
-                                                <option value="QRIS" @if (old('payment_mode') == 'QRIS') selected @endif>{{ __('QRIS') }} </option>
-                                                <option value="GoPay" @if (old('payment_mode') == 'GoPay') selected @endif>{{ __('GoPay') }} </option>
-                                                <option value="OVO" @if (old('payment_mode') == 'OVO') selected @endif>{{ __('OVO') }} </option>
+                                                <option value="Cash Payement" @if (old('payment_mode', $invoice->payment_mode) == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
+                                                <option value="Debit/Credit Card" @if (old('payment_mode', $invoice->payment_mode) == 'Debit/Credit Card') selected @endif>{{ __('Debit/Credit Card') }}</option>
+                                                <option value="QRIS" @if (old('payment_mode', $invoice->payment_mode) == 'QRIS') selected @endif>{{ __('QRIS') }} </option>
+                                                <option value="GoPay" @if (old('payment_mode', $invoice->payment_mode) == 'GoPay') selected @endif>{{ __('GoPay') }} </option>
+                                                <option value="OVO" @if (old('payment_mode', $invoice->payment_mode) == 'OVO') selected @endif>{{ __('OVO') }} </option>
                                             </select>
                                             @error('payment_mode')
                                                 <span class="invalid-feedback" role="alert">
@@ -84,8 +85,8 @@
                                             <select class="form-control @error('payment_status') is-invalid @enderror"
                                                 name="payment_status">
                                                 <option selected disabled>{{ __('-- Select Payment Status --') }}</option>
-                                                <option value="Paid" @if (old('payment_status') == 'Paid') selected @endif>{{ __('Paid') }}</option>
-                                                <option value="Unpaid" @if (old('payment_status') == 'Unpaid') selected @endif>{{ __('Unpaid') }}</option>
+                                                <option value="Paid" @if (old('payment_status', $invoice->payment_status) == 'Paid') selected @endif>{{ __('Paid') }}</option>
+                                                <option value="Unpaid" @if (old('payment_status', $invoice->payment_status) == 'Unpaid') selected @endif>{{ __('Unpaid') }}</option>
                                             </select>
                                             @error('payment_status')
                                                 <span class="invalid-feedback" role="alert">
@@ -103,7 +104,7 @@
                                                 <input type="text"
                                                     class="form-control @error('treatment_date') is-invalid @enderror"
                                                     name="treatment_date" placeholder="{{ __('Enter Date') }}"
-                                                    value="{{ now()->format('Y-m-d') }}" readonly>
+                                                    value="{{ $invoice->treatment_date }}" readonly>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                 </div>
@@ -118,7 +119,7 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Note') }}</label>
-                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="2" placeholder="{{ __('Enter Note') }}">{{ old('note') }}</textarea>
+                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="2" placeholder="{{ __('Enter Note') }}">{{ old('note', $invoice->note) }}</textarea>
                                             @error('note')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -134,7 +135,7 @@
                                 <div class="col-md-12">
                                     <div class="repeater-product mb-4">
                                         <div data-repeater-list="invoices" class="form-group">
-                                            @foreach(old('invoices', [0 => []]) as $index => $item)
+                                            @foreach(old('invoices', $invoice_detail, [0 => []]) as $index => $item)
                                                 <div data-repeater-item class="mb-12 row">
                                                     <div class="col-md-6">
                                                         <div class="row">
@@ -146,7 +147,7 @@
                                                                     onchange="getAmount(this)">
                                                                     <option selected disabled>{{ __('-- Select Product --') }}</option>
                                                                     @foreach($products as $row)
-                                                                        <option value="{{ $row->id }}" data-price="{{ $row->price }}" data-duration="{{ $row->duration }}" {{ old('invoices.' . $index . '.product_id') == $row->id ? 'selected' : '' }}>
+                                                                        <option value="{{ $row->id }}" data-price="{{ $row->price }}" data-duration="{{ $row->duration }}" {{ old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : '' }}>
                                                                             {{ $row->name }} - Rp. {{ number_format($row->price) }}
                                                                         </option>
                                                                     @endforeach
@@ -164,7 +165,7 @@
                                                                 <select class="form-control select2 @error('invoices.' . $index . '.therapist_id') is-invalid @enderror" name="invoices[{{ $index }}][therapist_id]">
                                                                     <option selected disabled>{{ __('-- Select Therapist --') }}</option>
                                                                     @foreach($therapists as $row)
-                                                                        <option value="{{ $row->id }}" {{ old('invoices.' . $index . '.therapist_id') == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                                        <option value="{{ $row->id }}" {{ old('invoices.' . $index . '.therapist_id', $item->therapist_id) == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                                 @error('invoices.' . $index . '.therapist_id')
@@ -179,13 +180,13 @@
                                                         <div class="row">
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label">{{ __('Price ') }}<span class="text-info">{{ __('(Auto-Fill)') }}</span></label>
-                                                                <input type="text" name="invoices[{{ $index }}][amount]" class="form-control" value="{{ old('invoices.' . $index . '.amount') }}" placeholder="{{ __('Enter Price') }}" readonly />
+                                                                <input type="text" name="invoices[{{ $index }}][amount]" class="form-control" value="{{ old('invoices.' . $index . '.amount', number_format($item->amount)) }}" placeholder="{{ __('Enter Price') }}" readonly />
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label">{{ __('Time From ') }}<span class="text-danger">*</span></label>
                                                                 <input type="time" name="invoices[{{ $index }}][time_from]"
                                                                     class="form-control @error('invoices.' . $index . '.time_from') is-invalid @enderror"
-                                                                    value="{{ old('invoices.' . $index . '.time_from') }}"
+                                                                    value="{{ old('invoices.' . $index . '.time_from', $item->treatment_time_from) }}"
                                                                     onchange="getTimeTo(this,'')" />
                                                                 @error('invoices.' . $index . '.time_from')
                                                                     <span class="invalid-feedback" role="alert">
@@ -195,7 +196,7 @@
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label">{{ __('Time To ') }}<span class="text-info">{{ __('(Auto-Fill)') }}</span></label>
-                                                                <input type="time" name="invoices[{{ $index }}][time_to]" class="form-control" value="{{ old('invoices.' . $index . '.time_to') }}" readonly />
+                                                                <input type="time" name="invoices[{{ $index }}][time_to]" class="form-control" value="{{ old('invoices.' . $index . '.time_to', $item->treatment_time_to) }}" readonly />
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -204,7 +205,7 @@
                                                                 <select class="form-control select2 @error('invoices.' . $index . '.room') is-invalid @enderror" name="invoices[{{ $index }}][room]">
                                                                     <option selected disabled>{{ __('-- Select Room --') }}</option>
                                                                     @foreach($rooms as $row)
-                                                                        <option value="{{ $row->name }}" {{ old('invoices.' . $index . '.room') == $row->name ? 'selected' : '' }}>{{ $row->name }}</option>
+                                                                        <option value="{{ $row->name }}" {{ old('invoices.' . $index . '.room', $item->room) == $row->name ? 'selected' : '' }}>{{ $row->name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                                 @error('invoices.' . $index . '.room')
@@ -230,25 +231,28 @@
                             <blockquote>{{ __('Invoice Summary') }}</blockquote>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="row" id="row_member" style="display: none">
+                                    <div class="row" id="row_member" @if($invoice->is_member != 1) style="display: none" @endif>
                                         <div class="col-md-12 form-group">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" value="1" name="use_member" id="use_member" onchange="useMember(this)">
+                                                <input type="checkbox" class="form-check-input" value="1"
+                                                    name="use_member" id="use_member"
+                                                    @if($invoice->use_member == 1) checked @endif
+                                                    onchange="useMember(this)">
                                                 <label class="form-check-label" for="use_member">
                                                     Use Membership
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row" id="row_member_plan" style="display: none">
+                                    <div class="row" id="row_member_plan" @if($invoice->use_member != 1) style="display: none" @endif>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Member Plan ') }}</label>
                                             <input type="text"
                                                 class="form-control" name="member_plan" id="member_plan"
-                                                value="@if(old('member_plan')){{ old('member_plan') }}@endif" readonly>
+                                                value="{{ old('member_plan', $invoice->member_plan) }}" readonly>
                                         </div>
                                     </div>
-                                    <div class="row" id="row_voucher_code" style="display: block">
+                                    <div class="row" id="row_voucher_code" @if($invoice->use_member != 1) style="display: block" @else style="display: none" @endif>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Voucher Code ') }}</label>
                                             <select class="form-control select2"
@@ -261,7 +265,7 @@
                                                         data-type = "{{ $row->discount_type }}"
                                                         data-value = "{{ $row->discount_value }}"
                                                         data-maxvalue = "{{ $row->discount_max_value }}"
-                                                        {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
+                                                        {{ old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : '' }}>
                                                         {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
                                                     </option>
                                                 @endforeach
@@ -284,7 +288,7 @@
                                             <input type="text"
                                                 class="form-control"
                                                 name="total_price" id="total_price"
-                                                value="{{ old('total_price', 0) }}" readonly>
+                                                value="{{ old('total_price', number_format($invoice->total_price)) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -293,7 +297,7 @@
                                             <input type="text"
                                                 class="form-control"
                                                 name="discount" id="discount"
-                                                value="{{ old('discount', 0) }}" readonly>
+                                                value="{{ old('discount', number_format($invoice->discount)) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -302,7 +306,7 @@
                                             <input type="text"
                                                 class="form-control"
                                                 name="grand_total" id="grand_total"
-                                                value="{{ old('grand_total', 0) }}" readonly>
+                                                value="{{ old('grand_total', number_format($invoice->grand_total)) }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +314,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Create New Invoice') }}
+                                        {{ __('Update Invoice') }}
                                     </button>
                                 </div>
                             </div>
@@ -336,6 +340,21 @@
             //     startDate: new Date(),
             //     format: 'dd/mm/yyyy'
             // });
+
+            $(document).ready(function() {
+                $(this).find('select').each(function() {
+                    if (typeof $(this).attr('id') === "undefined") {
+                        // ...
+                    } else {
+                        $('.select2').removeAttr("id").removeAttr("data-select2-id");
+                        $('.select2').select2();
+                        $('.select2-container').css('width','100%');
+                        $('.select2').next().next().remove();
+                    }
+                });
+
+                getMember();
+            });
 
             function getMember() {
                 var select = document.querySelector('select[name="customer_id"]');
