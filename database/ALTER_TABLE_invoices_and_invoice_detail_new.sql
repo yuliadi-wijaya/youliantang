@@ -12,8 +12,8 @@ ALTER TABLE invoices ADD COLUMN total_price double NULL;
 ALTER TABLE invoices ADD COLUMN discount double NULL;
 ALTER TABLE invoices ADD COLUMN grand_total double NULL;
 
-ALTER TABLE invoices DROP FOREIGN KEY invoices_therapist_id_foreign;
-ALTER TABLE invoices DROP COLUMN therapist_id;
+-- ALTER TABLE invoices DROP FOREIGN KEY invoices_therapist_id_foreign;
+-- ALTER TABLE invoices DROP COLUMN therapist_id;
 
 -- ALTER invoice_details
 ALTER TABLE invoice_details ADD COLUMN treatment_time_from time NULL;

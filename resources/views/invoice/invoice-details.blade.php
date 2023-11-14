@@ -118,7 +118,7 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Note') }}</label>
-                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="2" placeholder="{{ __('Enter Note') }}">{{ old('note') }}</textarea>
+                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="1" placeholder="{{ __('Enter Note') }}">{{ old('note') }}</textarea>
                                             @error('note')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -135,7 +135,7 @@
                                     <div class="repeater-product mb-4">
                                         <div data-repeater-list="invoices" class="form-group">
                                             @foreach(old('invoices', [0 => []]) as $index => $item)
-                                                <div data-repeater-item class="mb-12 row">
+                                                <div data-repeater-item class="mb-12 row" style="border-bottom: 3px solid #f8f8fb; margin-top: 15px;">
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <div class="col-md-12 form-group">
@@ -215,7 +215,7 @@
                                                             </div>
                                                             <div class="col-md-2 form-group">
                                                                 <br />
-                                                                <input data-repeater-delete type="button" class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner" value="X" />
+                                                                <input data-repeater-delete type="button" class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner" value="X" style="margin-top: 13px" />
                                                             </div>
                                                         </div>
                                                     </div>

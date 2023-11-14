@@ -1,4 +1,4 @@
---invoice_details
+-- invoice_details
 
 ALTER TABLE invoice_details
 ADD COLUMN product_id bigint unsigned DEFAULT NULL;
@@ -10,7 +10,7 @@ ALTER TABLE invoice_details
 MODIFY COLUMN title varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
 
 
---invoices
+-- invoices
 ALTER TABLE invoices
 MODIFY COLUMN customer_name varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
 
