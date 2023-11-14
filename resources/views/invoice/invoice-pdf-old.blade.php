@@ -102,30 +102,30 @@
     <p class="text-center m-0 p-0">KELAPA GADING BARAT JAKARTA UTARA</p>
 </div>
 
-<hr class="dashed">
+{{-- <hr class="dashed"> --}}
 
 <div class="table-section bill-tbl w-100 mt-10">
     <div class="w-100 float-left mt-10">
         <table class="table w-100 mt-10">
             <tr>
+                <td class="m-0 pt-5 text-bold w-30">{{ __('Invoice date') }}</td>
+                <td class="m-0 pt-5 text-bold w-5">:</td>
+                <td class="m-0 pt-5 text-bold">{{ $invoice->created_at }}</td>
+            </tr>
+            {{-- <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Treatment date') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to }}</td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Customer') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoice_detail->customer_name }}</td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Therapist') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoice_detail->therapist_name }}</td>
-            </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30">{{ __('Invoice date') }}</td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold">{{ $invoice->created_at }}</td>
             </tr>
             <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Payment Mode') }}</td>
@@ -136,16 +136,16 @@
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Payment Status') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoice_detail->payment_status }}</td>
-            </tr>
+            </tr> --}}
         </table>
     </div>
     <div style="clear: both;"></div>
 </div>
 
-<hr class="dashed">
+{{-- <hr class="dashed"> --}}
 
 <div class="table-section bill-tbl w-100 mt-10">
-    <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4>
+    {{-- <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4> --}}
 
     <table class="table w-100 mt-10">
         <tr style="border-top:1px dashed black; border-bottom:1px dashed black">

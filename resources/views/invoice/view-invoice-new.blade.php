@@ -81,19 +81,19 @@
                             <address>
                                 <strong>{{ __('Treatment date : ') }}</strong>{{ $invoices->treatment_date }}<br />
                                 <strong>{{ __('Customer : ') }}</strong>{{ $invoices->customer_name }}<br />
-                                <strong>{{ __('Is Member : ') }}</strong>@if ($invoices->is_member == 1) {{ __('Yes (').$invoices->member_plan.')' }} @else {{ __('No') }} @endif<br />
+                                {{-- <strong>{{ __('Is Member : ') }}</strong>@if ($invoices->is_member == 1) {{ __('Yes (').$invoices->member_plan.')' }} @else {{ __('No') }} @endif<br />
                                 @foreach ($invoice_detail as $row)
                                     <strong>{{ __('Therapist : ') }}</strong> {{ $row->therapist_name }}&nbsp;
                                     <strong>{{ __('Room : ') }}</strong> {{ $row->room }}&nbsp;
                                     <strong>{{ __('Treatment Time : ') }}</strong> {{ $row->treatment_time_from }} - {{ $row->treatment_time_to }}<br />
-                                @endforeach
+                                @endforeach --}}
                             </address>
                         </div>
-                        <div class="col-3 pull-right">
+                        <div class="col-3 pull-right" style="text-align: right">
                             <address>
                                 <strong>{{ __('Invoice date : ') }}</strong>{{ $invoices->created_at }}<br />
-                                <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoices->payment_mode }}<br />
-                                <strong>{{ __('Payment Status : ') }}</strong>{{ $invoices->payment_status }}<br />
+                                {{-- <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoices->payment_mode }}<br />
+                                <strong>{{ __('Payment Status : ') }}</strong>{{ $invoices->payment_status }}<br /> --}}
                             </address>
                         </div>
                     </div>

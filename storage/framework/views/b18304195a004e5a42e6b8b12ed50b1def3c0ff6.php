@@ -81,7 +81,7 @@
                             <address>
                                 <strong><?php echo e(__('Treatment date : ')); ?></strong><?php echo e($invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to); ?><br>
                                 <strong><?php echo e(__('Customer : ')); ?></strong><?php echo e($invoice_detail->customer_name); ?><br>
-                                <strong><?php echo e(__('Therapist : ')); ?></strong><?php echo e($invoice_detail->therapist_name); ?><br>
+                                
                             </address>
                         </div>
                         <div class="col-3">
@@ -94,11 +94,10 @@
 
                             </address>
                         </div>
-                        <div class="col-3 pull-right">
+                        <div class="col-3 pull-right" style="text-align: right">
                             <address>
                                 <strong><?php echo e(__('Invoice date : ')); ?></strong><?php echo e($invoice->created_at); ?><br>
-                                <strong><?php echo e(__('Payment Mode : ')); ?></strong><?php echo e($invoice_detail->payment_mode); ?><br>
-                                <strong><?php echo e(__('Payment Status : ')); ?></strong><?php echo e($invoice_detail->payment_status); ?><br>
+                                
                             </address>
                         </div>
                     </div>

@@ -81,7 +81,7 @@
                             <address>
                                 <strong>{{ __('Treatment date : ') }}</strong>{{ $invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to }}<br>
                                 <strong>{{ __('Customer : ') }}</strong>{{ $invoice_detail->customer_name }}<br>
-                                <strong>{{ __('Therapist : ') }}</strong>{{ $invoice_detail->therapist_name }}<br>
+                                {{-- <strong>{{ __('Therapist : ') }}</strong>{{ $invoice_detail->therapist_name }}<br> --}}
                             </address>
                         </div>
                         <div class="col-3">
@@ -94,11 +94,11 @@
 
                             </address>
                         </div>
-                        <div class="col-3 pull-right">
+                        <div class="col-3 pull-right" style="text-align: right">
                             <address>
                                 <strong>{{ __('Invoice date : ') }}</strong>{{ $invoice->created_at }}<br>
-                                <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoice_detail->payment_mode }}<br>
-                                <strong>{{ __('Payment Status : ') }}</strong>{{ $invoice_detail->payment_status }}<br>
+                                {{-- <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoice_detail->payment_mode }}<br>
+                                <strong>{{ __('Payment Status : ') }}</strong>{{ $invoice_detail->payment_status }}<br> --}}
                             </address>
                         </div>
                     </div>

@@ -102,7 +102,7 @@
     <p class="text-center m-0 p-0">KELAPA GADING BARAT JAKARTA UTARA</p>
 </div>
 
-<hr class="dashed">
+{{-- <hr class="dashed"> --}}
 
 <div class="table-section bill-tbl w-100 mt-10">
     <div class="w-100 float-left mt-10">
@@ -112,17 +112,17 @@
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoices->created_at }}</td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Treatment date') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoices->treatment_date }}</td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Customer') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoices->customer_name }}</td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Is Member') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">@if ($invoices->is_member == 1) {{ __('Yes (').$invoices->member_plan.')' }} @else {{ __('No') }} @endif</td>
@@ -154,16 +154,16 @@
                 <td class="m-0 pt-5 text-bold w-30">{{ __('Payment Status') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoices->payment_status }}</td>
-            </tr>
+            </tr> --}}
         </table>
     </div>
     <div style="clear: both;"></div>
 </div>
 
-<hr class="dashed">
+{{-- <hr class="dashed"> --}}
 
 <div class="table-section bill-tbl w-100 mt-10">
-    <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4>
+    {{-- <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4> --}}
 
     <table class="table w-100 mt-10">
         <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
