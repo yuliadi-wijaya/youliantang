@@ -49,7 +49,7 @@
                                                         data-member_plan="{{ $row->member_plan }}"
                                                         data-discount_type="{{ $row->discount_type }}"
                                                         data-discount_value="{{ $row->discount_value }}"
-                                                        {{ old('customer_id', $invoice->customer_id) == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                        {{ old('customer_id', $invoice->customer_id) == $row->id ? 'selected' : '' }}>{{ $row->phone_number.' - '.$row->first_name.' '.$row->last_name }}</option>
                                                 @endforeach
                                             </select>
                                             @error('customer_id')

@@ -341,7 +341,7 @@ class InvoiceController extends Controller
             $invoice_detail = Invoice::with('invoice_detail')->where('id', $id)->first();
         }else{
             $invoice_detail = InvoiceDetail::where('invoice_id', $id)->where('is_deleted', 0)->where('status', 1)->get();
-            $customers = Customer::select('users.id', 'users.first_name', 'users.last_name',
+            $customers = Customer::select('users.id', 'users.first_name', 'users.last_name', 'users.phone_number',
                     \DB::raw('CASE WHEN COALESCE(customer_members.id, 0) = 0 THEN 0 ELSE 1 END AS is_member'),
                     'customer_members.expired_date',
                     'memberships.name as member_plan',
