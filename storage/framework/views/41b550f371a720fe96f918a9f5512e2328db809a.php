@@ -55,7 +55,7 @@ unset($__errorArgs, $__bag); ?>"
                                                         data-member_plan="<?php echo e($row->member_plan); ?>"
                                                         data-discount_type="<?php echo e($row->discount_type); ?>"
                                                         data-discount_value="<?php echo e($row->discount_value); ?>"
-                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->phone_number.' - '.$row->first_name.' '.$row->last_name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <?php $__errorArgs = ['customer_id'];

@@ -68,6 +68,7 @@ class InvoiceController extends Controller
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_to ELSE (SELECT MAX(treatment_time_to) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_to"),
             ])->leftJoin('users as customer', 'invoices.customer_id', '=', 'customer.id')
             ->where('invoices.is_deleted', 0)
+            ->orderBy('invoices.id', 'DESC')
             ->paginate($this->limit);
 
         foreach ($invoices as $invoice) {
@@ -103,7 +104,7 @@ class InvoiceController extends Controller
 
         // Default data null
         $invoice = null;
-        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name',
+        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name', 'users.phone_number',
                 \DB::raw('CASE WHEN COALESCE(customer_members.id, 0) = 0 THEN 0 ELSE 1 END AS is_member'),
                 'customer_members.expired_date',
                 'memberships.name as member_plan',

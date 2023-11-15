@@ -136,10 +136,10 @@ class CustomerController extends Controller
         // Validate input data
         $validatedData = $request->validate([
             'first_name' => 'required|alpha',
-            'last_name' => 'alpha',
+            // 'last_name' => 'alpha',
             'phone_number' => 'required',
             'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-            'address' => 'required|max:100',
+            // 'address' => 'required|max:100',
             'gender' => 'required',
             'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
             'status' => 'required'
