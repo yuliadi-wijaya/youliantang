@@ -279,10 +279,10 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                'last_name' => 'alpha',
+                // 'last_name' => 'alpha',
                 'phone_number' => 'required',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'address' => 'required|max:100',
+                // 'address' => 'required|max:100',
                 'gender' => 'required',
                 'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'
