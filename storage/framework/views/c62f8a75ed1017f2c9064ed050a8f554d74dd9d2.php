@@ -21,7 +21,6 @@
                                 <a href="<?php echo e(url('receptionist')); ?>" class="dropdown-item"><?php echo e(__('translation.receptionist')); ?></a>
                                 <a href="<?php echo e(url('room')); ?>" class="dropdown-item"><?php echo e(__('translation.rooms')); ?></a>
                                 <a href="<?php echo e(url('membership')); ?>" class="dropdown-item"><?php echo e(__('translation.memberships')); ?></a>
-                                <a href="<?php echo e(url('customermember')); ?>" class="dropdown-item"><?php echo e(__('translation.customermember')); ?></a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -58,6 +57,18 @@
                                 <a href="<?php echo e(url('customer')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-customers')); ?></a>
                                 <a href="<?php echo e(route('customer.create')); ?>"
                                     class="dropdown-item"><?php echo e(__('translation.add-new-customer')); ?></a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-address-card mr-2"></i><?php echo e(__('translation.customer-membership')); ?> <div class="arrow-down">
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
+                                <a href="<?php echo e(url('customermember')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-customer-membership')); ?></a>
+                                <a href="<?php echo e(route('customermember.create')); ?>"
+                                    class="dropdown-item"><?php echo e(__('translation.add-new-customer-membership')); ?></a>
                             </div>
                         </li>
                         

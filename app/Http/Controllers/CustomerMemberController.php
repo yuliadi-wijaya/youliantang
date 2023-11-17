@@ -43,11 +43,11 @@ class CustomerMemberController extends Controller
         $role = $user->roles[0]->slug;
 
         // Get available data only
-        $customermembers = CustomerMember::where('is_deleted', 0)->orderByDesc('id')->get();
         $customermembers = CustomerMember::where('customer_members.is_deleted', 0)
             ->join('users', 'users.id', '=', 'customer_members.customer_id')
             ->join('memberships', 'memberships.id', '=', 'customer_members.membership_id')
             ->select('customer_members.id', 'users.first_name', 'users.last_name', 'users.phone_number', 'memberships.name as membership_plan', 'customer_members.expired_date', 'customer_members.status')
+            ->orderBy('customer_members.created_at', 'DESC')
             ->get();
 
         // Load Datatables
@@ -112,15 +112,19 @@ class CustomerMemberController extends Controller
 
         // Default data null
         $customermember = null;
-        $customers = Customer::where('users.is_deleted', 0)
-            ->where('users.status', 1)
+        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name')
             ->join('users', 'users.id', '=', 'customers.user_id')
-            ->orderBy('users.first_name', 'ASC')
-            ->select('users.id', 'users.first_name', 'users.last_name')
+            ->where('users.status', 1)
+            ->where('users.is_deleted', 0)
+            ->whereNotExists(function ($query) {
+                $query->select(\DB::raw(1))
+                    ->from('customer_members')
+                    ->whereRaw('customer_members.customer_id = users.id');
+            })
+            ->orderBy('users.first_name', 'asc')
             ->get();
         $memberships = Membership::where('is_deleted', 0)
             ->where('status', 1)
-            ->whereRaw('TIMESTAMPADD(DAY, total_active_period, created_at) >= NOW()')
             ->get();
 
         return view('customermember.customermember-details', compact('user', 'role', 'customermember', 'customers', 'memberships'));
@@ -183,21 +187,26 @@ class CustomerMemberController extends Controller
     {
         // Get user session data
         $user = Sentinel::getUser();
-
-        // Get user role
         $role = $user->roles[0]->slug;
+
+        $customer_id = $customermember->customer_id;
 
         // Get available data only
         $obj = CustomerMember::where('id', $customermember->id)->where('is_deleted', 0)->first();
-        $customers = Customer::where('users.is_deleted', 0)
-            ->where('users.status', 1)
+        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name')
             ->join('users', 'users.id', '=', 'customers.user_id')
-            ->orderBy('users.first_name', 'ASC')
-            ->select('users.id', 'users.first_name', 'users.last_name')
+            ->where('users.status', 1)
+            ->where('users.is_deleted', 0)
+            ->whereNotExists(function ($query) use ($customer_id) {
+                $query->select(\DB::raw(1))
+                    ->from('customer_members')
+                    ->whereRaw('customer_members.customer_id = users.id')
+                    ->where('customer_members.customer_id', '!=', $customer_id);
+            })
+            ->orderBy('users.first_name', 'asc')
             ->get();
         $memberships = Membership::where('is_deleted', 0)
             ->where('status', 1)
-            ->whereRaw('TIMESTAMPADD(DAY, total_active_period, created_at) >= NOW()')
             ->get();
 
         // Check user access and available data

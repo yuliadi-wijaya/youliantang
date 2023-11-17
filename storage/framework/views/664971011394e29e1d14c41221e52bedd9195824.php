@@ -109,8 +109,8 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
                                                 name="expired_date" id="expired_date" tabindex="2"
-                                                value="<?php echo e($customermember && $customermember->expired_date ? $customermember->expired_date : old('expired_date', now()->addMonth()->format('Y-m-d'))); ?>"
-                                                placeholder="<?php echo e(__('Enter Expired Date')); ?>">
+                                                value="<?php echo e($customermember && $customermember->expired_date ? $customermember->expired_date : old('expired_date', now()->format('Y-m-d'))); ?>"
+                                                placeholder="<?php echo e(__('Enter Expired Date')); ?>" readonly>
                                             <?php $__errorArgs = ['expired_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -138,10 +138,12 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="membership_id" tabindex="3">
+                                                name="membership_id" tabindex="3" onchange="getPlan(this)">
                                                 <option selected disabled><?php echo e(__('-- Select Membership Plan --')); ?></option>
                                                 <?php $__currentLoopData = $memberships; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($row->id); ?>" <?php echo e(($customermember && $customermember->membership_id == $row->id) || old('membership_id') == $row->id ? 'selected' : ''); ?>>
+                                                    <option value="<?php echo e($row->id); ?>"
+                                                        data-period="<?php echo e($row->total_active_period); ?>"
+                                                        <?php echo e(($customermember && $customermember->membership_id == $row->id) || old('membership_id') == $row->id ? 'selected' : ''); ?>>
                                                         <?php echo e($row->name); ?>
 
                                                     </option>
@@ -216,10 +218,20 @@ unset($__errorArgs, $__bag); ?>
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('script'); ?>
         <script>
-            $('#expired_date').datepicker({
-                startDate: new Date(),
-                format: 'dd/mm/yyyy'
-            });
+            function getPlan(obj) {
+                var selectedOption = obj.options[obj.selectedIndex];
+                var period = parseFloat(selectedOption.dataset.period);
+
+                const currentDate = new Date();
+
+                currentDate.setDate(currentDate.getDate() + period);
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const formattedDate = `${year}-${month}-${day}`;
+
+                document.getElementById('expired_date').value = formattedDate;
+            }
         </script>
     <?php $__env->stopSection(); ?>
 
