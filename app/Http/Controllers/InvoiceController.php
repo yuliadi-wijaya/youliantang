@@ -71,14 +71,16 @@ class InvoiceController extends Controller
             ->orderBy('invoices.id', 'DESC')
             ->paginate($this->limit);
 
+        $invoice_detail = [];
         foreach ($invoices as $invoice) {
             $id = $invoice->id;
-            $invoice_detail = InvoiceDetail::select(\DB::raw('CONCAT(users.first_name, " ", users.last_name) as therapist_name'), 'invoice_details.room')
+            $detail = InvoiceDetail::select(\DB::raw('CONCAT(users.first_name, " ", users.last_name) as therapist_name'), 'invoice_details.room')
                 ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
-                ->where('invoice_details.invoice_id', $id)
-                ->where('invoice_details.status', 1)
-                ->where('invoice_details.is_deleted', 0)
+                ->where('invoice_details.invoice_id', '=', $id)
+                ->where('invoice_details.status', '=', 1)
+                ->where('invoice_details.is_deleted', '=', 0)
                 ->get();
+            $invoice_detail[$id] = $detail;
         }
 
         return view('invoice.invoices', compact('user', 'role', 'invoices', 'invoice_detail'));

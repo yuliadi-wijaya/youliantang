@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title'); ?> <?php echo e(__('Invoice Details')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('body'); ?>
 
@@ -81,19 +82,13 @@
                             <address>
                                 <strong><?php echo e(__('Treatment date : ')); ?></strong><?php echo e($invoices->treatment_date); ?><br />
                                 <strong><?php echo e(__('Customer : ')); ?></strong><?php echo e($invoices->customer_name); ?><br />
-                                <strong><?php echo e(__('Is Member : ')); ?></strong><?php if($invoices->is_member == 1): ?> <?php echo e(__('Yes (').$invoices->member_plan.')'); ?> <?php else: ?> <?php echo e(__('No')); ?> <?php endif; ?><br />
-                                <?php $__currentLoopData = $invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <strong><?php echo e(__('Therapist : ')); ?></strong> <?php echo e($row->therapist_name); ?>&nbsp;
-                                    <strong><?php echo e(__('Room : ')); ?></strong> <?php echo e($row->room); ?>&nbsp;
-                                    <strong><?php echo e(__('Treatment Time : ')); ?></strong> <?php echo e($row->treatment_time_from); ?> - <?php echo e($row->treatment_time_to); ?><br />
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                
                             </address>
                         </div>
-                        <div class="col-3 pull-right">
+                        <div class="col-3 pull-right" style="text-align: right">
                             <address>
                                 <strong><?php echo e(__('Invoice date : ')); ?></strong><?php echo e($invoices->created_at); ?><br />
-                                <strong><?php echo e(__('Payment Mode : ')); ?></strong><?php echo e($invoices->payment_mode); ?><br />
-                                <strong><?php echo e(__('Payment Status : ')); ?></strong><?php echo e($invoices->payment_status); ?><br />
+                                
                             </address>
                         </div>
                     </div>

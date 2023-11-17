@@ -87,7 +87,7 @@
                                             <td>{{ $invoice->room }}</td>
                                         @else
                                             <td>
-                                                @foreach ($invoice_detail as $detail)
+                                                @foreach ($invoice_detail[$invoice->id] as $detail)
                                                     {{ $detail->therapist_name }}
                                                     @unless ($loop->last)
                                                     ,
@@ -95,7 +95,7 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                @foreach ($invoice_detail as $detail)
+                                                @foreach ($invoice_detail[$invoice->id] as $detail)
                                                     {{ $detail->room }}
                                                     @unless ($loop->last)
                                                     ,
