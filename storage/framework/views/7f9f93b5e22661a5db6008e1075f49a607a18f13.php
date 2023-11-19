@@ -37,7 +37,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-10 form-group">
                                             <label class="control-label"><?php echo e(__('Customer ')); ?><span class="text-danger">*</span></label>
                                             <select class="form-control select2 <?php $__errorArgs = ['customer_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -55,7 +55,7 @@ unset($__errorArgs, $__bag); ?>"
                                                         data-member_plan="<?php echo e($row->member_plan); ?>"
                                                         data-discount_type="<?php echo e($row->discount_type); ?>"
                                                         data-discount_value="<?php echo e($row->discount_value); ?>"
-                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->phone_number.' - '.$row->first_name.' '.$row->last_name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <?php $__errorArgs = ['customer_id'];
@@ -70,6 +70,14 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                        </div>
+                                        <div class="col-md-2 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <a href="<?php echo e(url('invoice-customer-create')); ?>">
+                                                <button type="button" class="form-control btn-primary" title="Add Customers">
+                                                    <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
+                                                </button>
+                                            </a>
                                         </div>
                                     </div>
 
@@ -181,7 +189,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" rows="2" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note')); ?></textarea>
+unset($__errorArgs, $__bag); ?>" rows="1" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note')); ?></textarea>
                                             <?php $__errorArgs = ['note'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -205,7 +213,7 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="repeater-product mb-4">
                                         <div data-repeater-list="invoices" class="form-group">
                                             <?php $__currentLoopData = old('invoices', [0 => []]); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <div data-repeater-item class="mb-12 row">
+                                                <div data-repeater-item class="mb-12 row" style="border-bottom: 3px solid #f8f8fb; margin-top: 15px;">
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <div class="col-md-12 form-group">
@@ -342,7 +350,7 @@ unset($__errorArgs, $__bag); ?>
                                                             </div>
                                                             <div class="col-md-2 form-group">
                                                                 <br />
-                                                                <input data-repeater-delete type="button" class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner" value="X" />
+                                                                <input data-repeater-delete type="button" class="fcbtn btn btn-outline btn-danger btn-1d btn-sm inner" value="X" style="margin-top: 13px" />
                                                             </div>
                                                         </div>
                                                     </div>

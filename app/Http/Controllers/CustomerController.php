@@ -113,8 +113,23 @@ class CustomerController extends Controller
         // Default data null
         $customer = null;
         $customer_info = null;
-        
+
         return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
+    }
+
+    public function create_from_invoice()
+    {
+        $user = Sentinel::getUser();
+        if (!$user->hasAccess('customer.create')) {
+            return view('error.403');
+        }
+
+        $role = $user->roles[0]->slug;
+
+        $customer = null;
+        $customer_info = null;
+
+        return view('invoice.customer-add', compact('user', 'role', 'customer', 'customer_info'));
     }
 
     /**
@@ -136,10 +151,8 @@ class CustomerController extends Controller
         // Validate input data
         $validatedData = $request->validate([
             'first_name' => 'required|alpha',
-            // 'last_name' => 'alpha',
             'phone_number' => 'required',
             'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-            // 'address' => 'required|max:100',
             'gender' => 'required',
             'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
             'status' => 'required'
@@ -159,6 +172,7 @@ class CustomerController extends Controller
             }
 
             // Set Default Password for Customer
+            $validatedData['last_name'] = $request->last_name;
             $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
             $validatedData['created_by'] = $user->id;
             $validatedData['updated_by'] = $user->id;
@@ -189,9 +203,19 @@ class CustomerController extends Controller
                 $message->to($verify_mail);
                 $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
             });
-            return redirect('customer')->with('success', 'Customer created successfully!');
+
+            if($request->post_from == 'customer') {
+                return redirect('customer')->with('success', 'Customer created successfully!');
+            }else{
+                return redirect('invoice/create')->with('success', 'Customer created successfully!');
+            }
+
         } catch (Exception $e) {
-            return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            if($request->post_from == 'customer') {
+                return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            }else{
+                return redirect('invoice/create')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            }
         }
     }
 
@@ -279,10 +303,8 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                // 'last_name' => 'alpha',
                 'phone_number' => 'required',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                // 'address' => 'required|max:100',
                 'gender' => 'required',
                 'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'
@@ -302,7 +324,7 @@ class CustomerController extends Controller
                     $customer->profile_photo = $imageName;
                 }
                 $customer->first_name = $validatedData['first_name'];
-                $customer->last_name = $validatedData['last_name'];
+                $customer->last_name = $request->last_name;
                 $customer->phone_number = $validatedData['phone_number'];
                 $customer->email = $validatedData['email'];
                 $customer->status = $validatedData['status'];

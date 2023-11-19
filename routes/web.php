@@ -102,6 +102,8 @@ Route::get('invoice-view/{id}', 'InvoiceController@invoice_view');
 Route::get('invoice-pdf/{id}', 'InvoiceController@invoice_pdf');
 // Route::get('transaction', 'InvoiceController@transaction');
 
+Route::get('invoice-customer-create', 'CustomerController@create_from_invoice');
+
 //Transaction routes
 
 // Prescription routes

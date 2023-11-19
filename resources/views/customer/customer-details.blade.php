@@ -77,6 +77,7 @@
                             @if ($customer )
                                 <input type="hidden" name="_method" value="PATCH" />
                             @endif
+                            <input type="hidden" name="post_from" value="customer" />
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">

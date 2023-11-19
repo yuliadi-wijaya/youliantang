@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?>
     <?php if($customer ): ?>
         <?php echo e(__('Update Customer Details')); ?>
@@ -86,6 +85,7 @@
                             <?php if($customer ): ?>
                                 <input type="hidden" name="_method" value="PATCH" />
                             <?php endif; ?>
+                            <input type="hidden" name="post_from" value="customer" />
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">

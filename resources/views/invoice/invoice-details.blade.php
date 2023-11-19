@@ -37,7 +37,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-10 form-group">
                                             <label class="control-label">{{ __('Customer ') }}<span class="text-danger">*</span></label>
                                             <select class="form-control select2 @error('customer_id') is-invalid @enderror"
                                                 name="customer_id" onchange="getMember()">
@@ -56,6 +56,14 @@
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
+                                        </div>
+                                        <div class="col-md-2 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <a href="{{ url('invoice-customer-create') }}">
+                                                <button type="button" class="form-control btn-primary" title="Add Customers">
+                                                    <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
+                                                </button>
+                                            </a>
                                         </div>
                                     </div>
 
