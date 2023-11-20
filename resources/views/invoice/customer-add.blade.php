@@ -20,7 +20,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <blockquote>{{ __('Invoice Header') }}</blockquote>
+                        <blockquote>{{ __('Customer Info') }}</blockquote>
                         <form action="{{ route('customer.store') }}" method="post">
                             @csrf
                             @if ($customer )
