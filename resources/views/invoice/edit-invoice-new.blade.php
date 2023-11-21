@@ -38,10 +38,27 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Invoice Code ') }}</label>
+                                            <input type="text" name="invoice_code" value="{{ $invoice->invoice_code }}"
+                                                class="form-control" placeholder="{{ __('Auto generated') }}" readonly>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Invoice Type ') }}</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="CK" @if (old('invoice_type', $invoice->invoice_type) == 'CK') checked @endif>
+                                                <label class="form-check-label mr-5">Checklist</label>
+
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="NC" @if (old('invoice_type', $invoice->invoice_type) == 'NC') checked @endif>
+                                                <label class="form-check-label">Non Checklist</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Customer ') }}<span class="text-danger">*</span></label>
                                             <select class="form-control select2 @error('customer_id') is-invalid @enderror"
-                                                name="customer_id" onchange="getMember()">
+                                                name="customer_id" id="customer_id" onchange="getMember()">
                                                 <option selected disabled>{{ __('-- Select Customer --') }}</option>
                                                 @foreach($customers as $row)
                                                     <option value="{{ $row->id }}"
@@ -119,7 +136,7 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Note') }}</label>
-                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="1" placeholder="{{ __('Enter Note') }}">{{ old('note', $invoice->note) }}</textarea>
+                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="4" placeholder="{{ __('Enter Note') }}">{{ old('note', $invoice->note) }}</textarea>
                                             @error('note')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -341,7 +358,8 @@
             //     format: 'dd/mm/yyyy'
             // });
 
-            $(document).ready(function() {
+            $(document).ready(function () {
+
                 $(this).find('select').each(function() {
                     if (typeof $(this).attr('id') === "undefined") {
                         // ...
@@ -351,6 +369,27 @@
                         $('.select2-container').css('width','100%');
                         $('.select2').next().next().remove();
                     }
+                });
+
+                $('select[name="customer_id"]').on('change', function () {
+                    var customer_id = this.value;
+                    $('select[name="voucher_code"]').empty();
+                    $.ajax({
+                        type: "get",
+                        url: "/get-promo-ajax/" + customer_id,
+                        success: function(data) {
+                            $('select[name="voucher_code"]').append('<option value="">-- Select Voucher Code --</option>');
+
+                            $.each(data, function(index, row) {
+                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
+                                option += (row.voucher_code == "{{ old('voucher_code') }}") ? ' selected' : '';
+                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
+                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
+                                option += '</option>';
+                                $('select[name="voucher_code"]').append(option);
+                            });
+                        }
+                    });
                 });
 
                 getMember();

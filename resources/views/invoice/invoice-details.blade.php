@@ -37,10 +37,26 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Invoice Code ') }}</label>
+                                            <input type="text" class="form-control" placeholder="{{ __('Auto generated') }}" readonly>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Invoice Type ') }}</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="CK" checked>
+                                                <label class="form-check-label mr-5">Checklist</label>
+
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="NC">
+                                                <label class="form-check-label">Non Checklist</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-10 form-group">
                                             <label class="control-label">{{ __('Customer ') }}<span class="text-danger">*</span></label>
                                             <select class="form-control select2 @error('customer_id') is-invalid @enderror"
-                                                name="customer_id" onchange="getMember()">
+                                                name="customer_id" id="customer_id" onchange="getMember()">
                                                 <option selected disabled>{{ __('-- Select Customer --') }}</option>
                                                 @foreach($customers as $row)
                                                     <option value="{{ $row->id }}"
@@ -126,7 +142,7 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Note') }}</label>
-                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="1" placeholder="{{ __('Enter Note') }}">{{ old('note') }}</textarea>
+                                            <textarea id="Note" name="note" class="form-control @error('note') is-invalid @enderror" rows="4" placeholder="{{ __('Enter Note') }}">{{ old('note') }}</textarea>
                                             @error('note')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -264,15 +280,17 @@
                                                 id="voucher_code"
                                                 onchange="calDiscount()">
                                                 <option value="" selected>{{ __('-- Select Voucher Code --') }}</option>
-                                                @foreach($promos as $row)
-                                                    <option value="{{ $row->voucher_code }}"
-                                                        data-type = "{{ $row->discount_type }}"
-                                                        data-value = "{{ $row->discount_value }}"
-                                                        data-maxvalue = "{{ $row->discount_max_value }}"
-                                                        {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
-                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
-                                                    </option>
-                                                @endforeach
+                                                @if(session('promo_data'))
+                                                    @foreach(session('promo_data') as $row)
+                                                        <option value="{{ $row->voucher_code }}"
+                                                            data-type = "{{ $row->discount_type }}"
+                                                            data-value = "{{ $row->discount_value }}"
+                                                            data-maxvalue = "{{ $row->discount_max_value }}"
+                                                            {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
+                                                            {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
+                                                        </option>
+                                                    @endforeach
+                                                @endif
                                             </select>
                                         </div>
                                     </div>
@@ -558,5 +576,32 @@
 
                 document.getElementById('grand_total').value = formatGrandTotal;
             }
+
+            $(document).ready(function () {
+                $('#customer_id').on('change', function () {
+                    var customer_id = this.value;
+                    $("#voucher_code").html('');
+                    $.ajax({
+                        type: "get",
+                        url: "/get-promo-ajax/" + customer_id,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(data) {
+                            $('#voucher_code').empty();
+                            $('#voucher_code').append('<option value="">-- Select Voucher --</option>');
+
+                            $.each(data, function(index, row) {
+                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
+                                option += (row.voucher_code == "{{ old('voucher_code') }}") ? ' selected' : '';
+                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
+                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
+                                option += '</option>';
+                                $('#voucher_code').append(option);
+                            });
+                        }
+                    });
+                });
+            });
         </script>
     @endsection
