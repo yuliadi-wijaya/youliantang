@@ -102,68 +102,37 @@
     <p class="text-center m-0 p-0">KELAPA GADING BARAT JAKARTA UTARA</p>
 </div>
 
-<hr class="dashed">
+
 
 <div class="table-section bill-tbl w-100 mt-10">
     <div class="w-100 float-left mt-10">
         <table class="table w-100 mt-10">
             <tr>
+                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Invoice no')); ?></td>
+                <td class="m-0 pt-5 text-bold w-5">:</td>
+                <td class="m-0 pt-5 text-bold"><?php echo e($invoices->invoice_code); ?></td>
+            </tr>
+            <tr>
                 <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Invoice date')); ?></td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold"><?php echo e($invoices->created_at); ?></td>
             </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Treatment date')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoices->treatment_date); ?></td>
-            </tr>
+            
             <tr>
                 <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Customer')); ?></td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold"><?php echo e($invoices->customer_name); ?></td>
             </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Is Member')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php if($invoices->is_member == 1): ?> <?php echo e(__('Yes (').$invoices->member_plan.')'); ?> <?php else: ?> <?php echo e(__('No')); ?> <?php endif; ?></td>
-            </tr>
-            <?php $__currentLoopData = $invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <tr>
-                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Therapist')); ?></td>
-                    <td class="m-0 pt-5 text-bold w-5">:</td>
-                    <td class="m-0 pt-5 text-bold"><?php echo e($row->therapist_name); ?></td>
-                </tr>
-                <tr>
-                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Room')); ?></td>
-                    <td class="m-0 pt-5 text-bold w-5">:</td>
-                    <td class="m-0 pt-5 text-bold"><?php echo e($row->room); ?></td>
-                </tr>
-                <tr>
-                    <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Treatment Time')); ?></td>
-                    <td class="m-0 pt-5 text-bold w-5">:</td>
-                    <td class="m-0 pt-5 text-bold"><?php echo e($row->treatment_time_from); ?> - <?php echo e($row->treatment_time_to); ?></td>
-                </tr>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Payment Mode')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoices->payment_mode); ?></td>
-            </tr>
-            <tr>
-                <td class="m-0 pt-5 text-bold w-30"><?php echo e(__('Payment Status')); ?></td>
-                <td class="m-0 pt-5 text-bold w-5">:</td>
-                <td class="m-0 pt-5 text-bold"><?php echo e($invoices->payment_status); ?></td>
-            </tr>
+            
         </table>
     </div>
     <div style="clear: both;"></div>
 </div>
 
-<hr class="dashed">
+
 
 <div class="table-section bill-tbl w-100 mt-10">
-    <h4 style="margin-left: 7px"><strong>Invoice summary</strong></h4>
+    
 
     <table class="table w-100 mt-10">
         <tr style="border-top:1px dashed black; border-bottom:1px dashed black">

@@ -259,6 +259,7 @@ class InvoiceController extends Controller
         }else{
             $invoices = Invoice::select(
                     'invoices.id',
+                    'invoices.invoice_code',
                     \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
                     'invoices.treatment_date',
                     'invoices.created_at',
@@ -288,6 +289,7 @@ class InvoiceController extends Controller
                 ->join('products', 'products.id', '=', 'invoice_details.product_id')
                 ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
                 ->where('invoice_details.invoice_id', $invoice->id)
+                ->where('invoice_details.is_deleted', 0)
                 ->get();
         }
 
@@ -321,6 +323,7 @@ class InvoiceController extends Controller
         }else{
             $invoices = Invoice::select(
                 'invoices.id',
+                'invoices.invoice_code',
                 \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
                 'invoices.treatment_date',
                 'invoices.created_at',

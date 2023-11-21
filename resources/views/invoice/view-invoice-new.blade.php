@@ -91,6 +91,7 @@
                         </div>
                         <div class="col-3 pull-right" style="text-align: right">
                             <address>
+                                <strong>{{ __('Invoice no : ') }}</strong>{{ $invoices->invoice_code }}<br />
                                 <strong>{{ __('Invoice date : ') }}</strong>{{ $invoices->created_at }}<br />
                                 {{-- <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoices->payment_mode }}<br />
                                 <strong>{{ __('Payment Status : ') }}</strong>{{ $invoices->payment_status }}<br /> --}}
@@ -165,6 +166,11 @@
     {{ str_repeat("-", 37) }} <br>
 
     <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td>Invoice No</td>
+            <td>:</td>
+            <td>{{ $invoices->invoice_code }}</td>
+        </tr>
         <tr>
             <td>Treatment Date</td>
             <td>:</td>

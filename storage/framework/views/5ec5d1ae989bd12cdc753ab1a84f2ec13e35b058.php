@@ -58,7 +58,7 @@
                             <thead>
                                 <tr>
                                     <th><?php echo e(__('No.')); ?></th>
-                                    <th><?php echo e(__('Invoice Code')); ?></th>
+                                    <th><?php echo e(__('Invoice No')); ?></th>
                                     <th><?php echo e(__('Customer Name')); ?></th>
                                     <th><?php echo e(__('Therapist Name')); ?></th>
                                     <th><?php echo e(__('Room')); ?></th>

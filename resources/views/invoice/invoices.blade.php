@@ -58,7 +58,7 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('No.') }}</th>
-                                    <th>{{ __('Invoice Code') }}</th>
+                                    <th>{{ __('Invoice No') }}</th>
                                     <th>{{ __('Customer Name') }}</th>
                                     <th>{{ __('Therapist Name') }}</th>
                                     <th>{{ __('Room') }}</th>

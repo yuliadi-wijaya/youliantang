@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?> <?php echo e(__('Invoice Details')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('body'); ?>
 
@@ -87,6 +86,7 @@
                         </div>
                         <div class="col-3 pull-right" style="text-align: right">
                             <address>
+                                <strong><?php echo e(__('Invoice no : ')); ?></strong><?php echo e($invoices->invoice_code); ?><br />
                                 <strong><?php echo e(__('Invoice date : ')); ?></strong><?php echo e($invoices->created_at); ?><br />
                                 
                             </address>
@@ -160,6 +160,11 @@
     <?php echo e(str_repeat("-", 37)); ?> <br>
 
     <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td>Invoice No</td>
+            <td>:</td>
+            <td><?php echo e($invoices->invoice_code); ?></td>
+        </tr>
         <tr>
             <td>Treatment Date</td>
             <td>:</td>
