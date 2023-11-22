@@ -17,6 +17,7 @@ use App\Promo;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use PDF;
 
 class InvoiceController extends Controller
@@ -59,7 +60,7 @@ class InvoiceController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
         $invoices = Invoice::select([
-            'invoices.id', 'invoices.old_data',
+            'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(customer.first_name, ' ', customer.last_name) END AS customer_name"),
             'invoices.treatment_date',
             'invoices.therapist_name',
@@ -135,24 +136,41 @@ class InvoiceController extends Controller
             ->get();
         $rooms = Room::where('is_deleted',0)->where('status',1)->orderBy('id','ASC')->get();
         $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
-        $promos = Promo::select(
-                \DB::raw('(SELECT voucher_code
-                          FROM promo_vouchers AS a
-                          WHERE a.is_used = 0 AND a.promo_id = promos.id
-                          ORDER BY a.voucher_code
-                          LIMIT 1) AS voucher_code'),
-                'promos.name',
-                'promos.discount_type',
-                'promos.discount_value',
-                'promos.discount_max_value'
-            )
-            ->where('promos.status', 1)
-            ->where('promos.is_deleted', 0)
-            ->where('promos.active_period_start', '<=', now())
-            ->where('promos.active_period_end', '>=', now())
-            ->get();
 
-        return view('invoice.invoice-details', compact('user', 'role', 'invoice', 'customers', 'therapists', 'rooms', 'products', 'promos'));
+        return view('invoice.invoice-details', compact('user', 'role', 'invoice', 'customers', 'therapists', 'rooms', 'products'));
+    }
+
+    public function promo_ajax($id)
+    {
+        $promo = Promo::select(
+            'promos.name',
+            'promos.discount_type',
+            'promos.discount_value',
+            'promos.discount_max_value',
+            'promos.is_reuse_voucher',
+            'promo_vouchers.voucher_code'
+        )
+        ->join('promo_vouchers', 'promo_vouchers.promo_id', '=', 'promos.id')
+        ->where('promos.status', 1)
+        ->where('promos.is_deleted', 0)
+        ->where(function ($query) use ($id) {
+            $query->where('promos.is_reuse_voucher', 1)
+                ->orWhere(function ($query) use ($id) {
+                    $query->where('promos.is_reuse_voucher', 0)
+                        ->whereNotIn('promo_vouchers.voucher_code', function ($subquery) use ($id) {
+                            $subquery->select('voucher_code')
+                                ->from('invoices')
+                                ->where('customer_id', $id);
+                        });
+                });
+        })
+        ->orderBy('promos.id')
+        ->orderByDesc('promo_vouchers.voucher_code')
+        ->get();
+
+        session(['promo_data' => $promo]);
+        Session::put('promo_data_timeout', now()->addMinutes(1));
+        return response()->json($promo);
     }
 
     /**
@@ -191,9 +209,25 @@ class InvoiceController extends Controller
                 return redirect()->back()->with('error', 'Add at least one Invoice product and amount to create invoice!!!');
             }
 
+            // Generate invoice code
+            if($request->invoice_type == 'CK'){
+                $prefix = 'INV/CK/';
+            }else if($request->invoice_type == 'NC'){
+                $prefix = 'INV/NC/';
+            }
+
+            $dateCode = now()->format('ymd');
+            $lastInvoice = Invoice::where('invoice_code', 'like', $prefix . '%')->orderBy('id', 'desc')->first();
+            $runningNumber = $lastInvoice ? $lastInvoice->running_number + 1 : 1;
+            $runningNumberPadded = str_pad($runningNumber, 3, '0', STR_PAD_LEFT);
+            $invoiceCode = $prefix . $dateCode . '/' . $runningNumberPadded;
+            // End
+
             // Mapping request to object and store data
             $obj = $this->toObject($request, new Invoice());
             $obj->created_by = $user->id;
+            $obj->invoice_type = $request->invoice_type;
+            $obj->invoice_code = $invoiceCode;
             $obj->save();
 
             // Store invoice detail
@@ -225,6 +259,7 @@ class InvoiceController extends Controller
         }else{
             $invoices = Invoice::select(
                     'invoices.id',
+                    'invoices.invoice_code',
                     \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
                     'invoices.treatment_date',
                     'invoices.created_at',
@@ -254,6 +289,7 @@ class InvoiceController extends Controller
                 ->join('products', 'products.id', '=', 'invoice_details.product_id')
                 ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
                 ->where('invoice_details.invoice_id', $invoice->id)
+                ->where('invoice_details.is_deleted', 0)
                 ->get();
         }
 
@@ -287,6 +323,7 @@ class InvoiceController extends Controller
         }else{
             $invoices = Invoice::select(
                 'invoices.id',
+                'invoices.invoice_code',
                 \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
                 'invoices.treatment_date',
                 'invoices.created_at',
@@ -373,20 +410,30 @@ class InvoiceController extends Controller
                 ->get();
             $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('id','ASC')->get();
             $promos = Promo::select(
-                    \DB::raw('(SELECT voucher_code
-                            FROM promo_vouchers AS a
-                            WHERE a.is_used = 0 AND a.promo_id = promos.id
-                            ORDER BY a.voucher_code
-                            LIMIT 1) AS voucher_code'),
                     'promos.name',
                     'promos.discount_type',
                     'promos.discount_value',
-                    'promos.discount_max_value'
+                    'promos.discount_max_value',
+                    'promos.is_reuse_voucher',
+                    'promo_vouchers.voucher_code'
                 )
+                ->join('promo_vouchers', 'promo_vouchers.promo_id', '=', 'promos.id')
                 ->where('promos.status', 1)
                 ->where('promos.is_deleted', 0)
-                ->where('promos.active_period_start', '<=', now())
-                ->where('promos.active_period_end', '>=', now())
+                ->where(function ($query) use ($invoice) {
+                    $query->where('promos.is_reuse_voucher', 1)
+                        ->orWhere(function ($query) use ($invoice) {
+                            $query->where('promos.is_reuse_voucher', 0)
+                                ->whereNotIn('promo_vouchers.voucher_code', function ($subquery) use ($invoice) {
+                                    $subquery->select('voucher_code')
+                                        ->from('invoices')
+                                        ->where('customer_id', $invoice->customer_id)
+                                        ->where('voucher_code', '!=', $invoice->voucher_code);
+                                });
+                        });
+                })
+                ->orderBy('promos.id')
+                ->orderByDesc('promo_vouchers.voucher_code')
                 ->get();
         }
 
@@ -446,18 +493,34 @@ class InvoiceController extends Controller
             ]);
         }
         try {
-        // Mapping request to object and store data
-        $obj = $this->toObject($request, $invoice);
-        $obj->updated_by = $user->id;
-        $obj->save();
+            // Generate invoice code
+            if($request->invoice_type == 'CK'){
+                $prefix = 'INV/CK/';
+            }else if($request->invoice_type == 'NC'){
+                $prefix = 'INV/NC/';
+            }
 
-        // old invoice_list details delete
-        InvoiceDetail::where('invoice_id', $invoice->id)->update(['is_deleted' => 1]);
+            $dateCode = now()->format('ymd');
+            $lastInvoice = Invoice::where('invoice_code', 'like', $prefix . '%')->orderBy('id', 'desc')->first();
+            $runningNumber = $lastInvoice ? $lastInvoice->running_number + 1 : 1;
+            $runningNumberPadded = str_pad($runningNumber, 3, '0', STR_PAD_LEFT);
+            $invoiceCode = $prefix . $dateCode . '/' . $runningNumberPadded;
+            // End
 
-        // Store invoice detail
-        $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
+            // Mapping request to object and store data
+            $obj = $this->toObject($request, $invoice);
+            $obj->updated_by = $user->id;
+            $obj->invoice_type = $request->invoice_type;
+            $obj->invoice_code = $invoiceCode;
+            $obj->save();
 
-        return redirect('invoice')->with('success', 'Invoice updated successfully!');
+            // old invoice_list details delete
+            InvoiceDetail::where('invoice_id', $invoice->id)->update(['is_deleted' => 1]);
+
+            // Store invoice detail
+            $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
+
+            return redirect('invoice')->with('success', 'Invoice updated successfully!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());
         }

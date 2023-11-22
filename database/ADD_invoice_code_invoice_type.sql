@@ -1,0 +1,3 @@
+ALTER TABLE invoices
+ADD COLUMN invoice_code VARCHAR(20) DEFAULT NULL,
+ADD COLUMN invoice_type CHAR(2) DEFAULT NULL;

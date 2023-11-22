@@ -58,6 +58,7 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('No.') }}</th>
+                                    <th>{{ __('Invoice No') }}</th>
                                     <th>{{ __('Customer Name') }}</th>
                                     <th>{{ __('Therapist Name') }}</th>
                                     <th>{{ __('Room') }}</th>
@@ -81,6 +82,7 @@
                                 @foreach ($invoices as $invoice)
                                     <tr>
                                         <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
+                                        <td>{{ $invoice->invoice_code }}</td>
                                         <td>{{ $invoice->customer_name }}</td>
                                         @if ($invoice->old_data == 'Y')
                                             <td>{{ $invoice->therapist_name }}</td>

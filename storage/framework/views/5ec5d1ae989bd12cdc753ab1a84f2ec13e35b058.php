@@ -58,6 +58,7 @@
                             <thead>
                                 <tr>
                                     <th><?php echo e(__('No.')); ?></th>
+                                    <th><?php echo e(__('Invoice No')); ?></th>
                                     <th><?php echo e(__('Customer Name')); ?></th>
                                     <th><?php echo e(__('Therapist Name')); ?></th>
                                     <th><?php echo e(__('Room')); ?></th>
@@ -81,6 +82,7 @@
                                 <?php $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
+                                        <td><?php echo e($invoice->invoice_code); ?></td>
                                         <td><?php echo e($invoice->customer_name); ?></td>
                                         <?php if($invoice->old_data == 'Y'): ?>
                                             <td><?php echo e($invoice->therapist_name); ?></td>

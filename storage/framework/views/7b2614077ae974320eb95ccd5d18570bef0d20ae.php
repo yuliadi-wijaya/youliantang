@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title'); ?> <?php echo e(__('Update Invoice')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/libs/select2/select2.min.css')); ?>">
@@ -39,6 +38,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Invoice Code ')); ?></label>
+                                            <input type="text" name="invoice_code" value="<?php echo e($invoice->invoice_code); ?>"
+                                                class="form-control" placeholder="<?php echo e(__('Auto generated')); ?>" readonly>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Invoice Type ')); ?></label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="CK" <?php if(old('invoice_type', $invoice->invoice_type) == 'CK'): ?> checked <?php endif; ?>>
+                                                <label class="form-check-label mr-5">Checklist</label>
+
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="NC" <?php if(old('invoice_type', $invoice->invoice_type) == 'NC'): ?> checked <?php endif; ?>>
+                                                <label class="form-check-label">Non Checklist</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Customer ')); ?><span class="text-danger">*</span></label>
                                             <select class="form-control select2 <?php $__errorArgs = ['customer_id'];
@@ -49,7 +65,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="customer_id" onchange="getMember()">
+                                                name="customer_id" id="customer_id" onchange="getMember()">
                                                 <option selected disabled><?php echo e(__('-- Select Customer --')); ?></option>
                                                 <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($row->id); ?>"
@@ -183,7 +199,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" rows="1" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note', $invoice->note)); ?></textarea>
+unset($__errorArgs, $__bag); ?>" rows="4" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note', $invoice->note)); ?></textarea>
                                             <?php $__errorArgs = ['note'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -470,7 +486,8 @@ unset($__errorArgs, $__bag); ?>
             //     format: 'dd/mm/yyyy'
             // });
 
-            $(document).ready(function() {
+            $(document).ready(function () {
+
                 $(this).find('select').each(function() {
                     if (typeof $(this).attr('id') === "undefined") {
                         // ...
@@ -480,6 +497,27 @@ unset($__errorArgs, $__bag); ?>
                         $('.select2-container').css('width','100%');
                         $('.select2').next().next().remove();
                     }
+                });
+
+                $('select[name="customer_id"]').on('change', function () {
+                    var customer_id = this.value;
+                    $('select[name="voucher_code"]').empty();
+                    $.ajax({
+                        type: "get",
+                        url: "/get-promo-ajax/" + customer_id,
+                        success: function(data) {
+                            $('select[name="voucher_code"]').append('<option value="">-- Select Voucher Code --</option>');
+
+                            $.each(data, function(index, row) {
+                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
+                                option += (row.voucher_code == "<?php echo e(old('voucher_code')); ?>") ? ' selected' : '';
+                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
+                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
+                                option += '</option>';
+                                $('select[name="voucher_code"]').append(option);
+                            });
+                        }
+                    });
                 });
 
                 getMember();
