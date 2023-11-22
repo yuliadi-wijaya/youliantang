@@ -109,10 +109,10 @@
                                             <label class="control-label">{{ __('Reusable Voucher ? ') }}<span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control @error('is_reuse_voucher') is-invalid @enderror"
-                                                tabindex="11" name="is_reuse_voucher">
+                                                tabindex="11" name="is_reuse_voucher" id="is_reuse_voucher">
                                                 <option value="0" @if (($promo && $promo->is_reuse_voucher == '0') || old('is_reuse_voucher') == '0') selected @endif>{{ __('No') }}</option>
                                                 <option value="1" @if (($promo && $promo->is_reuse_voucher == '1') || old('is_reuse_voucher') == '1') selected @endif>{{ __('Yes') }}</option>
-                                                
+
                                             </select>
                                             @error('is_reuse_voucher')
                                                 <span class="invalid-feedback" role="alert">
@@ -165,7 +165,7 @@
                                                         class="text-danger">*</span></label>
                                                 </div>
                                             </div>
-                                            <div class="row"> 
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <input type="number" class="form-control @error('discount_value') is-invalid @enderror"
                                                         tabindex="4" name="discount_value" id="DiscountValue" value="@if ($promo ){{ old('discount_value', $promo->discount_value) }}@elseif(old('discount_value')){{ old('discount_value') }}@endif"
@@ -200,7 +200,7 @@
                                                             class="form-control active_period @error('active_period_start') is-invalid @enderror"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_start', date('d/m/Y')) }} placeholder="{{ __('Enter Start Date') }}" 
+                                                            {{ old('active_period_start', date('d/m/Y')) }} placeholder="{{ __('Enter Start Date') }}"
                                                             value="@if ($promo ){{ old('active_period_start', date('d/m/Y', strtotime($promo->active_period_start))) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -218,7 +218,7 @@
                                                             class="form-control active_period @error('active_period_end') is-invalid @enderror"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_end', date('d/m/Y')) }} placeholder="{{ __('Enter End Date') }}" 
+                                                            {{ old('active_period_end', date('d/m/Y')) }} placeholder="{{ __('Enter End Date') }}"
                                                             value="@if ($promo ){{ old('active_period_end', date('d/m/Y', strtotime($promo->active_period_end))) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -349,8 +349,18 @@
                     //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
                     $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
                 }
-                
+
                 $('#IsGenerated').val(1);
+            });
+
+            $(document).on('change', '#is_reuse_voucher', function() {
+                if ($(this).val() == 1) {
+                    $('#VoucherTotal').val('1');
+                    $('#VoucherTotal').prop('readonly', true);
+                } else {
+                    $('#VoucherTotal').val('');
+                    $('#VoucherTotal').prop('readonly', false);
+                }
             });
         </script>
     @endsection
