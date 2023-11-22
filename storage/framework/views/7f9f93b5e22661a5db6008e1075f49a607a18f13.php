@@ -407,17 +407,16 @@ unset($__errorArgs, $__bag); ?>
                                                 id="voucher_code"
                                                 onchange="calDiscount()">
                                                 <option value="" selected><?php echo e(__('-- Select Voucher Code --')); ?></option>
-                                                <?php if(session('promo_data')): ?>
-                                                    <?php $__currentLoopData = session('promo_data'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($row->voucher_code); ?>"
-                                                            data-type = "<?php echo e($row->discount_type); ?>"
-                                                            data-value = "<?php echo e($row->discount_value); ?>"
-                                                            data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
-                                                            <?php echo e(old('voucher_code') == $row->voucher_code ? 'selected' : ''); ?>>
-                                                            <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
-                                                        </option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                <?php endif; ?>
+                                                <?php $__currentLoopData = $promos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($row->voucher_code); ?>"
+                                                        data-type = "<?php echo e($row->discount_type); ?>"
+                                                        data-value = "<?php echo e($row->discount_value); ?>"
+                                                        data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
+                                                        data-reuse = "<?php echo e($row->is_reuse_voucher); ?>"
+                                                        <?php echo e(old('voucher_code') == $row->voucher_code ? 'selected' : ''); ?>>
+                                                        <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
+                                                    </option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
                                     </div>
@@ -447,6 +446,9 @@ unset($__errorArgs, $__bag); ?>
                                                 class="form-control"
                                                 name="discount" id="discount"
                                                 value="<?php echo e(old('discount', 0)); ?>" readonly>
+                                            <input type="hidden"
+                                                name="reuse_voucher" id="reuse_voucher"
+                                                value="<?php echo e(old('reuse_voucher', 0)); ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -486,11 +488,6 @@ unset($__errorArgs, $__bag); ?>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')); ?>"></script>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js')); ?>"></script>
         <script>
-            // $('#TreatmentDate').datepicker({
-            //     startDate: new Date(),
-            //     format: 'dd/mm/yyyy'
-            // });
-
             function getMember() {
                 var select = document.querySelector('select[name="customer_id"]');
                 var selectedOption = select.options[select.selectedIndex];
@@ -657,6 +654,7 @@ unset($__errorArgs, $__bag); ?>
                         var type = parseFloat(selectedOption.dataset.type);
                         var value = parseFloat(selectedOption.dataset.value);
                         var maxvalue = parseFloat(selectedOption.dataset.maxvalue);
+                        var reuse = parseFloat(selectedOption.dataset.reuse);
 
                         var total_price = document.getElementById('total_price').value.replace(/,/g, '');
                         var discount = 0;
@@ -683,6 +681,7 @@ unset($__errorArgs, $__bag); ?>
                         }).format(discount);
 
                         document.getElementById('discount').value = formatDiscount;
+                        document.getElementById('reuse_voucher').value = reuse;
 
                         grandTotal();
                     }else{
@@ -704,33 +703,6 @@ unset($__errorArgs, $__bag); ?>
 
                 document.getElementById('grand_total').value = formatGrandTotal;
             }
-
-            $(document).ready(function () {
-                $('#customer_id').on('change', function () {
-                    var customer_id = this.value;
-                    $("#voucher_code").html('');
-                    $.ajax({
-                        type: "get",
-                        url: "/get-promo-ajax/" + customer_id,
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(data) {
-                            $('#voucher_code').empty();
-                            $('#voucher_code').append('<option value="">-- Select Voucher --</option>');
-
-                            $.each(data, function(index, row) {
-                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
-                                option += (row.voucher_code == "<?php echo e(old('voucher_code')); ?>") ? ' selected' : '';
-                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
-                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
-                                option += '</option>';
-                                $('#voucher_code').append(option);
-                            });
-                        }
-                    });
-                });
-            });
         </script>
     <?php $__env->stopSection(); ?>
 

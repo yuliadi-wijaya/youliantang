@@ -46,6 +46,7 @@
                                         <div class="col-md-6 form-group">
                                             <label class="control-label"><?php echo e(__('Invoice Type ')); ?></label>
                                             <div class="form-check">
+                                                <input type="hidden" name="invoice_type_old" value="<?php echo e($invoice->invoice_type); ?>">
                                                 <input class="form-check-input" type="radio" name="invoice_type" value="CK" <?php if(old('invoice_type', $invoice->invoice_type) == 'CK'): ?> checked <?php endif; ?>>
                                                 <label class="form-check-label mr-5">Checklist</label>
 
@@ -399,16 +400,28 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="row" id="row_voucher_code" <?php if($invoice->use_member != 1): ?> style="display: block" <?php else: ?> style="display: none" <?php endif; ?>>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Voucher Code ')); ?></label>
+                                            <input type="hidden" name="voucher_code_old" value="<?php echo e($invoice->voucher_code); ?>">
                                             <select class="form-control select2"
                                                 name="voucher_code"
                                                 id="voucher_code"
                                                 onchange="calDiscount()">
                                                 <option value="" selected><?php echo e(__('-- Select Voucher Code --')); ?></option>
+                                                <?php $__currentLoopData = $promo_used; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($row->voucher_code); ?>"
+                                                        data-type = "<?php echo e($row->discount_type); ?>"
+                                                        data-value = "<?php echo e($row->discount_value); ?>"
+                                                        data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
+                                                        data-reuse = "<?php echo e($row->is_reuse_voucher); ?>"
+                                                        <?php echo e(old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : ''); ?>>
+                                                        <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
+                                                    </option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 <?php $__currentLoopData = $promos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($row->voucher_code); ?>"
                                                         data-type = "<?php echo e($row->discount_type); ?>"
                                                         data-value = "<?php echo e($row->discount_value); ?>"
                                                         data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
+                                                        data-reuse = "<?php echo e($row->is_reuse_voucher); ?>"
                                                         <?php echo e(old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : ''); ?>>
                                                         <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
                                                     </option>
@@ -442,6 +455,9 @@ unset($__errorArgs, $__bag); ?>
                                                 class="form-control"
                                                 name="discount" id="discount"
                                                 value="<?php echo e(old('discount', number_format($invoice->discount))); ?>" readonly>
+                                            <input type="hidden"
+                                                name="reuse_voucher" id="reuse_voucher"
+                                                value="<?php echo e(old('reuse_voucher', 0)); ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -481,13 +497,7 @@ unset($__errorArgs, $__bag); ?>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')); ?>"></script>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js')); ?>"></script>
         <script>
-            // $('#TreatmentDate').datepicker({
-            //     startDate: new Date(),
-            //     format: 'dd/mm/yyyy'
-            // });
-
             $(document).ready(function () {
-
                 $(this).find('select').each(function() {
                     if (typeof $(this).attr('id') === "undefined") {
                         // ...
@@ -499,28 +509,7 @@ unset($__errorArgs, $__bag); ?>
                     }
                 });
 
-                $('select[name="customer_id"]').on('change', function () {
-                    var customer_id = this.value;
-                    $('select[name="voucher_code"]').empty();
-                    $.ajax({
-                        type: "get",
-                        url: "/get-promo-ajax/" + customer_id,
-                        success: function(data) {
-                            $('select[name="voucher_code"]').append('<option value="">-- Select Voucher Code --</option>');
-
-                            $.each(data, function(index, row) {
-                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
-                                option += (row.voucher_code == "<?php echo e(old('voucher_code')); ?>") ? ' selected' : '';
-                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
-                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
-                                option += '</option>';
-                                $('select[name="voucher_code"]').append(option);
-                            });
-                        }
-                    });
-                });
-
-                getMember();
+                // getMember();
             });
 
             function getMember() {
@@ -689,6 +678,7 @@ unset($__errorArgs, $__bag); ?>
                         var type = parseFloat(selectedOption.dataset.type);
                         var value = parseFloat(selectedOption.dataset.value);
                         var maxvalue = parseFloat(selectedOption.dataset.maxvalue);
+                        var reuse = parseFloat(selectedOption.dataset.reuse);
 
                         var total_price = document.getElementById('total_price').value.replace(/,/g, '');
                         var discount = 0;
@@ -715,6 +705,7 @@ unset($__errorArgs, $__bag); ?>
                         }).format(discount);
 
                         document.getElementById('discount').value = formatDiscount;
+                        document.getElementById('reuse_voucher').value = reuse;
 
                         grandTotal();
                     }else{

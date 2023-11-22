@@ -103,7 +103,6 @@ Route::get('invoice-pdf/{id}', 'InvoiceController@invoice_pdf');
 // Route::get('transaction', 'InvoiceController@transaction');
 
 Route::get('invoice-customer-create', 'CustomerController@create_from_invoice');
-Route::get('/get-promo-ajax/{id}', 'InvoiceController@promo_ajax');
 
 //Transaction routes
 

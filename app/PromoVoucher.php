@@ -10,9 +10,9 @@ class PromoVoucher extends Model
     protected $table = 'promo_vouchers';
 
     protected $fillable = [
-        'name',
         'promo_id',
         'voucher_code',
+        'is_used',
     ];
 
     function promo(){

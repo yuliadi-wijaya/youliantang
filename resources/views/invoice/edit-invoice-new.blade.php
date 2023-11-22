@@ -46,6 +46,7 @@
                                         <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Invoice Type ') }}</label>
                                             <div class="form-check">
+                                                <input type="hidden" name="invoice_type_old" value="{{ $invoice->invoice_type }}">
                                                 <input class="form-check-input" type="radio" name="invoice_type" value="CK" @if (old('invoice_type', $invoice->invoice_type) == 'CK') checked @endif>
                                                 <label class="form-check-label mr-5">Checklist</label>
 
@@ -272,16 +273,28 @@
                                     <div class="row" id="row_voucher_code" @if($invoice->use_member != 1) style="display: block" @else style="display: none" @endif>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Voucher Code ') }}</label>
+                                            <input type="hidden" name="voucher_code_old" value="{{$invoice->voucher_code}}">
                                             <select class="form-control select2"
                                                 name="voucher_code"
                                                 id="voucher_code"
                                                 onchange="calDiscount()">
                                                 <option value="" selected>{{ __('-- Select Voucher Code --') }}</option>
+                                                @foreach($promo_used as $row)
+                                                    <option value="{{ $row->voucher_code }}"
+                                                        data-type = "{{ $row->discount_type }}"
+                                                        data-value = "{{ $row->discount_value }}"
+                                                        data-maxvalue = "{{ $row->discount_max_value }}"
+                                                        data-reuse = "{{ $row->is_reuse_voucher }}"
+                                                        {{ old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : '' }}>
+                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
+                                                    </option>
+                                                @endforeach
                                                 @foreach($promos as $row)
                                                     <option value="{{ $row->voucher_code }}"
                                                         data-type = "{{ $row->discount_type }}"
                                                         data-value = "{{ $row->discount_value }}"
                                                         data-maxvalue = "{{ $row->discount_max_value }}"
+                                                        data-reuse = "{{ $row->is_reuse_voucher }}"
                                                         {{ old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : '' }}>
                                                         {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
                                                     </option>
@@ -315,6 +328,9 @@
                                                 class="form-control"
                                                 name="discount" id="discount"
                                                 value="{{ old('discount', number_format($invoice->discount)) }}" readonly>
+                                            <input type="hidden"
+                                                name="reuse_voucher" id="reuse_voucher"
+                                                value="{{ old('reuse_voucher', 0) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -353,13 +369,7 @@
         <script src="{{ URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js') }}"></script>
         <script>
-            // $('#TreatmentDate').datepicker({
-            //     startDate: new Date(),
-            //     format: 'dd/mm/yyyy'
-            // });
-
             $(document).ready(function () {
-
                 $(this).find('select').each(function() {
                     if (typeof $(this).attr('id') === "undefined") {
                         // ...
@@ -371,28 +381,7 @@
                     }
                 });
 
-                $('select[name="customer_id"]').on('change', function () {
-                    var customer_id = this.value;
-                    $('select[name="voucher_code"]').empty();
-                    $.ajax({
-                        type: "get",
-                        url: "/get-promo-ajax/" + customer_id,
-                        success: function(data) {
-                            $('select[name="voucher_code"]').append('<option value="">-- Select Voucher Code --</option>');
-
-                            $.each(data, function(index, row) {
-                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
-                                option += (row.voucher_code == "{{ old('voucher_code') }}") ? ' selected' : '';
-                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
-                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
-                                option += '</option>';
-                                $('select[name="voucher_code"]').append(option);
-                            });
-                        }
-                    });
-                });
-
-                getMember();
+                // getMember();
             });
 
             function getMember() {
@@ -561,6 +550,7 @@
                         var type = parseFloat(selectedOption.dataset.type);
                         var value = parseFloat(selectedOption.dataset.value);
                         var maxvalue = parseFloat(selectedOption.dataset.maxvalue);
+                        var reuse = parseFloat(selectedOption.dataset.reuse);
 
                         var total_price = document.getElementById('total_price').value.replace(/,/g, '');
                         var discount = 0;
@@ -587,6 +577,7 @@
                         }).format(discount);
 
                         document.getElementById('discount').value = formatDiscount;
+                        document.getElementById('reuse_voucher').value = reuse;
 
                         grandTotal();
                     }else{

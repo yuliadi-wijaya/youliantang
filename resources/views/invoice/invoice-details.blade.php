@@ -280,17 +280,16 @@
                                                 id="voucher_code"
                                                 onchange="calDiscount()">
                                                 <option value="" selected>{{ __('-- Select Voucher Code --') }}</option>
-                                                @if(session('promo_data'))
-                                                    @foreach(session('promo_data') as $row)
-                                                        <option value="{{ $row->voucher_code }}"
-                                                            data-type = "{{ $row->discount_type }}"
-                                                            data-value = "{{ $row->discount_value }}"
-                                                            data-maxvalue = "{{ $row->discount_max_value }}"
-                                                            {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
-                                                            {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
-                                                        </option>
-                                                    @endforeach
-                                                @endif
+                                                @foreach($promos as $row)
+                                                    <option value="{{ $row->voucher_code }}"
+                                                        data-type = "{{ $row->discount_type }}"
+                                                        data-value = "{{ $row->discount_value }}"
+                                                        data-maxvalue = "{{ $row->discount_max_value }}"
+                                                        data-reuse = "{{ $row->is_reuse_voucher }}"
+                                                        {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
+                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -320,6 +319,9 @@
                                                 class="form-control"
                                                 name="discount" id="discount"
                                                 value="{{ old('discount', 0) }}" readonly>
+                                            <input type="hidden"
+                                                name="reuse_voucher" id="reuse_voucher"
+                                                value="{{ old('reuse_voucher', 0) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -358,11 +360,6 @@
         <script src="{{ URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js') }}"></script>
         <script>
-            // $('#TreatmentDate').datepicker({
-            //     startDate: new Date(),
-            //     format: 'dd/mm/yyyy'
-            // });
-
             function getMember() {
                 var select = document.querySelector('select[name="customer_id"]');
                 var selectedOption = select.options[select.selectedIndex];
@@ -529,6 +526,7 @@
                         var type = parseFloat(selectedOption.dataset.type);
                         var value = parseFloat(selectedOption.dataset.value);
                         var maxvalue = parseFloat(selectedOption.dataset.maxvalue);
+                        var reuse = parseFloat(selectedOption.dataset.reuse);
 
                         var total_price = document.getElementById('total_price').value.replace(/,/g, '');
                         var discount = 0;
@@ -555,6 +553,7 @@
                         }).format(discount);
 
                         document.getElementById('discount').value = formatDiscount;
+                        document.getElementById('reuse_voucher').value = reuse;
 
                         grandTotal();
                     }else{
@@ -576,32 +575,5 @@
 
                 document.getElementById('grand_total').value = formatGrandTotal;
             }
-
-            $(document).ready(function () {
-                $('#customer_id').on('change', function () {
-                    var customer_id = this.value;
-                    $("#voucher_code").html('');
-                    $.ajax({
-                        type: "get",
-                        url: "/get-promo-ajax/" + customer_id,
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(data) {
-                            $('#voucher_code').empty();
-                            $('#voucher_code').append('<option value="">-- Select Voucher --</option>');
-
-                            $.each(data, function(index, row) {
-                                var option = '<option value="' + row.voucher_code + '" data-type="' + row.discount_type + '" data-value="' + row.discount_value + '" data-maxvalue="' + row.discount_max_value + '"';
-                                option += (row.voucher_code == "{{ old('voucher_code') }}") ? ' selected' : '';
-                                option += '>' + row.voucher_code + ' - ' + row.name + ' - ';
-                                option += (row.discount_type == 0) ? '(Discount : Rp. ' + row.discount_value + ')' : '(Discount Max : Rp. ' + row.discount_max_value + ')';
-                                option += '</option>';
-                                $('#voucher_code').append(option);
-                            });
-                        }
-                    });
-                });
-            });
         </script>
     @endsection
