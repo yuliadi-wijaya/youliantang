@@ -61,7 +61,7 @@ class InvoiceController extends Controller
         $role = $user->roles[0]->slug;
         $invoices = Invoice::select([
             'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
-            \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(customer.first_name, ' ', customer.last_name) END AS customer_name"),
+            \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(COALESCE(customer.first_name,''), ' ', COALESCE(customer.last_name,'')) END AS customer_name"),
             'invoices.treatment_date',
             'invoices.therapist_name',
             'invoices.room',
