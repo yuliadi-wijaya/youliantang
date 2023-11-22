@@ -86,6 +86,7 @@
                         </div>
                         <div class="col-3 pull-right" style="text-align: right">
                             <address>
+                                <strong><?php echo e(__('Invoice no : ')); ?></strong><?php echo e($invoices->invoice_code); ?><br />
                                 <strong><?php echo e(__('Invoice date : ')); ?></strong><?php echo e($invoices->created_at); ?><br />
                                 
                             </address>
@@ -156,9 +157,14 @@
         </tr>
     </table>
 
-    <?php echo e(str_repeat("-", 37)); ?> <br>
-
-    <table cellpadding="0" cellspacing="0">
+    
+    <br>
+    <table cellpadding="0" cellspacing="0" style="font-weight: bold">
+        <tr>
+            <td>Invoice No</td>
+            <td>:</td>
+            <td><?php echo e($invoices->invoice_code); ?></td>
+        </tr>
         <tr>
             <td>Treatment Date</td>
             <td>:</td>
@@ -174,34 +180,14 @@
             <td>:</td>
             <td><?php if($invoices->is_member == 1): ?> <?php echo e(__('Yes (').$invoices->member_plan.')'); ?> <?php else: ?> <?php echo e(__('No')); ?> <?php endif; ?></td>
         </tr>
-        <?php $__currentLoopData = $invoice_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <tr>
-                <td>Therapist</td>
-                <td>:</td>
-                <td><?php echo e($row->therapist_name); ?></td>
-            </tr>
-            <tr>
-                <td>Treatment Time</td>
-                <td>:</td>
-                <td><?php echo e($row->treatment_time_from); ?> - <?php echo e($row->treatment_time_to); ?></td>
-            </tr>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        <tr>
-            <td>Payment Mode</td>
-            <td>:</td>
-            <td><?php echo e($invoices->payment_mode); ?></td>
-        </tr>
-        <tr>
-            <td>Payment Status</td>
-            <td>:</td>
-            <td><?php echo e($invoices->payment_status); ?></td>
-        </tr>
+        
+        
     </table>
 
-    <?php echo e(str_repeat("-", 37)); ?> <br>
+    
 
-    <h6><strong>Invoice summary</strong></h6>
-
+    
+    <br>
     <table cellpadding="0" cellspacing="0">
         <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
             <td>No</td>

@@ -37,7 +37,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Invoice Code ')); ?></label>
+                                            <input type="text" class="form-control" placeholder="<?php echo e(__('Auto generated')); ?>" readonly>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Invoice Type ')); ?></label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="CK" checked>
+                                                <label class="form-check-label mr-5">Checklist</label>
+
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="NC">
+                                                <label class="form-check-label">Non Checklist</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10 form-group">
                                             <label class="control-label"><?php echo e(__('Customer ')); ?><span class="text-danger">*</span></label>
                                             <select class="form-control select2 <?php $__errorArgs = ['customer_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -47,7 +63,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="customer_id" onchange="getMember()">
+                                                name="customer_id" id="customer_id" onchange="getMember()">
                                                 <option selected disabled><?php echo e(__('-- Select Customer --')); ?></option>
                                                 <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($row->id); ?>"
@@ -70,6 +86,14 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                        </div>
+                                        <div class="col-md-2 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <a href="<?php echo e(url('invoice-customer-create')); ?>">
+                                                <button type="button" class="form-control btn-primary" title="Add Customers">
+                                                    <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
+                                                </button>
+                                            </a>
                                         </div>
                                     </div>
 
@@ -181,7 +205,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" rows="1" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note')); ?></textarea>
+unset($__errorArgs, $__bag); ?>" rows="4" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note')); ?></textarea>
                                             <?php $__errorArgs = ['note'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -388,6 +412,7 @@ unset($__errorArgs, $__bag); ?>
                                                         data-type = "<?php echo e($row->discount_type); ?>"
                                                         data-value = "<?php echo e($row->discount_value); ?>"
                                                         data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
+                                                        data-reuse = "<?php echo e($row->is_reuse_voucher); ?>"
                                                         <?php echo e(old('voucher_code') == $row->voucher_code ? 'selected' : ''); ?>>
                                                         <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
                                                     </option>
@@ -421,6 +446,9 @@ unset($__errorArgs, $__bag); ?>
                                                 class="form-control"
                                                 name="discount" id="discount"
                                                 value="<?php echo e(old('discount', 0)); ?>" readonly>
+                                            <input type="hidden"
+                                                name="reuse_voucher" id="reuse_voucher"
+                                                value="<?php echo e(old('reuse_voucher', 0)); ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -460,11 +488,6 @@ unset($__errorArgs, $__bag); ?>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')); ?>"></script>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js')); ?>"></script>
         <script>
-            // $('#TreatmentDate').datepicker({
-            //     startDate: new Date(),
-            //     format: 'dd/mm/yyyy'
-            // });
-
             function getMember() {
                 var select = document.querySelector('select[name="customer_id"]');
                 var selectedOption = select.options[select.selectedIndex];
@@ -631,6 +654,7 @@ unset($__errorArgs, $__bag); ?>
                         var type = parseFloat(selectedOption.dataset.type);
                         var value = parseFloat(selectedOption.dataset.value);
                         var maxvalue = parseFloat(selectedOption.dataset.maxvalue);
+                        var reuse = parseFloat(selectedOption.dataset.reuse);
 
                         var total_price = document.getElementById('total_price').value.replace(/,/g, '');
                         var discount = 0;
@@ -657,6 +681,7 @@ unset($__errorArgs, $__bag); ?>
                         }).format(discount);
 
                         document.getElementById('discount').value = formatDiscount;
+                        document.getElementById('reuse_voucher').value = reuse;
 
                         grandTotal();
                     }else{
