@@ -38,6 +38,24 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Invoice Code ')); ?></label>
+                                            <input type="text" name="invoice_code" value="<?php echo e($invoice->invoice_code); ?>"
+                                                class="form-control" placeholder="<?php echo e(__('Auto generated')); ?>" readonly>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label"><?php echo e(__('Invoice Type ')); ?></label>
+                                            <div class="form-check">
+                                                <input type="hidden" name="invoice_type_old" value="<?php echo e($invoice->invoice_type); ?>">
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="CK" <?php if(old('invoice_type', $invoice->invoice_type) == 'CK'): ?> checked <?php endif; ?>>
+                                                <label class="form-check-label mr-5">Checklist</label>
+
+                                                <input class="form-check-input" type="radio" name="invoice_type" value="NC" <?php if(old('invoice_type', $invoice->invoice_type) == 'NC'): ?> checked <?php endif; ?>>
+                                                <label class="form-check-label">Non Checklist</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Customer ')); ?><span class="text-danger">*</span></label>
                                             <select class="form-control select2 <?php $__errorArgs = ['customer_id'];
@@ -48,7 +66,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                                name="customer_id" onchange="getMember()">
+                                                name="customer_id" id="customer_id" onchange="getMember()">
                                                 <option selected disabled><?php echo e(__('-- Select Customer --')); ?></option>
                                                 <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($row->id); ?>"
@@ -56,7 +74,7 @@ unset($__errorArgs, $__bag); ?>"
                                                         data-member_plan="<?php echo e($row->member_plan); ?>"
                                                         data-discount_type="<?php echo e($row->discount_type); ?>"
                                                         data-discount_value="<?php echo e($row->discount_value); ?>"
-                                                        <?php echo e(old('customer_id', $invoice->customer_id) == $row->id ? 'selected' : ''); ?>><?php echo e($row->first_name.' '.$row->last_name); ?></option>
+                                                        <?php echo e(old('customer_id', $invoice->customer_id) == $row->id ? 'selected' : ''); ?>><?php echo e($row->phone_number.' - '.$row->first_name.' '.$row->last_name); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <?php $__errorArgs = ['customer_id'];
@@ -182,7 +200,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" rows="1" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note', $invoice->note)); ?></textarea>
+unset($__errorArgs, $__bag); ?>" rows="4" placeholder="<?php echo e(__('Enter Note')); ?>"><?php echo e(old('note', $invoice->note)); ?></textarea>
                                             <?php $__errorArgs = ['note'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -382,16 +400,28 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="row" id="row_voucher_code" <?php if($invoice->use_member != 1): ?> style="display: block" <?php else: ?> style="display: none" <?php endif; ?>>
                                         <div class="col-md-12 form-group">
                                             <label class="control-label"><?php echo e(__('Voucher Code ')); ?></label>
+                                            <input type="hidden" name="voucher_code_old" value="<?php echo e($invoice->voucher_code); ?>">
                                             <select class="form-control select2"
                                                 name="voucher_code"
                                                 id="voucher_code"
                                                 onchange="calDiscount()">
                                                 <option value="" selected><?php echo e(__('-- Select Voucher Code --')); ?></option>
+                                                <?php $__currentLoopData = $promo_used; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($row->voucher_code); ?>"
+                                                        data-type = "<?php echo e($row->discount_type); ?>"
+                                                        data-value = "<?php echo e($row->discount_value); ?>"
+                                                        data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
+                                                        data-reuse = "<?php echo e($row->is_reuse_voucher); ?>"
+                                                        <?php echo e(old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : ''); ?>>
+                                                        <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
+                                                    </option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 <?php $__currentLoopData = $promos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($row->voucher_code); ?>"
                                                         data-type = "<?php echo e($row->discount_type); ?>"
                                                         data-value = "<?php echo e($row->discount_value); ?>"
                                                         data-maxvalue = "<?php echo e($row->discount_max_value); ?>"
+                                                        data-reuse = "<?php echo e($row->is_reuse_voucher); ?>"
                                                         <?php echo e(old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : ''); ?>>
                                                         <?php echo e($row->voucher_code); ?> - <?php echo e($row->name); ?> - <?php if($row->discount_type == 0): ?> <?php echo e('(Discount : Rp. '. number_format($row->discount_value) .')'); ?> <?php else: ?> <?php echo e('(Discount Max : Rp. '. number_format($row->discount_max_value) .')'); ?> <?php endif; ?>
                                                     </option>
@@ -425,6 +455,9 @@ unset($__errorArgs, $__bag); ?>
                                                 class="form-control"
                                                 name="discount" id="discount"
                                                 value="<?php echo e(old('discount', number_format($invoice->discount))); ?>" readonly>
+                                            <input type="hidden"
+                                                name="reuse_voucher" id="reuse_voucher"
+                                                value="<?php echo e(old('reuse_voucher', 0)); ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -464,12 +497,7 @@ unset($__errorArgs, $__bag); ?>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')); ?>"></script>
         <script src="<?php echo e(URL::asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.js')); ?>"></script>
         <script>
-            // $('#TreatmentDate').datepicker({
-            //     startDate: new Date(),
-            //     format: 'dd/mm/yyyy'
-            // });
-
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $(this).find('select').each(function() {
                     if (typeof $(this).attr('id') === "undefined") {
                         // ...
@@ -481,7 +509,7 @@ unset($__errorArgs, $__bag); ?>
                     }
                 });
 
-                getMember();
+                // getMember();
             });
 
             function getMember() {
@@ -650,6 +678,7 @@ unset($__errorArgs, $__bag); ?>
                         var type = parseFloat(selectedOption.dataset.type);
                         var value = parseFloat(selectedOption.dataset.value);
                         var maxvalue = parseFloat(selectedOption.dataset.maxvalue);
+                        var reuse = parseFloat(selectedOption.dataset.reuse);
 
                         var total_price = document.getElementById('total_price').value.replace(/,/g, '');
                         var discount = 0;
@@ -676,6 +705,7 @@ unset($__errorArgs, $__bag); ?>
                         }).format(discount);
 
                         document.getElementById('discount').value = formatDiscount;
+                        document.getElementById('reuse_voucher').value = reuse;
 
                         grandTotal();
                     }else{

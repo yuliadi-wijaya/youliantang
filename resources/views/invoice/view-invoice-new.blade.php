@@ -163,9 +163,9 @@
         </tr>
     </table>
 
-    {{ str_repeat("-", 37) }} <br>
-
-    <table cellpadding="0" cellspacing="0">
+    {{-- {{ str_repeat("-", 37) }} --}}
+    <br>
+    <table cellpadding="0" cellspacing="0" style="font-weight: bold">
         <tr>
             <td>Invoice No</td>
             <td>:</td>
@@ -181,7 +181,7 @@
             <td>:</td>
             <td>{{ $invoices->customer_name }}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td>Is Member</td>
             <td>:</td>
             <td>@if ($invoices->is_member == 1) {{ __('Yes (').$invoices->member_plan.')' }} @else {{ __('No') }} @endif</td>
@@ -197,8 +197,8 @@
                 <td>:</td>
                 <td>{{ $row->treatment_time_from }} - {{ $row->treatment_time_to }}</td>
             </tr>
-        @endforeach
-        <tr>
+        @endforeach --}}
+        {{-- <tr>
             <td>Payment Mode</td>
             <td>:</td>
             <td>{{ $invoices->payment_mode }}</td>
@@ -207,13 +207,13 @@
             <td>Payment Status</td>
             <td>:</td>
             <td>{{ $invoices->payment_status }}</td>
-        </tr>
+        </tr> --}}
     </table>
 
-    {{ str_repeat("-", 37) }} <br>
+    {{-- {{ str_repeat("-", 37) }} --}}
 
-    <h6><strong>Invoice summary</strong></h6>
-
+    {{-- <h6><strong>Invoice summary</strong></h6> --}}
+    <br>
     <table cellpadding="0" cellspacing="0">
         <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
             <td>No</td>

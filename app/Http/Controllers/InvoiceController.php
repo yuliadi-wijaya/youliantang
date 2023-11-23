@@ -249,7 +249,7 @@ class InvoiceController extends Controller
             $invoices = Invoice::select(
                     'invoices.id',
                     'invoices.invoice_code',
-                    \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
+                    \DB::raw("CONCAT(COALESCE(users.first_name,''), ' ', COALESCE(users.last_name,'')) AS customer_name"),
                     'invoices.treatment_date',
                     'invoices.created_at',
                     'invoices.payment_mode',
@@ -313,7 +313,7 @@ class InvoiceController extends Controller
             $invoices = Invoice::select(
                 'invoices.id',
                 'invoices.invoice_code',
-                \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS customer_name"),
+                \DB::raw("CONCAT(COALESCE(users.first_name,''), ' ', COALESCE(users.last_name,'')) AS customer_name"),
                 'invoices.treatment_date',
                 'invoices.created_at',
                 'invoices.payment_mode',
