@@ -200,8 +200,8 @@
                                                             class="form-control active_period @error('active_period_start') is-invalid @enderror"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_start', date('d/m/Y')) }} placeholder="{{ __('Enter Start Date') }}"
-                                                            value="@if ($promo ){{ old('active_period_start', date('d/m/Y', strtotime($promo->active_period_start))) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
+                                                            {{ old('active_period_start', date('Y-m-d')) }} placeholder="{{ __('Enter Start Date') }}"
+                                                            value="@if ($promo ){{ old('active_period_start', date('Y-m-d', strtotime($promo->active_period_start))) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -218,8 +218,8 @@
                                                             class="form-control active_period @error('active_period_end') is-invalid @enderror"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_end', date('d/m/Y')) }} placeholder="{{ __('Enter End Date') }}"
-                                                            value="@if ($promo ){{ old('active_period_end', date('d/m/Y', strtotime($promo->active_period_end))) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
+                                                            {{ old('active_period_end', date('Y-m-d')) }} placeholder="{{ __('Enter End Date') }}"
+                                                            value="@if ($promo ){{ old('active_period_end', date('Y-m-d', strtotime($promo->active_period_end))) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -329,7 +329,7 @@
             // Script
             $('.active_period').datepicker({
                 startDate: new Date(),
-                format: 'dd/mm/yyyy'
+                format: 'yyyy-mm-dd'
             });
 
             $(document).on('click', '#GenerateVoucher', function() {
