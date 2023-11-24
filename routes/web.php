@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppSettingController;
+use App\Http\Controllers\InvoiceSettingController;
 use App\Http\Controllers\RazorpayPaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripePaymentController;
@@ -29,6 +30,9 @@ Route::post('register', 'Auth\AuthController@register');
 
 Route::get('app-setting', [AppSettingController::class, 'index']);
 Route::post('update-setting', [AppSettingController::class, 'update'])->name('update-setting');
+
+Route::get('invoice-setting', [InvoiceSettingController::class, 'index']);
+Route::post('update-invoice-setting', [InvoiceSettingController::class, 'update'])->name('update-invoice-setting');
 
 Route::get('forgot-password', 'Auth\AuthController@showForgotPasswordForm');
 Route::post('forgot-password', 'Auth\AuthController@forgotPassword');

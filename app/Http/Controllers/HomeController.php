@@ -9,6 +9,7 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use App\Http\Controllers\ReportController;
 use App\Invoice;
 use App\InvoiceDetail;
+use App\InvoiceSettings;
 use App\Receptionist;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -49,6 +50,10 @@ class HomeController extends Controller
         $role = $user->roles[0]->slug;
         $today = Carbon::today()->format('Y/m/d');
         $time = date('H:i:s');
+
+        // Get invoice setting
+        $invoice_type = InvoiceSettings::first()->invoice_type;
+
         if ($role == 'admin') {
             $customer_role = Sentinel::findRoleBySlug('customer');
             //$customers = $customer_role->users()->with('roles')->orderBy('id', 'DESC')->where('is_deleted', 0)->limit(5)->get();
@@ -82,12 +87,26 @@ class HomeController extends Controller
             $tot_therapist = $therapist_role->users()->with('roles')->where('is_deleted', 0)->get();
             $tot_receptionist = $receptionist_role->users()->with('roles')->where('is_deleted', 0)->get();
             $appointments = Appointment::all();
-            $revenue = InvoiceDetail::where('is_deleted',0)->sum('amount');
+            $revenue = InvoiceDetail::join('invoices', 'invoice_details.invoice_id', '=', 'invoices.id')
+                ->where('invoice_details.is_deleted', 0)
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoices.invoice_type', 'CK');
+                })
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoices.invoice_type', 'NC');
+                })
+                ->sum('invoice_details.amount');
 
             $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->where('is_deleted',0);
                 $re->select(DB::raw('SUM(amount)'));
-            }])->whereDate('created_at', Carbon::today())->pluck('id');
+            }])->whereDate('created_at', Carbon::today())
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoice_type', 'NC');
+                })
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
+                })
+                ->pluck('id');
             // return $invoice;
             $daily_earning = InvoiceDetail::whereIn('invoice_id', $invoice)->where('is_deleted',0)->sum('amount');
             // return $daily_earning;

@@ -6,6 +6,7 @@ use App\Appointment;
 use Illuminate\Http\Request;
 use App\Invoice;
 use App\InvoiceDetail;
+use App\InvoiceSettings;
 use App\Notification;
 use App\Receptionist;
 use App\Transaction;
@@ -60,6 +61,10 @@ class InvoiceController extends Controller
 
         // Get user role
         $role = $user->roles[0]->slug;
+
+        // Get invoice setting
+        $invoice_type = InvoiceSettings::first()->invoice_type;
+
         $invoices = Invoice::select([
             'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(COALESCE(customer.first_name,''), ' ', COALESCE(customer.last_name,'')) END AS customer_name"),
@@ -69,9 +74,15 @@ class InvoiceController extends Controller
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_from ELSE (SELECT MIN(treatment_time_from) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_from"),
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_to ELSE (SELECT MAX(treatment_time_to) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_to"),
             ])->leftJoin('users as customer', 'invoices.customer_id', '=', 'customer.id')
-            ->where('invoices.is_deleted', 0)
-            ->orderBy('invoices.id', 'DESC')
-            ->paginate($this->limit);
+            ->where('invoices.is_deleted', 0);
+
+            if ($invoice_type == 'CK') {
+                $invoices->where('invoices.invoice_type', 'CK');
+            } elseif ($invoice_type == 'NC') {
+                $invoices->where('invoices.invoice_type', 'NC');
+            }
+
+            $invoices = $invoices->orderBy('invoices.id', 'DESC')->paginate($this->limit);
 
         $invoice_detail = [];
         foreach ($invoices as $invoice) {

@@ -41,6 +41,7 @@
         "monthly-expense" => "Monthly Expense",
         "latest-appointment" => "Latest Appointment",
         "app-setting" => "App Settings",
+        "invoice-setting" => "Invoice Settings",
         "memberships" => "Memberships",
         "list-of-memberships" => "List of Memberships",
         "add-new-membership" => "Add New Membership",

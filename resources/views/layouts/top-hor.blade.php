@@ -280,6 +280,9 @@
                         <a class="dropdown-item" href="{{ url('app-setting') }}"><i
                                 class="bx bx-cog font-size-16 align-middle mr-1"></i>
                             {{ __('translation.app-setting') }}</a>
+                        <a class="dropdown-item" href="{{ url('invoice-setting') }}"><i
+                                class="fa fa-file-invoice-dollar font-size-16 align-middle ml-1 mr-1"></i>
+                            {{ __('translation.invoice-setting') }}</a>
                     @endif
                     <a class="dropdown-item d-block" href="{{ url('change-password') }}"><i
                             class="bx bx-wrench font-size-16 align-middle mr-1"></i>
