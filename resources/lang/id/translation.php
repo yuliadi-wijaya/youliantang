@@ -22,6 +22,7 @@
         "upcoming-appointments" => "Janji Mendatang",
         "monthly-earning" => "Pendapatan Bulanan",
         "monthly-registered-users" => "Pengguna Terdaftar Bulanan",
+        "monthly-registered-customers-revenue" => "Bulanannya Pelanggan Terdaftar & Pendapatan",
         "latest-users" => "Pengguna Terbaru",
         "prescription" => "Resep",
         "list-of-prescription" => "Daftar Resep",

@@ -38,18 +38,17 @@ class ReportController extends Controller
         })->select(DB::raw('count(id) as `total_customer`'), DB::raw('MONTH(created_at) Month'))
             ->whereYear('created_at', Carbon::now()->year)->groupBy(DB::raw('MONTH(created_at)'))->get();
 
-        $query = "SELECT MONTH(invoices.created_at) AS Month, SUM(invoice_details.amount) AS total_revenue
-        FROM invoices, invoice_details
-        WHERE invoices.id = invoice_details.invoice_id
-            AND YEAR(invoices.created_at) = YEAR(CURDATE())";
+        $query = "SELECT MONTH(created_at) AS Month, SUM(grand_total) AS total_revenue
+        FROM invoices
+        WHERE YEAR(created_at) = YEAR(CURDATE())";
 
         if ($invoice_type === 'NC') {
-            $query .= " AND invoices.invoice_type = 'NC'";
+            $query .= " AND invoice_type = 'NC'";
         } elseif ($invoice_type === 'CK') {
-            $query .= " AND invoices.invoice_type = 'CK'";
+            $query .= " AND invoice_type = 'CK'";
         }
 
-        $query .= " GROUP BY MONTH(invoices.created_at)";
+        $query .= " GROUP BY MONTH(created_at)";
 
         $revenue = DB::select($query);
 
@@ -88,9 +87,7 @@ class ReportController extends Controller
         $invoice_type = InvoiceSettings::first()->invoice_type;
 
         if ($role == 'customer') {
-            $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', date('m'))
+            $invoice = Invoice::whereMonth('created_at', date('m'))
                 ->where('customer_id', $userId)
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
@@ -98,71 +95,67 @@ class ReportController extends Controller
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
-                ->pluck('id');
-            $currentMonthEarning = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
-            $preInvoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', Carbon::now()
-                ->subMonth()->month)
-                ->where('customer_id', $userId)
-                ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoice_type', 'NC');
-                })
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoice_type', 'CK');
-                })
-                ->pluck('id');
-            $prevMonthEarning = InvoiceDetail::whereIn('invoice_id', $preInvoice)->sum('amount');
-        } elseif ($role == 'therapist') {
-            $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', date('m'))
-                ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoice_type', 'NC');
-                })
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoice_type', 'CK');
-                })
-                ->where('created_by', $userId)
-                ->pluck('id');
-            $currentMonthEarning = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
-            $preInvoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', Carbon::now()
-                ->subMonth()->month)
-                ->where('created_by', $userId)
-                ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoice_type', 'NC');
-                })
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoice_type', 'CK');
-                })
-                ->pluck('id');
-            $prevMonthEarning = InvoiceDetail::whereIn('invoice_id', $preInvoice)->sum('amount');
-        } else {
-            $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', date('m'))
-                ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoice_type', 'NC');
-                })
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoice_type', 'CK');
-                })
-                ->pluck('id');
-            $currentMonthEarning = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
+                ->selectRaw('SUM(grand_total) as total')
+                ->first();
+            $currentMonthEarning = $invoice->total;
 
-            $preInvoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereMonth('created_at', Carbon::now()->subMonth()->month)
+            $preInvoice = Invoice::whereMonth('created_at', Carbon::now()->subMonth()->month)
+                ->where('customer_id', $userId)
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
                 })
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
-                ->pluck('id');
-            $prevMonthEarning = InvoiceDetail::whereIn('invoice_id', $preInvoice)->sum('amount');
+                ->selectRaw('SUM(grand_total) as total')
+                ->first();
+            $prevMonthEarning = $preInvoice ->total;
+        } elseif ($role == 'therapist') {
+            $invoice = Invoice::whereMonth('created_at', date('m'))
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoice_type', 'NC');
+                })
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
+                })
+                ->where('created_by', $userId)
+                ->select(DB::raw('SUM(grand_total) as total'))
+                ->first();
+            $currentMonthEarning = $invoice->total;
+
+            $preInvoice = Invoice::whereMonth('created_at', Carbon::now()->subMonth()->month)
+                ->where('created_by', $userId)
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoice_type', 'NC');
+                })
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
+                })
+                ->select(DB::raw('SUM(grand_total) as total'))
+                ->first();
+            $prevMonthEarning = $preInvoice ->total;
+        } else {
+            $invoice = Invoice::whereMonth('created_at', date('m'))
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoice_type', 'NC');
+                })
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
+                })
+                ->select(DB::raw('SUM(grand_total) as total'))
+                ->first();
+            $currentMonthEarning = $invoice->total;
+
+            $preInvoice = Invoice::whereMonth('created_at', Carbon::now()->subMonth()->month)
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoice_type', 'NC');
+                })
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
+                })
+                ->select(DB::raw('SUM(grand_total) as total'))
+                ->first();
+            $prevMonthEarning = $preInvoice ->total;
         }
         $diff = $currentMonthEarning - $prevMonthEarning;
         if ($prevMonthEarning == 0) {

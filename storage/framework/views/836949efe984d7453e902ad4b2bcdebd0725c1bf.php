@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <p class="text-muted"><?php echo e(__('This month')); ?></p>
-                        <h3>$<?php echo e(number_format($data['monthly_earning'])); ?></h3>
+                        <h3>Rp. <?php echo e(number_format($data['monthly_earning'])); ?></h3>
                         <p class="text-muted">
                             <span class="<?php if($data['monthly_diff'] > 0): ?> text-success <?php else: ?> text-danger <?php endif; ?> mr-2">
                                 <?php echo e($data['monthly_diff']); ?>% <i class="mdi <?php if($data['monthly_diff'] > 0): ?> mdi-arrow-up <?php else: ?> mdi-arrow-down <?php endif; ?>"></i>
@@ -130,30 +130,14 @@
 
     <div class="col-xl-8">
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.appointments')); ?></p>
-                                <h4 class="mb-0"><?php echo e(number_format($data['total_appointment'])); ?></h4>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bxs-calendar-check font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
+            
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium"><?php echo e(__('translation.revenue')); ?></p>
-                                <h4 class="mb-0">$<?php echo e(number_format($data['revenue'], 2)); ?></h4>
+                                <h4 class="mb-0">Rp. <?php echo e(number_format($data['revenue'], 2)); ?></h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -164,13 +148,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium"><?php echo e(__("translation.today's-earning")); ?></p>
-                                <h4 class="mb-0">$<?php echo e(number_format($data['daily_earning'], 2)); ?></h4>
+                                <h4 class="mb-0">Rp. <?php echo e(number_format($data['daily_earning'], 2)); ?></h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -181,72 +165,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__("translation.today's-appointments")); ?></p>
-                                <a href="<?php echo e(url('/today-appointment')); ?>"
-                                    class="mb-0 font-weight-medium font-size-24">
-                                    <h4 class="mb-0"><?php echo e(number_format($data['today_appointment'])); ?></h4>
-                                </a>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bx-calendar font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.tomorrow-appointments')); ?></p>
-                                <h4 class="mb-0"><?php echo e(number_format($data['tomorrow_appointment'])); ?></h4>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class="bx bx-calendar-event font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.upcoming-appointments')); ?></p>
-                                <a href="<?php echo e(url('/upcoming-appointment')); ?>"
-                                    class="mb-0 font-weight-medium font-size-24">
-                                    <h4 class="mb-0"><?php echo e(number_format($data['Upcoming_appointment'])); ?>
-
-                                    </h4>
-                                </a>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class='bx bxs-calendar-minus font-size-24'></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
         </div>
 
         <!-- end row -->
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4"><?php echo e(__('translation.monthly-registered-users')); ?></h4>
+                <h4 class="card-title mb-4"><?php echo e(__('translation.monthly-registered-customers-revenue')); ?></h4>
                 <div id="monthly_users" class="apex-charts" dir="ltr"></div>
             </div>
         </div>

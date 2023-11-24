@@ -22,6 +22,7 @@
         "upcoming-appointments" => "Upcoming Appointments",
         "monthly-earning" => "Monthly Earning",
         "monthly-registered-users" => "Monthly Registered Users",
+        "monthly-registered-customers-revenue" => "Monthly Registered Customers & Revenue",
         "latest-users" => "Latest Users",
         "prescription" => "Prescription",
         "list-of-prescription" => "List of Prescription",

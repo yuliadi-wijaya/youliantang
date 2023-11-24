@@ -87,28 +87,24 @@ class HomeController extends Controller
             $tot_therapist = $therapist_role->users()->with('roles')->where('is_deleted', 0)->get();
             $tot_receptionist = $receptionist_role->users()->with('roles')->where('is_deleted', 0)->get();
             $appointments = Appointment::all();
-            $revenue = InvoiceDetail::join('invoices', 'invoice_details.invoice_id', '=', 'invoices.id')
-                ->where('invoice_details.is_deleted', 0)
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoices.invoice_type', 'CK');
+            $revenue = Invoice::when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
                 })
                 ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoices.invoice_type', 'NC');
+                    return $query->where('invoice_type', 'NC');
                 })
-                ->sum('invoice_details.amount');
-
-            $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->whereDate('created_at', Carbon::today())
+                ->sum('grand_total');
+            $invoice = Invoice::whereDate('created_at', Carbon::today())
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
                 })
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
-                ->pluck('id');
+                ->select(DB::raw('SUM(grand_total) as total'))
+                ->first();
             // return $invoice;
-            $daily_earning = InvoiceDetail::whereIn('invoice_id', $invoice)->where('is_deleted',0)->sum('amount');
+            $daily_earning = $invoice->total;
             // return $daily_earning;
             $monthlyEarning = ReportController::getMonthlyEarning();
             $today_appointment = Appointment::with('timeSlot')->where('appointment_date', $today)->get();
