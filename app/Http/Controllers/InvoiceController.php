@@ -66,7 +66,7 @@ class InvoiceController extends Controller
         $invoice_type = InvoiceSettings::first()->invoice_type;
 
         $invoices = Invoice::select([
-            'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
+            'invoices.id', 'invoices.invoice_code', 'invoices.old_data', 'reviews.rating',
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(COALESCE(customer.first_name,''), ' ', COALESCE(customer.last_name,'')) END AS customer_name"),
             'invoices.treatment_date',
             'invoices.therapist_name',
@@ -74,6 +74,7 @@ class InvoiceController extends Controller
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_from ELSE (SELECT MIN(treatment_time_from) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_from"),
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_to ELSE (SELECT MAX(treatment_time_to) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_to"),
             ])->leftJoin('users as customer', 'invoices.customer_id', '=', 'customer.id')
+            ->leftJoin('reviews', 'reviews.invoice_id', '=', 'invoices.id')
             ->where('invoices.is_deleted', 0);
 
             if ($invoice_type == 'CK') {

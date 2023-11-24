@@ -63,6 +63,7 @@
                                     <th>{{ __('Therapist Name') }}</th>
                                     <th>{{ __('Room') }}</th>
                                     <th>{{ __('Treatment Date') }}</th>
+                                    <th>{{ __('Rating') }}</th>
                                     <th>{{ __('Option') }}</th>
                                 </tr>
                             </thead>
@@ -107,6 +108,13 @@
                                         @endif
                                         <td>{{ date('Y-m-d', strtotime($invoice->treatment_date)) }} ( {{ $invoice->treatment_time_from }} to {{ $invoice->treatment_time_to }} )</td>
                                         <td>
+                                            @if($invoice->id != '')
+                                                @for ($i = 1; $i <= $invoice->rating; $i++)
+                                                    <span class="star" data-rating="{{ $i }}"><i class="fas fa-star" style="font-size: 15px; color:orange"></i></span>
+                                                @endfor
+                                            @endif
+                                        </td>
+                                        <td>
                                             <a href="{{ url('invoice/' . $invoice->id) }}">
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
@@ -119,6 +127,13 @@
                                                     class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                     title="Update invoice">
                                                     <i class="mdi mdi-lead-pencil"></i>
+                                                </button>
+                                            </a>
+                                            <a href="{{ url('review/' . $invoice->id) }}">
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                                    title="Review">
+                                                    <i class="fa fa-star"></i>
                                                 </button>
                                             </a>
                                             {{-- @if ($role != 'customer')

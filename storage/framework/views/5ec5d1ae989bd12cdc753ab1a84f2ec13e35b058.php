@@ -63,6 +63,7 @@
                                     <th><?php echo e(__('Therapist Name')); ?></th>
                                     <th><?php echo e(__('Room')); ?></th>
                                     <th><?php echo e(__('Treatment Date')); ?></th>
+                                    <th><?php echo e(__('Rating')); ?></th>
                                     <th><?php echo e(__('Option')); ?></th>
                                 </tr>
                             </thead>
@@ -109,6 +110,13 @@
                                         <?php endif; ?>
                                         <td><?php echo e(date('Y-m-d', strtotime($invoice->treatment_date))); ?> ( <?php echo e($invoice->treatment_time_from); ?> to <?php echo e($invoice->treatment_time_to); ?> )</td>
                                         <td>
+                                            <?php if($invoice->id != ''): ?>
+                                                <?php for($i = 1; $i <= $invoice->rating; $i++): ?>
+                                                    <span class="star" data-rating="<?php echo e($i); ?>"><i class="fas fa-star" style="font-size: 15px; color:orange"></i></span>
+                                                <?php endfor; ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
                                             <a href="<?php echo e(url('invoice/' . $invoice->id)); ?>">
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
@@ -121,6 +129,13 @@
                                                     class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                     title="Update invoice">
                                                     <i class="mdi mdi-lead-pencil"></i>
+                                                </button>
+                                            </a>
+                                            <a href="<?php echo e(url('review/' . $invoice->id)); ?>">
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                                    title="Review">
+                                                    <i class="fa fa-star"></i>
                                                 </button>
                                             </a>
                                             

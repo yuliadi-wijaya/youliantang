@@ -64,6 +64,7 @@ Route::resource('product', 'ProductController');
 Route::resource('room', 'RoomController');
 Route::resource('promo', 'PromoController');
 Route::resource('transaction', 'TransactionController');
+Route::resource('review', 'ReviewController');
 
 // appointment routes
 Route::get('appointmentList', 'AppointmentController@appointment_list');

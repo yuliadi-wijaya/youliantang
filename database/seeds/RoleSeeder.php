@@ -101,6 +101,7 @@ class RoleSeeder extends Seeder
             'invoice.delete' => true,
             'invoice.edit'=>true,
             'invoice.invoice_pdf'=>true,
+            'invoice.review'=>true,
             'customermember.list'=>true,
             'customermember.create'=>true,
             'customermember.update'=>true,
