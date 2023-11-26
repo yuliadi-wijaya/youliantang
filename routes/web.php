@@ -130,4 +130,9 @@ Route::get('paymentComplete', [StripePaymentController::class, 'payment_complete
 // Payment Api key add
 Route::resource('payment-key','PaymentApiController');
 
+// Report
+Route::get('/report-filter', 'ReportController@fiterReport');
+Route::get('/report-view', 'ReportController@showReport')->name('report-view');
+Route::get('/report-export', 'ReportController@exportReport')->name('report-export');
+
 });

@@ -84,8 +84,8 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
                                 <a href="{{ url('invoice') }}" class="dropdown-item">{{ __('translation.list-of-invoice') }}</a>
-                                <a href="{{ route('invoice.create') }}"
-                                    class="dropdown-item">{{ __('translation.create-invoice') }}</a>
+                                <a href="{{ route('invoice.create') }}" class="dropdown-item">{{ __('translation.create-invoice') }}</a>
+                                <a href="{{ url('/report-filter') }}" class="dropdown-item">{{ __('translation.report-filter') }}</a>
                             </div>
                         </li>
                     {{-- @elseif ($role == 'therapist')

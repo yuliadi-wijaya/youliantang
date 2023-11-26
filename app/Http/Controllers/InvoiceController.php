@@ -647,13 +647,12 @@ class InvoiceController extends Controller
         if($request->old_data == 'N') {
             $invoice->customer_id = $request->customer_id;
             $invoice->is_member = $request->is_member;
+            $invoice->member_plan = $request->member_plan;
             if (isset($request->use_member) && $request->use_member == 1) {
                 $invoice->use_member = 1;
-                $invoice->member_plan = $request->member_plan;
                 $invoice->voucher_code = NULL;
             }else{
                 $invoice->use_member = 0;
-                $invoice->member_plan = NULL;
                 $invoice->voucher_code = $request->voucher_code;
             }
             $invoice->total_price = str_replace(',', '', $request->total_price);

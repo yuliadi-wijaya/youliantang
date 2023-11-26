@@ -80,8 +80,8 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
                                 <a href="<?php echo e(url('invoice')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-invoice')); ?></a>
-                                <a href="<?php echo e(route('invoice.create')); ?>"
-                                    class="dropdown-item"><?php echo e(__('translation.create-invoice')); ?></a>
+                                <a href="<?php echo e(route('invoice.create')); ?>" class="dropdown-item"><?php echo e(__('translation.create-invoice')); ?></a>
+                                <a href="<?php echo e(url('/report-filter')); ?>" class="dropdown-item"><?php echo e(__('translation.report-filter')); ?></a>
                             </div>
                         </li>
                     

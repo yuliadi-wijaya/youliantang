@@ -106,6 +106,8 @@ class RoleSeeder extends Seeder
             'customermember.create'=>true,
             'customermember.update'=>true,
             'customermember.delete'=>true,
+            'report.filter'=>true,
+            'report.view'=>true,
         ];
         $role_admin->save();
 

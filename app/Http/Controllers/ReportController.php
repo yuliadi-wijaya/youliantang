@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Appointment;
+use Illuminate\Http\Request;
 use App\Invoice;
 use App\InvoiceDetail;
 use App\InvoiceSettings;
+use App\ReportInvoice;
 use App\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use App\Exports\ReportInvoiceExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -168,5 +173,124 @@ class ReportController extends Controller
             'diff' => number_format($total_diff, 2)
         ];
         return $data;
+    }
+
+    public function fiterReport()
+    {
+        // Get user session data
+        $user = Sentinel::getUser();
+
+        // Check user access
+        if (!$user->hasAccess('report.filter')) {
+            return view('error.403');
+        }
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        return view('report.report-filter', compact('user', 'role'));
+    }
+
+    public function showReport(Request $request)
+    {
+        // Get user session data
+        $user = Sentinel::getUser();
+
+        // Check user access
+        if (!$user->hasAccess('report.view')) {
+            return view('error.403');
+        }
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Validate input data
+        $validatedData = $request->validate([
+            'date_from' => 'required|date',
+            'date_to' => 'required|date|after:date_from',
+        ]);
+
+        $dateFrom = date('Y-m-d', strtotime($validatedData['date_from']));
+        $dateTo = date('Y-m-d', strtotime($validatedData['date_to']));
+        $pay_status = $request->payment_status;
+
+        $report = ReportInvoice::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
+            return $query->whereBetween('invoice_date', [$dateFrom, $dateTo]);
+        })
+        ->when($pay_status !== 'All', function ($query) use ($pay_status) {
+            return $query->where('payment_status', $pay_status);
+        })
+        ->get();
+
+        return view('report.report-view', compact('user', 'role', 'report', 'dateFrom', 'dateTo','pay_status'));
+    }
+
+    public function exportReport(Request $request)
+    {
+        $dateFrom = date('Y-m-d', strtotime($request->dateFrom));
+        $dateTo = date('Y-m-d', strtotime($request->dateTo));
+
+        $report = ReportInvoice::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
+            return $query->whereBetween('invoice_date', [$dateFrom, $dateTo]);
+        })
+        ->when($request->payment_status !== 'All', function ($query) use ($request) {
+            return $query->where('payment_status', $request->payment_status);
+        })
+        ->get();
+
+        $reportNew = new Collection();
+
+        foreach ($report as $index => $row) {
+            if ($index > 0 && $row->invoice_code == $report[$index - 1]->invoice_code) {
+                $invoice_code = '';
+                $invoice_date = '';
+                $customer_name = '';
+                $customer_phone_number = '';
+                $payment_mode = '';
+                $payment_status = '';
+                $note = '';
+                $total_price = '';
+                $discount = '';
+                $grand_total = '';
+            } else {
+                $invoice_code = $row->invoice_code;
+                $invoice_date = $row->invoice_date;
+                $customer_name = $row->customer_name;
+                $customer_phone_number = $row->customer_phone_number;
+                $payment_mode = $row->payment_mode;
+                $payment_status = $row->payment_status;
+                $note = $row->note;
+                $total_price = $row->total_price;
+                $discount = $row->discount;
+                $grand_total = $row->grand_total;
+            }
+
+            $reportNew->push([
+                'invoice_code' => $invoice_code,
+                'invoice_date' => $invoice_date,
+                'customer_name' => $customer_name,
+                'customer_phone_number' => $customer_phone_number,
+                'payment_mode' => $payment_mode,
+                'payment_status' => $payment_status,
+                'note' => $note,
+                'total_price' => $total_price,
+                'discount' => $discount,
+                'grand_total' => $grand_total,
+                'product_name' => $row->product_name,
+                'amount' => $row->amount,
+                'duration' => $row->duration,
+                'treatment_date' => $row->treatment_date,
+                'treatment_time_from' => $row->treatment_time_from,
+                'treatment_time_to' => $row->treatment_time_to,
+                'room' => $row->room,
+                'therapist_name' => $row->therapist_name,
+                'therapist_phone_number' => $row->therapist_phone_number,
+                'commission_fee' => $row->commission_fee
+            ]);
+        }
+
+        $fileName = 'report_invoice_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';
+
+        return Excel::download(new ReportInvoiceExport($reportNew), $fileName);
     }
 }

@@ -59,6 +59,7 @@
         "customer-membership" => "Keanggotaan Pelanggan",
         "list-of-customermember" => "Daftar Anggota Pelanggan",
         "list-of-customer-membership" => "Keanggotaan Pelanggan",
-        "add-new-customer-membership" => "Tambah Keanggotaan Pelanggan Baru"
+        "add-new-customer-membership" => "Tambah Keanggotaan Pelanggan Baru",
+        'report-filter' => 'Filter Laporan'
     ];
 ?>
