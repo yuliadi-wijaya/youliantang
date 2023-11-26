@@ -33,7 +33,6 @@
                         <blockquote><?php echo e(__('Filter Details')); ?></blockquote>
                         <form action="<?php echo e(route('report-view')); ?>">
                             <?php echo csrf_field(); ?>
-                            <input type="hidden" name="export" value="0">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">

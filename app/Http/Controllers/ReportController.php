@@ -214,11 +214,19 @@ class ReportController extends Controller
         $dateTo = date('Y-m-d', strtotime($validatedData['date_to']));
         $pay_status = $request->payment_status;
 
+        $invoice_type = InvoiceSettings::first()->invoice_type;
+
         $report = ReportInvoice::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
             return $query->whereBetween('invoice_date', [$dateFrom, $dateTo]);
         })
         ->when($pay_status !== 'All', function ($query) use ($pay_status) {
             return $query->where('payment_status', $pay_status);
+        })
+        ->when($invoice_type === 'NC', function ($query) {
+            return $query->where('invoice_type', 'NC');
+        })
+        ->when($invoice_type === 'CK', function ($query) {
+            return $query->where('invoice_type', 'CK');
         })
         ->get();
 
@@ -229,12 +237,21 @@ class ReportController extends Controller
     {
         $dateFrom = date('Y-m-d', strtotime($request->dateFrom));
         $dateTo = date('Y-m-d', strtotime($request->dateTo));
+        $pay_status = $request->payment_status;
+
+        $invoice_type = InvoiceSettings::first()->invoice_type;
 
         $report = ReportInvoice::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
             return $query->whereBetween('invoice_date', [$dateFrom, $dateTo]);
         })
-        ->when($request->payment_status !== 'All', function ($query) use ($request) {
-            return $query->where('payment_status', $request->payment_status);
+        ->when($pay_status !== 'All', function ($query) use ($pay_status) {
+            return $query->where('payment_status', $pay_status);
+        })
+        ->when($invoice_type === 'NC', function ($query) {
+            return $query->where('invoice_type', 'NC');
+        })
+        ->when($invoice_type === 'CK', function ($query) {
+            return $query->where('invoice_type', 'CK');
         })
         ->get();
 
