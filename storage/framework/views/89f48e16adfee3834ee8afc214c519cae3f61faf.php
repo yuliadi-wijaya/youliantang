@@ -42,8 +42,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" name="invoice_type">
-                                            <option value="NC" <?php if(($data->invoice_type == 'NC') || old('status') == 'NC'): ?> selected <?php endif; ?>><?php echo e(__('Checklist')); ?></option>
-                                            <option value="CK" <?php if(($data->invoice_type == 'CK') || old('status') == 'CK'): ?> selected <?php endif; ?>><?php echo e(__('Non Checklist')); ?></option>
+                                            <option value="CK" <?php if(($data->invoice_type == 'CK') || old('status') == 'CK'): ?> selected <?php endif; ?>><?php echo e(__('Checklist')); ?></option>
+                                            <option value="NC" <?php if(($data->invoice_type == 'NC') || old('status') == 'NC'): ?> selected <?php endif; ?>><?php echo e(__('Non Checklist')); ?></option>
                                             <option value="ALL" <?php if(($data->invoice_type == 'ALL') || old('status') == 'ALL'): ?> selected <?php endif; ?>><?php echo e(__('ALL')); ?></option>
                                         </select>
                                         <?php $__errorArgs = ['title'];

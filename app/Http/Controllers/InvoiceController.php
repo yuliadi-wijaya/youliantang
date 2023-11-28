@@ -185,6 +185,9 @@ class InvoiceController extends Controller
             return view('error.403');
         }
 
+        // Get invoice setting
+        $invoice_type = InvoiceSettings::first()->invoice_type;
+
         // Validate input data
         $request->validate([
             'customer_id' => 'required',
@@ -206,10 +209,12 @@ class InvoiceController extends Controller
             }
 
             // Generate invoice code
-            if($request->invoice_type == 'CK'){
+            if($invoice_type == 'CK'){
                 $prefix = 'INV/CK/';
-            }else if($request->invoice_type == 'NC'){
+            }else if($invoice_type == 'NC'){
                 $prefix = 'INV/NC/';
+            }else{
+                return redirect()->back()->with('error', 'Cek your settings !!')->withInput($request->all());
             }
 
             $dateCode = now()->format('ym');
@@ -222,7 +227,7 @@ class InvoiceController extends Controller
             // Mapping request to object and store data
             $obj = $this->toObject($request, new Invoice());
             $obj->created_by = $user->id;
-            $obj->invoice_type = $request->invoice_type;
+            $obj->invoice_type = $invoice_type;
             $obj->invoice_code = $invoiceCode;
             $obj->save();
 
@@ -236,7 +241,7 @@ class InvoiceController extends Controller
 
             return redirect('invoice')->with('success', 'Invoice created successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage())->withInput($request->all());
         }
     }
 
@@ -473,6 +478,9 @@ class InvoiceController extends Controller
             return view('error.403');
         }
 
+        // Get invoice setting
+        $invoice_type = InvoiceSettings::first()->invoice_type;
+
         // Validate input data
         if($request->old_data == 'Y') {
             $request->validate([
@@ -503,12 +511,15 @@ class InvoiceController extends Controller
             // Mapping request to object and store data
             $obj = $this->toObject($request, $invoice);
             $obj->updated_by = $user->id;
-            if($request->invoice_type != $request->invoice_type_old){
+
+            if($invoice_type != $request->invoice_type_old){
                 // Generate invoice code
-                if($request->invoice_type == 'CK'){
+                if($invoice_type == 'CK'){
                     $prefix = 'INV/CK/';
-                }else if($request->invoice_type == 'NC'){
+                }else if($invoice_type == 'NC'){
                     $prefix = 'INV/NC/';
+                }else{
+                    return redirect()->back()->with('error', 'Cek your settings !!');
                 }
 
                 $dateCode = now()->format('ym');
@@ -518,7 +529,7 @@ class InvoiceController extends Controller
                 $invoiceCode = $prefix . $dateCode . str_pad($runningNumber, 4, '0', STR_PAD_LEFT);
                 // End
 
-                $obj->invoice_type = $request->invoice_type;
+                $obj->invoice_type = $invoice_type;
                 $obj->invoice_code = $invoiceCode;
             }
             $obj->save();

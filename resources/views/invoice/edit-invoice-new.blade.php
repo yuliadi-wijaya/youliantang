@@ -38,21 +38,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-6 form-group">
+                                        <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Invoice Code ') }}</label>
                                             <input type="text" name="invoice_code" value="{{ $invoice->invoice_code }}"
                                                 class="form-control" placeholder="{{ __('Auto generated') }}" readonly>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Invoice Type ') }}</label>
-                                            <div class="form-check">
-                                                <input type="hidden" name="invoice_type_old" value="{{ $invoice->invoice_type }}">
-                                                <input class="form-check-input" type="radio" name="invoice_type" value="CK" @if (old('invoice_type', $invoice->invoice_type) == 'CK') checked @endif>
-                                                <label class="form-check-label mr-5">Checklist</label>
-
-                                                <input class="form-check-input" type="radio" name="invoice_type" value="NC" @if (old('invoice_type', $invoice->invoice_type) == 'NC') checked @endif>
-                                                <label class="form-check-label">Non Checklist</label>
-                                            </div>
+                                            <input type="hidden" name="invoice_type_old" value="{{ $invoice->invoice_type }}">
                                         </div>
                                     </div>
                                     <div class="row">

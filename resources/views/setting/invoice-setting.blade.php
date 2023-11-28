@@ -35,8 +35,8 @@
                                     <div class="mb-3">
                                         <label for="invoiceTitle">Invoice Type to Display <span class="text-danger">*</span></label>
                                         <select class="form-control select2 @error('invoice_type') is-invalid @enderror" name="invoice_type">
-                                            <option value="NC" @if (($data->invoice_type == 'NC') || old('status') == 'NC') selected @endif>{{ __('Checklist') }}</option>
-                                            <option value="CK" @if (($data->invoice_type == 'CK') || old('status') == 'CK') selected @endif>{{ __('Non Checklist') }}</option>
+                                            <option value="CK" @if (($data->invoice_type == 'CK') || old('status') == 'CK') selected @endif>{{ __('Checklist') }}</option>
+                                            <option value="NC" @if (($data->invoice_type == 'NC') || old('status') == 'NC') selected @endif>{{ __('Non Checklist') }}</option>
                                             <option value="ALL" @if (($data->invoice_type == 'ALL') || old('status') == 'ALL') selected @endif>{{ __('ALL') }}</option>
                                         </select>
                                         @error('title')
