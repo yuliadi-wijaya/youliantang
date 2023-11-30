@@ -1,193 +1,134 @@
-<?php $__env->startSection('title'); ?> <?php echo e(__('List of Invoices')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('css'); ?>
-    <style>
-        #pageloader {
-            background: rgba(255, 255, 255, 0.8);
-            display: none;
-            height: 100%;
-            position: fixed;
-            width: 100%;
-            z-index: 9999;
-            left: 0;
-            right: 0;
-            margin: auto;
-            bottom: 0;
-            top: 0;
-        }
+<!-- Datatables -->
+<link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+<link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css">
+<style type="text/css">
 
-        #pageloader img {
-            left: 50%;
-            margin-left: -32px;
-            margin-top: -32px;
-            position: absolute;
-            top: 50%;
-        }
+    #invoiceList_length label {
+        display: inline-flex;
+        align-items: center;
+        gap: 04px;
+    }
 
-    </style>
+    #invoiceList_wrapper {
+        margin-top: 0; /* Adjust the top margin as needed */
+    }
+
+</style>
 <?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('List of Invoices')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('body'); ?>
 
-    <body data-topbar="dark" data-layout="horizontal">
-        <div id="pageloader">
-            <img src="<?php echo e(URL::asset('assets/images/loader.gif')); ?>" alt="processing..." />
-        </div>
+<body data-topbar="dark" data-layout="horizontal">
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('content'); ?>
-        <!-- start page title -->
-        <?php $__env->startComponent('components.breadcrumb'); ?>
-            <?php $__env->slot('title'); ?> Invoice List <?php $__env->endSlot(); ?>
-            <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
-            <?php $__env->slot('li_2'); ?> Invoice <?php $__env->endSlot(); ?>
-        <?php echo $__env->renderComponent(); ?>
-        <!-- end page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <?php if($role != 'customer'): ?>
-                            <a href=" <?php echo e(route('invoice.create')); ?>">
-                                <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                    <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
-                                    <?php echo e(__('Create New Invoice')); ?>
+    <!-- start page title -->
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->slot('title'); ?> Invoice List <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_2'); ?> Invoices <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
+    <!-- end page title -->
+    <div class="row">
+        <div class="col-12">
+            <div></div>
+            <div class="card">
+                <div class="card-body">
+                    <?php if($role != 'customer'): ?>
+                    <a href=" <?php echo e(route('therapist.create')); ?> ">
+                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                            <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
+                            <?php echo e(__('Create New Invoice')); ?>
 
-                                </button>
-                            </a>
-                        <?php endif; ?>
-                        <table class="table table-bordered dt-responsive nowrap "
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th><?php echo e(__('No.')); ?></th>
-                                    <th><?php echo e(__('Invoice No')); ?></th>
-                                    <th><?php echo e(__('Customer Name')); ?></th>
-                                    <th><?php echo e(__('Therapist Name')); ?></th>
-                                    <th><?php echo e(__('Room')); ?></th>
-                                    <th><?php echo e(__('Treatment Date')); ?></th>
-                                    <th><?php echo e(__('Rating')); ?></th>
-                                    <th><?php echo e(__('Option')); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if(session()->has('page_limit')): ?>
-                                    <?php
-                                        $per_page = session()->get('page_limit');
-                                    ?>
-                                <?php else: ?>
-                                    <?php
-                                        $per_page = Config::get('app.page_limit');
-                                    ?>
-                                <?php endif; ?>
-                                <?php
-                                    $currentpage = $invoices->currentPage();
-                                ?>
-                                <?php $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <tr>
-                                        <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
-                                        <td><?php echo e($invoice->invoice_code); ?></td>
-                                        <td><?php echo e($invoice->customer_name); ?></td>
-                                        <?php if($invoice->old_data == 'Y'): ?>
-                                            <td><?php echo e($invoice->therapist_name); ?></td>
-                                            <td><?php echo e($invoice->room); ?></td>
-                                        <?php else: ?>
-                                            <td>
-                                                <?php $__currentLoopData = $invoice_detail[$invoice->id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php echo e($detail->therapist_name); ?>
-
-                                                    <?php if (! ($loop->last)): ?>
-                                                    ,
-                                                    <?php endif; ?>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </td>
-                                            <td>
-                                                <?php $__currentLoopData = $invoice_detail[$invoice->id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php echo e($detail->room); ?>
-
-                                                    <?php if (! ($loop->last)): ?>
-                                                    ,
-                                                    <?php endif; ?>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </td>
-                                        <?php endif; ?>
-                                        <td><?php echo e(date('Y-m-d', strtotime($invoice->treatment_date))); ?> ( <?php echo e($invoice->treatment_time_from); ?> to <?php echo e($invoice->treatment_time_to); ?> )</td>
-                                        <td>
-                                            <?php if($invoice->id != ''): ?>
-                                                <?php for($i = 1; $i <= $invoice->rating; $i++): ?>
-                                                    <span class="star" data-rating="<?php echo e($i); ?>"><i class="fas fa-star" style="font-size: 15px; color:orange"></i></span>
-                                                <?php endfor; ?>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <a href="<?php echo e(url('invoice/' . $invoice->id)); ?>">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="View Invoice">
-                                                    <i class="mdi mdi-eye"></i>
-                                                </button>
-                                            </a>
-                                            <a href="<?php echo e(url('invoice/' . $invoice->id . '/edit')); ?>">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="Update invoice">
-                                                    <i class="mdi mdi-lead-pencil"></i>
-                                                </button>
-                                            </a>
-                                            <a href="<?php echo e(url('review/' . $invoice->id)); ?>">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="Review">
-                                                    <i class="fa fa-star"></i>
-                                                </button>
-                                            </a>
-                                            
-                                        </td>
-                                    </tr>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </tbody>
-                        </table>
-                        <div class="col-md-12 text-center mt-3">
-                            <div class="d-flex justify-content-start">
-                                Showing <?php echo e($invoices->firstItem()); ?> to <?php echo e($invoices->lastItem()); ?> of
-                                <?php echo e($invoices->total()); ?> entries
-                            </div>
-                            <div class="d-flex justify-content-end">
-                                <?php echo e($invoices->links()); ?>
-
-                            </div>
-                        </div>
-                    </div>
+                        </button>
+                    </a>
+                    <?php endif; ?>
+                    <table id="invoiceList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th><?php echo e(__('No.')); ?></th>
+                                <th><?php echo e(__('Invoice No')); ?></th>
+                                <th><?php echo e(__('Customer Name')); ?></th>
+                                <th><?php echo e(__('Therapist Name')); ?></th>
+                                <th><?php echo e(__('Room')); ?></th>
+                                <th><?php echo e(__('Treatment Date')); ?></th>
+                                <th><?php echo e(__('Rating')); ?></th>
+                                <th><?php echo e(__('Option')); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- load data using yajra datatables -->
+                        </tbody>
+                    </table>
                 </div>
-            </div> <!-- end col -->
-        </div> <!-- end row -->
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('script'); ?>
-        <!-- Plugins js -->
-        <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
-        <script src="<?php echo e(URL::asset('assets/libs/pdfmake/pdfmake.min.js')); ?>"></script>
-        <!-- Init js-->
-        <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
-        <script>
-            $('.send-mail').click(function() {
-                var id = $(this).attr('data-id');
-                if (confirm('Are you sure you want to send email?')) {
-                    $.ajax({
-                        type: "get",
-                        url: "invoice-email/" + id,
-                        beforeSend: function() {
-                            $('#pageloader').show();
-                        },
-                        success: function(response) {
-                            toastr.success(response.message);
-                        },
-                        error: function(response) {
-                            toastr.error(response.responseJSON.message);
-                        },
-                        complete: function() {
-                            $('#pageloader').hide();
-                        }
-                    });
+    <!-- Plugins js -->
+    <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/pdfmake/pdfmake.min.js')); ?>"></script>
+
+    <!-- Datatables -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
+    <!-- Init js-->
+    <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
+    <script>
+        //load datatable
+        $(document).ready(function() {
+            var role = '<?php echo e($role); ?>';
+            $('#invoiceList').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "<?php echo e(route('invoice.index')); ?>",
+                    dataSrc: function (json) {
+                        json.data.forEach(function(row) {
+                            row.therapist_name = row.therapist_name.replace(/,/g, '<br>');
+                            row.room = row.room.replace(/,/g, '<br>');
+
+                            if (row.rating !== '') {
+                                var ratings = row.rating.split(',').map(function (rating) {
+
+                                    console.log(ratings);
+                                    var stars = '';
+                                    for (var i = 1; i <= parseInt(rating, 10); i++) {
+                                        stars += '<span class="star" data-rating="' + i + '"><i class="fas fa-star" style="font-size: 15px; color: orange"></i></span>';
+                                        console.log(stars);
+                                    }
+                                    return stars;
+                                });
+
+                                row.rating = ratings.join('<br>');
+                            }
+
+                        });
+                        return json.data;
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'invoice_code', name: 'invoice_code' },
+                    { data: 'customer_name', name: 'customer_name' },
+                    { data: 'therapist_name', name: 'therapist_name', searchable: false },
+                    { data: 'room', name: 'room', searchable: false },
+                    { data: 'treatment_date', name: 'treatment_date', searchable: false },
+                    { data: 'rating', name: 'rating', searchable: false },
+                    { data: 'option', name: 'option', orderable: false, searchable: false, visible: (role == 'admin') ? true : false },
+                ],
+                pagingType: 'full_numbers',
+                scrollX: true,
+                autoWidth: false,
+                "drawCallback": function() {
+                    $('.dataTables_paginate > .pagination').addClass('justify-content-end');
+                    $('.dataTables_filter').addClass('d-flex justify-content-end');
                 }
             });
-        </script>
+        });
+    </script>
     <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/invoice/invoices.blade.php ENDPATH**/ ?>

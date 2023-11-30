@@ -29,24 +29,14 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <blockquote><?php echo e(__('Review Details')); ?></blockquote>
-                        <form action="<?php if($reviews ): ?> <?php echo e(url('review/' . $reviews->id)); ?> <?php else: ?> <?php echo e(route('review.store')); ?> <?php endif; ?>" method="post">
+                        <form action="<?php echo e(route('review.store')); ?>" method="post">
                             <?php echo csrf_field(); ?>
-                            <?php if($reviews ): ?>
-                                <input type="hidden" name="_method" value="PATCH" />
-                            <?php endif; ?>
-
-                            <?php if($reviews == NULL): ?>
-                                <input type="hidden" name="is_new" value="Y" />
-                            <?php else: ?>
-                                <input type="hidden" name="is_new" value="N" />
-                                <input type="hidden" name="review_id" value="<?php echo e($reviews->id); ?>" />
-                            <?php endif; ?>
                             <input type="hidden" name="old_data" value="<?php echo e($invoice->old_data); ?>" />
                             <input type="hidden" name="invoice_id" value="<?php echo e($invoice->id); ?>" />
 
                             <div class="row">
                                 <div class="col-md-12">
+                                    <blockquote><?php echo e(__('Review Header')); ?></blockquote>
                                     <div class="row">
                                         <div class="col-md-6 form-group">
                                             <label class="control-label"><?php echo e(__('Customer Name ')); ?></label>
@@ -57,8 +47,6 @@
                                                 <input type="text" class="form-control" name="customer_name" value="<?php echo e($invoice->customer_name); ?>" readonly>
                                             <?php endif; ?>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-6 form-group">
                                             <label class="control-label"><?php echo e(__('Phone Number ')); ?></label>
                                             <?php if($invoice->old_data == 'Y'): ?>
@@ -68,23 +56,59 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label"><?php echo e(__('Rating ')); ?><span class="text-danger">*</span></label>
-                                            <div class="star-rating" id="star-rating">
-                                                <?php for($i = 1; $i <= 5; $i++): ?>
-                                                    <span class="star" data-rating="<?php echo e($i); ?>"><i class="fas fa-star" style="font-size: 20px;"></i></span>
-                                                <?php endfor; ?>
+                                    <blockquote><?php echo e(__('Review Details')); ?></blockquote>
+                                    <?php
+                                        $record = 0;
+                                    ?>
+
+                                    <?php $__currentLoopData = $invoice_details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label"><?php echo e(__('Therapist ')); ?></label>
+                                                <input type="text" class="form-control" value="<?php echo e(old('therapist_name.' . $index, $row->therapist_name)); ?>" readonly>
+                                                <input type="hidden" name="therapist_id[<?php echo e($index); ?>]" value="<?php echo e(old('therapist_id.' . $index, $row->therapist_id)); ?>">
+                                                <input type="hidden" name="invoice_detail_id[<?php echo e($index); ?>]" value="<?php echo e(old('invoice_detail_id.' . $index, $row->id)); ?>">
                                             </div>
-                                            <input type="hidden" name="rating" id="rating" value="<?php if($reviews): ?><?php echo e(old('rating', $reviews->rating)); ?><?php elseif(old('rating')): ?><?php echo e(old('rating')); ?><?php endif; ?>">
+                                            <div class="col-md-2 form-group">
+                                                <label class="control-label"><?php echo e(__('Rating ')); ?><span class="text-danger">*</span></label>
+                                                <div class="star-rating" id="star-rating">
+                                                    <?php for($i = 1; $i <= 5; $i++): ?>
+                                                        <span class="star-<?php echo e($index); ?>" data-rating="<?php echo e($i); ?>"><i class="fas fa-star" style="font-size: 20px;"></i></span>
+                                                    <?php endfor; ?>
+                                                </div>
+                                                <input type="hidden" class="<?php $__errorArgs = ['rating.' . $index];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="rating[<?php echo e($index); ?>]" id="rating-<?php echo e($index); ?>" value="<?php echo e(old('rating.' . $index, $row->rating)); ?>">
+                                                <?php $__errorArgs = ['rating.' . $index ];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong><?php echo e($message); ?></strong>
+                                                    </span>
+                                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="comment<?php echo e($index); ?>"><?php echo e(__('Comment (optional) ')); ?></label>
+                                                <textarea class="form-control" name="comment[<?php echo e($index); ?>]" rows="4"><?php echo e(old('comment.' . $index, $row->comment)); ?></textarea>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label for="comment"><?php echo e(__('Comment (optional) ')); ?></label>
-                                            <textarea class="form-control" name="comment" id="comment" rows="4"><?php if($reviews): ?><?php echo e(old('comment', $reviews->comment)); ?><?php elseif(old('comment')): ?><?php echo e(old('comment')); ?><?php endif; ?></textarea>
-                                        </div>
-                                    </div>
+
+                                        <?php
+                                            $record++;
+                                        ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                                    <input type="hidden" id="record_review" value="<?php echo e($record); ?>">
                                 </div>
                             </div>
                             <div class="row">

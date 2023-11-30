@@ -153,6 +153,9 @@ return [
         'invoices.*.room' => [
             'required' => 'The room field is required.',
         ],
+        'rating.*' => [
+            'required' => 'The rating must be at least 1.',
+        ],
     ],
 
     /*

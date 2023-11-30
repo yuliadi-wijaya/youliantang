@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Appointment;
-use Illuminate\Http\Request;
 use App\Invoice;
 use App\InvoiceDetail;
 use App\InvoiceSettings;
@@ -16,20 +15,16 @@ use App\Room;
 use App\Product;
 use App\Promo;
 use App\PromoVoucher;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Yajra\DataTables\DataTables;
+use Exception;
 use PDF;
 
 class InvoiceController extends Controller
 {
-    protected $invoice, $invoice_detail, $InvoiceDetail;
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('sentinel.auth');
@@ -49,24 +44,23 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // Get user session data
         $user = Sentinel::getUser();
 
         // Check user access
-        if (!$user->hasAccess('invoice.list')) {
+        if (!$user->hasAccess('product.list')) {
             return view('error.403');
         }
 
         // Get user role
         $role = $user->roles[0]->slug;
 
-        // Get invoice setting
         $invoice_type = InvoiceSettings::first()->invoice_type;
 
-        $invoices = Invoice::select([
-            'invoices.id', 'invoices.invoice_code', 'invoices.old_data', 'reviews.rating',
+        $query = Invoice::select([
+            'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(COALESCE(customer.first_name,''), ' ', COALESCE(customer.last_name,'')) END AS customer_name"),
             'invoices.treatment_date',
             'invoices.therapist_name',
@@ -74,7 +68,6 @@ class InvoiceController extends Controller
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_from ELSE (SELECT MIN(treatment_time_from) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_from"),
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_to ELSE (SELECT MAX(treatment_time_to) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_to"),
             ])->leftJoin('users as customer', 'invoices.customer_id', '=', 'customer.id')
-            ->leftJoin('reviews', 'reviews.invoice_id', '=', 'invoices.id')
             ->where('invoices.is_deleted', 0);
 
             if ($invoice_type == 'CK') {
@@ -83,21 +76,89 @@ class InvoiceController extends Controller
                 $invoices->where('invoices.invoice_type', 'NC');
             }
 
-            $invoices = $invoices->orderBy('invoices.id', 'DESC')->paginate($this->limit);
+        $invoices = $query->orderByDesc('invoices.id')->get();
 
         $invoice_detail = [];
         foreach ($invoices as $invoice) {
             $id = $invoice->id;
-            $detail = InvoiceDetail::select(\DB::raw('CONCAT(users.first_name, " ", users.last_name) as therapist_name'), 'invoice_details.room')
-                ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
-                ->where('invoice_details.invoice_id', '=', $id)
-                ->where('invoice_details.status', '=', 1)
-                ->where('invoice_details.is_deleted', '=', 0)
-                ->get();
+            $detail = InvoiceDetail::select(
+                \DB::raw('CONCAT(users.first_name, " ", users.last_name) as therapist_name'),
+                'invoice_details.room',
+                'reviews.rating'
+            )
+            ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+            ->leftJoin('reviews', function ($join) {
+                $join->on('reviews.invoice_id', '=', 'invoice_details.invoice_id')
+                    ->on('reviews.invoice_detail_id', '=', 'invoice_details.id');
+            })
+            ->where('invoice_details.invoice_id', '=', $id)
+            ->where('invoice_details.status', '=', 1)
+            ->where('invoice_details.is_deleted', '=', 0)
+            ->orderBy('invoice_details.id', 'asc')
+            ->get();
             $invoice_detail[$id] = $detail;
         }
 
-        return view('invoice.invoices', compact('user', 'role', 'invoices', 'invoice_detail'));
+        if ($request->ajax()) {
+            return Datatables::of($invoices)
+                ->addIndexColumn()
+                ->addColumn('therapist_name', function($row) use ($invoice_detail) {
+                    if($row->old_data == 'Y'){
+                        return $row->therapist_name;
+                    } else {
+                        $therapist_name = [];
+                        foreach ($invoice_detail[$row->id] as $detail) {
+                            $therapist_name[] = $detail->therapist_name;
+                        }
+                        return implode(", ", $therapist_name);
+                    }
+                })
+                ->addColumn('room', function($row) use ($invoice_detail) {
+                    if($row->old_data == 'Y'){
+                        return $row->room;
+                    } else {
+                        $room = [];
+                        foreach ($invoice_detail[$row->id] as $detail) {
+                            $room[] = $detail->room;
+                        }
+                        return implode(", ", $room);
+                    }
+                })
+                ->addColumn('rating', function($row) use ($invoice_detail) {
+                    if($row->old_data == 'Y'){
+                        return '';
+                    } else {
+                        $rating = [];
+                        foreach ($invoice_detail[$row->id] as $detail) {
+                            $rating[] = $detail->rating;
+                        }
+                        return implode(", ", $rating);
+                    }
+                })
+                ->addColumn('option', function($row) use ($role) {
+                    if ($role == 'admin') {
+                        $option = '
+                        <a href="invoice/' . $row->id . '">
+                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="View Invoice">
+                                <i class="mdi mdi-eye"></i>
+                            </button>
+                        </a>
+                        <a href="invoice/' . $row->id . '/edit">
+                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="Update invoice">
+                                <i class="mdi mdi-lead-pencil"></i>
+                            </button>
+                        </a>
+                        <a href="review/' . $row->id . '">
+                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="Review">
+                                <i class="fa fa-star"></i>
+                            </button>
+                        </a>';
+                    }
+                    return $option;
+                })->rawColumns(['option'])->make(true);
+        }
+        // End
+        return view('invoice.invoices', compact('user', 'role', 'invoices'));
     }
 
     /**

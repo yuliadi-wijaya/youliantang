@@ -1,197 +1,132 @@
 @extends('layouts.master-layouts')
-@section('title') {{ __('List of Invoices') }} @endsection
 @section('css')
-    <style>
-        #pageloader {
-            background: rgba(255, 255, 255, 0.8);
-            display: none;
-            height: 100%;
-            position: fixed;
-            width: 100%;
-            z-index: 9999;
-            left: 0;
-            right: 0;
-            margin: auto;
-            bottom: 0;
-            top: 0;
-        }
+<!-- Datatables -->
+<link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+<link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css">
+<style type="text/css">
 
-        #pageloader img {
-            left: 50%;
-            margin-left: -32px;
-            margin-top: -32px;
-            position: absolute;
-            top: 50%;
-        }
+    #invoiceList_length label {
+        display: inline-flex;
+        align-items: center;
+        gap: 04px;
+    }
 
-    </style>
+    #invoiceList_wrapper {
+        margin-top: 0; /* Adjust the top margin as needed */
+    }
+
+</style>
 @endsection
+@section('title') {{ __('List of Invoices') }} @endsection
 @section('body')
 
-    <body data-topbar="dark" data-layout="horizontal">
-        <div id="pageloader">
-            <img src="{{ URL::asset('assets/images/loader.gif') }}" alt="processing..." />
-        </div>
+<body data-topbar="dark" data-layout="horizontal">
     @endsection
     @section('content')
-        <!-- start page title -->
-        @component('components.breadcrumb')
-            @slot('title') Invoice List @endslot
-            @slot('li_1') Dashboard @endslot
-            @slot('li_2') Invoice @endslot
-        @endcomponent
-        <!-- end page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        @if ($role != 'customer')
-                            <a href=" {{ route('invoice.create') }}">
-                                <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                    <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
-                                    {{ __('Create New Invoice') }}
-                                </button>
-                            </a>
-                        @endif
-                        <table class="table table-bordered dt-responsive nowrap "
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>{{ __('No.') }}</th>
-                                    <th>{{ __('Invoice No') }}</th>
-                                    <th>{{ __('Customer Name') }}</th>
-                                    <th>{{ __('Therapist Name') }}</th>
-                                    <th>{{ __('Room') }}</th>
-                                    <th>{{ __('Treatment Date') }}</th>
-                                    <th>{{ __('Rating') }}</th>
-                                    <th>{{ __('Option') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (session()->has('page_limit'))
-                                    @php
-                                        $per_page = session()->get('page_limit');
-                                    @endphp
-                                @else
-                                    @php
-                                        $per_page = Config::get('app.page_limit');
-                                    @endphp
-                                @endif
-                                @php
-                                    $currentpage = $invoices->currentPage();
-                                @endphp
-                                @foreach ($invoices as $invoice)
-                                    <tr>
-                                        <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                        <td>{{ $invoice->invoice_code }}</td>
-                                        <td>{{ $invoice->customer_name }}</td>
-                                        @if ($invoice->old_data == 'Y')
-                                            <td>{{ $invoice->therapist_name }}</td>
-                                            <td>{{ $invoice->room }}</td>
-                                        @else
-                                            <td>
-                                                @foreach ($invoice_detail[$invoice->id] as $detail)
-                                                    {{ $detail->therapist_name }}
-                                                    @unless ($loop->last)
-                                                    ,
-                                                    @endunless
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                @foreach ($invoice_detail[$invoice->id] as $detail)
-                                                    {{ $detail->room }}
-                                                    @unless ($loop->last)
-                                                    ,
-                                                    @endunless
-                                                @endforeach
-                                            </td>
-                                        @endif
-                                        <td>{{ date('Y-m-d', strtotime($invoice->treatment_date)) }} ( {{ $invoice->treatment_time_from }} to {{ $invoice->treatment_time_to }} )</td>
-                                        <td>
-                                            @if($invoice->id != '')
-                                                @for ($i = 1; $i <= $invoice->rating; $i++)
-                                                    <span class="star" data-rating="{{ $i }}"><i class="fas fa-star" style="font-size: 15px; color:orange"></i></span>
-                                                @endfor
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{ url('invoice/' . $invoice->id) }}">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="View Invoice">
-                                                    <i class="mdi mdi-eye"></i>
-                                                </button>
-                                            </a>
-                                            <a href="{{ url('invoice/' . $invoice->id . '/edit') }}">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="Update invoice">
-                                                    <i class="mdi mdi-lead-pencil"></i>
-                                                </button>
-                                            </a>
-                                            <a href="{{ url('review/' . $invoice->id) }}">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                    title="Review">
-                                                    <i class="fa fa-star"></i>
-                                                </button>
-                                            </a>
-                                            {{-- @if ($role != 'customer')
-                                                <a href="javascript:void(0)">
-                                                    <button type="button"
-                                                        class="btn btn-primary btn-sm btn-rounded waves-effect waves-light
-                                                                send-mail"
-                                                        title="Send Email" data-id="{{ $invoice->id }}">
-                                                        <i class="mdi mdi-email"></i>
-                                                    </button>
-                                                </a>
-                                            @endif --}}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="col-md-12 text-center mt-3">
-                            <div class="d-flex justify-content-start">
-                                Showing {{ $invoices->firstItem() }} to {{ $invoices->lastItem() }} of
-                                {{ $invoices->total() }} entries
-                            </div>
-                            <div class="d-flex justify-content-end">
-                                {{ $invoices->links() }}
-                            </div>
-                        </div>
-                    </div>
+    <!-- start page title -->
+    @component('components.breadcrumb')
+    @slot('title') Invoice List @endslot
+    @slot('li_1') Dashboard @endslot
+    @slot('li_2') Invoices @endslot
+    @endcomponent
+    <!-- end page title -->
+    <div class="row">
+        <div class="col-12">
+            <div></div>
+            <div class="card">
+                <div class="card-body">
+                    @if ($role != 'customer')
+                    <a href=" {{ route('therapist.create') }} ">
+                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                            <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
+                            {{ __('Create New Invoice') }}
+                        </button>
+                    </a>
+                    @endif
+                    <table id="invoiceList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>{{ __('No.') }}</th>
+                                <th>{{ __('Invoice No') }}</th>
+                                <th>{{ __('Customer Name') }}</th>
+                                <th>{{ __('Therapist Name') }}</th>
+                                <th>{{ __('Room') }}</th>
+                                <th>{{ __('Treatment Date') }}</th>
+                                <th>{{ __('Rating') }}</th>
+                                <th>{{ __('Option') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- load data using yajra datatables -->
+                        </tbody>
+                    </table>
                 </div>
-            </div> <!-- end col -->
-        </div> <!-- end row -->
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->
     @endsection
     @section('script')
-        <!-- Plugins js -->
-        <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
-        <!-- Init js-->
-        <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
-        <script>
-            $('.send-mail').click(function() {
-                var id = $(this).attr('data-id');
-                if (confirm('Are you sure you want to send email?')) {
-                    $.ajax({
-                        type: "get",
-                        url: "invoice-email/" + id,
-                        beforeSend: function() {
-                            $('#pageloader').show();
-                        },
-                        success: function(response) {
-                            toastr.success(response.message);
-                        },
-                        error: function(response) {
-                            toastr.error(response.responseJSON.message);
-                        },
-                        complete: function() {
-                            $('#pageloader').hide();
-                        }
-                    });
+    <!-- Plugins js -->
+    <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+
+    <!-- Datatables -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
+    <!-- Init js-->
+    <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
+    <script>
+        //load datatable
+        $(document).ready(function() {
+            var role = '{{ $role }}';
+            $('#invoiceList').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('invoice.index') }}",
+                    dataSrc: function (json) {
+                        json.data.forEach(function(row) {
+                            row.therapist_name = row.therapist_name.replace(/,/g, '<br>');
+                            row.room = row.room.replace(/,/g, '<br>');
+
+                            if (row.rating !== '') {
+                                var ratings = row.rating.split(',').map(function (rating) {
+
+                                    console.log(ratings);
+                                    var stars = '';
+                                    for (var i = 1; i <= parseInt(rating, 10); i++) {
+                                        stars += '<span class="star" data-rating="' + i + '"><i class="fas fa-star" style="font-size: 15px; color: orange"></i></span>';
+                                        console.log(stars);
+                                    }
+                                    return stars;
+                                });
+
+                                row.rating = ratings.join('<br>');
+                            }
+
+                        });
+                        return json.data;
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'invoice_code', name: 'invoice_code' },
+                    { data: 'customer_name', name: 'customer_name' },
+                    { data: 'therapist_name', name: 'therapist_name', searchable: false },
+                    { data: 'room', name: 'room', searchable: false },
+                    { data: 'treatment_date', name: 'treatment_date', searchable: false },
+                    { data: 'rating', name: 'rating', searchable: false },
+                    { data: 'option', name: 'option', orderable: false, searchable: false, visible: (role == 'admin') ? true : false },
+                ],
+                pagingType: 'full_numbers',
+                scrollX: true,
+                autoWidth: false,
+                "drawCallback": function() {
+                    $('.dataTables_paginate > .pagination').addClass('justify-content-end');
+                    $('.dataTables_filter').addClass('d-flex justify-content-end');
                 }
             });
-        </script>
+        });
+    </script>
     @endsection

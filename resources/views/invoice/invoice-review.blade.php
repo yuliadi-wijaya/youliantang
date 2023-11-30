@@ -29,24 +29,14 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <blockquote>{{ __('Review Details') }}</blockquote>
-                        <form action="@if ($reviews ) {{ url('review/' . $reviews->id) }} @else {{ route('review.store') }} @endif" method="post">
+                        <form action="{{ route('review.store') }}" method="post">
                             @csrf
-                            @if ($reviews )
-                                <input type="hidden" name="_method" value="PATCH" />
-                            @endif
-
-                            @if ($reviews == NULL)
-                                <input type="hidden" name="is_new" value="Y" />
-                            @else
-                                <input type="hidden" name="is_new" value="N" />
-                                <input type="hidden" name="review_id" value="{{ $reviews->id }}" />
-                            @endif
                             <input type="hidden" name="old_data" value="{{ $invoice->old_data }}" />
                             <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" />
 
                             <div class="row">
                                 <div class="col-md-12">
+                                    <blockquote>{{ __('Review Header') }}</blockquote>
                                     <div class="row">
                                         <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Customer Name ') }}</label>
@@ -57,8 +47,6 @@
                                                 <input type="text" class="form-control" name="customer_name" value="{{ $invoice->customer_name }}" readonly>
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Phone Number ') }}</label>
                                             @if ($invoice->old_data == 'Y')
@@ -68,23 +56,45 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">{{ __('Rating ') }}<span class="text-danger">*</span></label>
-                                            <div class="star-rating" id="star-rating">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <span class="star" data-rating="{{ $i }}"><i class="fas fa-star" style="font-size: 20px;"></i></span>
-                                                @endfor
+                                    <blockquote>{{ __('Review Details') }}</blockquote>
+                                    @php
+                                        $record = 0;
+                                    @endphp
+
+                                    @foreach($invoice_details as $index => $row)
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label">{{ __('Therapist ') }}</label>
+                                                <input type="text" class="form-control" value="{{ old('therapist_name.' . $index, $row->therapist_name) }}" readonly>
+                                                <input type="hidden" name="therapist_id[{{ $index }}]" value="{{ old('therapist_id.' . $index, $row->therapist_id) }}">
+                                                <input type="hidden" name="invoice_detail_id[{{ $index }}]" value="{{ old('invoice_detail_id.' . $index, $row->id) }}">
                                             </div>
-                                            <input type="hidden" name="rating" id="rating" value="@if ($reviews){{ old('rating', $reviews->rating) }}@elseif(old('rating')){{ old('rating') }}@endif">
+                                            <div class="col-md-2 form-group">
+                                                <label class="control-label">{{ __('Rating ') }}<span class="text-danger">*</span></label>
+                                                <div class="star-rating" id="star-rating">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <span class="star-{{ $index }}" data-rating="{{ $i }}"><i class="fas fa-star" style="font-size: 20px;"></i></span>
+                                                    @endfor
+                                                </div>
+                                                <input type="hidden" class="@error('rating.' . $index) is-invalid @enderror" name="rating[{{ $index }}]" id="rating-{{ $index }}" value="{{ old('rating.' . $index, $row->rating) }}">
+                                                @error('rating.' . $index )
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="comment{{ $index }}">{{ __('Comment (optional) ') }}</label>
+                                                <textarea class="form-control" name="comment[{{ $index }}]" rows="4">{{ old('comment.' . $index, $row->comment) }}</textarea>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label for="comment">{{ __('Comment (optional) ') }}</label>
-                                            <textarea class="form-control" name="comment" id="comment" rows="4">@if ($reviews){{ old('comment', $reviews->comment) }}@elseif(old('comment')){{ old('comment') }}@endif</textarea>
-                                        </div>
-                                    </div>
+
+                                        @php
+                                            $record++;
+                                        @endphp
+                                    @endforeach
+
+                                    <input type="hidden" id="record_review" value="{{ $record }}">
                                 </div>
                             </div>
                             <div class="row">
