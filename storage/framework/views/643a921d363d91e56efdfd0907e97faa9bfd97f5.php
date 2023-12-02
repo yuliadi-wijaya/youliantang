@@ -1,5 +1,4 @@
-@extends('layouts.master-layouts')
-@section('css')
+<?php $__env->startSection('css'); ?>
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -12,41 +11,42 @@
     }
 
 </style>
-@endsection
-@section('title') {{ __('List of Customer Member') }} @endsection
-@section('body')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('List of Customer Member')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
 
 <body data-topbar="dark" data-layout="horizontal">
-    @endsection
-    @section('content')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('content'); ?>
     <!-- start page title -->
-    @component('components.breadcrumb')
-    @slot('title') Member List @endslot
-    @slot('li_1') Dashboard @endslot
-    @slot('li_2') Membership @endslot
-    @endcomponent
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->slot('title'); ?> Member List <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_2'); ?> Membership <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    @if ($role == 'admin')
-                    <a href=" {{ route('customermember.create') }} ">
+                    <?php if($role == 'admin'): ?>
+                    <a href=" <?php echo e(route('customermember.create')); ?> ">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                            <i class="bx bx-plus font-size-16 align-middle mr-2"></i> {{ __('New Member') }}
+                            <i class="bx bx-plus font-size-16 align-middle mr-2"></i> <?php echo e(__('New Member')); ?>
+
                         </button>
                     </a>
-                    @endif
+                    <?php endif; ?>
                     <table id="custMemberList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>{{ __('No.') }}</th>
-                                <th>{{ __('Customer Name') }}</th>
-                                <th>{{ __('Phone Number') }}</th>
-                                <th>{{ __('Member Plane') }}</th>
-                                <th>{{ __('Expired Date') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Option') }}</th>
+                                <th><?php echo e(__('No.')); ?></th>
+                                <th><?php echo e(__('Customer Name')); ?></th>
+                                <th><?php echo e(__('Phone Number')); ?></th>
+                                <th><?php echo e(__('Member Plane')); ?></th>
+                                <th><?php echo e(__('Expired Date')); ?></th>
+                                <th><?php echo e(__('Status')); ?></th>
+                                <th><?php echo e(__('Option')); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,25 +57,25 @@
             </div>
         </div> <!-- end col -->
     </div> <!-- end row -->
-    @endsection
-    @section('script')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('script'); ?>
     <!-- Plugins js -->
-    <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/pdfmake/pdfmake.min.js')); ?>"></script>
 
     <!-- Datatables -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
     <!-- Init js-->
-    <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
     <script>
         //load datatable
         $(document).ready(function() {
-            var role = '{{ $role }}';
+            var role = '<?php echo e($role); ?>';
             $('#custMemberList').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('customermember.index') }}",
+                ajax: "<?php echo e(route('customermember.index')); ?>",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name' },
@@ -101,7 +101,7 @@
                     type: "DELETE"
                     , url: 'customermember/' + id
                     , data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                         , id: id
                     , }
                     , beforeSend: function() {
@@ -126,4 +126,6 @@
         });
 
     </script>
-    @endsection
+    <?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/customermember/customermembers.blade.php ENDPATH**/ ?>

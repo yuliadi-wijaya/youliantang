@@ -867,7 +867,7 @@ body[data-sidebar=colored].vertical-collpsed .vertical-menu #sidebar-menu ul li.
 
 .topnav {
     background: #fff;
-    padding: 0 calc(24px / 2);
+    --padding: 0 calc(24px / 2);
     box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
     margin-top: 70px;
     position: fixed;

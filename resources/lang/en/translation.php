@@ -56,11 +56,10 @@
         "list-of-promos" => "List of Promos",
         "add-new-promo" => "Add New Promo",
         "master-data" => "Master Data",
-        "customermember" => "Customer Members",
-        "customer-membership" => "Customer Membership",
-        "list-of-customermember" => "List of Customer Members",
-        "list-of-customer-membership" => "Customer Membership",
-        "add-new-customer-membership" => "Add New Customer Membership",
+        "member" => "Members",
+        "membership" => "Membership",
+        "list-of-membership" => "List of Members",
+        "add-new-membership" => "Add New Membership",
         "report-filter" => "Report Filters"
     ];
 ?>

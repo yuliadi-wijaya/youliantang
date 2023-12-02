@@ -1,9 +1,9 @@
 @extends('layouts.master-layouts')
 @section('title')
     @if ($customermember)
-        {{ __('Update Customer Member Details') }}
+        {{ __('Update Member Details') }}
     @else
-        {{ __('Add New Customer Member') }}
+        {{ __('Add New Member') }}
     @endif
 @endsection
 @section('body')
@@ -17,20 +17,20 @@
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <h4 class="mb-0 font-size-18">
                         @if ($customermember)
-                            {{ __('Update Customer Member Details') }}
+                            {{ __('Update Member Details') }}
                         @else
-                            {{ __('Add New Customer Member') }}
+                            {{ __('Add New Member') }}
                         @endif
                     </h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('Dashboard') }}</a></li>
-                            <li class="breadcrumb-item"><a href="{{ url('customermember') }}">{{ __('Customer Members') }}</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('customermember') }}">{{ __('Membership') }}</a></li>
                             <li class="breadcrumb-item active">
                                 @if ($customermember)
-                                    {{ __('Update Customer Member Details') }}
+                                    {{ __('Update Member Details') }}
                                 @else
-                                    {{ __('Add New Customer Member') }}
+                                    {{ __('Add New Member') }}
                                 @endif
                             </li>
                         </ol>
@@ -43,7 +43,7 @@
             <div class="col-12">
                 <a href="{{ url('customermember') }}">
                     <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                        <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Customer Member List') }}
+                        <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Member List') }}
                     </button>
                 </a>
             </div>
@@ -137,9 +137,9 @@
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">
                                         @if ($customermember)
-                                            {{ __('Update Customer Member Details') }}
+                                            {{ __('Update Member Details') }}
                                         @else
-                                            {{ __('Add New Customer Member') }}
+                                            {{ __('Add New Member') }}
                                         @endif
                                     </button>
                                 </div>
