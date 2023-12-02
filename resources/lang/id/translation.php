@@ -42,6 +42,7 @@
         "monthly-expense" => "Pengeluaran Bulanan",
         "latest-appointment" => "Janji Terbaru",
         "app-setting" => "Pengaturan Aplikasi",
+        "invoice-setting" => "Pengaturan Faktur",
         "memberships" => "Keanggotaan",
         "list-of-memberships" => "Daftar Keanggotaan",
         "add-new-membership" => "Tambah Keanggotaan Baru",
@@ -55,11 +56,10 @@
         "list-of-promos" => "Daftar Promosi",
         "add-new-promo" => "Tambah Promosi Baru",
         "master-data" => "Data Master",
-        "customermember" => "Customer Members",
-        "customer-membership" => "Keanggotaan Pelanggan",
-        "list-of-customermember" => "Daftar Anggota Pelanggan",
-        "list-of-customer-membership" => "Keanggotaan Pelanggan",
-        "add-new-customer-membership" => "Tambah Keanggotaan Pelanggan Baru",
+        "member" => "Anggota",
+        "membership" => "Keanggotaan",
+        "list-of-membership" => "Daftar Anggota",
+        "add-new-membership" => "Tambah Keanggotaan Baru",
         'report-filter' => 'Filter Laporan'
     ];
 ?>
