@@ -98,19 +98,19 @@
                                     {{ __('translation.customers') }} <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="customerDropdown">
-                                    <a href="{{ url('/rf-customer-reg') }}" class="dropdown-item">{{ __('Total Registration') }}</a>
-                                    <a href="{{ url('/rf-customer-trans') }}" class="dropdown-item">{{ __('Transaction History') }}</a>
+                                    <a href="{{ url('/rf-customer-reg') }}" class="dropdown-item">{{ __('translation.total-registration') }}</a>
+                                    <a href="{{ url('/rf-customer-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a>
                                 </div>
 
                                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{ __('translation.therapists') }} <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
-                                    <a href="{{ url('') }}" class="dropdown-item">{{ __('Transaction History') }}</a>
-                                    <a href="{{ url('') }}" class="dropdown-item">{{ __('Total Terapis') }}</a>
+                                    <a href="{{ url('/rf-therapist-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a>
+                                    <a href="{{ url('/rf-therapist-total') }}" class="dropdown-item">{{ __('translation.total-therapist') }}</a>
                                 </div>
 
-                                <a href="{{ url('') }}" class="nav-link">{{ __('translation.transactions') }}</a>
+                                <a href="{{ url('rf-trans') }}" class="nav-link">{{ __('translation.transactions') }}</a>
                             </div>
                         </li>
 

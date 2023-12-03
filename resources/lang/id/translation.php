@@ -59,7 +59,11 @@
         "member" => "Anggota",
         "membership" => "Keanggotaan",
         "list-of-membership" => "Daftar Anggota",
-        "add-new-membership" => "Tambah Keanggotaan Baru",
-        'report-filter' => 'Filter Laporan'
+        "add-new-membership" => "Tambah Anggota Baru",
+        "reports" => "Laporan",
+        "transactions" => "Transaksi",
+        "transaction-history" => "Riwayat Transaksi",
+        "total-registration" => "Total Pendaftaran",
+        "total-therapist" => "Total Terapis"
     ];
 ?>

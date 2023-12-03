@@ -146,4 +146,15 @@ Route::get('/ex-customer-reg', 'ReportCustomerController@exportReportCustomerReg
 Route::get('/rf-customer-trans', 'ReportCustomerController@fiterReportTrans');
 Route::get('/rs-customer-trans', 'ReportCustomerController@showReportCustomerTrans')->name('rs-customer-trans');
 Route::get('/ex-customer-trans', 'ReportCustomerController@exportReportCustomerTrans')->name('ex-customer-trans');
+
+// Therapist Total
+Route::get('/rf-therapist-total', 'ReportTherapistController@fiterReportTotal');
+Route::get('/rs-therapist-total', 'ReportTherapistController@showReportTherapistTotal')->name('rs-therapist-total');
+Route::get('/ex-therapist-total', 'ReportTherapistController@exportReportTherapistTotal')->name('ex-therapist-total');
+
+// Therapist Trans
+Route::get('/rf-therapist-trans', 'ReportTherapistController@fiterReportTrans');
+Route::get('/rs-therapist-trans', 'ReportTherapistController@showReportTherapistTrans')->name('rs-therapist-trans');
+Route::get('/ex-therapist-trans', 'ReportTherapistController@exportReportTherapistTrans')->name('ex-therapist-trans');
+
 });

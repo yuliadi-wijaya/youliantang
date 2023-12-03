@@ -71,9 +71,9 @@ class InvoiceController extends Controller
             ->where('invoices.is_deleted', 0);
 
             if ($invoice_type == 'CK') {
-                $invoices->where('invoices.invoice_type', 'CK');
+                $query->where('invoices.invoice_type', 'CK');
             } elseif ($invoice_type == 'NC') {
-                $invoices->where('invoices.invoice_type', 'NC');
+                $query->where('invoices.invoice_type', 'NC');
             }
 
         $invoices = $query->orderByDesc('invoices.id')->get();

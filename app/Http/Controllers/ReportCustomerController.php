@@ -109,9 +109,9 @@ class ReportCustomerController extends Controller
                 'customer_name' => $row->customer_name,
                 'phone_number' => $row->phone_number,
                 'email' => $row->email,
-                'register_date' => $row->register_date,
+                'register_date' => date('d-m-Y', strtotime($row->register_date)),
                 'place_of_birth' => $row->place_of_birth,
-                'birth_date' => $row->birth_date,
+                'birth_date' => date('d-m-Y', strtotime($row->birth_date)),
                 'gender' => $row->gender,
                 'address' => $row->address,
                 'emergency_name' => $row->emergency_name,
@@ -120,8 +120,8 @@ class ReportCustomerController extends Controller
                 'is_member' => $row->is_member,
                 'member_plan' => $row->member_plan,
                 'member_status' => $row->member_status,
-                'start_member' => $row->start_member,
-                'expired_date' => $row->expired_date,
+                'start_member' => date('d-m-Y', strtotime($row->start_member)),
+                'expired_date' => date('d-m-Y', strtotime($row->expired_date)),
             ]);
         }
 
@@ -296,7 +296,7 @@ class ReportCustomerController extends Controller
                 'phone_number' => $phone_number,
                 'email' => $email,
                 'invoice_code' => $invoice_code,
-                'treatment_date' => $treatment_date,
+                'treatment_date' => date('d-m-Y', strtotime($treatment_date)),
                 'payment_mode' => $payment_mode,
                 'payment_status' => $payment_status,
                 'note' => $note,
