@@ -884,7 +884,7 @@ body[data-sidebar=colored].vertical-collpsed .vertical-menu #sidebar-menu ul li.
 .topnav .navbar-nav .nav-link {
     font-size: 14px;
     position: relative;
-    padding: 1rem 1.3rem;
+    padding: 1rem 1rem;
     color: #545a6d;
 }
 

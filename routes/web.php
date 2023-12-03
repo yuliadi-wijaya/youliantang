@@ -131,8 +131,19 @@ Route::get('paymentComplete', [StripePaymentController::class, 'payment_complete
 Route::resource('payment-key','PaymentApiController');
 
 // Report
-Route::get('/report-filter', 'ReportController@fiterReport');
-Route::get('/report-view', 'ReportController@showReport')->name('report-view');
-Route::get('/report-export', 'ReportController@exportReport')->name('report-export');
+// Route::get('/report-customer', 'ReportController@fiterReportCustomer');
+// Route::get('/report-view-customer', 'ReportController@showReportCustomer')->name('report-view-customer');
+// Route::get('/report-export-customer', 'ReportController@exportReportCustomer')->name('report-export-customer');
 
+// Report Customer
+
+// Customer Registration
+Route::get('/rf-customer-reg', 'ReportCustomerController@fiterReportReg');
+Route::get('/rs-customer-reg', 'ReportCustomerController@showReportCustomerReg')->name('rs-customer-reg');
+Route::get('/ex-customer-reg', 'ReportCustomerController@exportReportCustomerReg')->name('ex-customer-reg');
+
+// Customer Transaction
+Route::get('/rf-customer-trans', 'ReportCustomerController@fiterReportTrans');
+Route::get('/rs-customer-trans', 'ReportCustomerController@showReportCustomerTrans')->name('rs-customer-trans');
+Route::get('/ex-customer-trans', 'ReportCustomerController@exportReportCustomerTrans')->name('ex-customer-trans');
 });

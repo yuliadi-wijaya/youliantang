@@ -60,6 +60,10 @@
         "membership" => "Membership",
         "list-of-membership" => "List of Members",
         "add-new-membership" => "Add New Membership",
-        "report-filter" => "Report Filters"
+        "reports" => "Reports",
+        "transactions" => "Transactions",
+        "transaction-history" => "Transaction History",
+        "total-registration" => "Total Registration",
+        "total-therapist" => "Total Therapist"
     ];
 ?>

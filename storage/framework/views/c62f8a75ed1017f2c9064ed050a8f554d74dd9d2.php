@@ -81,9 +81,36 @@
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
                                 <a href="<?php echo e(url('invoice')); ?>" class="dropdown-item"><?php echo e(__('translation.list-of-invoice')); ?></a>
                                 <a href="<?php echo e(route('invoice.create')); ?>" class="dropdown-item"><?php echo e(__('translation.create-invoice')); ?></a>
-                                <a href="<?php echo e(url('/report-filter')); ?>" class="dropdown-item"><?php echo e(__('translation.report-filter')); ?></a>
                             </div>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="reportsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-file-reports-dollar mr-2"></i><?php echo e(__('translation.reports')); ?>
+
+                                <div class="arrow-down"></div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="reportsDropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="customerDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <?php echo e(__('translation.customers')); ?> <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="customerDropdown">
+                                    <a href="<?php echo e(url('/rf-customer-reg')); ?>" class="dropdown-item"><?php echo e(__('Total Registration')); ?></a>
+                                    <a href="<?php echo e(url('/rf-customer-trans')); ?>" class="dropdown-item"><?php echo e(__('Transaction History')); ?></a>
+                                </div>
+
+                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <?php echo e(__('translation.therapists')); ?> <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
+                                    <a href="<?php echo e(url('')); ?>" class="dropdown-item"><?php echo e(__('Transaction History')); ?></a>
+                                    <a href="<?php echo e(url('')); ?>" class="dropdown-item"><?php echo e(__('Total Terapis')); ?></a>
+                                </div>
+
+                                <a href="<?php echo e(url('')); ?>" class="nav-link"><?php echo e(__('translation.transactions')); ?></a>
+                            </div>
+                        </li>
+
                     
                     <?php endif; ?>
                 </ul>
