@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\InvoiceSettings;
 use App\ReportTherapistTotal;
 use App\ReportTherapistTransDetail;
+use App\Therapist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
@@ -138,7 +139,15 @@ class ReportTherapistController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        return view('report.therapist.filter-therapist-trans', compact('user', 'role'));
+        $therapists = Therapist::select('users.id',
+            \DB::raw("CONCAT(COALESCE(users.first_name,''), ' ', COALESCE(users.last_name,'')) AS therapist_name"))
+            ->join('users', 'users.id', '=', 'therapists.user_id')
+            ->where('users.is_deleted', 0)
+            ->where('users.status', 1)
+            ->orderBy('users.first_name', 'ASC')
+            ->get();
+
+        return view('report.therapist.filter-therapist-trans', compact('user', 'role', 'therapists'));
     }
 
     public function showReportTherapistTrans(Request $request)
