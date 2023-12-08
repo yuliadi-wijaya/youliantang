@@ -46,7 +46,15 @@
                     <div class="card-body">
                         <div class="invoice-title">
                             <div class="mb-4">
-                                <h4><strong><?php echo e(__('Report Status = ') . ($status == 1 ? 'Active' : 'Non Active')); ?></strong></h4>
+                                <h4><strong>
+                                    <?php if($status === 'All'): ?>
+                                        <?php echo e(__('Report Status = Active & Non Active')); ?>
+
+                                    <?php else: ?>
+                                        <?php echo e(__('Report Status = ') . ($status == 1 ? 'Active' : 'Non Active')); ?>
+
+                                    <?php endif; ?>
+                                </strong></h4>
                             </div>
                         </div>
                         <hr>

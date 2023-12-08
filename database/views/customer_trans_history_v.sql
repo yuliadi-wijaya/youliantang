@@ -5,6 +5,7 @@ SELECT
     x.customer_name,
     x.phone_number,
     x.email,
+    x.invoice_id,
 	x.invoice_code,
     x.treatment_date,
     x.payment_mode,
@@ -17,13 +18,12 @@ SELECT
     x.total_price,
     x.discount,
     x.grand_total,
-    x.amount,
-    x.product_name,
     x.therapist_name,
     x.room,
     x.time_from,
     x.time_to,
-    x.invoice_type
+    x.invoice_type,
+    x.old_data
 FROM (
     SELECT
         c.id AS customer_id,
@@ -42,25 +42,21 @@ FROM (
         i.total_price,
         i.discount,
         i.grand_total,
-        id.invoice_id,
-        id.amount,
-        p.name AS product_name,
-        CONCAT(COALESCE(t.first_name,''), ' ', COALESCE(t.last_name,'')) AS therapist_name,
-        id.room,
-        id.treatment_time_from AS time_from,
-        id.treatment_time_to AS time_to,
-        i.invoice_type
+        i.id AS invoice_id,
+        NULL AS therapist_name,
+        NULL AS room,
+        NULL AS time_from,
+        NULL AS time_to,
+        i.invoice_type,
+        i.old_data
     FROM invoices AS i
-    JOIN invoice_details id ON id.invoice_id = i.id AND id.is_deleted = 0 AND id.status = 1
     JOIN users AS c ON c.id = i.customer_id
-    JOIN users AS t ON t.id = id.therapist_id
-    JOIN products AS p ON p.id = id.product_id
     WHERE i.old_data = 'N'
     AND i.is_deleted = 0
     AND i.status = 1
 
     UNION
-    
+
     SELECT
         c.id AS customer_id,
         CONCAT(COALESCE(c.first_name,''), ' ', COALESCE(c.last_name,'')) AS customer_name,
@@ -78,19 +74,17 @@ FROM (
         i.total_price,
         i.discount,
         i.grand_total,
-        id.invoice_id,
-        id.amount,
-        id.title AS product_name,
+        i.id AS invoice_id,
         CONCAT(COALESCE(t.first_name,''), ' ', COALESCE(t.last_name,'')) AS therapist_name,
         i.room,
         i.treatment_time_from AS time_from,
         i.treatment_time_to AS time_to,
-        i.invoice_type
+        i.invoice_type,
+        i.old_data
     FROM invoices AS i
     JOIN invoice_details id ON id.invoice_id = i.id AND id.is_deleted = 0 AND id.status = 1
     JOIN users AS c ON LOWER(CONCAT(COALESCE(c.first_name,''), ' ', COALESCE(c.last_name,''))) = LOWER(i.customer_name)
     JOIN users AS t ON LOWER(CONCAT(COALESCE(t.first_name,''), ' ', COALESCE(t.last_name,''))) = LOWER(i.therapist_name)
-    JOIN products AS p ON LOWER(p.name) = LOWER(id.title)
     WHERE i.old_data = 'Y'
     AND i.is_deleted = 0
     AND i.status = 1

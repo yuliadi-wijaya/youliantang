@@ -115,12 +115,9 @@
                                     <tr>
                                         <th class="no-wrap" colspan="2">{{ __('Total Customer') }}</th>
                                         <th class="no-wrap">{{ $total_customer }}</th>
-                                        <th class="no-wrap" colspan="14">&nbsp;</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="no-wrap" colspan="2">{{ __('Total Member') }}</th>
+                                        <th class="no-wrap">{{ __('Total Member') }}</th>
                                         <th class="no-wrap">{{ $total_member }}</th>
-                                        <th class="no-wrap" colspan="14">&nbsp;</th>
+                                        <th class="no-wrap" colspan="12">&nbsp;</th>
                                     </tr>
                                 </tfoot>
                             </table>

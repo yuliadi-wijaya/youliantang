@@ -46,7 +46,13 @@
                     <div class="card-body">
                         <div class="invoice-title">
                             <div class="mb-4">
-                                <h4><strong>{{ __('Report Status = ') . ($status == 1 ? 'Active' : 'Non Active') }}</strong></h4>
+                                <h4><strong>
+                                    @if($status === 'All')
+                                        {{ __('Report Status = Active & Non Active') }}
+                                    @else
+                                        {{ __('Report Status = ') . ($status == 1 ? 'Active' : 'Non Active') }}
+                                    @endif
+                                </strong></h4>
                             </div>
                         </div>
                         <hr>

@@ -115,12 +115,9 @@
                                     <tr>
                                         <th class="no-wrap" colspan="2"><?php echo e(__('Total Customer')); ?></th>
                                         <th class="no-wrap"><?php echo e($total_customer); ?></th>
-                                        <th class="no-wrap" colspan="14">&nbsp;</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="no-wrap" colspan="2"><?php echo e(__('Total Member')); ?></th>
+                                        <th class="no-wrap"><?php echo e(__('Total Member')); ?></th>
                                         <th class="no-wrap"><?php echo e($total_member); ?></th>
-                                        <th class="no-wrap" colspan="14">&nbsp;</th>
+                                        <th class="no-wrap" colspan="12">&nbsp;</th>
                                     </tr>
                                 </tfoot>
                             </table>

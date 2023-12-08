@@ -73,8 +73,8 @@
                                         <th class="no-wrap"><?php echo e(__('Total Price')); ?></th>
                                         <th class="no-wrap"><?php echo e(__('Discount')); ?></th>
                                         <th class="no-wrap"><?php echo e(__('Grand Total')); ?></th>
-                                        <th class="no-wrap"><?php echo e(__('Amount')); ?></th>
                                         <th class="no-wrap"><?php echo e(__('Product Name')); ?></th>
+                                        <th class="no-wrap"><?php echo e(__('Amount')); ?></th>
                                         <th class="no-wrap"><?php echo e(__('Therapist Name')); ?></th>
                                         <th class="no-wrap"><?php echo e(__('Room')); ?></th>
                                         <th class="no-wrap"><?php echo e(__('Time From')); ?></th>
@@ -102,65 +102,82 @@
                                             ?>
                                         <?php endif; ?>
 
-                                        <?php if($index > 0 && $row->customer_id == $report[$index - 1]->customer_id && $row->invoice_code == $report[$index - 1]->invoice_code): ?>
-                                            <?php
-                                                $invoice_code = '';
-                                                $treatment_date = '';
-                                                $payment_mode = '';
-                                                $payment_status = '';
-                                                $note = '';
-                                                $is_member = '';
-                                                $use_member = '';
-                                                $member_plan = '';
-                                                $voucher_code = '';
-                                                $total_price = '';
-                                                $discount = '';
-                                                $grand_total = '';
-                                            ?>
-                                        <?php else: ?>
-                                            <?php
-                                                $invoice_code = $row->invoice_code;
-                                                $treatment_date = date('d-m-Y', strtotime($row->treatment_date));
-                                                $payment_mode = $row->payment_mode;
-                                                $payment_status = $row->payment_status;
-                                                $note = $row->note;
-                                                $is_member = $row->is_member;
-                                                $use_member = $row->use_member;
-                                                $member_plan = $row->member_plan;
-                                                $voucher_code = $row->voucher_code;
-                                                $total_price = 'Rp. '. number_format($row->total_price, 0, ',', '.');
-                                                $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
-                                                $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
+                                        <?php
+                                            $treatment_date = date('d-m-Y', strtotime($row->treatment_date));
+                                            $total_price = 'Rp. '. number_format($row->total_price, 0, ',', '.');
+                                            $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
+                                            $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
 
-                                                $sub_price = $sub_price + $row->total_price;
-                                                $sub_discount = $sub_discount + $row->discount;
-                                                $sub_grand_total = $sub_grand_total + $row->grand_total;
-                                            ?>
-                                        <?php endif; ?>
+                                            $sub_price = $sub_price + $row->total_price;
+                                            $sub_discount = $sub_discount + $row->discount;
+                                            $sub_grand_total = $sub_grand_total + $row->grand_total;
+                                        ?>
 
                                         <tr>
                                             <td class="no-wrap"><?php echo e($customer_name); ?></td>
                                             <td class="no-wrap"><?php echo e($phone_number); ?></td>
                                             <td class="no-wrap"><?php echo e($email); ?></td>
-                                            <td class="no-wrap"><?php echo e($invoice_code); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->invoice_code); ?></td>
                                             <td class="no-wrap"><?php echo e($treatment_date); ?></td>
-                                            <td class="no-wrap"><?php echo e($payment_mode); ?></td>
-                                            <td class="no-wrap"><?php echo e($payment_status); ?></td>
-                                            <td class="no-wrap"><?php echo e($note); ?></td>
-                                            <td class="no-wrap"><?php echo e($is_member); ?></td>
-                                            <td class="no-wrap"><?php echo e($use_member); ?></td>
-                                            <td class="no-wrap"><?php echo e($member_plan); ?></td>
-                                            <td class="no-wrap"><?php echo e($voucher_code); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->payment_mode); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->payment_status); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->note); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->is_member); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->use_member); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->member_plan); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->voucher_code); ?></td>
                                             <td class="no-wrap"><?php echo e($total_price); ?></td>
                                             <td class="no-wrap"><?php echo e($discount); ?></td>
                                             <td class="no-wrap"><?php echo e($grand_total); ?></td>
-                                            <td class="no-wrap">Rp. <?php echo e(number_format($row->amount, 0, ',', '.')); ?></td>
-                                            <td class="no-wrap"><?php echo e($row->product_name); ?></td>
-                                            <td class="no-wrap"><?php echo e($row->therapist_name); ?></td>
-                                            <td class="no-wrap"><?php echo e($row->room); ?></td>
-                                            <td class="no-wrap"><?php echo e($row->time_from); ?></td>
-                                            <td class="no-wrap"><?php echo e($row->time_to); ?></td>
+                                            <td class="no-wrap">&nbsp;</td>
+                                            <td class="no-wrap">&nbsp;</td>
+                                            <?php if($row->old_data == 'Y'): ?>
+                                                <td class="no-wrap"><?php echo e($row->therapist_name); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->room); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->time_from); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->time_to); ?></td>
+                                            <?php else: ?>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                            <?php endif; ?>
                                         </tr>
+
+                                        <?php $__currentLoopData = $report_detail[$row->invoice_id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rd): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <tr>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <?php if($row->old_data == 'Y'): ?>
+                                                    <td class="no-wrap"><?php echo e($rd->product_name); ?></td>
+                                                    <td class="no-wrap">Rp. <?php echo e(number_format($rd->amount, 0, ',', '.')); ?></td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                <?php else: ?>
+                                                    <td class="no-wrap"><?php echo e($rd->product_name); ?></td>
+                                                    <td class="no-wrap">Rp. <?php echo e(number_format($rd->amount, 0, ',', '.')); ?></td>
+                                                    <td class="no-wrap"><?php echo e($rd->therapist_name); ?></td>
+                                                    <td class="no-wrap"><?php echo e($rd->room); ?></td>
+                                                    <td class="no-wrap"><?php echo e($rd->treatment_time_from); ?></td>
+                                                    <td class="no-wrap"><?php echo e($rd->treatment_time_to); ?></td>
+                                                <?php endif; ?>
+                                            </tr>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                                 <tfoot>

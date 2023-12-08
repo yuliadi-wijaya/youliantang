@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\ReportCustomerReg;
 use App\ReportCustomerTrans;
+use App\InvoiceDetail;
+use App\User;
+use App\Product;
 use App\InvoiceSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -12,6 +15,9 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use App\Exports\ExCustomerReg;
 use App\Exports\ExCustomerTrans;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ReportCustomerController extends Controller
 {
@@ -105,64 +111,44 @@ class ReportCustomerController extends Controller
             }
 
             $reportNew->push([
-                'no' => $index + 1,
-                'customer_name' => $row->customer_name,
-                'phone_number' => $row->phone_number,
-                'email' => $row->email,
-                'register_date' => date('d-m-Y', strtotime($row->register_date)),
-                'place_of_birth' => $row->place_of_birth,
-                'birth_date' => date('d-m-Y', strtotime($row->birth_date)),
-                'gender' => $row->gender,
-                'address' => $row->address,
-                'emergency_name' => $row->emergency_name,
-                'emergency_contact' => $row->emergency_contact,
-                'customer_status' => $row->customer_status,
-                'is_member' => $row->is_member,
-                'member_plan' => $row->member_plan,
-                'member_status' => $row->member_status,
-                'start_member' => date('d-m-Y', strtotime($row->start_member)),
-                'expired_date' => date('d-m-Y', strtotime($row->expired_date)),
+                'A' => $index + 1,
+                'B' => $row->customer_name,
+                'C' => $row->phone_number,
+                'D' => $row->email,
+                'E' => date('d-m-Y', strtotime($row->register_date)),
+                'F' => $row->place_of_birth,
+                'G' => date('d-m-Y', strtotime($row->birth_date)),
+                'H' => $row->gender,
+                'I' => $row->address,
+                'J' => $row->emergency_name,
+                'K' => $row->emergency_contact,
+                'L' => $row->customer_status,
+                'M' => $row->is_member,
+                'N' => $row->member_plan,
+                'O' => $row->member_status,
+                'P' => ($row->is_member == 1) ? date('d-m-Y', strtotime($row->start_member)) : '',
+                'Q' => ($row->is_member == 1) ? date('d-m-Y', strtotime($row->expired_date)) : '',
             ]);
         }
 
         $reportNew->push([
-            'no' => '',
-            'customer_name' => 'Total Customer',
-            'phone_number' => $total_customer,
-            'email' => '',
-            'register_date' => '',
-            'place_of_birth' => '',
-            'birth_date' => '',
-            'gender' => '',
-            'address' => '',
-            'emergency_name' => '',
-            'emergency_contact' => '',
-            'customer_status' => '',
-            'is_member' => '',
-            'member_plan' => '',
-            'member_status' => '',
-            'start_member' => '',
-            'expired_date' => '',
-        ]);
-
-        $reportNew->push([
-            'no' => '',
-            'customer_name' => 'Total Member',
-            'phone_number' => $total_member,
-            'email' => '',
-            'register_date' => '',
-            'place_of_birth' => '',
-            'birth_date' => '',
-            'gender' => '',
-            'address' => '',
-            'emergency_name' => '',
-            'emergency_contact' => '',
-            'customer_status' => '',
-            'is_member' => '',
-            'member_plan' => '',
-            'member_status' => '',
-            'start_member' => '',
-            'expired_date' => '',
+            'A' => '',
+            'B' => '',
+            'C' => $total_customer,
+            'D' => 'Total Member : ',
+            'E' => $total_member,
+            'F' => '',
+            'G' => '',
+            'H' => '',
+            'I' => '',
+            'J' => '',
+            'K' => '',
+            'L' => '',
+            'M' => '',
+            'N' => '',
+            'O' => '',
+            'P' => '',
+            'Q' => '',
         ]);
 
         $fileName = 'report_customer_registration_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';
@@ -221,7 +207,40 @@ class ReportCustomerController extends Controller
         })
         ->get();
 
-        return view('report.customer.customer-trans', compact('user', 'role', 'report', 'dateFrom', 'dateTo'));
+        $report_detail = [];
+
+        foreach ($report as $r) {
+            if($r->old_data == 'N'){
+                $detail = InvoiceDetail::select(
+                    'products.name as product_name',
+                    'invoice_details.amount',
+                    'invoice_details.treatment_time_from',
+                    'invoice_details.treatment_time_to',
+                    'invoice_details.room',
+                    \DB::raw("CONCAT(COALESCE(users.first_name,''), ' ', COALESCE(users.last_name,'')) as therapist_name")
+                )
+                ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+                ->join('products', 'products.id', '=', 'invoice_details.product_id')
+                ->where('invoice_details.invoice_id', $r->invoice_id)
+                ->where('invoice_details.is_deleted', 0)
+                ->where('invoice_details.status', 1)
+                ->get();
+            }else{
+                $detail = InvoiceDetail::select(
+                    'products.name as product_name',
+                    'invoice_details.amount'
+                )
+                ->join('products', \DB::raw('LOWER(products.name)'), '=', \DB::raw('LOWER(invoice_details.title)'))
+                ->where('invoice_details.invoice_id', $r->invoice_id)
+                ->where('invoice_details.is_deleted', 0)
+                ->where('invoice_details.status', 1)
+                ->get();
+            }
+
+            $report_detail[$r->invoice_id] = $detail;
+        }
+
+        return view('report.customer.customer-trans', compact('user', 'role', 'report', 'report_detail', 'dateFrom', 'dateTo'));
     }
 
     public function exportReportCustomerTrans(Request $request)
@@ -242,6 +261,7 @@ class ReportCustomerController extends Controller
         })
         ->get();
 
+        $report_detail = [];
         $sub_price = 0;
         $sub_discount = 0;
         $sub_grand_total = 0;
@@ -249,95 +269,114 @@ class ReportCustomerController extends Controller
         $reportNew = new Collection();
 
         foreach ($report as $index => $row) {
-            if ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) {
-                $customer_name = '';
-                $phone_number = '';
-                $email = '';
-            }else{
-                $customer_name = $row->customer_name;
-                $phone_number = $row->phone_number;
-                $email = $row->email;
-            }
+            $customer_name = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->customer_name;
+            $phone_number = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->phone_number;
+            $email = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->email;
 
-            if ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id && $row->invoice_code == $report[$index - 1]->invoice_code) {
-                $invoice_code = '';
-                $treatment_date = '';
-                $payment_mode = '';
-                $payment_status = '';
-                $note = '';
-                $is_member = '';
-                $use_member = '';
-                $member_plan = '';
-                $voucher_code = '';
-                $total_price = '';
-                $discount = '';
-                $grand_total = '';
-            }else{
-                $invoice_code = $row->invoice_code;
-                $treatment_date = $row->treatment_date;
-                $payment_mode = $row->payment_mode;
-                $payment_status = $row->payment_status;
-                $note = $row->note;
-                $is_member = $row->is_member;
-                $use_member = $row->use_member;
-                $member_plan = $row->member_plan;
-                $voucher_code = $row->voucher_code;
-                $total_price = $row->total_price;
-                $discount = $row->discount;
-                $grand_total = $row->grand_total;
+            $detail = ($row->old_data == 'N')
+                ? InvoiceDetail::select(
+                    'products.name as product_name',
+                    'invoice_details.amount',
+                    'invoice_details.treatment_time_from',
+                    'invoice_details.treatment_time_to',
+                    'invoice_details.room',
+                    \DB::raw("CONCAT(COALESCE(users.first_name,''), ' ', COALESCE(users.last_name,'')) as therapist_name")
+                )
+                ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+                ->join('products', 'products.id', '=', 'invoice_details.product_id')
+                ->where('invoice_details.invoice_id', $row->invoice_id)
+                ->where('invoice_details.is_deleted', 0)
+                ->where('invoice_details.status', 1)
+                ->get()
+                : InvoiceDetail::select(
+                    'products.name as product_name',
+                    'invoice_details.amount'
+                )
+                ->join('products', \DB::raw('LOWER(products.name)'), '=', \DB::raw('LOWER(invoice_details.title)'))
+                ->where('invoice_details.invoice_id', $row->invoice_id)
+                ->where('invoice_details.is_deleted', 0)
+                ->where('invoice_details.status', 1)
+                ->get();
 
-                $sub_price = $sub_price + $row->total_price;
-                $sub_discount = $sub_discount + $row->discount;
-                $sub_grand_total = $sub_grand_total + $row->grand_total;
-            }
+            $report_detail[$row->invoice_id] = $detail;
+
+            $sub_price += $row->total_price;
+            $sub_discount += $row->discount;
+            $sub_grand_total += $row->grand_total;
 
             $reportNew->push([
-                'customer_name' => $customer_name,
-                'phone_number' => $phone_number,
-                'email' => $email,
-                'invoice_code' => $invoice_code,
-                'treatment_date' => date('d-m-Y', strtotime($treatment_date)),
-                'payment_mode' => $payment_mode,
-                'payment_status' => $payment_status,
-                'note' => $note,
-                'is_member' => $is_member,
-                'use_member' => $use_member,
-                'member_plan' => $member_plan,
-                'voucher_code' => $voucher_code,
-                'total_price' => $total_price,
-                'discount' => $discount,
-                'grand_total' => $grand_total,
-                'amount' => $row->amount,
-                'product_name' => $row->product_name,
-                'therapist_name' => $row->therapist_name,
-                'room' => $row->room,
-                'time_from' => $row->time_from,
-                'time_to' => $row->time_to,
+                'A' => $customer_name,
+                'B' => $phone_number,
+                'C' => $email,
+                'D' => $row->invoice_code,
+                'E' => date('d-m-Y', strtotime($row->treatment_date)),
+                'F' => $row->payment_mode,
+                'G' => $row->payment_status,
+                'H' => $row->note,
+                'I' => $row->is_member,
+                'J' => $row->use_member,
+                'K' => $row->member_plan,
+                'L' => $row->voucher_code,
+                'M' => $row->total_price,
+                'N' => $row->discount,
+                'O' => $row->grand_total,
+                'P' => '',
+                'Q' => '',
+                'R' => ($row->old_data == 'Y') ? $row->therapist_name : '',
+                'S' => ($row->old_data == 'Y') ? $row->room : '',
+                'T' => ($row->old_data == 'Y') ? $row->time_from : '',
+                'U' => ($row->old_data == 'Y') ? $row->time_to : '',
             ]);
+
+            foreach ($report_detail[$row->invoice_id] as $rd) {
+                $reportNew->push([
+                    'A' => '',
+                    'B' => '',
+                    'C' => '',
+                    'D' => '',
+                    'E' => '',
+                    'F' => '',
+                    'G' => '',
+                    'H' => '',
+                    'I' => '',
+                    'J' => '',
+                    'K' => '',
+                    'L' => '',
+                    'M' => '',
+                    'N' => '',
+                    'O' => '',
+                    'P' => $rd->product_name,
+                    'Q' => $rd->amount,
+                    'R' => ($row->old_data == 'Y') ? '' : $rd->therapist_name,
+                    'S' => ($row->old_data == 'Y') ? '' : $rd->room,
+                    'T' => ($row->old_data == 'Y') ? '' : $rd->treatment_time_from,
+                    'U' => ($row->old_data == 'Y') ? '' : $rd->treatment_time_to,
+                ]);
+            }
         }
 
         $reportNew->push([
-            'customer_name' => '',
-            'phone_number' => '',
-            'email' => '',
-            'invoice_code' => '',
-            'treatment_date' => '',
-            'payment_mode' => '',
-            'payment_status' => '',
-            'note' => '',
-            'is_member' => '',
-            'use_member' => '',
-            'member_plan' => '',
-            'voucher_code' => 'Total',
-            'total_price' => $sub_price,
-            'discount' => $sub_discount,
-            'grand_total' => $sub_grand_total,
-            'amount' => '',
-            'product_name' => '',
-            'therapist_name' => '',
-            'room' => '',
-            'time_from' => '',
-            'time_to' => '',
+            'A' => '',
+            'B' => '',
+            'C' => '',
+            'D' => '',
+            'E' => '',
+            'F' => '',
+            'G' => '',
+            'H' => '',
+            'I' => '',
+            'J' => '',
+            'K' => '',
+            'L' => '',
+            'M' => $sub_price,
+            'N' => $sub_discount,
+            'O' => $sub_grand_total,
+            'P' => '',
+            'Q' => '',
+            'R' => '',
+            'S' => '',
+            'T' => '',
+            'U' => '',
         ]);
 
         $fileName = 'report_customer_transaction_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';

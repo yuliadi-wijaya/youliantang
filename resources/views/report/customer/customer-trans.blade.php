@@ -73,8 +73,8 @@
                                         <th class="no-wrap">{{ __('Total Price') }}</th>
                                         <th class="no-wrap">{{ __('Discount') }}</th>
                                         <th class="no-wrap">{{ __('Grand Total') }}</th>
-                                        <th class="no-wrap">{{ __('Amount') }}</th>
                                         <th class="no-wrap">{{ __('Product Name') }}</th>
+                                        <th class="no-wrap">{{ __('Amount') }}</th>
                                         <th class="no-wrap">{{ __('Therapist Name') }}</th>
                                         <th class="no-wrap">{{ __('Room') }}</th>
                                         <th class="no-wrap">{{ __('Time From') }}</th>
@@ -102,65 +102,82 @@
                                             @endphp
                                         @endif
 
-                                        @if ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id && $row->invoice_code == $report[$index - 1]->invoice_code)
-                                            @php
-                                                $invoice_code = '';
-                                                $treatment_date = '';
-                                                $payment_mode = '';
-                                                $payment_status = '';
-                                                $note = '';
-                                                $is_member = '';
-                                                $use_member = '';
-                                                $member_plan = '';
-                                                $voucher_code = '';
-                                                $total_price = '';
-                                                $discount = '';
-                                                $grand_total = '';
-                                            @endphp
-                                        @else
-                                            @php
-                                                $invoice_code = $row->invoice_code;
-                                                $treatment_date = date('d-m-Y', strtotime($row->treatment_date));
-                                                $payment_mode = $row->payment_mode;
-                                                $payment_status = $row->payment_status;
-                                                $note = $row->note;
-                                                $is_member = $row->is_member;
-                                                $use_member = $row->use_member;
-                                                $member_plan = $row->member_plan;
-                                                $voucher_code = $row->voucher_code;
-                                                $total_price = 'Rp. '. number_format($row->total_price, 0, ',', '.');
-                                                $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
-                                                $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
+                                        @php
+                                            $treatment_date = date('d-m-Y', strtotime($row->treatment_date));
+                                            $total_price = 'Rp. '. number_format($row->total_price, 0, ',', '.');
+                                            $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
+                                            $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
 
-                                                $sub_price = $sub_price + $row->total_price;
-                                                $sub_discount = $sub_discount + $row->discount;
-                                                $sub_grand_total = $sub_grand_total + $row->grand_total;
-                                            @endphp
-                                        @endif
+                                            $sub_price = $sub_price + $row->total_price;
+                                            $sub_discount = $sub_discount + $row->discount;
+                                            $sub_grand_total = $sub_grand_total + $row->grand_total;
+                                        @endphp
 
                                         <tr>
                                             <td class="no-wrap">{{ $customer_name }}</td>
                                             <td class="no-wrap">{{ $phone_number }}</td>
                                             <td class="no-wrap">{{ $email }}</td>
-                                            <td class="no-wrap">{{ $invoice_code }}</td>
+                                            <td class="no-wrap">{{ $row->invoice_code }}</td>
                                             <td class="no-wrap">{{ $treatment_date }}</td>
-                                            <td class="no-wrap">{{ $payment_mode }}</td>
-                                            <td class="no-wrap">{{ $payment_status }}</td>
-                                            <td class="no-wrap">{{ $note }}</td>
-                                            <td class="no-wrap">{{ $is_member }}</td>
-                                            <td class="no-wrap">{{ $use_member }}</td>
-                                            <td class="no-wrap">{{ $member_plan }}</td>
-                                            <td class="no-wrap">{{ $voucher_code }}</td>
+                                            <td class="no-wrap">{{ $row->payment_mode }}</td>
+                                            <td class="no-wrap">{{ $row->payment_status }}</td>
+                                            <td class="no-wrap">{{ $row->note }}</td>
+                                            <td class="no-wrap">{{ $row->is_member }}</td>
+                                            <td class="no-wrap">{{ $row->use_member }}</td>
+                                            <td class="no-wrap">{{ $row->member_plan }}</td>
+                                            <td class="no-wrap">{{ $row->voucher_code }}</td>
                                             <td class="no-wrap">{{ $total_price}}</td>
                                             <td class="no-wrap">{{ $discount }}</td>
                                             <td class="no-wrap">{{ $grand_total }}</td>
-                                            <td class="no-wrap">Rp. {{ number_format($row->amount, 0, ',', '.') }}</td>
-                                            <td class="no-wrap">{{ $row->product_name }}</td>
-                                            <td class="no-wrap">{{ $row->therapist_name }}</td>
-                                            <td class="no-wrap">{{ $row->room }}</td>
-                                            <td class="no-wrap">{{ $row->time_from }}</td>
-                                            <td class="no-wrap">{{ $row->time_to }}</td>
+                                            <td class="no-wrap">&nbsp;</td>
+                                            <td class="no-wrap">&nbsp;</td>
+                                            @if ($row->old_data == 'Y')
+                                                <td class="no-wrap">{{ $row->therapist_name }}</td>
+                                                <td class="no-wrap">{{ $row->room }}</td>
+                                                <td class="no-wrap">{{ $row->time_from }}</td>
+                                                <td class="no-wrap">{{ $row->time_to }}</td>
+                                            @else
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                            @endif
                                         </tr>
+
+                                        @foreach ($report_detail[$row->invoice_id] as $rd)
+                                            <tr>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                @if ($row->old_data == 'Y')
+                                                    <td class="no-wrap">{{ $rd->product_name }}</td>
+                                                    <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                    <td class="no-wrap">&nbsp;</td>
+                                                @else
+                                                    <td class="no-wrap">{{ $rd->product_name }}</td>
+                                                    <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
+                                                    <td class="no-wrap">{{ $rd->therapist_name }}</td>
+                                                    <td class="no-wrap">{{ $rd->room }}</td>
+                                                    <td class="no-wrap">{{ $rd->treatment_time_from }}</td>
+                                                    <td class="no-wrap">{{ $rd->treatment_time_to }}</td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
                                     @endforeach
                                 </tbody>
                                 <tfoot>
