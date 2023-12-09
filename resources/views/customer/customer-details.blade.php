@@ -245,7 +245,7 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Profile Photo ') }}</label>
                                             <img class="@error('profile_photo') is-invalid @enderror"
-                                                src="@if ($customer && $customer_info && $customer->profile_photo != 'noImage.png') {{ URL::asset('storage/images/users/' . $customer->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
+                                                src="@if ($customer && $customer->profile_photo != '') {{ URL::asset('storage/images/users/' . $customer->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
                                                 data-toggle="tooltip" data-placement="top"
                                                 title="Click to Upload Profile Photo" />
                                             <input type="file"

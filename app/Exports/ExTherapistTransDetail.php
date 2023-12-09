@@ -44,7 +44,7 @@ class ExTherapistTransDetail implements FromCollection, WithHeadings, ShouldAuto
             'Time To',
             'Product Name',
             'Amount',
-            'Duration',
+            'Duration (Minutes)',
             'Commission Fee',
             'Rating',
             'Comment',

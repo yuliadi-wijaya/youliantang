@@ -91,13 +91,13 @@
                                         @if ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id)
                                             @php
                                                 $customer_name = '';
-                                                $phone_number = '';
+                                                $customer_phone = '';
                                                 $email = '';
                                             @endphp
                                         @else
                                             @php
                                                 $customer_name = $row->customer_name;
-                                                $phone_number = $row->phone_number;
+                                                $customer_phone = $row->customer_phone;
                                                 $email = $row->email;
                                             @endphp
                                         @endif
@@ -115,7 +115,7 @@
 
                                         <tr>
                                             <td class="no-wrap">{{ $customer_name }}</td>
-                                            <td class="no-wrap">{{ $phone_number }}</td>
+                                            <td class="no-wrap">{{ $customer_phone }}</td>
                                             <td class="no-wrap">{{ $email }}</td>
                                             <td class="no-wrap">{{ $row->invoice_code }}</td>
                                             <td class="no-wrap">{{ $treatment_date }}</td>

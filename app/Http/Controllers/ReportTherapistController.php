@@ -500,7 +500,7 @@ class ReportTherapistController extends Controller
                     'A' => $row->therapist_name,
                     'B' => $row->phone_number,
                     'C' => $row->treatment_month_year,
-                    'D' => $row->total_duration.' Minutes',
+                    'D' => $row->total_duration,
                     'E' => $row->total_commission_fee,
                     'F' => $row->avg_rating,
                 ]);
@@ -510,7 +510,7 @@ class ReportTherapistController extends Controller
                 'A' => '',
                 'B' => '',
                 'C' => '',
-                'D' => $gt_duration.' Minutes',
+                'D' => $gt_duration,
                 'E' => $gt_fee,
                 'F' => '',
             ]);

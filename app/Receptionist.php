@@ -2,21 +2,23 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Receptionist extends Model
 {
-    use HasFactory;
+    protected $table = 'receptionists';
+
     protected $fillable = [
-        'therapist_id',
         'user_id',
-        'status',
+		'ktp',
+		'gender',
+		'place_of_birth',
+		'birth_date',
+		'address',
+		'rekening_number',
+		'emergency_contact',
+		'emergency_name',
+		'status',
         'is_deleted',
     ];
-
-    function therapist()
-    {
-        return $this->hasOne(User::class, 'id', 'therapist_id');
-    }
 }

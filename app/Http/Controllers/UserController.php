@@ -171,12 +171,11 @@ class UserController extends Controller
                 }
             } elseif ($role == 'receptionist') {
                 $receptionist = Sentinel::getUser();
+                $receptionist_info = Receptionist::where('user_id', '=', $receptionist->id)->first();
                 $role = $user->roles[0]->slug;
                 $therapist_role = Sentinel::findRoleBySlug('therapist');
                 $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
-                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
-                $therapist_user = User::whereIn('id', $receptionist_therapist)->pluck('id')->toArray();
-                return view('receptionist.receptionist-profile-edit', compact('user', 'role', 'receptionist', 'therapists', 'therapist_user'));
+                return view('receptionist.receptionist-profile-edit', compact('user', 'role', 'receptionist', 'receptionist_info', 'therapists'));
             } elseif ($role == 'customer') {
                 $customer = Sentinel::getUser();
                 $customer_info = Customer::where('user_id', '=', $customer->id)->first();
@@ -320,11 +319,13 @@ class UserController extends Controller
                 $receptionist = Sentinel::getUser();
                 $validatedData = $request->validate([
                     'first_name' => 'required|alpha',
-                    'last_name' => 'required|alpha',
-                    'phone_number' => 'required',
+                    'last_name' => 'alpha',
+                    'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                     'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                    'therapist' => 'required',
-                    'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500'
+                    'gender' => 'required',
+                    'phone_number' => 'required',
+                    'rekening_number' => 'required|numeric',
+                    'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500'
                 ]);
                 try {
                     $user = Sentinel::getUser();
@@ -342,44 +343,21 @@ class UserController extends Controller
                     }
                     $receptionist->first_name = $validatedData['first_name'];
                     $receptionist->last_name = $validatedData['last_name'];
-                    $receptionist->phone_number = $validatedData['phone_number'];
                     $receptionist->email = $validatedData['email'];
+                    $receptionist->phone_number = $validatedData['phone_number'];
                     $receptionist->updated_by = $user->id;
-
-                    $old_therapist = Receptionist::where('user_id', $receptionist->id)->pluck('therapist_id')->toArray();
-                    $new_therapist = $request->therapist;
-                    $numArray = array_map('intval', $new_therapist);
-                    // remove therapist
-                    $differenceArray1 = array_diff($old_therapist, $numArray);
-                    // add therapist
-                    $differenceArray2 = array_diff($numArray, $old_therapist);
-                    $receptionistTherapist = Receptionist::where('user_id', $receptionist->id)->pluck('therapist_id');
-                    if ($differenceArray1 && $differenceArray2) {
-                        // add and remove both therapist
-                        if ($differenceArray1) {
-                            $receptionistTherapist = Receptionist::whereIn('therapist_id', $differenceArray1)->delete();
-                        }
-                        if ($differenceArray2) {
-                            foreach ($differenceArray2 as $item) {
-                                $receptionistTherapist = new Receptionist();
-                                $receptionistTherapist->therapist_id = $item;
-                                $receptionistTherapist->user_id = $receptionist->id;
-                                $receptionistTherapist->save();
-                            }
-                        }
-                    } elseif ($differenceArray1) {
-                        // only remove therapist
-                        $receptionistTherapist = Receptionist::whereIn('therapist_id', $differenceArray1)->delete();
-                    } elseif ($differenceArray2) {
-                        // only add therapist
-                        foreach ($differenceArray2 as $item) {
-                            $receptionistTherapist = new Receptionist();
-                            $receptionistTherapist->therapist_id = $item;
-                            $receptionistTherapist->user_id = $receptionist->id;
-                            $receptionistTherapist->save();
-                        }
-                    }
                     $receptionist->save();
+                    Receptionist::where('user_id', $receptionist->id)
+                        ->update([
+                            'ktp' => $validatedData['ktp'],
+                            'gender' => $validatedData['gender'],
+                            'place_of_birth' =>$request->place_of_birth,
+                            'birth_date' => $request->birth_date,
+                            'address' => $request->address,
+                            'rekening_number' => $request->rekening_number,
+                            'emergency_contact' => $request->emergency_contact,
+                            'emergency_name' => $request->emergency_name,
+                        ]);
                     if ($role == 'receptionist') {
                         return redirect('/')->with('success', 'Profile updated successfully!');
                     } else {
@@ -534,7 +512,6 @@ class UserController extends Controller
                 })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
                 $prescriptions = Prescription::with('customer')->where('created_by', $therapist->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
                 $invoices = Invoice::with('user')->where('invoices.created_by', '=', $therapist->id)->orderby('id', 'desc')->get();
-                $receptionists_therapist_id = Receptionist::where('therapist_id', $therapist_id)->pluck('user_id');
                 $invoices = Invoice::with('user')->where('therapist_id', $therapist_id)->paginate($this->limit, '*', 'invoices');
                 $tot_appointment = Appointment::where(function ($re) use ($therapist_id) {
                     $re->orWhere('appointment_with', $therapist_id);
@@ -562,24 +539,19 @@ class UserController extends Controller
             $receptionist = Sentinel::getUser();
             $user_id = $receptionist->id;
             $role = $user->roles[0]->slug;
-            $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
-            $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                $re->whereIN('appointment_with', $receptionists_therapist_id);
-                $re->orWhereIN('booked_by', $receptionists_therapist_id);
+            $tot_appointment = Appointment::where(function ($re) use ($user_id) {
                 $re->orWhere('booked_by', $user_id);
             })->get();
 
             $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
-            }])->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                $re->orWhereIN('created_by', $receptionists_therapist_id);
+            }])->where(function ($re) use ($user_id) {
                 $re->orWhere('created_by', $user_id);
             })->pluck('id');
             $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
 
             $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                    $re->whereIN('therapist_id', $receptionists_therapist_id);
+                ->where(function ($re) use ($user_id) {
                     $re->orWhere('created_by', $user_id);
                 })->count();
             $data = [
@@ -587,21 +559,16 @@ class UserController extends Controller
                 'revenue' => $revenue,
                 'pending_bill' => $pending_bill
             ];
-            $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                $re->whereIN('appointment_with', $receptionists_therapist_id);
-                $re->orWhereIN('booked_by', $receptionists_therapist_id);
+            $appointments = Appointment::where(function ($re) use ($user_id) {
                 $re->orWhere('booked_by', $user_id);
             })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
             $invoices = Invoice::with('user')
-                ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                    $re->whereIN('therapist_id', $receptionists_therapist_id);
+                ->where(function ($re) use ($user_id) {
                     $re->orWhere('created_by', $user_id);
                 })->paginate($this->limit, '*', 'invoice');
             $therapist_role = Sentinel::findRoleBySlug('therapist');
             $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
-            $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
-            $therapist_user = User::whereIn('id', $receptionist_therapist)->get();
-            return view('receptionist.receptionist-profile-view', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'therapist_user'));
+            return view('receptionist.receptionist-profile-view', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices'));
         } else {
             return redirect('/')->with('error', 'role not found');
         }

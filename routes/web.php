@@ -130,31 +130,28 @@ Route::get('paymentComplete', [StripePaymentController::class, 'payment_complete
 // Payment Api key add
 Route::resource('payment-key','PaymentApiController');
 
-// Report
-// Route::get('/report-customer', 'ReportController@fiterReportCustomer');
-// Route::get('/report-view-customer', 'ReportController@showReportCustomer')->name('report-view-customer');
-// Route::get('/report-export-customer', 'ReportController@exportReportCustomer')->name('report-export-customer');
-
-// Report Customer
-
-// Customer Registration
+//Report Customer Registration
 Route::get('/rf-customer-reg', 'ReportCustomerController@fiterReportReg');
 Route::get('/rs-customer-reg', 'ReportCustomerController@showReportCustomerReg')->name('rs-customer-reg');
 Route::get('/ex-customer-reg', 'ReportCustomerController@exportReportCustomerReg')->name('ex-customer-reg');
 
-// Customer Transaction
+// Report Customer Transaction
 Route::get('/rf-customer-trans', 'ReportCustomerController@fiterReportTrans');
 Route::get('/rs-customer-trans', 'ReportCustomerController@showReportCustomerTrans')->name('rs-customer-trans');
 Route::get('/ex-customer-trans', 'ReportCustomerController@exportReportCustomerTrans')->name('ex-customer-trans');
 
-// Therapist Total
+// Report Therapist Total
 Route::get('/rf-therapist-total', 'ReportTherapistController@fiterReportTotal');
 Route::get('/rs-therapist-total', 'ReportTherapistController@showReportTherapistTotal')->name('rs-therapist-total');
 Route::get('/ex-therapist-total', 'ReportTherapistController@exportReportTherapistTotal')->name('ex-therapist-total');
 
-// Therapist Trans
+// Report Therapist Trans
 Route::get('/rf-therapist-trans', 'ReportTherapistController@fiterReportTrans');
 Route::get('/rs-therapist-trans', 'ReportTherapistController@showReportTherapistTrans')->name('rs-therapist-trans');
 Route::get('/ex-therapist-trans', 'ReportTherapistController@exportReportTherapistTrans')->name('ex-therapist-trans');
 
+// Report Trans
+Route::get('/rf-trans', 'ReportTransController@fiterReportTrans');
+Route::get('/rs-trans', 'ReportTransController@showReportTrans')->name('rs-trans');
+Route::get('/ex-trans', 'ReportTransController@exportReportTrans')->name('ex-trans');
 });

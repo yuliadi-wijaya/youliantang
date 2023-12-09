@@ -31,7 +31,7 @@ class ExTherapistTransSummary implements FromCollection, WithHeadings, ShouldAut
             'Therapist Name',
             'Phone Number',
             'Treatment Date',
-            'Duration',
+            'Duration (Minutes)',
             'Commission Fee',
             'Rating',
         ];

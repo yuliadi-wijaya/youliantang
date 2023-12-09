@@ -270,7 +270,7 @@ class ReportCustomerController extends Controller
 
         foreach ($report as $index => $row) {
             $customer_name = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->customer_name;
-            $phone_number = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->phone_number;
+            $customer_phone = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->customer_phone;
             $email = ($index > 0 && $row->customer_id == $report[$index - 1]->customer_id) ? '' : $row->email;
 
             $detail = ($row->old_data == 'N')
@@ -306,7 +306,7 @@ class ReportCustomerController extends Controller
 
             $reportNew->push([
                 'A' => $customer_name,
-                'B' => $phone_number,
+                'B' => $customer_phone,
                 'C' => $email,
                 'D' => $row->invoice_code,
                 'E' => date('d-m-Y', strtotime($row->treatment_date)),

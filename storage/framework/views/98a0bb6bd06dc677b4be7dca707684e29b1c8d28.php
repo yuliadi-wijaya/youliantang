@@ -23,7 +23,7 @@
             <div class="col-12">
                 <a href="<?php echo e(url('/rf-therapist-trans')); ?>">
                     <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                        <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Filter Therapist Transaction History Detail')); ?>
+                        <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i><?php echo e(__('Back to Filter Therapist Transaction')); ?>
 
                     </button>
                 </a>
@@ -50,7 +50,7 @@
                             <div class="mb-4">
                                 <h4>
                                     <strong>
-                                        <?php echo e(__('Report Status = ') . ucfirst($report_type) . ' (' . date('d M Y', strtotime($dateFrom)) . ' - ' . date('d M Y', strtotime($dateTo)) . ')'); ?>
+                                        <?php echo e(__('Report Type = ') . ucfirst($report_type) . ' (' . date('d M Y', strtotime($dateFrom)) . ' - ' . date('d M Y', strtotime($dateTo)) . ')'); ?>
 
                                     </strong>
                                 </h4>
@@ -94,7 +94,7 @@
                                         $t_fee = 0;
                                     ?>
 
-                                    <?php $__currentLoopData = $report; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $report; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php
                                             $t_price += $row->total_price;
                                             $t_discount += $row->discount;

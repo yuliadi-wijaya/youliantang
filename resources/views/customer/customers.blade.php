@@ -39,6 +39,7 @@
                             <tr>
                                 <th>{{ __('No.') }}</th>
                                 <th>{{ __('Name') }}</th>
+                                <th>{{ __('Gender') }}</th>
                                 <th>{{ __('Phone Number') }}</th>
                                 <th>{{ __('Email') }}</th>
                                 <th>{{ __('Status') }}</th>
@@ -102,6 +103,7 @@
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name', sortable : false, visible:true },
+                    { data: 'customer.gender', name: 'gender', sortable : false, visible:true },
                     { data: 'phone_number', name: 'phone_number' },
                     { data: 'email', name: 'email' },
                     { data: 'status', name: 'status' },

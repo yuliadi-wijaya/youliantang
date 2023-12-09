@@ -103,27 +103,6 @@
                                             @enderror
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Therapist ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <select class="form-control select2 @error('therapist') is-invalid @enderror"
-                                                name="therapist[]" id="therapist" multiple="multiple">
-                                                @foreach ($therapists as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ in_array($item->id, $therapist_user) ? 'selected' : '' }}>
-                                                        {{ $item->first_name }} {{ $item->last_name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('therapist')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">

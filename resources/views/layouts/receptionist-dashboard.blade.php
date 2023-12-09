@@ -253,7 +253,7 @@
                                     <td>{{ $item->customer->first_name . ' ' . $item->customer->last_name }}</td>
                                     <td>{{ $item->therapist->first_name . ' ' . $item->therapist->last_name }}</td>
                                     <td>{{ $item->appointment_date }}</td>
-                                    <td>{{ $item->customer->mobile }}</td>
+                                    <td>{{ $item->customer->phone_number }}</td>
                                     <td>{{ $item->timeSlot->from . ' ' . $item->timeSlot->to }}</td>
                                 </tr>
                             @endforeach
@@ -305,13 +305,13 @@
                                     @foreach ($therapists as $item)
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $item->therapist->first_name }} {{ $item->therapist->last_name }}
+                                            <td>{{ $item->first_name }} {{ $item->last_name }}
                                             </td>
-                                            <td>{{ $item->therapist->mobile }}</td>
-                                            <td>{{ $item->therapist->email }}</td>
+                                            <td>{{ $item->phone_number }}</td>
+                                            <td>{{ $item->email }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('therapist/' . $item->therapist->id) }}">
+                                                <a href="{{ url('therapist/' . $item->id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
                                                         {{ __('View Details') }}
@@ -342,7 +342,7 @@
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
                                             <td>{{ $customer->first_name }} {{ $customer->last_name }}</td>
-                                            <td>{{ $customer->mobile }}</td>
+                                            <td>{{ $customer->phone_number }}</td>
                                             <td>{{ $customer->email }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->

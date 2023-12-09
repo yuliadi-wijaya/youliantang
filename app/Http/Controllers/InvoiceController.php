@@ -50,7 +50,7 @@ class InvoiceController extends Controller
         $user = Sentinel::getUser();
 
         // Check user access
-        if (!$user->hasAccess('product.list')) {
+        if (!$user->hasAccess('invoice.list')) {
             return view('error.403');
         }
 
@@ -153,6 +153,8 @@ class InvoiceController extends Controller
                                 <i class="fa fa-star"></i>
                             </button>
                         </a>';
+                    }else{
+                        $option = '';
                     }
                     return $option;
                 })->rawColumns(['option'])->make(true);

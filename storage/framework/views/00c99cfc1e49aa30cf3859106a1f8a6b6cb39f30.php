@@ -18,11 +18,11 @@
     <?php $__env->startSection('content'); ?>
         <!-- start page title -->
         <?php $__env->startComponent('components.breadcrumb'); ?>
-            <?php $__env->slot('title'); ?> Report Filter Customer Transaction History <?php $__env->endSlot(); ?>
+            <?php $__env->slot('title'); ?> Report Filter Therapist Transaction History <?php $__env->endSlot(); ?>
             <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
             <?php $__env->slot('li_2'); ?> Reports <?php $__env->endSlot(); ?>
             <?php $__env->slot('li_3'); ?> Therapists <?php $__env->endSlot(); ?>
-            <?php $__env->slot('li_4'); ?> Report Customer Transaction History <?php $__env->endSlot(); ?>
+            <?php $__env->slot('li_4'); ?> Report Therapist Transaction History <?php $__env->endSlot(); ?>
         <?php echo $__env->renderComponent(); ?>
         <!-- end page title -->
         <div class="row">

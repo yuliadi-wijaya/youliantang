@@ -19,11 +19,11 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Report Filter Customer Transaction History @endslot
+            @slot('title') Report Filter Therapist Transaction History @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Therapists @endslot
-            @slot('li_4') Report Customer Transaction History @endslot
+            @slot('li_4') Report Therapist Transaction History @endslot
         @endcomponent
         <!-- end page title -->
         <div class="row">

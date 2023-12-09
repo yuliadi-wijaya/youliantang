@@ -49,10 +49,12 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $user = Sentinel::getUser();
+        $role = $user->roles[0]->slug;
+
         if ($user->hasAccess('customer.list')) {
-            $role = $user->roles[0]->slug;
+            $user_id = $user->id;
             $customer_role = Sentinel::findRoleBySlug('customer');
-            $customers = $customer_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
+            $customers = $customer_role->users()->with(['roles', 'customer'])->where('is_deleted', 0)->orderByDesc('id')->get();
 
             // Load Datatables
             if ($request->ajax()) {

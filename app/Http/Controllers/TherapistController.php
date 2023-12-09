@@ -56,13 +56,7 @@ class TherapistController extends Controller
         if ($user->hasAccess('therapist.list')) {
             $user_id = $user->id;
             $therapist_role = Sentinel::findRoleBySlug('therapist');
-            if ($role == 'receptionist') {
-                $prescriptions_therapist = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
-                //$therapists = User::whereIN('id', $prescriptions_therapist)->where('is_deleted', 0)->get();
-                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->whereIN('id', $prescriptions_therapist)->where('is_deleted', 0)->get();
-            } else {
-                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->orderByDesc('id')->get();
-            }
+            $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->orderByDesc('id')->get();
 
             foreach ($therapists as $key => $value)
             {
@@ -187,7 +181,7 @@ class TherapistController extends Controller
         $user = Sentinel::getUser();
         if ($user->hasAccess('therapist.create')) {
             $slot_time = $request->slot_time;
-            
+
             $validatedData = $request->validate(
                 [
                     'first_name' => 'required|alpha',
@@ -218,7 +212,7 @@ class TherapistController extends Controller
                 $file->move(public_path('storage/images/users'), $validatedData['profile_photo']);
                 $validatedData['profile_photo']= $validatedData['profile_photo'];
             }
-            
+
             try {
                 $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
                 $validatedData['created_by'] = $user->id;
@@ -271,7 +265,7 @@ class TherapistController extends Controller
                     $availableDay->sun = $request->sun;
                 }
                 $availableDay->save();
-                
+
                 $app_name = AppSetting('title');
                 $verify_mail = trim($request->email);
                 Mail::send('emails.WelcomeEmail', ['user' => $therapist, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {

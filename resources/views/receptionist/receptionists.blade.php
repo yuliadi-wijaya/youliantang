@@ -1,18 +1,19 @@
 @extends('layouts.master-layouts')
-@section('title') {{ __('List of Receptionists') }} @endsection
 @section('css')
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css">
 <style type="text/css">
-    #receptionList_length label {
+    #receptionistList_length label {
         display: inline-flex;
         align-items: center;
         gap: 04px;
     }
+
 </style>
 @endsection
+@section('title') {{ __('List of Receptionist') }} @endsection
 @section('body')
 
 <body data-topbar="dark" data-layout="horizontal">
@@ -22,70 +23,37 @@
     @component('components.breadcrumb')
     @slot('title') Receptionist List @endslot
     @slot('li_1') Dashboard @endslot
-    @slot('li_2') Receptionists @endslot
+    @slot('li_2') Receptionist @endslot
     @endcomponent
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
+            <div></div>
             <div class="card">
                 <div class="card-body">
-                    @if ($role == 'admin')
+                    @if ($role != 'customer' && $role != 'receptionist')
                     <a href=" {{ route('receptionist.create') }} ">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
                             <i class="bx bx-plus font-size-16 align-middle mr-2"></i> {{ __('New Receptionist') }}
                         </button>
                     </a>
                     @endif
-                    <table id="receptionList" class="table table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="receptionistList" class="table table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>{{ __('No.') }}</th>
                                 <th>{{ __('Name') }}</th>
+                                <th>{{ __('Gender') }}</th>
                                 <th>{{ __('Phone Number') }}</th>
                                 <th>{{ __('Email') }}</th>
+                                @if ($role != 'customer')
+                                <th>{{ __('Status') }}</th>
                                 <th>{{ __('Option') }}</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- @php
-                            $i = 1;
-                            @endphp
-                            @foreach ($receptionists as $receptionist)
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>
-                                    <a href="{{ url('receptionist/' . $receptionist->id) }} ">{{ $receptionist->first_name }}
-                                        {{ $receptionist->last_name }}</a>
-                                </td>
-                                <td>{{ $receptionist->phone_number }}</td>
-                                <td>{{ $receptionist->email }}</td>
-                                <td>
-                                    @if ($role == 'admin')
-                                    <a href="{{ url('receptionist/' . $receptionist->id) }}">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
-                                            <i class="mdi mdi-eye"></i>
-                                        </button>
-                                    </a>
-                                    <a href="{{ url('receptionist/' . $receptionist->id . '/edit') }}">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
-                                            <i class="mdi mdi-lead-pencil"></i>
-                                        </button>
-                                    </a>
-                                    <a href="javascript:void(0)">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="{{ $receptionist->id }}" id="delete-receptionist">
-                                            <i class="mdi mdi-trash-can"></i>
-                                        </button>
-                                    </a>
-                                    @elseif($role == 'therapist')
-                                    <a href="{{ url('receptionist-view/' . $receptionist->id) }}">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
-                                            <i class="mdi mdi-eye"></i>
-                                        </button>
-                                    </a>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach -->
+                            <!-- load data using yajra datatables -->
                         </tbody>
                     </table>
                 </div>
@@ -97,34 +65,70 @@
     <!-- Plugins js -->
     <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+
     <!-- Datatables -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
     <!-- Init js-->
     <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
     <script>
-    //load datatable
+        //load datatable
         $(document).ready(function() {
-            $('#receptionList').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('receptionist.index') }}",
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'name', name: 'name', sortable : false, visible:true },
-                    { data: 'phone_number', name: 'phone_number' },
-                    { data: 'email', name: 'email' },
-                    { data: 'option', name: 'option', orderable: false, searchable: false },
-                ],
-                pagingType: 'full_numbers',
-                "drawCallback": function() {
+            var role = '{{ $role }}';
+            $('#receptionistList').DataTable({
+                processing: true
+                , serverSide: true
+                , ajax: "{{ route('receptionist.index') }}"
+                , columns: [{
+                        data: 'DT_RowIndex'
+                        , name: 'DT_RowIndex'
+                        , orderable: false
+                        , searchable: false
+                    }
+                    , {
+                        data: 'name'
+                        , name: 'name'
+                        , sortable: false
+                        , visible: true
+                    }
+                    , {
+                        data: 'receptionist.gender'
+                        , name: 'gender'
+                        , sortable: false
+                        , visible: true
+                    }
+                    , {
+                        data: 'phone_number'
+                        , name: 'phone_number'
+                    }
+                    , {
+                        data: 'email'
+                        , name: 'email'
+                    }
+                    , {
+                        data: 'status'
+                        , name: 'status'
+                        , orderable: false
+                        , searchable: false
+                        , visible: (role != 'customer') ? true : false
+                    }
+                    , {
+                        data: 'option'
+                        , name: 'option'
+                        , orderable: false
+                        , searchable: false
+                        , visible: (role != 'customer') ? true : false
+                    }
+                , ]
+                , pagingType: 'full_numbers'
+                , "drawCallback": function() {
                     $('.dataTables_paginate > .pagination').addClass('justify-content-end');
                     $('.dataTables_filter').addClass('d-flex justify-content-end');
                 }
             });
         });
 
-        // Delete Prescription
+        // delete Receptionist
         $(document).on('click', '#delete-receptionist', function() {
             var id = $(this).data('id');
             if (confirm('Are you sure want to delete receptionist?')) {
@@ -140,7 +144,7 @@
                     }
                     , success: function(response) {
                         toastr.success(response.message, 'Success Alert', {
-                            timeOut: 1000
+                            timeOut: 2000
                         });
                         location.reload();
                     }
