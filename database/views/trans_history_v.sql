@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW customer_trans_history_v
+CREATE OR REPLACE VIEW trans_history_v
 AS
 SELECT
     x.customer_id,
@@ -6,7 +6,8 @@ SELECT
     x.phone_number,
     x.email,
     x.invoice_id,
-	x.invoice_code,
+    x.invoice_code,
+    x.invoice_date,
     x.treatment_date,
     x.payment_mode,
     x.payment_status,
@@ -18,6 +19,7 @@ SELECT
     x.total_price,
     x.discount,
     x.grand_total,
+    x.therapist_id,
     x.therapist_name,
     x.room,
     x.time_from,
@@ -30,7 +32,9 @@ FROM (
         CONCAT(COALESCE(c.first_name,''), ' ', COALESCE(c.last_name,'')) AS customer_name,
         c.phone_number,
         c.email,
+        i.id AS invoice_id,
         i.invoice_code,
+        i.created_at AS invoice_date,
         i.treatment_date,
         i.payment_mode,
         i.payment_status,
@@ -42,7 +46,7 @@ FROM (
         i.total_price,
         i.discount,
         i.grand_total,
-        i.id AS invoice_id,
+        NULL AS therapist_id,
         NULL AS therapist_name,
         NULL AS room,
         NULL AS time_from,
@@ -62,7 +66,9 @@ FROM (
         CONCAT(COALESCE(c.first_name,''), ' ', COALESCE(c.last_name,'')) AS customer_name,
         c.phone_number,
         c.email,
+        i.id AS invoice_id,
         i.invoice_code,
+        i.created_at AS invoice_date,
         i.treatment_date,
         i.payment_mode,
         i.payment_status,
@@ -74,7 +80,7 @@ FROM (
         i.total_price,
         i.discount,
         i.grand_total,
-        i.id AS invoice_id,
+        t.id AS therapist_id,
         CONCAT(COALESCE(t.first_name,''), ' ', COALESCE(t.last_name,'')) AS therapist_name,
         i.room,
         i.treatment_time_from AS time_from,
@@ -89,4 +95,4 @@ FROM (
     AND i.is_deleted = 0
     AND i.status = 1
 ) x
-ORDER BY x.customer_name, x.invoice_id
+ORDER BY x.invoice_date

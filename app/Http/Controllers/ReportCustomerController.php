@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ReportCustomerReg;
-use App\ReportCustomerTrans;
+use App\ReportTrans;
 use App\InvoiceDetail;
 use App\User;
 use App\Product;
@@ -196,7 +196,7 @@ class ReportCustomerController extends Controller
 
         $invoice_type = InvoiceSettings::first()->invoice_type;
 
-        $report = ReportCustomerTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
+        $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
             return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
         })
         ->when($invoice_type === 'NC', function ($query) {
@@ -250,7 +250,7 @@ class ReportCustomerController extends Controller
 
         $invoice_type = InvoiceSettings::first()->invoice_type;
 
-        $report = ReportCustomerTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
+        $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
             return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
         })
         ->when($invoice_type === 'NC', function ($query) {

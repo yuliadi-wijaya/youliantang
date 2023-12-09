@@ -108,9 +108,9 @@
                                             $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
                                             $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
 
-                                            $sub_price = $sub_price + $row->total_price;
-                                            $sub_discount = $sub_discount + $row->discount;
-                                            $sub_grand_total = $sub_grand_total + $row->grand_total;
+                                            $sub_price += $row->total_price;
+                                            $sub_discount += $row->discount;
+                                            $sub_grand_total += $row->grand_total;
                                         @endphp
 
                                         <tr>
@@ -131,17 +131,11 @@
                                             <td class="no-wrap">{{ $grand_total }}</td>
                                             <td class="no-wrap">&nbsp;</td>
                                             <td class="no-wrap">&nbsp;</td>
-                                            @if ($row->old_data == 'Y')
-                                                <td class="no-wrap">{{ $row->therapist_name }}</td>
-                                                <td class="no-wrap">{{ $row->room }}</td>
-                                                <td class="no-wrap">{{ $row->time_from }}</td>
-                                                <td class="no-wrap">{{ $row->time_to }}</td>
-                                            @else
-                                                <td class="no-wrap">&nbsp;</td>
-                                                <td class="no-wrap">&nbsp;</td>
-                                                <td class="no-wrap">&nbsp;</td>
-                                                <td class="no-wrap">&nbsp;</td>
-                                            @endif
+                                            <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->therapist_name : '' }}</td>
+                                            <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->room : '' }}</td>
+                                            <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->time_from : '' }}</td>
+                                            <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->time_to : '' }}</td>
+
                                         </tr>
 
                                         @foreach ($report_detail[$row->invoice_id] as $rd)
@@ -161,21 +155,12 @@
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
-                                                @if ($row->old_data == 'Y')
-                                                    <td class="no-wrap">{{ $rd->product_name }}</td>
-                                                    <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                @else
-                                                    <td class="no-wrap">{{ $rd->product_name }}</td>
-                                                    <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
-                                                    <td class="no-wrap">{{ $rd->therapist_name }}</td>
-                                                    <td class="no-wrap">{{ $rd->room }}</td>
-                                                    <td class="no-wrap">{{ $rd->treatment_time_from }}</td>
-                                                    <td class="no-wrap">{{ $rd->treatment_time_to }}</td>
-                                                @endif
+                                                <td class="no-wrap">{{ $rd->product_name }}</td>
+                                                <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
+                                                <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->therapist_name : '' }}</td>
+                                                <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->room : '' }}</td>
+                                                <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->treatment_time_from : '' }}</td>
+                                                <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->treatment_time_to : '' }}</td>
                                             </tr>
                                         @endforeach
                                     @endforeach

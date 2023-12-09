@@ -1,29 +1,20 @@
-CREATE OR REPLACE VIEW therapist_trans_history_summary_v
+CREATE OR REPLACE VIEW trans_history_sum_v
 AS
 SELECT
     x.therapist_id,
     x.therapist_name,
     x.phone_number,
-    x.email,
     x.treatment_month_year,
+    x.duration,
+    x.commission_fee,
     x.invoice_type,
-    SUM(x.total_price) AS total_price,
-    SUM(x.discount) AS discount,
-    SUM(x.grand_total) AS grand_total,
-    SUM(x.amount) AS amount,
-    SUM(x.duration) AS duration,
-    ROUND(AVG(x.rating), 1) AS rating
+    x.rating
 FROM (
     SELECT
         t.id AS therapist_id,
         CONCAT(COALESCE(t.first_name,''), ' ', COALESCE(t.last_name,'')) AS therapist_name,
         t.phone_number,
-        t.email,
-        DATE_FORMAT(i.treatment_date, '%Y-%m') AS treatment_month_year,
-        CASE WHEN i.id = LAG(i.id) OVER (ORDER BY i.id) THEN 0 ELSE i.total_price END AS total_price,
-        CASE WHEN i.id = LAG(i.id) OVER (ORDER BY i.id) THEN 0 ELSE i.discount END AS discount,
-        CASE WHEN i.id = LAG(i.id) OVER (ORDER BY i.id) THEN 0 ELSE i.grand_total END AS grand_total,
-        id.amount,
+        DATE_FORMAT(i.treatment_date, '%m-%Y') AS treatment_month_year,
         p.duration,
         p.commission_fee,
         i.invoice_type,
@@ -48,12 +39,7 @@ FROM (
         t.id AS therapist_id,
         CONCAT(COALESCE(t.first_name,''), ' ', COALESCE(t.last_name,'')) AS therapist_name,
         t.phone_number,
-        t.email,
-        DATE_FORMAT(i.treatment_date, '%Y-%m') AS treatment_month_year,
-        CASE WHEN i.id = LAG(i.id) OVER (ORDER BY i.id) THEN 0 ELSE i.total_price END AS total_price,
-        CASE WHEN i.id = LAG(i.id) OVER (ORDER BY i.id) THEN 0 ELSE i.discount END AS discount,
-        CASE WHEN i.id = LAG(i.id) OVER (ORDER BY i.id) THEN 0 ELSE i.grand_total END AS grand_total,
-        id.amount,
+        DATE_FORMAT(i.treatment_date, '%m-%Y') AS treatment_month_year,
         p.duration,
         p.commission_fee,
         i.invoice_type,
@@ -69,5 +55,3 @@ FROM (
         AND i.is_deleted = 0
         AND i.status = 1
 ) x
-GROUP BY x.therapist_id, x.therapist_name, x.phone_number, x.email, x.treatment_month_year, x.invoice_type
-ORDER BY x.therapist_id, x.therapist_name, x.phone_number, x.email, x.treatment_month_year, x.invoice_type;

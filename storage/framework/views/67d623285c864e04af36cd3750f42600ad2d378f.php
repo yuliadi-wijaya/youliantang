@@ -108,9 +108,9 @@
                                             $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
                                             $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
 
-                                            $sub_price = $sub_price + $row->total_price;
-                                            $sub_discount = $sub_discount + $row->discount;
-                                            $sub_grand_total = $sub_grand_total + $row->grand_total;
+                                            $sub_price += $row->total_price;
+                                            $sub_discount += $row->discount;
+                                            $sub_grand_total += $row->grand_total;
                                         ?>
 
                                         <tr>
@@ -131,17 +131,11 @@
                                             <td class="no-wrap"><?php echo e($grand_total); ?></td>
                                             <td class="no-wrap">&nbsp;</td>
                                             <td class="no-wrap">&nbsp;</td>
-                                            <?php if($row->old_data == 'Y'): ?>
-                                                <td class="no-wrap"><?php echo e($row->therapist_name); ?></td>
-                                                <td class="no-wrap"><?php echo e($row->room); ?></td>
-                                                <td class="no-wrap"><?php echo e($row->time_from); ?></td>
-                                                <td class="no-wrap"><?php echo e($row->time_to); ?></td>
-                                            <?php else: ?>
-                                                <td class="no-wrap">&nbsp;</td>
-                                                <td class="no-wrap">&nbsp;</td>
-                                                <td class="no-wrap">&nbsp;</td>
-                                                <td class="no-wrap">&nbsp;</td>
-                                            <?php endif; ?>
+                                            <td class="no-wrap"><?php echo e($row->old_data == 'Y' ? $row->therapist_name : ''); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->old_data == 'Y' ? $row->room : ''); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->old_data == 'Y' ? $row->time_from : ''); ?></td>
+                                            <td class="no-wrap"><?php echo e($row->old_data == 'Y' ? $row->time_to : ''); ?></td>
+
                                         </tr>
 
                                         <?php $__currentLoopData = $report_detail[$row->invoice_id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rd): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -161,21 +155,12 @@
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
-                                                <?php if($row->old_data == 'Y'): ?>
-                                                    <td class="no-wrap"><?php echo e($rd->product_name); ?></td>
-                                                    <td class="no-wrap">Rp. <?php echo e(number_format($rd->amount, 0, ',', '.')); ?></td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                    <td class="no-wrap">&nbsp;</td>
-                                                <?php else: ?>
-                                                    <td class="no-wrap"><?php echo e($rd->product_name); ?></td>
-                                                    <td class="no-wrap">Rp. <?php echo e(number_format($rd->amount, 0, ',', '.')); ?></td>
-                                                    <td class="no-wrap"><?php echo e($rd->therapist_name); ?></td>
-                                                    <td class="no-wrap"><?php echo e($rd->room); ?></td>
-                                                    <td class="no-wrap"><?php echo e($rd->treatment_time_from); ?></td>
-                                                    <td class="no-wrap"><?php echo e($rd->treatment_time_to); ?></td>
-                                                <?php endif; ?>
+                                                <td class="no-wrap"><?php echo e($rd->product_name); ?></td>
+                                                <td class="no-wrap">Rp. <?php echo e(number_format($rd->amount, 0, ',', '.')); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->old_data == 'N' ? $rd->therapist_name : ''); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->old_data == 'N' ? $rd->room : ''); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->old_data == 'N' ? $rd->treatment_time_from : ''); ?></td>
+                                                <td class="no-wrap"><?php echo e($row->old_data == 'N' ? $rd->treatment_time_to : ''); ?></td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

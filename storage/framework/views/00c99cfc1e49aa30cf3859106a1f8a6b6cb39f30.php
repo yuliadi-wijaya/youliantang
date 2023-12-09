@@ -135,7 +135,14 @@ unset($__errorArgs, $__bag); ?>
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="input-group datepickerdiv">
-                                                        <select class="custom-select" id="month" name="month" required oninvalid="setCustomValidity('Please select a month')" oninput="setCustomValidity('')">
+                                                        <select class="custom-select <?php $__errorArgs = ['month'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="month" name="month">
                                                             <option value="" disabled selected>Select Month</option>
                                                         </select>
                                                         <?php $__errorArgs = ['month'];
@@ -154,7 +161,14 @@ unset($__errorArgs, $__bag); ?>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group datepickerdiv">
-                                                        <select class="custom-select" id="year" name="year" required oninvalid="setCustomValidity('Please select a year')" oninput="setCustomValidity('')">
+                                                        <select class="custom-select <?php $__errorArgs = ['year'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="year" name="year">
                                                             <option value="" disabled selected>Select Year</option>
                                                         </select>
                                                         <?php $__errorArgs = ['year'];
@@ -211,20 +225,26 @@ unset($__errorArgs, $__bag); ?>
 
         <script>
             $(document).ready(function(){
-                $("#report_type").on("change", function() {
-                    var selec_type = $(this).val();
+                function toggleDisplay() {
+                    var selec_type = $("#report_type").val();
 
-                    if(selec_type == 'summary'){
+                    if (selec_type == 'summary') {
                         $("#treatment_date_show").css("display", "none");
                         $("#therapist_show").css("display", "block");
                         $("#month_year_show").css("display", "block");
                         $("#order_by_show").css("display", "block");
-                    }else{
+                    } else {
                         $("#treatment_date_show").css("display", "block");
                         $("#therapist_show").css("display", "none");
                         $("#month_year_show").css("display", "none");
                         $("#order_by_show").css("display", "none");
                     }
+                }
+
+                toggleDisplay();
+
+                $("#report_type").on("change", function() {
+                    toggleDisplay();
                 });
             });
 
