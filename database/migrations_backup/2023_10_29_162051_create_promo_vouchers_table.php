@@ -16,11 +16,10 @@ return new class extends Migration
         Schema::create('promo_vouchers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('promo_id');
-            $table->string('voucher_code', 191)->unique();
-            $table->timestamps();
-            $table->tinyInteger('is_used')->default(0);
-
             $table->foreign('promo_id')->references('id')->on('promos');
+            $table->string('voucher_code');
+            $table->tinyInteger('is_used')->default(0);
+            $table->timestamps();
         });
     }
 

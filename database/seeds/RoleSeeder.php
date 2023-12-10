@@ -174,8 +174,7 @@ class RoleSeeder extends Seeder
             'invoice.update' => true,
             'invoice.delete' => true,
             'receptionist.delete' => true,
-            'invoice.edit'=>true,
-
+            'invoice.edit' => true,
         ];
         $role_receptionist->save();
     }

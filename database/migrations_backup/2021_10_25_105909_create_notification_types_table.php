@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateNotificationTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('promo_vouchers', function (Blueprint $table) {
+        Schema::create('notification_types', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('promo_id');
-            $table->string('voucher_code', 191)->unique();
+            $table->string('type');
+            $table->integer('is_deleted')->default(0)->comment("0=>Active, 1=>Deleted");
             $table->timestamps();
-            $table->tinyInteger('is_used')->default(0);
-
-            $table->foreign('promo_id')->references('id')->on('promos');
         });
+
     }
 
     /**
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('promo_vouchers');
+        Schema::dropIfExists('notification_types');
     }
-};
+}

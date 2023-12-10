@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\InvoiceSettings;
 
 return new class extends Migration
 {
@@ -13,15 +14,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('promo_vouchers', function (Blueprint $table) {
+        Schema::create('invoice_setting', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('promo_id');
-            $table->string('voucher_code', 191)->unique();
+            $table->char('invoice_type', 3);
             $table->timestamps();
-            $table->tinyInteger('is_used')->default(0);
-
-            $table->foreign('promo_id')->references('id')->on('promos');
         });
+
+        InvoiceSettings::create([
+            "invoice_type" => "ALL",
+        ]);
     }
 
     /**
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('promo_vouchers');
+        Schema::dropIfExists('invoice_setting');
     }
 };

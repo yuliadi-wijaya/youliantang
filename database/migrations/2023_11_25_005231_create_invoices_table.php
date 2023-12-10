@@ -41,7 +41,6 @@ class CreateInvoicesTable extends Migration
             $table->double('discount')->nullable();
             $table->double('grand_total')->nullable();
 
-            $table->primary('id');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->foreign('customer_id')->references('id')->on('users');
