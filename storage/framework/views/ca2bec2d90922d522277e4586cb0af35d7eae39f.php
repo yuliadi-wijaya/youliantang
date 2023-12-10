@@ -232,7 +232,7 @@ unset($__errorArgs, $__bag); ?>"
                                                                     onchange="getAmount(this)">
                                                                     <option selected disabled><?php echo e(__('-- Select Product --')); ?></option>
                                                                     <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                        <option value="<?php echo e($row->id); ?>" data-price="<?php echo e($row->price); ?>" data-duration="<?php echo e($row->duration); ?>" <?php echo e(old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : ''); ?>>
+                                                                        <option value="<?php echo e($row->id); ?>" data-price="<?php echo e($row->price); ?>" data-duration="<?php echo e($row->duration); ?>" data-fee="<?php echo e($row->commission_fee); ?>" <?php echo e(old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : ''); ?>>
                                                                             <?php echo e($row->name); ?> - Rp. <?php echo e(number_format($row->price)); ?>
 
                                                                         </option>
@@ -288,6 +288,7 @@ unset($__errorArgs, $__bag); ?>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label"><?php echo e(__('Price ')); ?><span class="text-info"><?php echo e(__('(Auto-Fill)')); ?></span></label>
                                                                 <input type="text" name="invoices[<?php echo e($index); ?>][amount]" class="form-control" value="<?php echo e(old('invoices.' . $index . '.amount', number_format($item->amount))); ?>" placeholder="<?php echo e(__('Enter Price')); ?>" readonly />
+                                                                <input type="hidden" name="invoices[<?php echo e($index); ?>][fee]" class="form-control" value="<?php echo e(old('invoices.' . $index . '.fee', $item->fee)); ?>" readonly />
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label"><?php echo e(__('Time From ')); ?><span class="text-danger">*</span></label>
@@ -580,9 +581,13 @@ unset($__errorArgs, $__bag); ?>
                 var productName = obj.getAttribute('name');
                 var selectedOption = obj.options[obj.selectedIndex];
                 var price = parseFloat(selectedOption.dataset.price);
+                var fee = parseFloat(selectedOption.dataset.fee);
 
                 var amountName = productName.replace('product_id', 'amount');
                 var amountInput = document.querySelector('[name="' + amountName + '"]');
+
+                var feeName = productName.replace('product_id', 'fee');
+                var feeInput = document.querySelector('[name="' + feeName + '"]');
 
                 if (amountInput) {
                     if (!isNaN(price)) {
@@ -593,6 +598,14 @@ unset($__errorArgs, $__bag); ?>
                         amountInput.value = formatAmount;
                     } else {
                         amountInput.value = '';
+                    }
+                }
+
+                if (feeInput) {
+                    if (!isNaN(fee)) {
+                        feeInput.value = fee;
+                    } else {
+                        feeInput.value = '';
                     }
                 }
 
@@ -720,4 +733,4 @@ unset($__errorArgs, $__bag); ?>
         </script>
     <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/invoice/edit-invoice-new.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\youliantang\resources\views/invoice/edit-invoice-new.blade.php ENDPATH**/ ?>

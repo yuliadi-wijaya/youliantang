@@ -16,7 +16,7 @@ FROM (
         t.phone_number,
         DATE_FORMAT(i.treatment_date, '%m-%Y') AS treatment_month_year,
         p.duration,
-        p.commission_fee,
+        COALESCE(id.fee, p.commission_fee) AS commission_fee,
         i.invoice_type,
         COALESCE(r.rating, 0) AS rating
     FROM invoices AS i
@@ -41,7 +41,7 @@ FROM (
         t.phone_number,
         DATE_FORMAT(i.treatment_date, '%m-%Y') AS treatment_month_year,
         p.duration,
-        p.commission_fee,
+        COALESCE(id.fee, p.commission_fee) AS commission_fee,
         i.invoice_type,
         0 AS rating
     FROM invoices AS i

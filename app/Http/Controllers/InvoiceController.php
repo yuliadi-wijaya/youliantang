@@ -136,7 +136,7 @@ class InvoiceController extends Controller
                     }
                 })
                 ->addColumn('option', function($row) use ($role) {
-                    if ($role == 'admin') {
+                    if ($role == 'admin' or $role == 'receptionist') {
                         $option = '
                         <a href="invoice/' . $row->id . '">
                             <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="View Invoice">
@@ -752,6 +752,7 @@ class InvoiceController extends Controller
             if($request->old_data == 'N') {
                 $obj->product_id = $item['product_id'];
                 $obj->amount = str_replace(',', '', $item['amount']);
+                $obj->fee = $item['fee'];
                 $obj->treatment_time_from = $item['time_from'];
                 $obj->treatment_time_to = $item['time_to'];
                 $obj->therapist_id = $item['therapist_id'];

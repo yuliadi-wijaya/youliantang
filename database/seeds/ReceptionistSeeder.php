@@ -32,7 +32,6 @@ class ReceptionistSeeder extends Seeder
         $role->users()->attach($user);
 
         DB::table('receptionists')->insert([
-            'therapist_id' => 1,
             'user_id' => 4,
             'ktp' => '3208081508700007',
             'gender' => 'Female',

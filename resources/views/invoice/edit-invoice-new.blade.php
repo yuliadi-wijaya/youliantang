@@ -155,7 +155,7 @@
                                                                     onchange="getAmount(this)">
                                                                     <option selected disabled>{{ __('-- Select Product --') }}</option>
                                                                     @foreach($products as $row)
-                                                                        <option value="{{ $row->id }}" data-price="{{ $row->price }}" data-duration="{{ $row->duration }}" {{ old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : '' }}>
+                                                                        <option value="{{ $row->id }}" data-price="{{ $row->price }}" data-duration="{{ $row->duration }}" data-fee="{{ $row->commission_fee }}" {{ old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : '' }}>
                                                                             {{ $row->name }} - Rp. {{ number_format($row->price) }}
                                                                         </option>
                                                                     @endforeach
@@ -189,6 +189,7 @@
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label">{{ __('Price ') }}<span class="text-info">{{ __('(Auto-Fill)') }}</span></label>
                                                                 <input type="text" name="invoices[{{ $index }}][amount]" class="form-control" value="{{ old('invoices.' . $index . '.amount', number_format($item->amount)) }}" placeholder="{{ __('Enter Price') }}" readonly />
+                                                                <input type="hidden" name="invoices[{{ $index }}][fee]" class="form-control" value="{{ old('invoices.' . $index . '.fee', $item->fee) }}" readonly />
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label">{{ __('Time From ') }}<span class="text-danger">*</span></label>
@@ -452,9 +453,13 @@
                 var productName = obj.getAttribute('name');
                 var selectedOption = obj.options[obj.selectedIndex];
                 var price = parseFloat(selectedOption.dataset.price);
+                var fee = parseFloat(selectedOption.dataset.fee);
 
                 var amountName = productName.replace('product_id', 'amount');
                 var amountInput = document.querySelector('[name="' + amountName + '"]');
+
+                var feeName = productName.replace('product_id', 'fee');
+                var feeInput = document.querySelector('[name="' + feeName + '"]');
 
                 if (amountInput) {
                     if (!isNaN(price)) {
@@ -465,6 +470,14 @@
                         amountInput.value = formatAmount;
                     } else {
                         amountInput.value = '';
+                    }
+                }
+
+                if (feeInput) {
+                    if (!isNaN(fee)) {
+                        feeInput.value = fee;
+                    } else {
+                        feeInput.value = '';
                     }
                 }
 

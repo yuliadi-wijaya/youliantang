@@ -95,7 +95,7 @@ class ReportTransController extends Controller
                         $detail = InvoiceDetail::select(
                             'products.name as product_name',
                             'products.duration',
-                            'products.commission_fee',
+                            \DB::raw("COALESCE(invoice_details.fee, products.commission_fee) as commission_fee"),
                             'invoice_details.amount',
                             'invoice_details.treatment_time_from',
                             'invoice_details.treatment_time_to',
@@ -120,7 +120,7 @@ class ReportTransController extends Controller
                         $detail = InvoiceDetail::select(
                             'products.name as product_name',
                             'products.duration',
-                            'products.commission_fee',
+                            \DB::raw("COALESCE(invoice_details.fee, products.commission_fee) as commission_fee"),
                             'invoice_details.amount',
                             \DB::raw('NULL AS rating'),
                             \DB::raw('NULL AS comment')
@@ -218,7 +218,7 @@ class ReportTransController extends Controller
                     $detail = InvoiceDetail::select(
                         'products.name as product_name',
                         'products.duration',
-                        'products.commission_fee',
+                        \DB::raw("COALESCE(invoice_details.fee, products.commission_fee) as commission_fee"),
                         'invoice_details.amount',
                         'invoice_details.treatment_time_from',
                         'invoice_details.treatment_time_to',
@@ -243,7 +243,7 @@ class ReportTransController extends Controller
                     $detail = InvoiceDetail::select(
                         'products.name as product_name',
                         'products.duration',
-                        'products.commission_fee',
+                        \DB::raw("COALESCE(invoice_details.fee, products.commission_fee) as commission_fee"),
                         'invoice_details.amount',
                         \DB::raw('NULL AS rating'),
                         \DB::raw('NULL AS comment')

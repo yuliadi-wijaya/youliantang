@@ -117,7 +117,7 @@
                     { data: 'room', name: 'room', searchable: false },
                     { data: 'treatment_date', name: 'treatment_date', searchable: false },
                     { data: 'rating', name: 'rating', searchable: false },
-                    { data: 'option', name: 'option', orderable: false, searchable: false, visible: (role == 'admin') ? true : false },
+                    { data: 'option', name: 'option', orderable: false, searchable: false, visible: (role == 'admin' || role === 'receptionist') ? true : false },
                 ],
                 pagingType: 'full_numbers',
                 scrollX: true,
