@@ -1,5 +1,4 @@
-@extends('layouts.master-layouts')
-@section('css')
+<?php $__env->startSection('css'); ?>
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -17,44 +16,45 @@
     }
 
 </style>
-@endsection
-@section('title') {{ __('List of Invoices') }} @endsection
-@section('body')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('List of Invoices')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
 
 <body data-topbar="dark" data-layout="horizontal">
-    @endsection
-    @section('content')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('content'); ?>
     <!-- start page title -->
-    @component('components.breadcrumb')
-    @slot('title') Invoice List @endslot
-    @slot('li_1') Dashboard @endslot
-    @slot('li_2') Invoices @endslot
-    @endcomponent
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->slot('title'); ?> Invoice List <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_1'); ?> Dashboard <?php $__env->endSlot(); ?>
+    <?php $__env->slot('li_2'); ?> Invoices <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
     <!-- end page title -->
     <div class="row">
         <div class="col-12">
             <div></div>
             <div class="card">
                 <div class="card-body">
-                    @if ($role != 'customer')
-                    <a href=" {{ route('invoice.create') }} ">
+                    <?php if($role != 'customer'): ?>
+                    <a href=" <?php echo e(route('invoice.create')); ?> ">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
                             <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
-                            {{ __('Create New Invoice') }}
+                            <?php echo e(__('Create New Invoice')); ?>
+
                         </button>
                     </a>
-                    @endif
+                    <?php endif; ?>
                     <table id="invoiceList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
-                                <th>{{ __('No.') }}</th>
-                                <th>{{ __('Invoice No') }}</th>
-                                <th>{{ __('Customer Name') }}</th>
-                                <th>{{ __('Therapist Name') }}</th>
-                                <th>{{ __('Room') }}</th>
-                                <th>{{ __('Treatment Date') }}</th>
-                                <th>{{ __('Rating') }}</th>
-                                <th>{{ __('Option') }}</th>
+                                <th><?php echo e(__('No.')); ?></th>
+                                <th><?php echo e(__('Invoice No')); ?></th>
+                                <th><?php echo e(__('Customer Name')); ?></th>
+                                <th><?php echo e(__('Therapist Name')); ?></th>
+                                <th><?php echo e(__('Room')); ?></th>
+                                <th><?php echo e(__('Treatment Date')); ?></th>
+                                <th><?php echo e(__('Rating')); ?></th>
+                                <th><?php echo e(__('Option')); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,26 +65,26 @@
             </div>
         </div> <!-- end col -->
     </div> <!-- end row -->
-    @endsection
-    @section('script')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('script'); ?>
     <!-- Plugins js -->
-    <script src="{{ URL::asset('assets/libs/jszip/jszip.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/pdfmake/pdfmake.min.js')); ?>"></script>
 
     <!-- Datatables -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
     <!-- Init js-->
-    <script src="{{ URL::asset('assets/js/pages/notification.init.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/notification.init.js')); ?>"></script>
     <script>
         //load datatable
         $(document).ready(function() {
-            var role = '{{ $role }}';
+            var role = '<?php echo e($role); ?>';
             $('#invoiceList').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('invoice.index') }}",
+                    url: "<?php echo e(route('invoice.index')); ?>",
                     dataSrc: function (json) {
                         json.data.forEach(function(row) {
                             row.therapist_name = row.therapist_name.replace(/,/g, '<br>');
@@ -129,4 +129,6 @@
             });
         });
     </script>
-    @endsection
+    <?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Data\Project\youliantang\resources\views/invoice/invoices.blade.php ENDPATH**/ ?>
