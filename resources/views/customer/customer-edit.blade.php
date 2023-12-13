@@ -86,8 +86,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Phone Number ') }}<span
-                                                    class="text-danger">*</span></label>
+                                            <label class="control-label">{{ __('Phone Number ') }}</label>
                                             <input type="tel" class="form-control @error('phone_number') is-invalid @enderror"
                                                 name="phone_number" id="phone_number" tabindex="4"
                                                 value="@if ($customer && $customer_info){{ $customer->phone_number }}@elseif(old('phone_number')){{ old('phone_number') }}@endif"

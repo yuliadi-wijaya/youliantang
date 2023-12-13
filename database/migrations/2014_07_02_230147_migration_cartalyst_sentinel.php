@@ -97,7 +97,7 @@ class MigrationCartalystSentinel extends Migration
             $table->id();
             $table->string('first_name', 50);
             $table->string('last_name', 50)->nullable();
-            $table->string('phone_number', 20);
+            $table->string('phone_number', 20)->nullable();
             $table->string('profile_photo')->nullable();
             $table->string('email', 100);
             $table->string('password');
