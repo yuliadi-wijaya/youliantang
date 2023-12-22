@@ -99,7 +99,7 @@ class MigrationCartalystSentinel extends Migration
             $table->string('last_name', 50)->nullable();
             $table->string('phone_number', 20)->nullable();
             $table->string('profile_photo')->nullable();
-            $table->string('email', 100);
+            $table->string('email', 100)->nullable();
             $table->string('password');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

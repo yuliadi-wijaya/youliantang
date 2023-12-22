@@ -116,7 +116,14 @@ class CustomerController extends Controller
         $customer = null;
         $customer_info = null;
 
-        return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
+        // Default email
+        $runningNumber = User::join('role_users as b', 'b.user_id', '=', 'users.id')
+            ->where('b.role_id', 4)
+            ->count() + 1;
+
+        $cust_mail = 'cust' . $runningNumber . '@youliantang.com';
+
+        return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info', 'cust_mail'));
     }
 
     public function create_from_invoice()
@@ -154,7 +161,7 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required|alpha',
             // 'phone_number' => 'required',
-            'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
+            'email' => 'nullable|email',
             'gender' => 'required',
             'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
             'status' => 'required'
@@ -200,12 +207,13 @@ class CustomerController extends Controller
             $customer_info->save();
 
             $app_name =  AppSetting('title');
-            $verify_mail = trim($request->email);
-            Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
-                $message->to($verify_mail);
-                $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
-            });
-
+            if($request->email !== ''){
+                $verify_mail = trim($request->email);
+                Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
+                    $message->to($verify_mail);
+                    $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
+                });
+            }
             if($request->post_from == 'customer') {
                 return redirect('customer')->with('success', 'Customer created successfully!');
             }else{
@@ -306,7 +314,7 @@ class CustomerController extends Controller
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
                 // 'phone_number' => 'required',
-                'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
+                'email' => 'nullable|email',
                 'gender' => 'required',
                 'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'

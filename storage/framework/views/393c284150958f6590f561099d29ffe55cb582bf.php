@@ -217,9 +217,7 @@
                         <a class="dropdown-item" href="<?php echo e(url('profile-view')); ?>"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
                             <?php echo e(__('translation.profile')); ?></a>
-                        <a class="dropdown-item" href="<?php echo e(url('invoice-setting')); ?>"><i
-                                class="fa fa-file-invoice-dollar font-size-16 align-middle ml-1 mr-1"></i>
-                            <?php echo e(__('translation.invoice-setting')); ?></a>
+                        
                     <?php elseif($role == 'admin'): ?>
                         <a class="dropdown-item" href="<?php echo e(url('profile-edit')); ?>"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
@@ -230,9 +228,7 @@
                         <a class="dropdown-item" href="<?php echo e(url('app-setting')); ?>"><i
                                 class="bx bx-cog font-size-16 align-middle mr-1"></i>
                             <?php echo e(__('translation.app-setting')); ?></a>
-                        <a class="dropdown-item" href="<?php echo e(url('invoice-setting')); ?>"><i
-                                class="fa fa-file-invoice-dollar font-size-16 align-middle ml-1 mr-1"></i>
-                            <?php echo e(__('translation.invoice-setting')); ?></a>
+                        
                     <?php endif; ?>
                     <a class="dropdown-item d-block" href="<?php echo e(url('change-password')); ?>"><i
                             class="bx bx-wrench font-size-16 align-middle mr-1"></i>

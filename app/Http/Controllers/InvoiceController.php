@@ -57,8 +57,6 @@ class InvoiceController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        $invoice_type = InvoiceSettings::first()->invoice_type;
-
         $query = Invoice::select([
             'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(COALESCE(customer.first_name,''), ' ', COALESCE(customer.last_name,'')) END AS customer_name"),
@@ -69,12 +67,6 @@ class InvoiceController extends Controller
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_to ELSE (SELECT MAX(treatment_time_to) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_to"),
             ])->leftJoin('users as customer', 'invoices.customer_id', '=', 'customer.id')
             ->where('invoices.is_deleted', 0);
-
-            if ($invoice_type == 'CK') {
-                $query->where('invoices.invoice_type', 'CK');
-            } elseif ($invoice_type == 'NC') {
-                $query->where('invoices.invoice_type', 'NC');
-            }
 
         $invoices = $query->orderByDesc('invoices.id')->get();
 
@@ -249,7 +241,7 @@ class InvoiceController extends Controller
         }
 
         // Get invoice setting
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        // $invoice_type = InvoiceSettings::first()->invoice_type;
 
         // Validate input data
         $request->validate([
@@ -272,12 +264,21 @@ class InvoiceController extends Controller
             }
 
             // Generate invoice code
+            /*
             if($invoice_type == 'CK'){
                 $prefix = 'INV/CK/';
             }else if($invoice_type == 'NC'){
                 $prefix = 'INV/NC/';
             }else{
                 return redirect()->back()->with('error', 'Cek your settings !!')->withInput($request->all());
+            }*/
+
+            if ($request->has('ck_nc')) {
+                $prefix = 'INV/CK/';
+                $invoice_type = 'CK';
+            } else {
+                $prefix = 'INV/NC/';
+                $invoice_type = 'NC';
             }
 
             $dateCode = now()->format('ym');
@@ -542,7 +543,7 @@ class InvoiceController extends Controller
         }
 
         // Get invoice setting
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        // $invoice_type = InvoiceSettings::first()->invoice_type;
 
         // Validate input data
         if($request->old_data == 'Y') {
@@ -575,16 +576,15 @@ class InvoiceController extends Controller
             $obj = $this->toObject($request, $invoice);
             $obj->updated_by = $user->id;
 
-            if($invoice_type != $request->invoice_type_old){
-                // Generate invoice code
-                if($invoice_type == 'CK'){
-                    $prefix = 'INV/CK/';
-                }else if($invoice_type == 'NC'){
-                    $prefix = 'INV/NC/';
-                }else{
-                    return redirect()->back()->with('error', 'Cek your settings !!');
-                }
+            if ($request->has('ck_nc')) {
+                $prefix = 'INV/CK/';
+                $invoice_type = 'CK';
+            } else {
+                $prefix = 'INV/NC/';
+                $invoice_type = 'NC';
+            }
 
+            if($invoice_type != $request->invoice_type_old){
                 $dateCode = now()->format('ym');
 
                 $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');

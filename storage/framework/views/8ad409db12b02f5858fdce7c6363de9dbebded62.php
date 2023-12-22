@@ -120,30 +120,11 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Email ')); ?><span
-                                                    class="text-danger">*</span></label>
-                                            <input type="email" class="form-control <?php $__errorArgs = ['email'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                                name="email" id="email" tabindex="2" value="<?php if($customer && $customer_info): ?><?php echo e($customer->email); ?><?php elseif(old('email')): ?><?php echo e(old('email')); ?><?php endif; ?>"
+                                            <label class="control-label"><?php echo e(__('Email ')); ?></label>
+                                            <input type="email" class="form-control"
+                                                name="email" id="email" tabindex="2"
+                                                value="<?php if($customer && $customer->email): ?><?php echo e($customer->email); ?><?php elseif(old('email')): ?><?php echo e(old('email', $cust_mail)); ?><?php else: ?><?php echo e($cust_mail); ?><?php endif; ?>"
                                                 placeholder="<?php echo e(__('Enter Email')); ?>">
-                                            <?php $__errorArgs = ['email'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong><?php echo e($message); ?></strong>
-                                                </span>
-                                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -175,8 +156,7 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label"><?php echo e(__('Phone Number ')); ?><span
-                                                    class="text-danger">*</span></label>
+                                            <label class="control-label"><?php echo e(__('Phone Number ')); ?></label>
                                             <input type="tel" class="form-control <?php $__errorArgs = ['phone_number'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -269,7 +249,6 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
                                                 tabindex="7" name="status">
-                                                <option selected disabled><?php echo e(__('-- Select Status --')); ?></option>
                                                 <option value="1" <?php if(($customer && $customer_info->status == '1') || old('status') == '1'): ?> selected <?php endif; ?>><?php echo e(__('Active')); ?></option>
                                                 <option value="0" <?php if(($customer && $customer_info->status == '0') || old('status') == '0'): ?> selected <?php endif; ?>><?php echo e(__('In Active')); ?></option>
                                             </select>

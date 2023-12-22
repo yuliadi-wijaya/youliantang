@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('css'); ?>
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -36,7 +37,7 @@
             <div class="card">
                 <div class="card-body">
                     <?php if($role != 'customer'): ?>
-                    <a href=" <?php echo e(route('therapist.create')); ?> ">
+                    <a href=" <?php echo e(route('invoice.create')); ?> ">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
                             <i class="bx bx-plus font-size-16 align-middle mr-2"></i>
                             <?php echo e(__('Create New Invoice')); ?>

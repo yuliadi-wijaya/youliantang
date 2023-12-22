@@ -115,7 +115,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                                         </div>
-                                        <div class="col-md-6 form-group">
+                                        <div class="col-md-5 form-group">
                                             <label class="control-label"><?php echo e(__('Payment Status')); ?><span
                                                 class="text-danger">*</span></label>
                                             <select class="form-control <?php $__errorArgs = ['payment_status'];
@@ -143,6 +143,16 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                        </div>
+                                        <div class="col-md-1 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <div class="form-check">
+                                                <?php
+                                                    $parts = explode('/', $invoice->invoice_code);
+                                                    $invoiceType = $parts[1];
+                                                ?>
+                                                <input type="checkbox" class="form-check-input" value="1" name="ck_nc" id="ck_nc" <?php if($invoiceType == 'CK'): ?> checked <?php endif; ?>>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -87,7 +87,7 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        <div class="col-md-6 form-group">
+                                        <div class="col-md-5 form-group">
                                             <label class="control-label">{{ __('Payment Status') }}<span
                                                 class="text-danger">*</span></label>
                                             <select class="form-control @error('payment_status') is-invalid @enderror"
@@ -101,6 +101,16 @@
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
+                                        </div>
+                                        <div class="col-md-1 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <div class="form-check">
+                                                @php
+                                                    $parts = explode('/', $invoice->invoice_code);
+                                                    $invoiceType = $parts[1];
+                                                @endphp
+                                                <input type="checkbox" class="form-check-input" value="1" name="ck_nc" id="ck_nc" @if ($invoiceType == 'CK') checked @endif>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

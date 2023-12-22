@@ -98,16 +98,11 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Email ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                name="email" id="email" tabindex="2" value="@if ($customer && $customer_info){{ $customer->email }}@elseif(old('email')){{ old('email') }}@endif"
+                                            <label class="control-label">{{ __('Email ') }}</label>
+                                            <input type="email" class="form-control"
+                                                name="email" id="email" tabindex="2"
+                                                value="@if ($customer && $customer->email){{ $customer->email }}@elseif(old('email')){{ old('email', $cust_mail) }}@else{{ $cust_mail }}@endif"
                                                 placeholder="{{ __('Enter Email') }}">
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                         </div>
                                     </div>
                                     <div class="row">
@@ -169,7 +164,6 @@
                                                     class="text-danger">*</span></label>
                                             <select class="form-control @error('status') is-invalid @enderror"
                                                 tabindex="7" name="status">
-                                                <option selected disabled>{{ __('-- Select Status --') }}</option>
                                                 <option value="1" @if (($customer && $customer_info->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
                                                 <option value="0" @if (($customer && $customer_info->status == '0') || old('status') == '0') selected @endif>{{ __('In Active') }}</option>
                                             </select>

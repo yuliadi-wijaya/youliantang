@@ -61,7 +61,9 @@ unset($__errorArgs, $__bag); ?>"
                                                         data-member_plan="<?php echo e($row->member_plan); ?>"
                                                         data-discount_type="<?php echo e($row->discount_type); ?>"
                                                         data-discount_value="<?php echo e($row->discount_value); ?>"
-                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->phone_number.' - '.$row->first_name.' '.$row->last_name); ?></option>
+                                                        <?php echo e(old('customer_id') == $row->id ? 'selected' : ''); ?>><?php echo e($row->phone_number ? $row->phone_number.' - ' : ''); ?><?php echo e($row->first_name); ?> <?php echo e($row->last_name); ?>
+
+                                                    </option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <?php $__errorArgs = ['customer_id'];
@@ -120,7 +122,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                                         </div>
-                                        <div class="col-md-6 form-group">
+                                        <div class="col-md-5 form-group">
                                             <label class="control-label"><?php echo e(__('Payment Status')); ?><span
                                                 class="text-danger">*</span></label>
                                             <select class="form-control <?php $__errorArgs = ['payment_status'];
@@ -148,6 +150,12 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                        </div>
+                                        <div class="col-md-1 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="1" name="ck_nc" id="ck_nc">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

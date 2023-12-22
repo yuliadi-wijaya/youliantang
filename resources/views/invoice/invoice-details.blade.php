@@ -54,7 +54,8 @@
                                                         data-member_plan="{{ $row->member_plan }}"
                                                         data-discount_type="{{ $row->discount_type }}"
                                                         data-discount_value="{{ $row->discount_value }}"
-                                                        {{ old('customer_id') == $row->id ? 'selected' : '' }}>{{ $row->phone_number.' - '.$row->first_name.' '.$row->last_name }}</option>
+                                                        {{ old('customer_id') == $row->id ? 'selected' : '' }}>{{ $row->phone_number ? $row->phone_number.' - ' : '' }}{{ $row->first_name }} {{ $row->last_name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @error('customer_id')
@@ -92,7 +93,7 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        <div class="col-md-6 form-group">
+                                        <div class="col-md-5 form-group">
                                             <label class="control-label">{{ __('Payment Status') }}<span
                                                 class="text-danger">*</span></label>
                                             <select class="form-control @error('payment_status') is-invalid @enderror"
@@ -106,6 +107,12 @@
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
+                                        </div>
+                                        <div class="col-md-1 form-group">
+                                            <label class="control-label">&nbsp;</label>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="1" name="ck_nc" id="ck_nc">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
