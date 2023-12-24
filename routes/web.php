@@ -25,6 +25,7 @@ Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang'
 Route::get('login', 'Auth\AuthController@showLoginForm');
 Route::post('login', 'Auth\AuthController@login');
 Route::post('logout', 'Auth\AuthController@logout');
+Route::get('logout', 'Auth\AuthController@logout')->name('logout');
 Route::get('register', 'Auth\AuthController@showRegistrationForm');
 Route::post('register', 'Auth\AuthController@register');
 

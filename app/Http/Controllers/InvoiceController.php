@@ -7,6 +7,7 @@ use App\Invoice;
 use App\InvoiceDetail;
 use App\InvoiceSettings;
 use App\Notification;
+use App\RoleAccess;
 use App\Receptionist;
 use App\Transaction;
 use App\Customer;
@@ -57,6 +58,9 @@ class InvoiceController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
+        // Get Role Access
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
+
         $query = Invoice::select([
             'invoices.id', 'invoices.invoice_code', 'invoices.old_data',
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.customer_name ELSE CONCAT(COALESCE(customer.first_name,''), ' ', COALESCE(customer.last_name,'')) END AS customer_name"),
@@ -67,6 +71,12 @@ class InvoiceController extends Controller
             \DB::raw("CASE WHEN invoices.old_data = 'Y' THEN invoices.treatment_time_to ELSE (SELECT MAX(treatment_time_to) FROM invoice_details WHERE invoice_details.invoice_id = invoices.id) END AS treatment_time_to"),
             ])->leftJoin('users as customer', 'invoices.customer_id', '=', 'customer.id')
             ->where('invoices.is_deleted', 0);
+
+            if ($invoice_type == 'CK') {
+                $query->where('invoices.invoice_type', 'CK');
+            } elseif ($invoice_type == 'NC') {
+                $query->where('invoices.invoice_type', 'NC');
+            }
 
         $invoices = $query->orderByDesc('invoices.id')->get();
 

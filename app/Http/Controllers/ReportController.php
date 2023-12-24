@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Appointment;
 use Illuminate\Http\Request;
+use App\RoleAccess;
 use App\Invoice;
-use App\InvoiceSettings;
 use App\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Collection;
@@ -31,8 +31,11 @@ class ReportController extends Controller
      */
     public function getMonthlyUsersRevenue()
     {
-        // Get invoice setting
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $user = Sentinel::getUser();
+        $userId = $user->id;
+
+        // Get Role Access
+        $invoice_type = RoleAccess::where('user_id', $userId)->first()->access_code;
 
         $customers =  User::whereHas('roles', function ($q) {
             $q->where('slug', 'customer');
@@ -84,8 +87,8 @@ class ReportController extends Controller
         $role = $user->roles[0]->slug;
         $userId = $user->id;
 
-        // Get invoice setting
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        // Get Role Access
+        $invoice_type = RoleAccess::where('user_id', $userId)->first()->access_code;
 
         if ($role == 'customer') {
             $invoice = Invoice::whereMonth('created_at', date('m'))

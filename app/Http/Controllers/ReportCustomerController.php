@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\RoleAccess;
 use App\ReportCustomerReg;
 use App\ReportTrans;
 use App\InvoiceDetail;
 use App\User;
 use App\Product;
-use App\InvoiceSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
@@ -194,7 +194,7 @@ class ReportCustomerController extends Controller
         $dateFrom = date('Y-m-d', strtotime($validatedData['date_from']));
         $dateTo = date('Y-m-d', strtotime($validatedData['date_to']));
 
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
 
         $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
             return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
@@ -245,10 +245,12 @@ class ReportCustomerController extends Controller
 
     public function exportReportCustomerTrans(Request $request)
     {
+        $user = Sentinel::getUser();
+
         $dateFrom = date('Y-m-d', strtotime($request->dateFrom));
         $dateTo = date('Y-m-d', strtotime($request->dateTo));
 
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
 
         $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
             return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);

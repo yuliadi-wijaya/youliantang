@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\InvoiceSettings;
+use App\RoleAccess;
 use App\ReportTrans;
 use App\ReportTranSum;
 use App\InvoiceDetail;
@@ -63,7 +63,7 @@ class ReportTransController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
         $report_type = $request->report_type;
 
         if($report_type == 'detail'){
@@ -193,7 +193,9 @@ class ReportTransController extends Controller
 
     public function exportReportTrans(Request $request)
     {
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $user = Sentinel::getUser();
+
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
         $report_type = $request->report_type;
 
         if($report_type == 'detail'){

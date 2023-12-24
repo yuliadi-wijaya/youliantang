@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\InvoiceSettings;
+use App\RoleAccess;
 use App\ReportTherapistTotal;
 use App\ReportTrans;
 use App\ReportTranSum;
@@ -166,7 +166,7 @@ class ReportTherapistController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
         $report_type = $request->report_type;
 
         if($report_type == 'detail'){
@@ -295,7 +295,9 @@ class ReportTherapistController extends Controller
 
     public function exportReportTherapistTrans(Request $request)
     {
-        $invoice_type = InvoiceSettings::first()->invoice_type;
+        $user = Sentinel::getUser();
+
+        $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
         $report_type = $request->report_type;
 
         if($report_type == 'detail'){
