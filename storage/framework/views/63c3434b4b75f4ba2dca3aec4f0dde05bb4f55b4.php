@@ -118,24 +118,8 @@
     </div>
     <div class="col-xl-8">
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.appointments')); ?></p>
-                                <h4 class="mb-0"><?php echo e(number_format($data['total_appointment'])); ?></h4>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bxs-calendar-check font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
+            
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
@@ -154,7 +138,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
@@ -173,99 +157,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__("translation.today's-appointments")); ?></p>
-                                <a href="<?php echo e(url('/today-appointment')); ?>"
-                                    class="mb-0 font-weight-medium font-size-24">
-                                    <h4 class="mb-0"><?php echo e(number_format($data['today_appointment'])); ?></h4>
-                                </a>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bx-calendar font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.tomorrow-appointments')); ?></p>
-                                <h4 class="mb-0"><?php echo e(number_format($data['tomorrow_appointment'])); ?></h4>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class="bx bx-calendar-event font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.upcoming-appointments')); ?></p>
-                                <a href="<?php echo e(url('/upcoming-appointment')); ?>"
-                                    class="mb-0 font-weight-medium font-size-24">
-                                    <h4 class="mb-0"><?php echo e(number_format($data['Upcoming_appointment'])); ?>
-
-                                    </h4>
-                                </a>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class='bx bxs-calendar-minus font-size-24'></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
         <!-- end row -->
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4"><?php echo e(__("translation.today's-appointments")); ?></h4>
-                <div class="table-responsive">
-                    <table class="table table-centered table-nowrap mb-0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th><?php echo e(__('Sr.No.')); ?></th>
-                                <th><?php echo e(__('Customer Name')); ?></th>
-                                <th><?php echo e(__('Therapist Name')); ?></th>
-                                <th><?php echo e(__('Date')); ?></th>
-                                <th><?php echo e(__('Contact No	')); ?></th>
-                                <th><?php echo e(__('Time')); ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $__currentLoopData = $appointments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <tr>
-                                    <td><?php echo e($loop->index + 1); ?></td>
-                                    <td><?php echo e($item->customer->first_name . ' ' . $item->customer->last_name); ?></td>
-                                    <td><?php echo e($item->therapist->first_name . ' ' . $item->therapist->last_name); ?></td>
-                                    <td><?php echo e($item->appointment_date); ?></td>
-                                    <td><?php echo e($item->customer->phone_number); ?></td>
-                                    <td><?php echo e($item->timeSlot->from . ' ' . $item->timeSlot->to); ?></td>
-                                </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- end table-responsive -->
-            </div>
-        </div>
+        
     </div>
 </div>
 <!-- end row -->

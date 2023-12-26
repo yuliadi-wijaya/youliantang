@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('css'); ?>
 <!-- Datatables -->
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -121,7 +120,7 @@
                     { data: 'option', name: 'option', orderable: false, searchable: false, visible: (role == 'admin' || role === 'receptionist') ? true : false },
                 ],
                 pagingType: 'full_numbers',
-                scrollX: true,
+                // scrollX: true,
                 autoWidth: false,
                 "drawCallback": function() {
                     $('.dataTables_paginate > .pagination').addClass('justify-content-end');
