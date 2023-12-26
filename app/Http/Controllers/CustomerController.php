@@ -138,7 +138,14 @@ class CustomerController extends Controller
         $customer = null;
         $customer_info = null;
 
-        return view('invoice.customer-add', compact('user', 'role', 'customer', 'customer_info'));
+        // Default email
+        $runningNumber = User::join('role_users as b', 'b.user_id', '=', 'users.id')
+            ->where('b.role_id', 4)
+            ->count() + 1;
+
+        $cust_mail = 'cust' . $runningNumber . '@youliantang.com';
+
+        return view('invoice.customer-add', compact('user', 'role', 'customer', 'customer_info', 'cust_mail'));
     }
 
     /**
@@ -161,7 +168,7 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required|alpha',
             // 'phone_number' => 'required',
-            'email' => 'nullable|email',
+            //'email' => 'nullable|email',
             'gender' => 'required',
             'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
             'status' => 'required'
@@ -182,6 +189,9 @@ class CustomerController extends Controller
 
             // Set Default Password for Customer
             $validatedData['last_name'] = $request->last_name;
+            if($request->email == ''){
+                $validatedData['email'] = $request->hidden_mail;
+            }
             $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
             $validatedData['created_by'] = $user->id;
             $validatedData['updated_by'] = $user->id;
@@ -314,7 +324,7 @@ class CustomerController extends Controller
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
                 // 'phone_number' => 'required',
-                'email' => 'nullable|email',
+                //'email' => 'nullable|email',
                 'gender' => 'required',
                 'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'

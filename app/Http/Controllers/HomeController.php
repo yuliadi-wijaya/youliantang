@@ -142,15 +142,17 @@ class HomeController extends Controller
                 $re->orWhere('booked_by', $user_id);
             })->get();
 
-            $therapist_count = Receptionist::where('therapist_id', $user_id)->pluck('user_id');
+            $therapist_count = InvoiceDetail::where('therapist_id', $user_id)->pluck('therapist_id');
             $Invoice_Detail = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
             }])->where('created_by', $user_id)->orWhereIN('created_by', $therapist_count)->pluck('id');
             $revenue = InvoiceDetail::whereIn('invoice_id', $Invoice_Detail)->where('is_deleted',0)->sum('amount');
             $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
                 $re->select(DB::raw('SUM(amount)'));
-            }])->where('therapist_id', $user_id)
-                ->whereDate('created_at', Carbon::today())->pluck('id');
+            }])
+            ->join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+            ->where('invoice_details.therapist_id', $user_id)
+                ->whereDate('invoices.created_at', Carbon::today())->pluck('invoices.id');
             $daily_earning = InvoiceDetail::whereIn('invoice_id', $invoice)->where('is_deleted',0)->sum('amount');
 
             $monthlyEarning = ReportController::getMonthlyEarning();

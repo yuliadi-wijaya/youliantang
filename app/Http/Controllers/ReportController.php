@@ -88,7 +88,11 @@ class ReportController extends Controller
         $userId = $user->id;
 
         // Get Role Access
-        $invoice_type = RoleAccess::where('user_id', $userId)->first()->access_code;
+        if($role == 'receptionist'){
+            $invoice_type = RoleAccess::where('user_id', $userId)->first()->access_code;
+        }else{
+            $invoice_type = 'ALL';
+        }
 
         if ($role == 'customer') {
             $invoice = Invoice::whereMonth('created_at', date('m'))

@@ -47,31 +47,21 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Email ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                name="email" id="email" tabindex="2" value="@if ($customer && $customer_info){{ $customer->email }}@elseif(old('email')){{ old('email') }}@endif"
+                                            <label class="control-label">{{ __('Email ') }}</label>
+                                            <input type="email" class="form-control"
+                                                name="email" id="email" tabindex="2"
+                                                value="@if ($customer && $customer_info){{ $customer->email }}@elseif(old('email')){{ old('email', $cust_mail) }}@else{{ $cust_mail }}@endif"
                                                 placeholder="{{ __('Enter Email') }}">
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                            <input type="hidden" name="hidden_mail" value="{{ $cust_mail }}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Phone Number ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="tel" class="form-control @error('phone_number') is-invalid @enderror"
+                                            <label class="control-label">{{ __('Phone Number ') }}</label>
+                                            <input type="tel" class="form-control"
                                                 name="phone_number" id="phone_number" tabindex="4"
                                                 value="@if ($customer && $customer_info){{ $customer->phone_number }}@elseif(old('phone_number')){{ old('phone_number') }}@endif"
                                                 placeholder="{{ __('Enter Phone Number') }}">
-                                            @error('phone_number')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                         </div>
                                     </div>
                                 </div>

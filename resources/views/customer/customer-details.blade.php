@@ -103,6 +103,7 @@
                                                 name="email" id="email" tabindex="2"
                                                 value="@if ($customer && $customer->email){{ $customer->email }}@elseif(old('email')){{ old('email', $cust_mail) }}@else{{ $cust_mail }}@endif"
                                                 placeholder="{{ __('Enter Email') }}">
+                                            <input type="hidden" name="hidden_mail" value="{{ $cust_mail }}">
                                         </div>
                                     </div>
                                     <div class="row">

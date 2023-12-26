@@ -8,6 +8,7 @@ use App\TherapistAvailableDay;
 use App\TherapistAvailableSlot;
 use App\TherapistAvailableTime;
 use App\Invoice;
+use App\InvoiceDetail;
 use App\Prescription;
 use App\Receptionist;
 use App\User;
@@ -65,6 +66,14 @@ class TherapistController extends Controller
 
                 $completed_appointment = Appointment::where('appointment_with', $value->id)->where('status', '1')->count();
                 $therapists[$key]['completed_appointment'] = $completed_appointment;
+
+                $completed_trans = InvoiceDetail::join('invoices', 'invoices.id', '=', 'invoice_details.invoice_id')
+                    ->where('invoice_details.therapist_id', $value->id)
+                    ->where('invoices.status', '1')
+                    ->where('invoices.is_deleted', '0')
+                    ->where('invoice_details.is_deleted', '0')
+                    ->count();
+                $therapists[$key]['completed_trans'] = $completed_trans;
             }
 
             // Load Datatables
@@ -100,6 +109,14 @@ class TherapistController extends Controller
                            $completed_appointment = '';
                         }
                         return $completed_appointment;
+                    })
+                    ->addColumn('completed_trans', function($row) use ($role){
+                        if ($role != 'customer') {
+                            $completed_trans = $row->completed_trans;
+                        } else {
+                            $completed_trans = '';
+                        }
+                        return $completed_trans;
                     })
                     ->addColumn('status', function($row) {
                         return Config::get('constants.status.' . $row->status, 'Undefined');

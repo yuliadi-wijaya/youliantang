@@ -47,8 +47,8 @@
                                 <th><?php echo e(__('Phone Number')); ?></th>
                                 <th><?php echo e(__('Email')); ?></th>
                                 <?php if($role != 'customer'): ?>
-                                <th><?php echo e(__('Pending Appointment')); ?></th>
-                                <th><?php echo e(__('Complete Appointment')); ?></th>
+                                
+                                <th><?php echo e(__('Complete Transaction')); ?></th>
                                 <th><?php echo e(__('Status')); ?></th>
                                 <?php endif; ?>
                                 <?php if($role != 'customer'): ?>
@@ -109,7 +109,7 @@
                         data: 'email'
                         , name: 'email'
                     }
-                    , {
+                    /*, {
                         data: 'pending_appointment'
                         , name: 'pending_appointment'
                         , orderable: false
@@ -119,6 +119,13 @@
                     , {
                         data: 'completed_appointment'
                         , name: 'completed_appointment'
+                        , orderable: false
+                        , searchable: false
+                        , visible: (role != 'customer') ? true : false
+                    }*/
+                    , {
+                        data: 'completed_trans'
+                        , name: 'completed_trans'
                         , orderable: false
                         , searchable: false
                         , visible: (role != 'customer') ? true : false
