@@ -18,40 +18,8 @@ class TherapistSeeder extends Seeder
      */
     public function run()
     {
-        $faker = faker::create();
-        $fakerName = $faker->name;
-
-        $user = [
-            'first_name' => Str::before($fakerName, ' '),
-            'last_name' => Str::after($fakerName, ' '),
-            'phone_number' => '0857' . $faker->numberBetween(10000000, 20000000),
-            'profile_photo' => 'Male_doctor.png',
-            'email' => 'therapist@youliantang.com',
-            'password' => 'youliantang123',
-            'status' => 1,
-        ];
-        $user = Sentinel::registerAndActivate($user);
-        $role = Sentinel::findRoleBySlug('therapist');
-        $role->users()->attach($user);
-
-        DB::table('therapists')->insert([
-            'user_id' => 2,
-            'ktp' => '3208081505900006',
-            'gender' => 'Male',
-            'place_of_birth' => 'Jakarta',
-            'birth_date' => $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d'),
-            'address' => 'Jakarta',
-            'rekening_number' => '1234567',
-            'emergency_contact' => '0857' . $faker->numberBetween(10000000, 20000000),
-            'emergency_name' => Str::after($fakerName, ' '),
-            'slot_time' => 25,
-            'created_by' => 1,
-            'updated_by' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'status' => 1,
-        ]);
         /*
+        $faker = faker::create();
         foreach (range(3, 15) as $item) {
             $fakerName = $faker->name;
             $user = [

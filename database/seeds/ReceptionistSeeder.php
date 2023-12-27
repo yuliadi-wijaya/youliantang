@@ -16,54 +16,89 @@ class ReceptionistSeeder extends Seeder
     public function run()
     {
         $faker = faker::create();
-        $fakerName = $faker->name;
 
+        // First Receptionist
+        // User Data
         $user = [
-            'first_name' => Str::before($fakerName, ' '),
-            'last_name' => Str::after($fakerName, ' '),
-            'phone_number' => '0857' . $faker->numberBetween(10000000, 20000000),
+            'first_name' => 'Receptionist',
+            'last_name' => 'One',
+            'phone_number' => '0852' . $faker->numberBetween(10000000, 20000000),
             'profile_photo' => 'Female_receptionist.png',
-            'email' => 'receptionist@example.com',
-            'password' => '123456',
+            'email' => 'receptionist.one@example.com',
+            'password' => 'receptionist123',
             'status' => 1,
         ];
         $user = Sentinel::registerAndActivate($user);
         $role = Sentinel::findRoleBySlug('receptionist');
         $role->users()->attach($user);
 
+        // Receptionist Data
         DB::table('receptionists')->insert([
-            'user_id' => 4,
-            'ktp' => '3208081508700007',
+            'user_id' => 2,
+            'ktp' => '1011111111111111',
             'gender' => 'Female',
             'address' => $faker->address,
             'place_of_birth' => 'Jakarta',
             'birth_date' => $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d'),
-            'rekening_number' => '1234567',
-            'emergency_contact' => '0857' . $faker->numberBetween(10000000, 20000000),
-            'emergency_name' => Str::before($fakerName, ' '),
+            'rekening_number' => '101111',
+            'emergency_contact' => '0852' . $faker->numberBetween(10000000, 20000000),
+            'emergency_name' => Str::before($faker->name, ' '),
             'created_by' => 1,
             'updated_by' => 1,
             'created_at' => now(),
             'updated_at' => now(),
             'status' => 1,
         ]);
-        /*
-        $i = 1;
-        foreach (range(31, 45) as $item) {
-            $fakerName = $faker->name;
-            $user = [
-                'first_name' => Str::before($fakerName, ' '),
-                'last_name' => Str::after($fakerName, ' '),
-                'phone_number' => rand(1000000000, 2000000000),
-                'profile_photo' => 're-avatar-' . $i . '.jpg',
-                'email' => $faker->safeEmail,
-                'password' => 'receptionist@123456',
-            ];
-            $user = Sentinel::registerAndActivate($user);
-            $role = Sentinel::findRoleBySlug('receptionist');
-            $role->users()->attach($user);
-            $i++;
-        }
-        */
+
+        // Role Access Data
+        DB::table('role_access')->insert([
+            'user_id' => 2,
+            'access_code' => 'CK',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // End
+
+        // Second Receptionist
+        // User Data
+        $user = [
+            'first_name' => 'Receptionist',
+            'last_name' => 'Two',
+            'phone_number' => '0852' . $faker->numberBetween(10000000, 20000000),
+            'profile_photo' => 'Male_receptionist.png',
+            'email' => 'receptionist.two@example.com',
+            'password' => 'receptionist123',
+            'status' => 1,
+        ];
+        $user = Sentinel::registerAndActivate($user);
+        $role = Sentinel::findRoleBySlug('receptionist');
+        $role->users()->attach($user);
+
+        // Receptionist Data
+        DB::table('receptionists')->insert([
+            'user_id' => 3,
+            'ktp' => '1022222222222222',
+            'gender' => 'Male',
+            'address' => $faker->address,
+            'place_of_birth' => 'Jakarta',
+            'birth_date' => $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d'),
+            'rekening_number' => '102222',
+            'emergency_contact' => '0852' . $faker->numberBetween(10000000, 20000000),
+            'emergency_name' => Str::before($faker->name, ' '),
+            'created_by' => 1,
+            'updated_by' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'status' => 1,
+        ]);
+
+         // Role Access Data
+         DB::table('role_access')->insert([
+            'user_id' => 3,
+            'access_code' => 'NC',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // End
     }
 }

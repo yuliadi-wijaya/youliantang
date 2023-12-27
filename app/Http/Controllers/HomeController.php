@@ -79,10 +79,22 @@ class HomeController extends Controller
             ->orderBy('users.id', 'DESC')
             ->limit(5)
             ->get();
-            $tot_customer = $customer_role->users()->with('roles')->where('is_deleted', 0)->get();
-            $therapist_role = Sentinel::findRoleBySlug('therapist');
-            $tot_therapist = $therapist_role->users()->with('roles')->where('is_deleted', 0)->get();
-            $tot_receptionist = $receptionist_role->users()->with('roles')->where('is_deleted', 0)->get();
+
+            $tot_customer = 0;
+            if ($customer_role) {
+                $tot_customer = $customer_role->users()->with('roles')->where('is_deleted', 0)->get()->count();
+            }
+            
+            $tot_therapist = 0;
+            if ($therapist_role) {
+                $tot_therapist = $therapist_role->users()->with('roles')->where('is_deleted', 0)->get()->count();
+            }
+
+            $tot_receptionist = 0;
+            if ($receptionist_role) {
+                $tot_receptionist = $receptionist_role->users()->with('roles')->where('is_deleted', 0)->get()->count();
+            }
+            
             $appointments = Appointment::all();
             $revenue = Invoice::when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
@@ -113,9 +125,9 @@ class HomeController extends Controller
             })
                 ->get();
             $data = [
-                'total_therapists' => $tot_therapist->count(),
-                'total_receptionists' => $tot_receptionist->count(),
-                'total_customers' => $tot_customer->count(),
+                'total_therapists' => $tot_therapist,
+                'total_receptionists' => $tot_receptionist,
+                'total_customers' => $tot_customer,
                 'total_appointment' => $appointments->count(),
                 'revenue' => $revenue,
                 'today_appointment' => $today_appointment->count(),

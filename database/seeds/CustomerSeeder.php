@@ -16,37 +16,8 @@ class CustomerSeeder extends Seeder
      */
     public function run()
     {
-        $faker = faker::create();
-        $fakerName = $faker->name;
-
-        $user = [
-            'first_name' => Str::before($fakerName, ' '),
-            'last_name' => Str::after($fakerName, ' '),
-            'phone_number' => '0857' . $faker->numberBetween(10000000, 20000000),
-            'profile_photo' => 'Male_patient.png',
-            'email' => 'customer@example.com',
-            'password' => '123456',
-            'status' => 1,
-        ];
-        $user = Sentinel::registerAndActivate($user);
-        $role = Sentinel::findRoleBySlug('customer');
-        $role->users()->attach($user);
-
-        DB::table('customers')->insert([
-            'user_id' => 3,
-            'place_of_birth' => 'Jakarta',
-            'birth_date' => $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d'),
-            'gender' => 'Male',
-            'address' => $faker->address,
-            'emergency_contact' => '0857' . $faker->numberBetween(10000000, 20000000),
-            'emergency_name' => Str::before($fakerName, ' '),
-            'created_by' => 1,
-            'updated_by' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'status' => 1,
-        ]);
         /*
+        $faker = faker::create();
         $i = 1;
         foreach (range(17, 30) as $item) {
             $fakerName = $faker->name;

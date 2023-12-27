@@ -14,6 +14,7 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+        // User Data
         $credentials = [
             'first_name' => 'Super',
             'last_name' => 'Admin',
@@ -26,5 +27,13 @@ class AdminSeeder extends Seeder
         $user = Sentinel::registerAndActivate( $credentials );
         $role = Sentinel::findRoleBySlug('admin');
         $role->users()->attach($user);
+
+        // Role Access Data
+        DB::table('role_access')->insert([
+            'user_id' => 1,
+            'access_code' => 'ALL',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
