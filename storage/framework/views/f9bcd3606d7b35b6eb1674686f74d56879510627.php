@@ -1,22 +1,23 @@
-<?php $__env->startSection('title'); ?> <?php echo e(__('Therapist Profile')); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__('Receptionist Profile')); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('body'); ?>
 
     <body data-topbar="dark" data-layout="horizontal">
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('content'); ?>
+        <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <h4 class="mb-0 font-size-18">
-                        <?php echo e(__('Therapist Profile')); ?>
+                        <?php echo e(__('Receptionist Profile')); ?>
 
                     </h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="<?php echo e(url('/')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
-                            <li class="breadcrumb-item"><a href="<?php echo e(url('therapist')); ?>"><?php echo e(__('Therapists')); ?></a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo e(url('receptionist')); ?>"><?php echo e(__('Receptionists')); ?></a></li>
                             <li class="breadcrumb-item active">
-                                <?php echo e(__('Therapist Profile')); ?>
+                                <?php echo e(__('Receptionist Profile')); ?>
 
                             </li>
                         </ol>
@@ -24,6 +25,7 @@
                 </div>
             </div>
         </div>
+        <!-- end page title -->
         <div class="row">
             <div class="col-xl-4">
                 <div class="card overflow-hidden">
@@ -31,12 +33,11 @@
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
-                                    <h5 class="text-primary"><?php echo e(__('Therapist Information')); ?></h5>
+                                    <h5 class="text-primary"><?php echo e(__('Receptionist Information')); ?></h5>
                                 </div>
                             </div>
                             <div class="col-5 align-self-end">
-                                <img src="<?php echo e(URL::asset('assets/images/profile-img.png')); ?>" alt=""
-                                    class="img-fluid">
+                                <img src="<?php echo e(URL::asset('assets/images/profile-img.png')); ?>" alt="" class="img-fluid">
                             </div>
                         </div>
                     </div>
@@ -44,35 +45,30 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="avatar-md profile-user-wid mb-4">
-                                    <img src="<?php if($therapist->profile_photo != ''): ?><?php echo e(URL::asset('storage/images/users/' . $therapist->profile_photo)); ?><?php else: ?><?php echo e(URL::asset('assets/images/users/noImage.png')); ?><?php endif; ?>" alt="<?php echo e($therapist->first_name); ?>"
+                                    <img src="<?php if($receptionist->profile_photo != ''): ?><?php echo e(URL::asset('storage/images/users/' . $receptionist->profile_photo)); ?><?php else: ?><?php echo e(URL::asset('assets/images/users/noImage.png')); ?><?php endif; ?>" alt="<?php echo e($receptionist->fisrt_name); ?>"
                                         class="img-thumbnail rounded-circle">
                                 </div>
-                                <h5 class="font-size-15 text-truncate"> <?php echo e($therapist->first_name); ?>
+                                <h5 class="font-size-15 text-truncate"> <?php echo e($receptionist->first_name); ?>
 
-                                    <?php echo e($therapist->last_name); ?> </h5>
-                                <p class="text-muted mb-0 text-truncate"> <?php echo e($therapist_info->title); ?> </p>
+                                    <?php echo e($receptionist->last_name); ?> </h5>
+                                <p class="text-muted mb-0 text-truncate"> <?php echo e($receptionist->title); ?> </p>
                             </div>
                             <div class="col-sm-8">
                                 <div class="pt-4">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h5 class="font-size-12"><?php echo e(__('Last Login :')); ?> </h5>
-                                            <p class="text-muted mb-0"> <?php echo e($therapist->last_login); ?> </p>
+                                            <h5 class="font-size-12"><?php echo e(__('Last Login:')); ?></h5>
+                                            <p class="text-muted mb-0"> <?php echo e($receptionist->last_login); ?> </p>
                                         </div>
                                     </div>
-                                    <?php if($role == 'therapist' || $role == 'admin'): ?>
+                                    <?php if($role == 'admin'): ?>
                                         <div class="mt-4">
-                                            <a href="<?php echo e(url('therapist/' . $therapist->id . '/edit')); ?>"
-                                                class="btn btn-primary waves-effect waves-light btn-sm"><?php echo e(__('Edit Profile')); ?>
-
-                                                <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                            <a href="<?php echo e(url('time-edit/' . $therapist->id)); ?>"
-                                                class="btn btn-primary waves-effect waves-light btn-sm"><?php echo e(__('Edit Time Slot')); ?>
-
-                                                <i class="mdi mdi-arrow-right ml-1"></i></a>
+                                            <a href="<?php echo e(url('receptionist/' . $receptionist->id . '/edit')); ?>"
+                                                class="btn btn-primary waves-effect waves-light btn-sm">
+                                                <?php echo e(__('Edit Profile')); ?> <i class="mdi mdi-arrow-right ml-1"></i>
+                                            </a>
                                         </div>
                                     <?php endif; ?>
-
                                 </div>
                             </div>
                         </div>
@@ -87,27 +83,15 @@
                                 <tbody>
                                     <tr>
                                         <th scope="row"><?php echo e(__('Full Name:')); ?></th>
-                                        <td><?php echo e($therapist->first_name); ?> <?php echo e($therapist->last_name); ?></td>
+                                        <td><?php echo e($receptionist->first_name); ?> <?php echo e($receptionist->last_name); ?></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?php echo e(__('Contact No:')); ?></th>
-                                        <td> <?php echo e($therapist->mobile); ?> </td>
+                                        <th scope="row"><?php echo e(__('Contact:')); ?></th>
+                                        <td> <?php echo e($receptionist->mobile); ?> </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?php echo e(__('Email:')); ?></th>
-                                        <td> <?php echo e($therapist->email); ?> </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><?php echo e(__('Degree:')); ?></th>
-                                        <td> <?php echo e($therapist_info->degree); ?> </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><?php echo e(__('Experience:')); ?></th>
-                                        <td> <?php echo e($therapist_info->experience); ?> </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><?php echo e(__('Fees:')); ?></th>
-                                        <td><?php echo e($therapist_info->fees); ?></td>
+                                        <td> <?php echo e($receptionist->email); ?> </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -115,45 +99,23 @@
                     </div>
                 </div>
                 <!-- end card -->
-                <!-- end card -->
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4"><?php echo e(__(' Therapist Available Day And Time')); ?></h4>
-                        <hr>
-                        <p>Available Day</p>
-                        <?php if($availableDay): ?>
-                            <?php if($availableDay->sun == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Sunday')); ?></span>
-                            <?php endif; ?>
-                            <?php if($availableDay->mon == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Monday')); ?></span>
-                            <?php endif; ?>
-                            <?php if($availableDay->tue == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Tuesday')); ?></span>
-                            <?php endif; ?>
-                            <?php if($availableDay->wen == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Wednesday')); ?></span>
-                            <?php endif; ?>
-                            <?php if($availableDay->thu == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Thursday')); ?></span>
-                            <?php endif; ?>
-                            <?php if($availableDay->fri == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Friday')); ?></span>
-                            <?php endif; ?>
-                            <?php if($availableDay->sat == 1): ?>
-                                <span class="badge badge-info font-size-15 my-2"><?php echo e(__('Saturday')); ?></span>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                        <hr>
-                        <p>Available Time</p>
-                        <?php if($availableTime): ?>
-                            <?php $__currentLoopData = $availableTime; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <span class="badge badge-info font-size-15 my-2">
-                                    <?php echo e(\Carbon\Carbon::createFromFormat('H:i:s', $item->from)->format('h:i') . ' To ' . \Carbon\Carbon::createFromFormat('H:i:s', $item->to)->format('h:i')); ?>
-
-                                </span>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        <?php endif; ?>
+                        <h4 class="card-title mb-4"><?php echo e(__('Assign Therapist Information')); ?></h4>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <?php $__currentLoopData = $therapist_user; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $show): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <span
+                                                    class="badge badge-info font-size-15 my-2"><?php echo e($show->first_name . ' ' . $show->last_name); ?></span>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <!-- end card -->
@@ -214,8 +176,8 @@
                                     <thead>
                                         <tr>
                                             <th><?php echo e(__('No')); ?></th>
-                                            <th><?php echo e(__('Customer Name')); ?></th>
                                             <th><?php echo e(__('Treatment Date')); ?></th>
+                                            <th><?php echo e(__('Customer Name')); ?></th>
                                             <th><?php echo e(__('Status')); ?></th>
                                             <th><?php echo e(__('Option')); ?></th>
                                         </tr>
@@ -236,8 +198,8 @@
                                         <?php $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td><?php echo e($loop->index + 1 + $per_page * ($currentpage - 1)); ?></td>
-                                                <td><?php echo e($item->user->first_name); ?> <?php echo e($item->user->last_name); ?></td>
                                                 <td><?php echo e(date('d-m-Y')); ?></td>
+                                                <td><?php echo e($item->user->first_name . ' ' . $item->user->last_name); ?></td>
                                                 <td><?php echo e($item->payment_status); ?></td>
                                                 <td>
                                                     <a href="<?php echo e(url('invoice/' . $item->id)); ?>">
@@ -271,7 +233,7 @@
         <!-- end row -->
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('script'); ?>
-        <!-- chart plugins -->
+        <!-- Chart plugins -->
         <script src="<?php echo e(URL::asset('assets/libs/apexcharts/apexcharts.min.js')); ?>"></script>
         <!-- Plugins js -->
         <script src="<?php echo e(URL::asset('assets/libs/jszip/jszip.min.js')); ?>"></script>
@@ -280,4 +242,4 @@
         <script src="<?php echo e(URL::asset('assets/js/pages/profile.init.js')); ?>"></script>
     <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\youliantang\resources\views/therapist/therapist-profile.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master-layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/yuliadiwijaya/Documents/Freelance/You Lian tAng/youliantang/resources/views/receptionist/receptionist-profile.blade.php ENDPATH**/ ?>

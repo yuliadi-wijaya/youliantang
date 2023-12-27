@@ -117,7 +117,7 @@ unset($__errorArgs, $__bag); ?>
                     <div class="mt-5 text-center">
                         <p><?php echo e(__("Don't have an account ?")); ?> <a href="<?php echo e(url('register')); ?>"
                                 class="font-weight-medium text-primary"> <?php echo e(__("Sign Up here")); ?></a> </p>
-                        <p>© <?php echo e(date('Y')); ?> <?php echo e(AppSetting('title')); ?>. Crafted with <i class="mdi mdi-heart text-danger"></i> <?php echo e(__("by Themesbrand")); ?></p>
+                        <p>© <?php echo e(date('Y')); ?> <?php echo e(AppSetting('title')); ?></p>
                     </div>
                 </div>
             </div>

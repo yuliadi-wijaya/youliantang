@@ -90,7 +90,7 @@
                     <div class="mt-5 text-center">
                         <p>{{ __("Don't have an account ?") }} <a href="{{ url('register') }}"
                                 class="font-weight-medium text-primary"> {{ __("Sign Up here") }}</a> </p>
-                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}. Crafted with <i class="mdi mdi-heart text-danger"></i> {{ __("by Themesbrand") }}</p>
+                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}</p>
                     </div>
                 </div>
             </div>

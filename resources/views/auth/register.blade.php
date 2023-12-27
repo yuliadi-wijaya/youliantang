@@ -133,7 +133,7 @@
                     <div class="mt-5 text-center">
                         <p>{{ __("Already have an account ?") }} <a href="{{ url('login') }}"
                                 class="font-weight-medium text-primary">{{ __("Login") }} </a> </p>
-                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}. Crafted with <i class="mdi mdi-heart text-danger"></i> {{ __("by Themesbrand") }}</p>
+                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}</p>
                     </div>
                 </div>
             </div>

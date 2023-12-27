@@ -64,7 +64,7 @@
                     </div>
                     <div class="mt-5 text-center">
                         <p>{{ __("Remember It?") }} <a href="{{ url('login') }}" class="font-weight-medium text-primary"> {{ __("Sign In here") }}</a></p>
-                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}. Crafted with  <i class="mdi mdi-heart text-danger"></i> {{ __("by Themesbrand") }}</p>
+                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}</p>
                     </div>
                 </div>
             </div>

@@ -130,7 +130,6 @@
 
     <div class="col-xl-8">
         <div class="row">
-            
             <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
@@ -165,8 +164,6 @@
                     </div>
                 </div>
             </div>
-            
-
         </div>
 
         <!-- end row -->
@@ -222,17 +219,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td><?php echo e($loop->index + 1); ?></td>
-                                            <td><?php echo e($item->first_name); ?> <?php echo e($item->last_name); ?></td>
-                                            <td><?php echo e($item->gender); ?></td>
-                                            <td><?php echo e($item->phone_number); ?></td>
-                                            <td><?php echo e($item->email); ?></td>
-                                            <td><?php echo e($item->status == 1 ? 'Active' : 'Inactive'); ?></td>
+                                            <td><?php echo e($row->first_name); ?> <?php echo e($row->last_name); ?></td>
+                                            <td><?php echo e($row->gender); ?></td>
+                                            <td><?php echo e($row->phone_number); ?></td>
+                                            <td><?php echo e($row->email); ?></td>
+                                            <td><?php echo e($row->status == 1 ? 'Active' : 'Inactive'); ?></td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="<?php echo e(url('therapist/' . $item->id)); ?>">
+                                                <a href="<?php echo e(url('therapist/' . $row->user_id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
                                                         <?php echo e(__('View Details')); ?>
@@ -262,19 +259,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $__currentLoopData = $receptionists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $receptionist): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $receptionists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td><?php echo e($loop->index + 1); ?></td>
-                                            <td><?php echo e($receptionist->first_name); ?> <?php echo e($receptionist->last_name); ?>
+                                            <td><?php echo e($row->first_name); ?> <?php echo e($row->last_name); ?>
 
                                             </td>
-                                            <td><?php echo e($receptionist->gender); ?></td>
-                                            <td><?php echo e($receptionist->phone_number); ?></td>
-                                            <td><?php echo e($receptionist->email); ?></td>
-                                            <td><?php echo e($receptionist->status == 1 ? 'Active' : 'Inactive'); ?></td>
+                                            <td><?php echo e($row->gender); ?></td>
+                                            <td><?php echo e($row->phone_number); ?></td>
+                                            <td><?php echo e($row->email); ?></td>
+                                            <td><?php echo e($row->status == 1 ? 'Active' : 'Inactive'); ?></td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="<?php echo e(url('receptionist/' . $receptionist->id)); ?>">
+                                                <a href="<?php echo e(url('receptionist/' . $row->user_id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">

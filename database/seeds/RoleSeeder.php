@@ -27,19 +27,19 @@ class RoleSeeder extends Seeder
                 'slug'       => 'receptionist',
             ]);
 
-        // Sentinel::getRoleRepository()
-        //     ->createModel()
-        //     ->create([
-        //         'name'       => 'Therapist',
-        //         'slug'       => 'therapist',
-        //     ]);
+        Sentinel::getRoleRepository()
+            ->createModel()
+            ->create([
+                'name'       => 'Therapist',
+                'slug'       => 'therapist',
+            ]);
 
-        // Sentinel::getRoleRepository()
-        //     ->createModel()
-        //     ->create([
-        //         'name'       => 'Customer',
-        //         'slug'       => 'customer',
-        //     ]);
+        Sentinel::getRoleRepository()
+            ->createModel()
+            ->create([
+                'name'       => 'Customer',
+                'slug'       => 'customer',
+            ]);
 
         // admin permission add
         $role_admin = Sentinel::findRoleBySlug('admin');

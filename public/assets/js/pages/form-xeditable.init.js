@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Form-Xeditable Js File
-*/
 $(function () {
   //modify buttons style
   $.fn.editableform.buttons = '<button type="submit" class="btn btn-success editable-submit btn-sm waves-effect waves-light"><i class="mdi mdi-check"></i></button>' + '<button type="button" class="btn btn-danger editable-cancel btn-sm waves-effect waves-light"><i class="mdi mdi-close"></i></button>'; //inline
