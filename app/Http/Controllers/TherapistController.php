@@ -321,8 +321,7 @@ class TherapistController extends Controller
                     })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointment');
                     $prescriptions = Prescription::with('customer')->where('created_by', $therapist->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
                     $invoices = Invoice::with('user')->where('invoices.created_by', '=', $therapist->id)->orderby('id', 'desc')->get();
-                    $receptionists_id = Receptionist::where('therapist_id', $therapist_id)->pluck('user_id');
-                    $invoices = Invoice::with('user')->where('therapist_id', $therapist_id)->paginate($this->limit, '*', 'invoice');
+                    $invoices = Invoice::with('user')->paginate($this->limit, '*', 'invoice');
 
                     $tot_appointment = Appointment::where(function ($re) use ($therapist_id) {
                         $re->orWhere('appointment_with', $therapist_id);
@@ -630,8 +629,7 @@ class TherapistController extends Controller
                         })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointment');
                         $prescriptions = Prescription::with('customer')->where('created_by', $therapist->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
                         $invoices = Invoice::with('user')->where('invoices.created_by', '=', $therapist->id)->orderby('id', 'desc')->get();
-                        $receptionists_id = Receptionist::where('therapist_id', $therapist_id)->pluck('user_id');
-                        $invoices = Invoice::with('user')->where('therapist_id', $therapist_id)->paginate($this->limit, '*', 'invoice');
+                        $invoices = Invoice::with('user')->paginate($this->limit, '*', 'invoice');
 
                         $tot_appointment = Appointment::where(function ($re) use ($therapist_id) {
                             $re->orWhere('appointment_with', $therapist_id);

@@ -2,10 +2,10 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0 font-size-18">{{ __('translation.dashboards') }}</h4>
+            <h4 class="mb-0 font-size-18"><?php echo e(__('translation.dashboards')); ?></h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item active">{{ __('translation.welcome-to-dashboard') }}</li>
+                    <li class="breadcrumb-item active"><?php echo e(__('translation.welcome-to-dashboard')); ?></li>
                 </ol>
             </div>
         </div>
@@ -19,12 +19,12 @@
                 <div class="row">
                     <div class="col-7">
                         <div class="text-primary p-3">
-                            <h5 class="text-primary">{{ __('translation.welcome-back') }} !</h5>
-                            <p>{{ __('translation.dashboards') }}</p>
+                            <h5 class="text-primary"><?php echo e(__('translation.welcome-back')); ?> !</h5>
+                            <p><?php echo e(__('translation.dashboards')); ?></p>
                         </div>
                     </div>
                     <div class="col-5 align-self-end">
-                        <img src="{{ URL::asset('assets/images/profile-img.png') }}" alt="" class="img-fluid">
+                        <img src="<?php echo e(URL::asset('assets/images/profile-img.png')); ?>" alt="" class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -32,35 +32,36 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="avatar-md profile-user-wid mb-4">
-                            <img src="@if ($user->profile_photo != ''){{ URL::asset('storage/images/users/' . $user->profile_photo) }}@else{{ URL::asset('assets/images/users/noImage.png') }}@endif" alt="" class="img-thumbnail rounded-circle">
+                            <img src="<?php if($user->profile_photo != ''): ?><?php echo e(URL::asset('storage/images/users/' . $user->profile_photo)); ?><?php else: ?><?php echo e(URL::asset('assets/images/users/noImage.png')); ?><?php endif; ?>" alt="" class="img-thumbnail rounded-circle">
                         </div>
-                        <h5 class="font-size-15 text-truncate"> {{ $user->first_name }} {{ $user->last_name }} </h5>
-                        <p class="text-muted mb-0 text-truncate">{{ __('Super Admin') }}</p>
+                        <h5 class="font-size-15 text-truncate"> <?php echo e($user->first_name); ?> <?php echo e($user->last_name); ?> </h5>
+                        <p class="text-muted mb-0 text-truncate"><?php echo e(__('Super Admin')); ?></p>
                     </div>
                     <div class="col-sm-8">
                         <div class="pt-4">
                             <div class="row">
                                 <div class="col-6">
-                                    <a href="{{ url('/therapist') }}" class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0">{{ number_format($data['total_therapists']) }}</h5>
+                                    <a href="<?php echo e(url('/therapist')); ?>" class="mb-0 font-weight-medium font-size-15">
+                                        <h5 class="mb-0"><?php echo e(number_format($data['total_therapists'])); ?></h5>
                                     </a>
-                                    <p class="text-muted mb-0">{{ __('translation.therapists') }}</p>
+                                    <p class="text-muted mb-0"><?php echo e(__('translation.therapists')); ?></p>
                                 </div>
                                 <div class="col-6">
-                                    <a href="{{ url('/customer') }}" class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0">{{ number_format($data['total_customers']) }}</h5>
+                                    <a href="<?php echo e(url('/customer')); ?>" class="mb-0 font-weight-medium font-size-15">
+                                        <h5 class="mb-0"><?php echo e(number_format($data['total_customers'])); ?></h5>
                                     </a>
-                                    <p class="text-muted mb-0">{{ __('translation.customers') }}</p>
+                                    <p class="text-muted mb-0"><?php echo e(__('translation.customers')); ?></p>
                                 </div>
                             </div>
                             <div class="row mt-4">
                                 <div class="col-6">
-                                    <a href="{{ url('/receptionist') }}"
+                                    <a href="<?php echo e(url('/receptionist')); ?>"
                                         class="mb-0 font-weight-medium font-size-15">
-                                        <h5 class="mb-0">{{ number_format($data['total_receptionists']) }}
+                                        <h5 class="mb-0"><?php echo e(number_format($data['total_receptionists'])); ?>
+
                                         </h5>
                                     </a>
-                                    <p class="text-muted mb-0">{{ __('translation.receptionist') }}</p>
+                                    <p class="text-muted mb-0"><?php echo e(__('translation.receptionist')); ?></p>
                                 </div>
                             </div>
                         </div>
@@ -70,15 +71,16 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.monthly-earning') }}</h4>
+                <h4 class="card-title mb-4"><?php echo e(__('translation.monthly-earning')); ?></h4>
                 <div class="row">
                     <div class="col-sm-6">
-                        <p class="text-muted">{{ __('This month') }}</p>
-                        <h3>Rp. {{ number_format($data['monthly_earning']) }}</h3>
+                        <p class="text-muted"><?php echo e(__('This month')); ?></p>
+                        <h3>Rp. <?php echo e(number_format($data['monthly_earning'])); ?></h3>
                         <p class="text-muted">
-                            <span class="@if ($data['monthly_diff'] > 0) text-success @else text-danger @endif mr-2">
-                                {{ $data['monthly_diff'] }}% <i class="mdi @if ($data['monthly_diff'] > 0) mdi-arrow-up @else mdi-arrow-down @endif"></i>
-                            </span>{{ __('From previous month') }}
+                            <span class="<?php if($data['monthly_diff'] > 0): ?> text-success <?php else: ?> text-danger <?php endif; ?> mr-2">
+                                <?php echo e($data['monthly_diff']); ?>% <i class="mdi <?php if($data['monthly_diff'] > 0): ?> mdi-arrow-up <?php else: ?> mdi-arrow-down <?php endif; ?>"></i>
+                            </span><?php echo e(__('From previous month')); ?>
+
                         </p>
                     </div>
                     <div class="col-sm-6">
@@ -91,28 +93,28 @@
             <div class="card mini-stats-wid">
                 <div class="card-body">
                     <div class="media">
-                        @if (session()->has('page_limit'))
-                            @php
+                        <?php if(session()->has('page_limit')): ?>
+                            <?php
                                 $per_page = session()->get('page_limit');
-                            @endphp
-                        @else
-                            @php
+                            ?>
+                        <?php else: ?>
+                            <?php
                                 $per_page = Config::get('app.page_limit');
-                            @endphp
-                        @endif
+                            ?>
+                        <?php endif; ?>
                         <div class="media-body">
-                            <p class="text-muted font-weight-medium">{{ __('translation.items-per-page') }}</p>
+                            <p class="text-muted font-weight-medium"><?php echo e(__('translation.items-per-page')); ?></p>
                             <button
-                                class="btn  {{ $per_page == 10 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
+                                class="btn  <?php echo e($per_page == 10 ? 'btn-primary' : 'btn-info'); ?>  btn-sm mr-2 per-page-items  mb-md-1"
                                 data-page="10">10</button>
                             <button
-                                class="btn  {{ $per_page == 25 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
+                                class="btn  <?php echo e($per_page == 25 ? 'btn-primary' : 'btn-info'); ?>  btn-sm mr-2 per-page-items  mb-md-1"
                                 data-page="25">25</button>
                             <button
-                                class="btn  {{ $per_page == 50 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
+                                class="btn  <?php echo e($per_page == 50 ? 'btn-primary' : 'btn-info'); ?>  btn-sm mr-2 per-page-items  mb-md-1"
                                 data-page="50">50</button>
                             <button
-                                class="btn  {{ $per_page == 100 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
+                                class="btn  <?php echo e($per_page == 100 ? 'btn-primary' : 'btn-info'); ?>  btn-sm mr-2 per-page-items  mb-md-1"
                                 data-page="100">100</button>
                         </div>
                         <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
@@ -133,8 +135,8 @@
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.revenue') }}</p>
-                                <h4 class="mb-0">Rp. {{ number_format($data['revenue'], 2) }}</h4>
+                                <p class="text-muted font-weight-medium"><?php echo e(__('translation.revenue')); ?></p>
+                                <h4 class="mb-0">Rp. <?php echo e(number_format($data['revenue'], 2)); ?></h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -150,8 +152,8 @@
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __("translation.today's-earning") }}</p>
-                                <h4 class="mb-0">Rp. {{ number_format($data['daily_earning'], 2) }}</h4>
+                                <p class="text-muted font-weight-medium"><?php echo e(__("translation.today's-earning")); ?></p>
+                                <h4 class="mb-0">Rp. <?php echo e(number_format($data['daily_earning'], 2)); ?></h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -167,7 +169,7 @@
         <!-- end row -->
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.monthly-registered-customers-revenue') }}</h4>
+                <h4 class="card-title mb-4"><?php echo e(__('translation.monthly-registered-customers-revenue')); ?></h4>
                 <div id="monthly_users" class="apex-charts" dir="ltr"></div>
             </div>
         </div>
@@ -178,25 +180,25 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.latest-users') }}</h4>
+                <h4 class="card-title mb-4"><?php echo e(__('translation.latest-users')); ?></h4>
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#Therapists" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-md"></i></span>
-                            <span class="d-none d-sm-block">{{ __('translation.therapists') }}</span>
+                            <span class="d-none d-sm-block"><?php echo e(__('translation.therapists')); ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#Receptionist" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-tie"></i></span>
-                            <span class="d-none d-sm-block">{{ __('translation.receptionist') }}</span>
+                            <span class="d-none d-sm-block"><?php echo e(__('translation.receptionist')); ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#Customers" role="tab">
                             <span class="d-block d-sm-none"><i class="fas fa-user-injured"></i></span>
-                            <span class="d-none d-sm-block">{{ __('translation.customers') }}</span>
+                            <span class="d-none d-sm-block"><?php echo e(__('translation.customers')); ?></span>
                         </a>
                     </li>
                 </ul>
@@ -207,35 +209,36 @@
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('No.') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Gender') }}</th>
-                                        <th>{{ __('Phone Number') }}</th>
-                                        <th>{{ __('Email') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('View Details') }}</th>
+                                        <th><?php echo e(__('No.')); ?></th>
+                                        <th><?php echo e(__('Name')); ?></th>
+                                        <th><?php echo e(__('Gender')); ?></th>
+                                        <th><?php echo e(__('Phone Number')); ?></th>
+                                        <th><?php echo e(__('Email')); ?></th>
+                                        <th><?php echo e(__('Status')); ?></th>
+                                        <th><?php echo e(__('View Details')); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($therapists as $row)
+                                    <?php $__currentLoopData = $therapists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $row->first_name }} {{ $row->last_name }}</td>
-                                            <td>{{ $row->gender }}</td>
-                                            <td>{{ $row->phone_number }}</td>
-                                            <td>{{ $row->email }}</td>
-                                            <td>{{ $row->status == 1 ? 'Active' : 'Inactive' }}</td>
+                                            <td><?php echo e($loop->index + 1); ?></td>
+                                            <td><?php echo e($row->first_name); ?> <?php echo e($row->last_name); ?></td>
+                                            <td><?php echo e($row->gender); ?></td>
+                                            <td><?php echo e($row->phone_number); ?></td>
+                                            <td><?php echo e($row->email); ?></td>
+                                            <td><?php echo e($row->status == 1 ? 'Active' : 'Inactive'); ?></td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('therapist/' . $row->user_id) }}">
+                                                <a href="<?php echo e(url('therapist/' . $row->user_id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                                        {{ __('View Details') }}
+                                                        <?php echo e(__('View Details')); ?>
+
                                                     </button>
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
@@ -246,37 +249,39 @@
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('No.') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Gender') }}</th>
-                                        <th>{{ __('Phone Number') }}</th>
-                                        <th>{{ __('Email') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('View Details') }}</th>
+                                        <th><?php echo e(__('No.')); ?></th>
+                                        <th><?php echo e(__('Name')); ?></th>
+                                        <th><?php echo e(__('Gender')); ?></th>
+                                        <th><?php echo e(__('Phone Number')); ?></th>
+                                        <th><?php echo e(__('Email')); ?></th>
+                                        <th><?php echo e(__('Status')); ?></th>
+                                        <th><?php echo e(__('View Details')); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($receptionists as $row)
+                                    <?php $__currentLoopData = $receptionists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $row->first_name }} {{ $row->last_name }}
+                                            <td><?php echo e($loop->index + 1); ?></td>
+                                            <td><?php echo e($row->first_name); ?> <?php echo e($row->last_name); ?>
+
                                             </td>
-                                            <td>{{ $row->gender }}</td>
-                                            <td>{{ $row->phone_number }}</td>
-                                            <td>{{ $row->email }}</td>
-                                            <td>{{ $row->status == 1 ? 'Active' : 'Inactive' }}</td>
+                                            <td><?php echo e($row->gender); ?></td>
+                                            <td><?php echo e($row->phone_number); ?></td>
+                                            <td><?php echo e($row->email); ?></td>
+                                            <td><?php echo e($row->status == 1 ? 'Active' : 'Inactive'); ?></td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('receptionist/' . $row->user_id) }}">
+                                                <a href="<?php echo e(url('receptionist/' . $row->user_id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">
-                                                        {{ __('View Details') }}
+                                                        <?php echo e(__('View Details')); ?>
+
                                                     </button>
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
@@ -287,36 +292,37 @@
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>{{ __('No.') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Gender') }}</th>
-                                        <th>{{ __('Phone Number') }}</th>
-                                        <th>{{ __('Email') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('View Details') }}</th>
+                                        <th><?php echo e(__('No.')); ?></th>
+                                        <th><?php echo e(__('Name')); ?></th>
+                                        <th><?php echo e(__('Gender')); ?></th>
+                                        <th><?php echo e(__('Phone Number')); ?></th>
+                                        <th><?php echo e(__('Email')); ?></th>
+                                        <th><?php echo e(__('Status')); ?></th>
+                                        <th><?php echo e(__('View Details')); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($customers as $customer)
+                                    <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td> {{ $loop->index + 1 }} </td>
-                                            <td> {{ $customer->first_name }} {{ $customer->last_name }} </td>
-                                            <td> {{ $customer->gender }} </td>
-                                            <td> {{ $customer->phone_number }} </td>
-                                            <td> {{ $customer->email }} </td>
-                                            <td> {{ $customer->status == 1 ? 'Active' : 'Inactive' }} </td>
+                                            <td> <?php echo e($loop->index + 1); ?> </td>
+                                            <td> <?php echo e($customer->first_name); ?> <?php echo e($customer->last_name); ?> </td>
+                                            <td> <?php echo e($customer->gender); ?> </td>
+                                            <td> <?php echo e($customer->phone_number); ?> </td>
+                                            <td> <?php echo e($customer->email); ?> </td>
+                                            <td> <?php echo e($customer->status == 1 ? 'Active' : 'Inactive'); ?> </td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('customer/' . $customer->id) }}">
+                                                <a href="<?php echo e(url('customer/' . $customer->id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">
-                                                        {{ __('View Details') }}
+                                                        <?php echo e(__('View Details')); ?>
+
                                                     </button>
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
@@ -328,3 +334,4 @@
     </div>
 </div>
 <!-- end row -->
+<?php /**PATH D:\Project\youliantang\resources\views/layouts/admin-dashboard.blade.php ENDPATH**/ ?>

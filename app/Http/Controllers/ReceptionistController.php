@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Appointment;
 use App\Invoice;
 use App\Receptionist;
 use Exception;
@@ -220,39 +219,26 @@ class ReceptionistController extends Controller
             })->where('id', $receptionist->id)->where('is_deleted', 0)->first();
             if ($receptionist) {
                 $role = $user->roles[0]->slug;
-                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
-                $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                    $re->whereIN('appointment_with', $receptionists_therapist_id);
-                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
-                    $re->orWhere('booked_by', $user_id);
-                })->get();
 
                 $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$receptionist->id]);
                 $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                        $re->whereIN('therapist_id', $receptionists_therapist_id);
+                    ->where(function ($re) use ($user_id) {
                         $re->orWhere('created_by', $user_id);
                     })->count();
                 $data = [
-                    'total_appointment' => $tot_appointment->count(),
                     'revenue' => $revenue[0]->total,
                     'pending_bill' => $pending_bill
                 ];
-                $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                    $re->whereIN('appointment_with', $receptionists_therapist_id);
-                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
-                    $re->orWhere('booked_by', $user_id);
-                })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
+
                 $invoices = Invoice::with('user')
-                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                        $re->whereIN('therapist_id', $receptionists_therapist_id);
+                    ->where(function ($re) use ($user_id) {
                         $re->orWhere('created_by', $user_id);
                     })->paginate($this->limit, '*', 'invoice');
                 $therapist_role = Sentinel::findRoleBySlug('therapist');
                 $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
-                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
-                $therapist_user = User::whereIn('id', $receptionist_therapist)->get();
-                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'therapist_user'));
+                $therapist_user = User::join('role_users', 'role_users.user_id', '=', 'users.id')
+                    ->where('role_users.role_id', 2)->get();
+                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'invoices', 'therapist_user'));
             } else {
                 return redirect('/')->with('error', 'Receptionist not found');
             }
@@ -410,42 +396,31 @@ class ReceptionistController extends Controller
     public function receptionist_view($id){
         $user = Sentinel::getUser();
             $user_id = $id;
-            $receptionist_therapist = Receptionist::where('therapist_id',$user->id)->pluck('user_id');
-            $receptionist = $user::where('id', $id)->where('is_deleted', 0)->WhereIn('id',$receptionist_therapist)->first();
+            $receptionist = $user::join('role_users', 'role_users.user_id', '=', 'users.id')
+                ->where('id', $id)->where('is_deleted', 0)
+                ->where('role_users.role_id', 2)->first();
             if ($receptionist) {
                 $role = $user->roles[0]->slug;
-                $receptionists_therapist_id = Receptionist::where('user_id', $user_id)->pluck('therapist_id');
-                $tot_appointment = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                    $re->whereIN('appointment_with', $receptionists_therapist_id);
-                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
-                    $re->orWhere('booked_by', $user_id);
-                })->get();
                 $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$receptionist->id]);
                 $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                        $re->whereIN('therapist_id', $receptionists_therapist_id);
+                    ->where(function ($re) use ($user_id) {
                         $re->orWhere('created_by', $user_id);
                     })->count();
                 $data = [
-                    'total_appointment' => $tot_appointment->count(),
                     'revenue' => $revenue[0]->total,
                     'pending_bill' => $pending_bill
                 ];
-                $appointments = Appointment::where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                    $re->whereIN('appointment_with', $receptionists_therapist_id);
-                    $re->orWhereIN('booked_by', $receptionists_therapist_id);
-                    $re->orWhere('booked_by', $user_id);
-                })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
+
                 $invoices = Invoice::with('user')
-                    ->where(function ($re) use ($user_id, $receptionists_therapist_id) {
-                        $re->whereIN('therapist_id', $receptionists_therapist_id);
+                    ->where(function ($re) use ($user_id) {
                         $re->orWhere('created_by', $user_id);
                     })->paginate($this->limit, '*', 'invoice');
                 $therapist_role = Sentinel::findRoleBySlug('therapist');
                 $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
-                $receptionist_therapist = Receptionist::where('user_id', $receptionist->id)->where('is_deleted', 0)->pluck('therapist_id');
-                $therapist_user = User::whereIn('id', $receptionist_therapist)->get();
-                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices', 'therapist_user'));
+                $therapist_user = User::join('role_users', 'role_users.user_id', '=', 'users.id')
+                    ->where('role_users.role_id', 2)->get();
+
+                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'invoices', 'therapist_user'));
             } else {
                 return redirect('/')->with('error', 'receptionist not found');
             }
