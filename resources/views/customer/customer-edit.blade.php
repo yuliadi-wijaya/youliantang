@@ -59,16 +59,11 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Email ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            <label class="control-label">{{ __('Email ') }}</label>
+                                            <input type="email" class="form-control"
                                                 name="email" id="email" tabindex="2" value="@if ($customer && $customer_info){{ $customer->email }}@elseif(old('email')){{ old('email') }}@endif"
                                                 placeholder="{{ __('Enter Email') }}">
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                            <input type="hidden" name="hidden_mail" value="@if ($customer && $customer_info){{ $customer->email }}@endif">
                                         </div>
                                     </div>
                                     <div class="row">

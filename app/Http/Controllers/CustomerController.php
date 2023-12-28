@@ -168,7 +168,7 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required|alpha',
             // 'phone_number' => 'required',
-            //'email' => 'nullable|email',
+            'email' => 'nullable|email',
             'gender' => 'required',
             'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
             'status' => 'required'
@@ -189,9 +189,7 @@ class CustomerController extends Controller
 
             // Set Default Password for Customer
             $validatedData['last_name'] = $request->last_name;
-            if($request->email == ''){
-                $validatedData['email'] = $request->hidden_mail;
-            }
+            $validatedData['email'] = empty($validatedData['email']) ? $request->hidden_mail : $validatedData['email'];
             $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
             $validatedData['created_by'] = $user->id;
             $validatedData['updated_by'] = $user->id;
@@ -217,13 +215,14 @@ class CustomerController extends Controller
             $customer_info->save();
 
             $app_name =  AppSetting('title');
+            /*
             if($request->email !== ''){
                 $verify_mail = trim($request->email);
                 Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
                     $message->to($verify_mail);
                     $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
                 });
-            }
+            }*/
             if($request->post_from == 'customer') {
                 return redirect('customer')->with('success', 'Customer created successfully!');
             }else{
@@ -324,7 +323,7 @@ class CustomerController extends Controller
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
                 // 'phone_number' => 'required',
-                //'email' => 'nullable|email',
+                'email' => 'nullable|email',
                 'gender' => 'required',
                 'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'
@@ -345,8 +344,8 @@ class CustomerController extends Controller
                 }
                 $customer->first_name = $validatedData['first_name'];
                 $customer->last_name = $request->last_name;
-                $customer->phone_number = $validatedData['phone_number'];
-                $customer->email = $validatedData['email'];
+                $customer->phone_number = $request->phone_number;
+                $customer->email = empty($validatedData['email']) ? $request->hidden_mail : $validatedData['email'];
                 $customer->status = $validatedData['status'];
                 $customer->updated_by = $user->id;
                 $customer->save();
