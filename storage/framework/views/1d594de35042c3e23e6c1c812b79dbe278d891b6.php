@@ -125,7 +125,7 @@ unset($__errorArgs, $__bag); ?>
                                                 name="email" id="email" tabindex="2"
                                                 value="<?php if($customer && $customer->email): ?><?php echo e($customer->email); ?><?php elseif(old('email')): ?><?php echo e(old('email', $cust_mail)); ?><?php else: ?><?php echo e($cust_mail); ?><?php endif; ?>"
                                                 placeholder="<?php echo e(__('Enter Email')); ?>">
-                                            <input type="hidden" name="hidden_mail" value="<?php echo e($cust_mail); ?>">
+                                            <input type="hidden" name="hidden_mail" value="<?php if($customer && $customer->email): ?><?php echo e($customer->email); ?><?php else: ?><?php echo e($cust_mail); ?><?php endif; ?>">
                                         </div>
                                     </div>
                                     <div class="row">

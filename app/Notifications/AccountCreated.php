@@ -44,7 +44,7 @@ class AccountCreated extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                            ->subject('Welcome to the Doctorly - Patient Management System')
+                            ->subject('Welcome to You Lian tAng - Reflexology & Massage Therapy')
                             ->view(
                                     'emails.WelcomeEmail', ['user' => $this->user]
                                 );

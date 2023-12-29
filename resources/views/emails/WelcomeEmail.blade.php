@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
-                                        <h5 class="text-primary">{{ AppSetting('title'); }} - Hospital Management System</h5>
+                                        <h5 class="text-primary">{{ AppSetting('title'); }} - Reflexology & Massage Therapy</h5>
                                         <p>Here is your new account credentials with {{ AppSetting('title'); }}.</p>
                                     </div>
                                 </div>

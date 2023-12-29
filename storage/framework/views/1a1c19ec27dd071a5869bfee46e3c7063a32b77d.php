@@ -5,7 +5,7 @@
         <script src="<?php echo e(URL::asset('assets/libs/simplebar/simplebar.min.js')); ?>"></script>
         <script src="<?php echo e(URL::asset('assets/libs/node-waves/node-waves.min.js')); ?>"></script>
         <script src="<?php echo e(URL::asset('assets/libs/toastr/toastr.min.js')); ?>"></script>
-        
+        <script src="<?php echo e(URL::asset('assets/js/auto-logout.js')); ?>"></script>
 
         <?php echo $__env->yieldContent('script'); ?>
         <!-- App js -->
