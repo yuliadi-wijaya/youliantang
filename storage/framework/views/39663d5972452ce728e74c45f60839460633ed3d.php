@@ -14,7 +14,7 @@
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
-                                        <h5 class="text-primary"><?php echo e(AppSetting('title')); ?> - Hospital Management System</h5>
+                                        <h5 class="text-primary"><?php echo e(AppSetting('title')); ?> - Reflexology & Massage Therapy</h5>
                                         <p>Here is your new account credentials with <?php echo e(AppSetting('title')); ?>.</p>
                                     </div>
                                 </div>
