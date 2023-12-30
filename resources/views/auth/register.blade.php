@@ -59,28 +59,16 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="last_name">{{ __("Last Name ") }}<span
-                                            class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                        <label for="last_name">{{ __("Last Name ") }}</label>
+                                        <input type="text" class="form-control"
                                             value="{{ old('last_name') }}" name="last_name" id="userlastname"
                                             placeholder="{{ __("Enter Last Name") }}">
-                                        @error('last_name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="usermobile">{{ __("Contact No ") }}<span
-                                            class="text-danger">*</span></label>
-                                        <input type="tel" class="form-control @error('mobile') is-invalid @enderror"
-                                            value="{{ old('mobile') }}" name="mobile" id="usermobile"
-                                            placeholder="{{ __("Enter Contact Number") }}">
-                                        @error('mobile')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                        <label for="userphone_number">{{ __("Phone Number ") }}</label>
+                                        <input type="tel" class="form-control"
+                                            value="{{ old('phone_number') }}" name="phone_number" id="userphone_number"
+                                            placeholder="{{ __("Enter Phone Number") }}">
                                     </div>
                                     <div class="form-group">
                                         <label for="useremail">{{ __("Email ") }}<span

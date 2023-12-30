@@ -97,15 +97,18 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'first_name' => 'required|alpha|max:20',
-            'last_name' => 'alpha|max:20',
-            'phone_number' => 'required',
+            // 'last_name' => 'alpha|max:20',
+            // 'phone_number' => 'required',
             'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-            'password' => 'required|min:8|confirmed|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:50'
+            // 'password' => 'required|min:6|confirmed|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:50'
+            'password' => 'required|min:6|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
         ]);
         try {
             $dispatcher = User::getEventDispatcher();
             User::unsetEventDispatcher();
             //Create a new user
+            $validatedData['last_name'] = $request->last_name;
+            $validatedData['phone_number'] = $request->phone_number;
             $user = Sentinel::registerAndActivate($validatedData);
             //Attach the user to the role
             $role = Sentinel::findRoleBySlug('customer');

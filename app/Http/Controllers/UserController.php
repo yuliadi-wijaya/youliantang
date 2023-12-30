@@ -81,18 +81,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validation = $request->validate([
-            'age' => 'required|numeric',
-            'address' => 'required',
-            'gender' => 'required',
-            'profile_photo' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:500',
-            'height' => 'required|numeric',
-            'b_group' => 'required',
-            'pulse' => 'required|numeric',
-            'allergy' => 'required|regex:/^[a-zA-Z ]+$/',
-            'weight' => 'required|numeric',
-            'b_pressure' => 'required|numeric',
-            'respiration' => 'required|numeric',
-            'diet' => 'required'
+            'gender' => 'required'
         ]);
         try {
             $user = Sentinel::getUser();
@@ -112,23 +101,16 @@ class UserController extends Controller
             // customer details save
             $customer_id = $customer->id;
             $customer_Details = new Customer();
-            $customer_Details->user_id = $customer_id;
-            $customer_Details->age = $request->age;
+            $customer_Details->user_id = $customer->id;
             $customer_Details->gender = $request->gender;
+            $customer_Details->place_of_birth = $request->place_of_birth;
+            $customer_Details->birth_date = $request->birth_date;
             $customer_Details->address = $request->address;
+            $customer_Details->emergency_contact = $request->emergency_contact;
+            $customer_Details->emergency_name = $request->emergency_name;
+            $customer_Details->status = $request->status;
             $customer_Details->save();
-            // medical info save
-            $medical_info = new MedicalInfo();
-            $medical_info->user_id = $customer_id;
-            $medical_info->height = $request->height;
-            $medical_info->b_group = $request->b_group;
-            $medical_info->pulse = $request->pulse;
-            $medical_info->allergy = $request->allergy;
-            $medical_info->weight = $request->weight;
-            $medical_info->b_pressure = $request->b_pressure;
-            $medical_info->respiration = $request->respiration;
-            $medical_info->diet = $request->diet;
-            $medical_info->save();
+
             return redirect('/')->with('success', 'Register Successfully');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage());

@@ -189,6 +189,7 @@ class CustomerController extends Controller
 
             // Set Default Password for Customer
             $validatedData['last_name'] = $request->last_name;
+            $validatedData['phone_number'] = $request->phone_number;
             $validatedData['email'] = empty($validatedData['email']) ? $request->hidden_mail : $validatedData['email'];
             $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
             $validatedData['created_by'] = $user->id;
