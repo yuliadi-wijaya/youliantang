@@ -52,9 +52,9 @@
                                         <a href="{{ url('profile-edit') }}"
                                             class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Profile') }}
                                             <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                        <a href="{{ url('time-edit/' . $therapist->id) }}"
+                                        {{-- <a href="{{ url('time-edit/' . $therapist->id) }}"
                                             class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Time Slot') }}
-                                            <i class="mdi mdi-arrow-right ml-1"></i></a>
+                                            <i class="mdi mdi-arrow-right ml-1"></i></a> --}}
                                     </div>
                                 </div>
                             </div>

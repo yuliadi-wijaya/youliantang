@@ -168,7 +168,7 @@
                                 </a>
                             </li>
                             -->
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#AppointmentList" role="tab">
                                     <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Appointment List') }}</span>
@@ -179,7 +179,7 @@
                                     <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Prescription List') }}</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#Invoices" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
@@ -189,7 +189,7 @@
                         </ul>
                         <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted"></div>
-                            <div class="tab-pane" id="AppointmentList" role="tabpanel">
+                            {{-- <div class="tab-pane" id="AppointmentList" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
@@ -283,7 +283,7 @@
                                         {{ $prescriptions->links() }}
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="tab-pane" id="Invoices" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">

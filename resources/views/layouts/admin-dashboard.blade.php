@@ -307,7 +307,7 @@
                                             <td> {{ $customer->status == 1 ? 'Active' : 'Inactive' }} </td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('customer/' . $customer->id) }}">
+                                                <a href="{{ url('customer/' . $customer->user_id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">

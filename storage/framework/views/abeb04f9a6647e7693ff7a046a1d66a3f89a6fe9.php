@@ -312,7 +312,7 @@
                                             <td> <?php echo e($customer->status == 1 ? 'Active' : 'Inactive'); ?> </td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="<?php echo e(url('customer/' . $customer->id)); ?>">
+                                                <a href="<?php echo e(url('customer/' . $customer->user_id)); ?>">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">

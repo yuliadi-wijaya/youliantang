@@ -69,7 +69,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="invoice-title">
-                        <h4 class="float-right font-size-16">{{ __('Invoice #') }} {{ $invoice_detail->id }}</h4>
+                        <h4 class="float-right font-size-16">{{ __('INVOICE') }}</h4>
                         <div class="mb-4">
                             <h3>YOU LIAN tANG</h3>
                             <h6>Family Refleksi & Massage</h6>
@@ -79,7 +79,7 @@
                     <div class="row">
                         <div class="col-3">
                             <address>
-                                <strong>{{ __('Treatment date : ') }}</strong>{{ $invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to }}<br>
+                                <strong>{{ __('Treatment Date : ') }}</strong>{{ $invoice->treatment_date . ' ' . $invoice->treatment_time_from . ' to ' . $invoice->treatment_time_to }}<br>
                                 <strong>{{ __('Customer : ') }}</strong>{{ $invoice_detail->customer_name }}<br>
                                 {{-- <strong>{{ __('Therapist : ') }}</strong>{{ $invoice_detail->therapist_name }}<br> --}}
                             </address>
@@ -96,7 +96,7 @@
                         </div>
                         <div class="col-3 pull-right" style="text-align: right">
                             <address>
-                                <strong>{{ __('Invoice date : ') }}</strong>{{ $invoice->created_at }}<br>
+                                <strong>{{ __('Invoice Date : ') }}</strong>{{ $invoice->created_at }}<br>
                                 {{-- <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoice_detail->payment_mode }}<br>
                                 <strong>{{ __('Payment Status : ') }}</strong>{{ $invoice_detail->payment_status }}<br> --}}
                             </address>

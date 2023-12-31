@@ -122,9 +122,10 @@ class TherapistController extends Controller
                         return Config::get('constants.status.' . $row->status, 'Undefined');
                     })
                     ->addColumn('option', function($row) use ($role){
+                        $option = "";
                         if ($role != 'customer') {
                             if ($role == 'admin') {
-                                $option = '
+                                $option .= '
                                     <a href="therapist/'.$row->id.'">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
@@ -132,7 +133,7 @@ class TherapistController extends Controller
                                     </a>
                                 ';
                             } elseif ($role == 'receptionist') {
-                                $option = '
+                                $option .= '
                                     <a href="therapist-view/'.$row->id.'">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
@@ -142,7 +143,7 @@ class TherapistController extends Controller
                             }
 
                             if ($role != 'receptionist') {
-                                $option = '
+                                $option .= '
                                     <a href="therapist/'.$row->id.'/edit">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
                                             <i class="mdi mdi-lead-pencil"></i>
@@ -202,7 +203,7 @@ class TherapistController extends Controller
             $validatedData = $request->validate(
                 [
                     'first_name' => 'required|alpha',
-                    'last_name' => 'alpha',
+                    // 'last_name' => 'alpha',
                     'ktp' => 'required|unique:therapists|regex:/^[0-9]*$/|max:16',
                     'gender' => 'required',
                     'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
@@ -390,7 +391,7 @@ class TherapistController extends Controller
         if ($user->hasAccess('therapist.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                'last_name' => 'alpha',
+                // 'last_name' => 'alpha',
                 'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
                 'gender' => 'required',

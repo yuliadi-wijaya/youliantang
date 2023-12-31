@@ -62,9 +62,10 @@ class ReceptionistController extends Controller
                         return Config::get('constants.status.' . $row->status, 'Undefined');
                     })
                     ->addColumn('option', function($row) use ($role){
+                        $option = "";
                         if ($role != 'customer') {
                             if ($role == 'admin') {
-                                $option = '
+                                $option .= '
                                     <a href="receptionist/'.$row->id.'">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
@@ -72,7 +73,7 @@ class ReceptionistController extends Controller
                                     </a>
                                 ';
                             } elseif ($role == 'receptionist') {
-                                $option = '
+                                $option .= '
                                     <a href="receptionist-view/'.$row->id.'">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
@@ -82,7 +83,7 @@ class ReceptionistController extends Controller
                             }
 
                             if ($role != 'receptionist') {
-                                $option = '
+                                $option .= '
                                     <a href="receptionist/'.$row->id.'/edit">
                                         <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
                                             <i class="mdi mdi-lead-pencil"></i>
@@ -140,7 +141,7 @@ class ReceptionistController extends Controller
             $validatedData = $request->validate(
                 [
                     'first_name' => 'required|alpha',
-                    'last_name' => 'alpha',
+                    // 'last_name' => 'alpha',
                     'ktp' => 'required|unique:receptionists|regex:/^[0-9]*$/|max:16',
                     'gender' => 'required',
                     'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
@@ -290,12 +291,12 @@ class ReceptionistController extends Controller
         if ($user->hasAccess('receptionist.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                'last_name' => 'alpha',
+                // 'last_name' => 'alpha',
                 'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
                 'gender' => 'required',
                 'phone_number' => 'required',
-                'rekening_number' => 'required|numeric',
+                // 'rekening_number' => 'required|numeric',
                 'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'
             ]);

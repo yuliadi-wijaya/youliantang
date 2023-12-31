@@ -69,7 +69,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="invoice-title">
-                        <h4 class="float-right font-size-16">{{ __('Invoice #') }} {{ $invoices->id }}</h4>
+                        <h4 class="float-right font-size-16">{{ __('INVOICE') }}</h4>
                         <div class="mb-4">
                             <h3>YOU LIAN tANG</h3>
                             <h6>Family Refleksi & Massage</h6>
@@ -79,7 +79,7 @@
                     <div class="row">
                         <div class="col-9">
                             <address>
-                                <strong>{{ __('Treatment date : ') }}</strong>{{ $invoices->treatment_date }}<br />
+                                <strong>{{ __('Treatment Date : ') }}</strong>{{ $invoices->treatment_date }}<br />
                                 <strong>{{ __('Customer : ') }}</strong>{{ $invoices->customer_name }}<br />
                                 {{-- <strong>{{ __('Is Member : ') }}</strong>@if ($invoices->is_member == 1) {{ __('Yes (').$invoices->member_plan.')' }} @else {{ __('No') }} @endif<br />
                                 @foreach ($invoice_detail as $row)
@@ -91,8 +91,8 @@
                         </div>
                         <div class="col-3 pull-right" style="text-align: right">
                             <address>
-                                <strong>{{ __('Invoice no : ') }}</strong>{{ $invoices->invoice_code }}<br />
-                                <strong>{{ __('Invoice date : ') }}</strong>{{ $invoices->created_at }}<br />
+                                <strong>{{ __('Invoice No : ') }}</strong>{{ $invoices->invoice_code }}<br />
+                                <strong>{{ __('Invoice Date : ') }}</strong>{{ $invoices->created_at }}<br />
                                 {{-- <strong>{{ __('Payment Mode : ') }}</strong>{{ $invoices->payment_mode }}<br />
                                 <strong>{{ __('Payment Status : ') }}</strong>{{ $invoices->payment_status }}<br /> --}}
                             </address>
@@ -100,7 +100,7 @@
                     </div>
 
                     <div class="py-2 mt-3">
-                        <h3 class="font-size-15 font-weight-bold">{{ __('Invoice summary') }}</h3>
+                        <h3 class="font-size-15 font-weight-bold">{{ __('Invoice Summary') }}</h3>
                     </div>
                     <div class="table-responsive">
                         <table class="table">

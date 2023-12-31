@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <!-- end card -->
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-4">{{ __('Assign Therapist Information') }}</h4>
                         <div class="table-responsive">
@@ -115,7 +115,7 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- end card -->
             </div>
             <div class="col-xl-8">

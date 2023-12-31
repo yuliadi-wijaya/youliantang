@@ -108,12 +108,12 @@
     <div class="w-100 float-left mt-10">
         <table class="table w-100 mt-10">
             <tr>
-                <td class="m-0 pt-5 text-bold w-30">{{ __('Invoice no') }}</td>
+                <td class="m-0 pt-5 text-bold w-30">{{ __('Invoice No') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoices->invoice_code }}</td>
             </tr>
             <tr>
-                <td class="m-0 pt-5 text-bold w-30">{{ __('Invoice date') }}</td>
+                <td class="m-0 pt-5 text-bold w-30">{{ __('Invoice Date') }}</td>
                 <td class="m-0 pt-5 text-bold w-5">:</td>
                 <td class="m-0 pt-5 text-bold">{{ $invoices->created_at }}</td>
             </tr>
