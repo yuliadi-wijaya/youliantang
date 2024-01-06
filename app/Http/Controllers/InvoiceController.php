@@ -351,6 +351,8 @@ class InvoiceController extends Controller
                     'invoices.voucher_code',
                     'invoices.total_price',
                     'invoices.discount',
+                    'invoices.tax_rate',
+                    'invoices.tax_amount',
                     'invoices.grand_total'
                 )
                 ->join('users', 'invoices.customer_id', '=', 'users.id')
@@ -415,6 +417,8 @@ class InvoiceController extends Controller
                 'invoices.voucher_code',
                 'invoices.total_price',
                 'invoices.discount',
+                'invoices.tax_rate',
+                'invoices.tax_amount',
                 'invoices.grand_total'
             )
             ->join('users', 'invoices.customer_id', '=', 'users.id')
@@ -741,6 +745,8 @@ class InvoiceController extends Controller
             }
             $invoice->total_price = str_replace(',', '', $request->total_price);
             $invoice->discount = str_replace(',', '', $request->discount);
+            $invoice->tax_rate = $request->tax_rate;
+            $invoice->tax_amount = $request->tax_amount;
             $invoice->grand_total = str_replace(',', '', $request->grand_total);
 
         }else{

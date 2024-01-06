@@ -311,7 +311,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Discount') }}</label>
                                             <input type="text"
                                                 class="form-control"
@@ -320,6 +320,16 @@
                                             <input type="hidden"
                                                 name="reuse_voucher" id="reuse_voucher"
                                                 value="{{ old('reuse_voucher', 0) }}" readonly>
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label">{{ __('PPN') }}</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', 0) }}" onchange="calTax()">
+                                                <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', 0) }}">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -408,6 +418,7 @@
 
                     if(useMember.checked == false) {
                         calDiscount();
+                        calTax();
                     }
                     grandTotal();
                 }
@@ -427,6 +438,7 @@
                     rowVoucer.style.display = "block";
 
                     calDiscount();
+                    calTax();
                 }
 
                 grandTotal();
@@ -523,6 +535,7 @@
 
                 grandTotal();
                 calDiscount();
+                calTax();
             }
 
             function calDiscount() {
@@ -565,19 +578,23 @@
                         document.getElementById('discount').value = formatDiscount;
                         document.getElementById('reuse_voucher').value = reuse;
 
+                        calTax();
                         grandTotal();
                     }else{
                         document.getElementById('discount').value = 0;
+
+                        calTax();
                         grandTotal();
                     }
                 }
             }
 
             function grandTotal() {
-                var total_price = document.getElementById('total_price').value.replace(/,/g, '');
-                var discount = document.getElementById('discount').value.replace(/,/g, '');
+                let total_price = parseFloat(document.getElementById('total_price').value.replace(/,/g, '')) || 0;
+                let discount = parseFloat(document.getElementById('discount').value.replace(/,/g, '')) || 0;
+                let tax_amount = parseFloat(document.getElementById('tax_amount').value.replace(/,/g, '')) || 0;
 
-                var grandTotal = total_price - discount;
+                let grandTotal = total_price - discount + tax_amount;
 
                 var formatGrandTotal = new Intl.NumberFormat('en-US', {
                     currency: 'USD'
@@ -585,5 +602,25 @@
 
                 document.getElementById('grand_total').value = formatGrandTotal;
             }
+
+            function calTax() {
+                let tax_rate = parseFloat(document.getElementById('tax_rate').value);
+
+                if (!isNaN(tax_rate) && tax_rate > 0) {
+                    let total_price = parseFloat(document.getElementById('total_price').value.replace(/,/g, ''));
+                    let discount = parseFloat(document.getElementById('discount').value.replace(/,/g, ''));
+
+                    let tax = ((total_price - discount) * tax_rate) / 100;
+
+                    console.log(tax);
+
+                    document.getElementById('tax_amount').value = tax.toFixed(2);
+                }else{
+                    document.getElementById('tax_amount').value = 0;
+                }
+
+                grandTotal();
+            }
+
         </script>
     @endsection

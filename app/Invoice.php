@@ -28,6 +28,8 @@ class Invoice extends Model
         'voucher_code',
         'total_price',
         'discount',
+        'tax_rate',
+        'tax_amount',
         'grand_total',
         'invoice_code',
         'invoice_type',

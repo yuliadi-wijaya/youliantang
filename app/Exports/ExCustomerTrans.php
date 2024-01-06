@@ -42,6 +42,8 @@ class ExCustomerTrans implements FromCollection, WithHeadings, ShouldAutoSize, W
             'Voucher Code',
             'Total Price',
             'Discount',
+            'PPN (%)',
+            'PPN Amount',
             'Grand Total',
             'Product Name',
             'Amount',
@@ -54,7 +56,7 @@ class ExCustomerTrans implements FromCollection, WithHeadings, ShouldAutoSize, W
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:U1')->applyFromArray([
+        $sheet->getStyle('A1:W1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -65,8 +67,8 @@ class ExCustomerTrans implements FromCollection, WithHeadings, ShouldAutoSize, W
             ],
         ]);
 
-        $sheet->getStyle('A1:U1')->getAlignment()->setWrapText(false);
-        $sheet->getStyle('A2:U' . $this->report->count())->getAlignment()->setWrapText(false);
+        $sheet->getStyle('A1:W1')->getAlignment()->setWrapText(false);
+        $sheet->getStyle('A2:W' . $this->report->count())->getAlignment()->setWrapText(false);
 
         $lastRow = $sheet->getHighestRow();
 
@@ -85,8 +87,9 @@ class ExCustomerTrans implements FromCollection, WithHeadings, ShouldAutoSize, W
         return [
             'M' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Total Price
             'N' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Discount
-            'O' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Grand Total
-            'Q' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Amount
+            'P' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Tax_amount
+            'Q' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Grand Total
+            'R' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Amount
         ];
     }
 }

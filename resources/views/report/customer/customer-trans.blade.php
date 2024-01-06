@@ -72,6 +72,8 @@
                                         <th class="no-wrap">{{ __('Voucher Code') }}</th>
                                         <th class="no-wrap">{{ __('Total Price') }}</th>
                                         <th class="no-wrap">{{ __('Discount') }}</th>
+                                        <th class="no-wrap">{{ __('PPN (%)') }}</th>
+                                        <th class="no-wrap">{{ __('PPN Amount') }}</th>
                                         <th class="no-wrap">{{ __('Grand Total') }}</th>
                                         <th class="no-wrap">{{ __('Product Name') }}</th>
                                         <th class="no-wrap">{{ __('Amount') }}</th>
@@ -85,6 +87,7 @@
                                     @php
                                         $sub_price = 0;
                                         $sub_discount = 0;
+                                        $sub_tax_amount = 0;
                                         $sub_grand_total = 0;
                                     @endphp
                                     @foreach ($report as $index => $row)
@@ -106,10 +109,12 @@
                                             $treatment_date = date('d-m-Y', strtotime($row->treatment_date));
                                             $total_price = 'Rp. '. number_format($row->total_price, 0, ',', '.');
                                             $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
+                                            $tax_amount = 'Rp. '. number_format($row->tax_amount, 0, ',', '.');
                                             $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
 
                                             $sub_price += $row->total_price;
                                             $sub_discount += $row->discount;
+                                            $sub_tax_amount += $row->tax_amount;
                                             $sub_grand_total += $row->grand_total;
                                         @endphp
 
@@ -128,6 +133,8 @@
                                             <td class="no-wrap">{{ $row->voucher_code }}</td>
                                             <td class="no-wrap">{{ $total_price}}</td>
                                             <td class="no-wrap">{{ $discount }}</td>
+                                            <td class="no-wrap">{{ $row->tax_rate }}</td>
+                                            <td class="no-wrap">{{ $tax_amount }}</td>
                                             <td class="no-wrap">{{ $grand_total }}</td>
                                             <td class="no-wrap">&nbsp;</td>
                                             <td class="no-wrap">&nbsp;</td>
@@ -140,6 +147,8 @@
 
                                         @foreach ($report_detail[$row->invoice_id] as $rd)
                                             <tr>
+                                                <td class="no-wrap">&nbsp;</td>
+                                                <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
@@ -171,6 +180,8 @@
                                         <th class="no-wrap">{{ __('Total') }}</th>
                                         <th class="no-wrap">Rp. {{ number_format($sub_price, 0, ',', '.') }}</th>
                                         <th class="no-wrap">Rp. {{ number_format($sub_discount, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">&nbsp;</th>
+                                        <th class="no-wrap">Rp. {{ number_format($sub_tax_amount, 0, ',', '.') }}</th>
                                         <th class="no-wrap">Rp. {{ number_format($sub_grand_total, 0, ',', '.') }}</th>
                                         <th class="no-wrap" colspan="6">&nbsp;</th>
                                     </tr>

@@ -266,6 +266,7 @@ class ReportCustomerController extends Controller
         $report_detail = [];
         $sub_price = 0;
         $sub_discount = 0;
+        $sub_tax_amount = 0;
         $sub_grand_total = 0;
 
         $reportNew = new Collection();
@@ -304,6 +305,7 @@ class ReportCustomerController extends Controller
 
             $sub_price += $row->total_price;
             $sub_discount += $row->discount;
+            $sub_tax_amount += $row->tax_amount;
             $sub_grand_total += $row->grand_total;
 
             $reportNew->push([
@@ -321,13 +323,15 @@ class ReportCustomerController extends Controller
                 'L' => $row->voucher_code,
                 'M' => $row->total_price,
                 'N' => $row->discount,
-                'O' => $row->grand_total,
-                'P' => '',
-                'Q' => '',
-                'R' => ($row->old_data == 'Y') ? $row->therapist_name : '',
-                'S' => ($row->old_data == 'Y') ? $row->room : '',
-                'T' => ($row->old_data == 'Y') ? $row->time_from : '',
-                'U' => ($row->old_data == 'Y') ? $row->time_to : '',
+                'O' => $row->tax_rate,
+                'P' => $row->tax_amount,
+                'Q' => $row->grand_total,
+                'R' => '',
+                'S' => '',
+                'T' => ($row->old_data == 'Y') ? $row->therapist_name : '',
+                'U' => ($row->old_data == 'Y') ? $row->room : '',
+                'V' => ($row->old_data == 'Y') ? $row->time_from : '',
+                'W' => ($row->old_data == 'Y') ? $row->time_to : '',
             ]);
 
             foreach ($report_detail[$row->invoice_id] as $rd) {
@@ -347,12 +351,14 @@ class ReportCustomerController extends Controller
                     'M' => '',
                     'N' => '',
                     'O' => '',
-                    'P' => $rd->product_name,
-                    'Q' => $rd->amount,
-                    'R' => ($row->old_data == 'Y') ? '' : $rd->therapist_name,
-                    'S' => ($row->old_data == 'Y') ? '' : $rd->room,
-                    'T' => ($row->old_data == 'Y') ? '' : $rd->treatment_time_from,
-                    'U' => ($row->old_data == 'Y') ? '' : $rd->treatment_time_to,
+                    'P' => '',
+                    'Q' => '',
+                    'R' => $rd->product_name,
+                    'S' => $rd->amount,
+                    'T' => ($row->old_data == 'Y') ? '' : $rd->therapist_name,
+                    'U' => ($row->old_data == 'Y') ? '' : $rd->room,
+                    'V' => ($row->old_data == 'Y') ? '' : $rd->treatment_time_from,
+                    'W' => ($row->old_data == 'Y') ? '' : $rd->treatment_time_to,
                 ]);
             }
         }
@@ -372,13 +378,15 @@ class ReportCustomerController extends Controller
             'L' => '',
             'M' => $sub_price,
             'N' => $sub_discount,
-            'O' => $sub_grand_total,
-            'P' => '',
-            'Q' => '',
+            'O' => '',
+            'P' => $sub_tax_amount,
+            'Q' => $sub_grand_total,
             'R' => '',
             'S' => '',
             'T' => '',
             'U' => '',
+            'V' => '',
+            'W' => '',
         ]);
 
         $fileName = 'report_customer_transaction_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';

@@ -75,6 +75,8 @@
                                         <th class="no-wrap">{{ __('Voucher Code') }}</th>
                                         <th class="no-wrap">{{ __('Total Price') }}</th>
                                         <th class="no-wrap">{{ __('Discount') }}</th>
+                                        <th class="no-wrap">{{ __('PPN (%)') }}</th>
+                                        <th class="no-wrap">{{ __('PPN Amount') }}</th>
                                         <th class="no-wrap">{{ __('Grand Total') }}</th>
                                         <th class="no-wrap">{{ __('Therapist Name') }}</th>
                                         <th class="no-wrap">{{ __('Therapist Phone') }}</th>
@@ -93,6 +95,7 @@
                                     @php
                                         $t_price = 0;
                                         $t_discount = 0;
+                                        $t_tax_amount = 0;
                                         $t_grand_total = 0;
                                         $t_duration = 0;
                                         $t_fee = 0;
@@ -102,6 +105,7 @@
                                         @php
                                             $t_price += $row->total_price;
                                             $t_discount += $row->discount;
+                                            $t_tax_amount += $row->tax_amount;
                                             $t_grand_total += $row->grand_total;
                                         @endphp
 
@@ -119,6 +123,8 @@
                                             <td class="no-wrap">{{ $row->voucher_code }}</td>
                                             <td class="no-wrap">Rp. {{ number_format($row->total_price, 0, ',', '.') }}</td>
                                             <td class="no-wrap">Rp. {{ number_format($row->discount, 0, ',', '.') }}</td>
+                                            <td class="no-wrap">{{ $row->tax_rate }}</td>
+                                            <td class="no-wrap">Rp. {{ number_format($row->tax_amount, 0, ',', '.') }}</td>
                                             <td class="no-wrap">Rp. {{ number_format($row->grand_total, 0, ',', '.') }}</td>
                                             <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->therapist_name : '' }}</td>
                                             <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->therapist_phone : '' }}</td>
@@ -175,6 +181,8 @@
                                         <th class="no-wrap">{{ __('Total') }}</th>
                                         <th class="no-wrap">Rp. {{ number_format($t_price, 0, ',', '.') }}</th>
                                         <th class="no-wrap">Rp. {{ number_format($t_discount, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">&nbsp;</th>
+                                        <th class="no-wrap">Rp. {{ number_format($t_tax_amount, 0, ',', '.') }}</th>
                                         <th class="no-wrap">Rp. {{ number_format($t_grand_total, 0, ',', '.') }}</th>
                                         <th class="no-wrap" colspan="7">&nbsp;</th>
                                         <th class="no-wrap">{{ $t_duration }} Minutes</th>
@@ -184,7 +192,7 @@
                                     <tr>
                                         <th class="no-wrap" colspan="10">&nbsp;</th>
                                         <th class="no-wrap">{{ __('Total Revenue') }}</th>
-                                        <th class="no-wrap" colspan="2">&nbsp;</th>
+                                        <th class="no-wrap" colspan="4">&nbsp;</th>
                                         <th class="no-wrap">Rp. {{ number_format($t_grand_total - $t_fee, 0, ',', '.') }}</th>
                                         <th class="no-wrap" colspan="10">&nbsp;</th>
                                     </tr>

@@ -133,6 +133,12 @@
                                         <td class="text-right">{{ $invoices->voucher_code }}</td>
                                     </tr>
                                 @endif
+                                @if($invoices->tax_rate > 0)
+                                    <tr>
+                                        <td colspan="2" class="text-right">{{ __('PPN ('.$invoices->tax_rate.'%)') }}</td>
+                                        <td class="text-right">Rp {{ number_format($invoices->tax_amount) }}</td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <td colspan="2" class="border-0 text-right">
                                         <strong>{{ __('Grand Total') }}</strong>
@@ -239,6 +245,12 @@
             <td colspan="2" align="right">{{ __('Discount') }}</td>
             <td class="text-right">Rp {{ number_format($invoices->discount) }}</td>
         </tr>
+        @if($invoices->tax_rate > 0)
+            <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
+                <td colspan="2" align="right">{{ __('PPN ('.$invoices->tax_rate.'%)') }}</td>
+                <td class="text-right">Rp {{ number_format($invoices->tax_amount) }}</td>
+            </tr>
+        @endif
         <tr style="border-top:1px dashed black; border-bottom:1px dashed black">
             <td colspan="2" align="right"><strong>{{ __('Total') }}</strong></td>
             <td align="right"><strong>Rp {{ number_format($invoices->grand_total) }}</strong></td>

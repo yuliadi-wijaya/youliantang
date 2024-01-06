@@ -41,6 +41,8 @@ class ExTransDetail implements FromCollection, WithHeadings, ShouldAutoSize, Wit
             'Voucher Code',
             'Total Price',
             'Discount',
+            'PPN (%)',
+            'PPN Amount',
             'Grand Total',
             'Therapist Name',
             'Therapist Phone',
@@ -58,7 +60,7 @@ class ExTransDetail implements FromCollection, WithHeadings, ShouldAutoSize, Wit
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:Y1')->applyFromArray([
+        $sheet->getStyle('A1:AA1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -69,15 +71,15 @@ class ExTransDetail implements FromCollection, WithHeadings, ShouldAutoSize, Wit
             ],
         ]);
 
-        $sheet->getStyle('A1:Y1')->getAlignment()->setWrapText(false);
-        $sheet->getStyle('A2:Y' . $this->report->count())->getAlignment()->setWrapText(false);
+        $sheet->getStyle('A1:AA1')->getAlignment()->setWrapText(false);
+        $sheet->getStyle('A2:AA' . $this->report->count())->getAlignment()->setWrapText(false);
 
         $lastRow = $sheet->getHighestRow();
 
         $sheet->mergeCells("A{$lastRow}:K{$lastRow}");
         $sheet->setCellValue("A{$lastRow}", 'Total Revenue');
         $sheet->getStyle("A{$lastRow}:K{$lastRow}")->getAlignment()->setHorizontal('right');
-        $sheet->getStyle("A{$lastRow}:Y{$lastRow}")->applyFromArray([
+        $sheet->getStyle("A{$lastRow}:AA{$lastRow}")->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -88,7 +90,7 @@ class ExTransDetail implements FromCollection, WithHeadings, ShouldAutoSize, Wit
         $sheet->mergeCells("A{$newRow}:K{$newRow}");
         $sheet->setCellValue("A{$newRow}", 'Total');
         $sheet->getStyle("A{$newRow}:K{$newRow}")->getAlignment()->setHorizontal('right');
-        $sheet->getStyle("A{$newRow}:Y{$newRow}")->applyFromArray([
+        $sheet->getStyle("A{$newRow}:AA{$newRow}")->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -100,8 +102,9 @@ class ExTransDetail implements FromCollection, WithHeadings, ShouldAutoSize, Wit
         return [
             'L' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'M' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'N' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'W' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'O' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'P' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'Y' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
 }

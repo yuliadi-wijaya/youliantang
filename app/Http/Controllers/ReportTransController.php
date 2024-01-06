@@ -262,6 +262,7 @@ class ReportTransController extends Controller
 
             $t_price = 0;
             $t_discount = 0;
+            $t_tax_amount = 0;
             $t_grand_total = 0;
             $t_duration = 0;
             $t_fee = 0;
@@ -271,6 +272,7 @@ class ReportTransController extends Controller
             foreach ($report as $row) {
                 $t_price += $row->total_price;
                 $t_discount += $row->discount;
+                $t_tax_amount += $row->tax_amount;
                 $t_grand_total += $row->grand_total;
 
                 $reportNew->push([
@@ -287,18 +289,20 @@ class ReportTransController extends Controller
                     'K' => $row->voucher_code,
                     'L' => $row->total_price,
                     'M' => $row->discount,
-                    'N' => $row->grand_total,
-                    'O' => $row->old_data == 'Y' ? $row->therapist_name : '',
-                    'P' => $row->old_data == 'Y' ? $row->therapist_phone : '',
-                    'Q' => $row->old_data == 'Y' ? $row->room : '',
-                    'R' => $row->old_data == 'Y' ? $row->time_from : '',
-                    'S' => $row->old_data == 'Y' ? $row->time_to : '',
-                    'T' => '',
-                    'U' => '',
+                    'N' => $row->tax_rate,
+                    'O' => $row->tax_amount,
+                    'P' => $row->grand_total,
+                    'Q' => $row->old_data == 'Y' ? $row->therapist_name : '',
+                    'R' => $row->old_data == 'Y' ? $row->therapist_phone : '',
+                    'S' => $row->old_data == 'Y' ? $row->room : '',
+                    'T' => $row->old_data == 'Y' ? $row->time_from : '',
+                    'U' => $row->old_data == 'Y' ? $row->time_to : '',
                     'V' => '',
                     'W' => '',
                     'X' => '',
                     'Y' => '',
+                    'Z' => '',
+                    'AA' => '',
                 ]);
 
                 foreach ($report_detail[$row->invoice_id] as $rd) {
@@ -320,17 +324,19 @@ class ReportTransController extends Controller
                         'L' => '',
                         'M' => '',
                         'N' => '',
-                        'O' => $row->old_data == 'N' ? $rd->therapist_name : '',
-                        'P' => $row->old_data == 'N' ? $rd->therapist_phone : '',
-                        'Q' => $row->old_data == 'N' ? $rd->room : '',
-                        'R' => $row->old_data == 'N' ? $rd->treatment_time_from : '',
-                        'S' => $row->old_data == 'N' ? $rd->treatment_time_to : '',
-                        'T' => $rd->product_name,
-                        'U' => $rd->amount,
-                        'V' => $rd->duration,
-                        'W' => $rd->commission_fee,
-                        'X' => $rd->rating,
-                        'Y' => $rd->comment,
+                        'O' => '',
+                        'P' => '',
+                        'Q' => $row->old_data == 'N' ? $rd->therapist_name : '',
+                        'R' => $row->old_data == 'N' ? $rd->therapist_phone : '',
+                        'S' => $row->old_data == 'N' ? $rd->room : '',
+                        'T' => $row->old_data == 'N' ? $rd->treatment_time_from : '',
+                        'U' => $row->old_data == 'N' ? $rd->treatment_time_to : '',
+                        'V' => $rd->product_name,
+                        'W' => $rd->amount,
+                        'X' => $rd->duration,
+                        'Y' => $rd->commission_fee,
+                        'Z' => $rd->rating,
+                        'AA' => $rd->comment,
                     ]);
                 }
             }
@@ -349,18 +355,20 @@ class ReportTransController extends Controller
                 'K' => '',
                 'L' => $t_price,
                 'M' => $t_discount,
-                'N' => $t_grand_total,
-                'O' => '',
-                'P' => '',
+                'N' => '',
+                'O' => $t_tax_amount,
+                'P' => $t_grand_total,
                 'Q' => '',
                 'R' => '',
                 'S' => '',
                 'T' => '',
                 'U' => '',
-                'V' => $t_duration,
-                'W' => $t_fee,
-                'X' => '',
-                'Y' => '',
+                'V' => '',
+                'W' => '',
+                'X' => $t_duration,
+                'Y' => $t_fee,
+                'Z' => '',
+                'AA' => '',
             ]);
 
             $reportNew->push([
@@ -377,9 +385,9 @@ class ReportTransController extends Controller
                 'K' => '',
                 'L' => '',
                 'M' => '',
-                'N' => $t_grand_total - $t_fee,
+                'N' => '',
                 'O' => '',
-                'P' => '',
+                'P' => $t_grand_total - $t_fee,
                 'Q' => '',
                 'R' => '',
                 'S' => '',
@@ -389,6 +397,8 @@ class ReportTransController extends Controller
                 'W' => '',
                 'X' => '',
                 'Y' => '',
+                'Z' => '',
+                'AA' => '',
             ]);
 
             $fileName = 'report_transaction_detail_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';

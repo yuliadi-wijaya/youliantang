@@ -37,6 +37,8 @@ class ExTherapistTransDetail implements FromCollection, WithHeadings, ShouldAuto
             'Voucher Code',
             'Total Price',
             'Discount',
+            'PPN (%)',
+            'PPN Amount',
             'Grand Total',
             'Therapist Name',
             'Room',
@@ -53,7 +55,7 @@ class ExTherapistTransDetail implements FromCollection, WithHeadings, ShouldAuto
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:T1')->applyFromArray([
+        $sheet->getStyle('A1:V1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -64,15 +66,15 @@ class ExTherapistTransDetail implements FromCollection, WithHeadings, ShouldAuto
             ],
         ]);
 
-        $sheet->getStyle('A1:T1')->getAlignment()->setWrapText(false);
-        $sheet->getStyle('A2:T' . $this->report->count())->getAlignment()->setWrapText(false);
+        $sheet->getStyle('A1:V1')->getAlignment()->setWrapText(false);
+        $sheet->getStyle('A2:V' . $this->report->count())->getAlignment()->setWrapText(false);
 
         $lastRow = $sheet->getHighestRow();
 
         $sheet->mergeCells("A{$lastRow}:G{$lastRow}");
         $sheet->setCellValue("A{$lastRow}", 'Total');
         $sheet->getStyle("A{$lastRow}:G{$lastRow}")->getAlignment()->setHorizontal('right');
-        $sheet->getStyle("A{$lastRow}:T{$lastRow}")->applyFromArray([
+        $sheet->getStyle("A{$lastRow}:V{$lastRow}")->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -84,8 +86,9 @@ class ExTherapistTransDetail implements FromCollection, WithHeadings, ShouldAuto
         return [
             'H' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'I' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'J' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'R' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'K' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'L' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'M' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
 }

@@ -363,6 +363,7 @@ class ReportTherapistController extends Controller
 
             $t_price = 0;
             $t_discount = 0;
+            $t_tax_amount = 0;
             $t_grand_total = 0;
             $t_fee = 0;
 
@@ -371,6 +372,7 @@ class ReportTherapistController extends Controller
             foreach ($report as $row) {
                 $t_price += $row->total_price;
                 $t_discount += $row->discount;
+                $t_tax_amount += $row->tax_amount;
                 $t_grand_total += $row->grand_total;
 
                 $reportNew->push([
@@ -383,17 +385,19 @@ class ReportTherapistController extends Controller
                     'G' => $row->voucher_code,
                     'H' => $row->total_price,
                     'I' => $row->discount,
-                    'J' => $row->grand_total,
-                    'K' => $row->old_data == 'Y' ? $row->therapist_name : '',
-                    'L' => $row->old_data == 'Y' ? $row->room : '',
-                    'M' => $row->old_data == 'Y' ? $row->time_from : '',
-                    'N' => $row->old_data == 'Y' ? $row->time_to : '',
-                    'O' => '',
-                    'P' => '',
+                    'J' => $row->tax_rate,
+                    'K' => $row->tax_amount,
+                    'L' => $row->grand_total,
+                    'M' => $row->old_data == 'Y' ? $row->therapist_name : '',
+                    'N' => $row->old_data == 'Y' ? $row->room : '',
+                    'O' => $row->old_data == 'Y' ? $row->time_from : '',
+                    'P' => $row->old_data == 'Y' ? $row->time_to : '',
                     'Q' => '',
                     'R' => '',
                     'S' => '',
                     'T' => '',
+                    'U' => '',
+                    'V' => '',
                 ]);
 
                 foreach ($report_detail[$row->invoice_id] as $rd) {
@@ -410,16 +414,18 @@ class ReportTherapistController extends Controller
                         'H' => '',
                         'I' => '',
                         'J' => '',
-                        'K' => $row->old_data == 'N' ? $rd->therapist_name : '',
-                        'L' => $row->old_data == 'N' ? $rd->room : '',
-                        'M' => $row->old_data == 'N' ? $rd->treatment_time_from : '',
-                        'N' => $row->old_data == 'N' ? $rd->treatment_time_to : '',
-                        'O' => $rd->product_name,
-                        'P' => $rd->amount,
-                        'Q' => $rd->duration,
-                        'R' => $rd->commission_fee,
-                        'S' => $rd->rating,
-                        'T' => $rd->comment,
+                        'K' => '',
+                        'L' => '',
+                        'M' => $row->old_data == 'N' ? $rd->therapist_name : '',
+                        'N' => $row->old_data == 'N' ? $rd->room : '',
+                        'O' => $row->old_data == 'N' ? $rd->treatment_time_from : '',
+                        'P' => $row->old_data == 'N' ? $rd->treatment_time_to : '',
+                        'Q' => $rd->product_name,
+                        'R' => $rd->amount,
+                        'S' => $rd->duration,
+                        'T' => $rd->commission_fee,
+                        'U' => $rd->rating,
+                        'V' => $rd->comment,
                     ]);
                 }
             }
@@ -434,18 +440,19 @@ class ReportTherapistController extends Controller
                 'G' => '',
                 'H' => $t_price,
                 'I' => $t_discount,
-                'J' => $t_grand_total,
-                'K' => '',
-                'L' => '',
+                'J' => '',
+                'K' => $t_tax_amount,
+                'L' => $t_grand_total,
                 'M' => '',
                 'N' => '',
                 'O' => '',
                 'P' => '',
                 'Q' => '',
-                'R' => $t_fee,
+                'R' => '',
                 'S' => '',
-                'T' => '',
+                'T' => $t_fee,
                 'U' => '',
+                'V' => '',
             ]);
 
             $fileName = 'report_therapists_transaction_detail_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';

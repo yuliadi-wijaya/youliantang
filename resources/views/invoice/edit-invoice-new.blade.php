@@ -323,7 +323,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Discount') }}</label>
                                             <input type="text"
                                                 class="form-control"
@@ -332,6 +332,16 @@
                                             <input type="hidden"
                                                 name="reuse_voucher" id="reuse_voucher"
                                                 value="{{ old('reuse_voucher', 0) }}" readonly>
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <label class="control-label">{{ __('PPN') }}</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', $invoice->tax_rate) }}" onchange="calTax()">
+                                                <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', 0) }}">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -435,6 +445,7 @@
 
                     if(useMember.checked == false) {
                         calDiscount();
+                        calTax();
                     }
                     grandTotal();
                 }
@@ -454,6 +465,7 @@
                     rowVoucer.style.display = "block";
 
                     calDiscount();
+                    calTax();
                 }
 
                 grandTotal();
@@ -550,6 +562,7 @@
 
                 grandTotal();
                 calDiscount();
+                calTax();
             }
 
             function calDiscount() {
@@ -611,6 +624,25 @@
                 }).format(grandTotal);
 
                 document.getElementById('grand_total').value = formatGrandTotal;
+            }
+
+            function calTax() {
+                let tax_rate = parseFloat(document.getElementById('tax_rate').value);
+
+                if (!isNaN(tax_rate) && tax_rate > 0) {
+                    let total_price = parseFloat(document.getElementById('total_price').value.replace(/,/g, ''));
+                    let discount = parseFloat(document.getElementById('discount').value.replace(/,/g, ''));
+
+                    let tax = ((total_price - discount) * tax_rate) / 100;
+
+                    console.log(tax);
+
+                    document.getElementById('tax_amount').value = tax.toFixed(2);
+                }else{
+                    document.getElementById('tax_amount').value = 0;
+                }
+
+                grandTotal();
             }
         </script>
     @endsection
