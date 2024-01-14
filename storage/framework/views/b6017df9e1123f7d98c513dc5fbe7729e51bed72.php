@@ -3,36 +3,20 @@
 <body>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-    <div class="account-pages my-5 pt-5">
+    <div class="account-pages my-5">
         <div class="container">
             <div class="row justify-content-center">
+                
                 <div class="col-md-8 col-lg-6 col-xl-5">
-                    <div class="card overflow-hidden">
-                        <div class="bg-soft-primary">
-                            <div class="row">
-                                <div class="col-7">
-                                    <div class="text-primary p-4">
-                                        <h5 class="text-primary"><?php echo e(__("Welcome Back !")); ?></h5>
-                                        <p>Sign in to continue to <?php echo e(AppSetting('title')); ?>.</p>
-                                    </div>
-                                </div>
-                                <div class="col-5 align-self-end">
-                                    <img src="<?php echo e(URL::asset('assets/images/profile-img.png')); ?>" alt=""
+                    <div class="col-12" style="height: 250px">
+                        <img src="<?php echo e(URL::asset('assets/images/companies/ylt-black.png')); ?>" alt=""
                                         class="img-fluid">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div>
-                                <a href="<?php echo e(url('/')); ?>">
-                                    <div class="avatar-md profile-user-wid mb-4">
-                                        <span class="avatar-title rounded-circle bg-light">
-                                            <img src="<?php echo e(URL::asset('assets/images/logo.png')); ?>" alt=""
-                                                class="rounded-circle" height="34">
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
+                    </div>
+                    
+                    <div class="card overflow-hidden">
+                        
+                        <div class="card-body">
+                            
                             <div class="p-2">
                                 <form class="form-horizontal" method="POST" action="<?php echo e(url('login')); ?>">
                                     <?php echo csrf_field(); ?>

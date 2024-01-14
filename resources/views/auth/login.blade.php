@@ -4,12 +4,21 @@
 <body>
 @endsection
 @section('content')
-    <div class="account-pages my-5 pt-5">
+    <div class="account-pages my-5">
         <div class="container">
             <div class="row justify-content-center">
+                {{-- <div class="col-md-8 col-lg-6 col-xl-5">
+                    <img src="{{ URL::asset('assets/images/companies/ylt-black.png') }}" alt=""
+                                        class="img-fluid">
+                </div> --}}
                 <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="col-12" style="height: 250px">
+                        <img src="{{ URL::asset('assets/images/companies/ylt-black.png') }}" alt=""
+                                        class="img-fluid">
+                    </div>
+                    
                     <div class="card overflow-hidden">
-                        <div class="bg-soft-primary">
+                        {{-- <div class="bg-soft-primary">
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
@@ -22,18 +31,18 @@
                                         class="img-fluid">
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div>
+                        </div> --}}
+                        <div class="card-body">
+                            {{-- <div>
                                 <a href="{{ url('/') }}">
-                                    <div class="avatar-md profile-user-wid mb-4">
+                                    <div class="avatar-md profile-user-wid mb-3">
                                         <span class="avatar-title rounded-circle bg-light">
                                             <img src="{{ URL::asset('assets/images/logo.png') }}" alt=""
                                                 class="rounded-circle" height="34">
                                         </span>
                                     </div>
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="p-2">
                                 <form class="form-horizontal" method="POST" action="{{ url('login') }}">
                                     @csrf
