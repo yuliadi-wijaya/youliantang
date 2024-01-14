@@ -11,12 +11,12 @@
                         <img src="<?php echo e(URL::asset('assets/images/logo-dark1.png')); ?>" alt="" height="17">
                     </span>
                 </a>
-                <a href="<?php echo e(url('/')); ?>" class="logo logo-light">
+                <a href="<?php echo e(url('/')); ?>" class="logo logo-light pt-2">
                     <span class="logo-lg">
-                        <img src="<?php echo e(URL::asset('assets/images/logo-light.png')); ?>" alt="" height="22">
+                        <img src="<?php echo e(URL::asset('assets/images/logo-light.png')); ?>" alt="" height="100">
                     </span>
                     <span class="logo-sm">
-                        <img src="<?php echo e(URL::asset('assets/images/logo-light1.png')); ?>" alt="" height="19">
+                        <img src="<?php echo e(URL::asset('assets/images/logo-light1.png')); ?>" alt="" height="50">
                     </span>
                 </a>
             </div>
@@ -243,11 +243,7 @@
                     </form>
                 </div>
             </div>
-            <div class="dropdown d-inline-block">
-                <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect ">
-                    <i class="bx bx-cog bx-spin"></i>
-                </button>
-            </div>
+            
         </div>
     </div>
 </header>

@@ -108,21 +108,16 @@
                                 </div>
 
                                 <a href="<?php echo e(url('rf-trans')); ?>" class="nav-link"><?php echo e(__('translation.transactions')); ?></a>
+
+                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <?php echo e(__('translation.analytics')); ?> <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
+                                    <a href="<?php echo e(url('analytics-revenue')); ?>" class="nav-link"><?php echo e(__('translation.revenue')); ?></a>
+                                </div>
                             </div>
                         </li>
                     <?php elseif($role == 'receptionist'): ?>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-pen-fancy mr-2"></i><?php echo e(__('translation.master-data')); ?> <div class="arrow-down">
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="<?php echo e(url('therapist')); ?>" class="dropdown-item"><?php echo e(__('translation.therapists')); ?></a>
-                                <a href="<?php echo e(url('room')); ?>" class="dropdown-item"><?php echo e(__('translation.rooms')); ?></a>
-                                <a href="<?php echo e(url('membership')); ?>" class="dropdown-item"><?php echo e(__('translation.memberships')); ?></a>
-                            </div>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

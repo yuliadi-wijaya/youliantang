@@ -217,7 +217,7 @@
                             }, {
                                 opposite: true,
                                 title: {
-                                    text: '$ (thousands)'
+                                    text: 'Rupiah'
                                 }
                             }]
                         };

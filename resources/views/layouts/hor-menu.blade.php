@@ -111,21 +111,16 @@
                                 </div>
 
                                 <a href="{{ url('rf-trans') }}" class="nav-link">{{ __('translation.transactions') }}</a>
+
+                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ __('translation.analytics') }} <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
+                                    <a href="{{ url('analytics-revenue') }}" class="nav-link">{{ __('translation.revenue') }}</a>
+                                </div>
                             </div>
                         </li>
                     @elseif ($role == 'receptionist')
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-pen-fancy mr-2"></i>{{ __('translation.master-data') }} <div class="arrow-down">
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('therapist') }}" class="dropdown-item">{{ __('translation.therapists') }}</a>
-                                <a href="{{ url('room') }}" class="dropdown-item">{{ __('translation.rooms') }}</a>
-                                <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.memberships') }}</a>
-                            </div>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

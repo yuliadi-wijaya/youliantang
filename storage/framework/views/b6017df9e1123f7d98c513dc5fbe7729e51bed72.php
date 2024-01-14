@@ -3,7 +3,7 @@
 <body>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-    <div class="account-pages my-5">
+    <div class="account-pages mb-5">
         <div class="container">
             <div class="row justify-content-center">
                 

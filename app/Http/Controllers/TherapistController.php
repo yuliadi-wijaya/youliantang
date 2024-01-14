@@ -203,7 +203,7 @@ class TherapistController extends Controller
             $validatedData = $request->validate(
                 [
                     'first_name' => 'required|alpha',
-                    // 'last_name' => 'alpha',
+                    'last_name' => '',
                     'ktp' => 'required|unique:therapists|regex:/^[0-9]*$/|max:16',
                     'gender' => 'required',
                     'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
@@ -391,12 +391,12 @@ class TherapistController extends Controller
         if ($user->hasAccess('therapist.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                // 'last_name' => 'alpha',
+                'last_name' => '',
                 'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
                 'gender' => 'required',
                 'phone_number' => 'required',
-                'rekening_number' => 'required|numeric',
+                'rekening_number' => '',
                 'mon' => 'required_without_all:tue,wen,thu,fri,sat,sun',
                 'tue' => 'required_without_all:mon,wen,thu,fri,sat,sun',
                 'wen' => 'required_without_all:mon,tue,thu,fri,sat,sun',

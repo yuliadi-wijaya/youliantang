@@ -23,6 +23,7 @@
         "monthly-earning" => "Pendapatan Bulanan",
         "monthly-registered-users" => "Pengguna Terdaftar Bulanan",
         "monthly-registered-customers-revenue" => "Bulanannya Pelanggan Terdaftar & Pendapatan",
+        "monthly-invoices-revenue" => "Bulanannya Invoice & Pendapatan",
         "latest-users" => "Pengguna Terbaru",
         "prescription" => "Resep",
         "list-of-prescription" => "Daftar Resep",
@@ -64,6 +65,10 @@
         "transactions" => "Transaksi",
         "transaction-history" => "Riwayat Transaksi",
         "total-registration" => "Total Pendaftaran",
-        "total-therapist" => "Total Terapis"
+        "total-therapist" => "Total Terapis",
+        "total-invoices" => "Total Transaksi",
+        "total-revenue" => "Total Pendapatan",
+        "charts" => "Grafik",
+        "analytics" => "Analytics"
     ];
 ?>

@@ -83,6 +83,7 @@
                                                 <option selected disabled>{{ __('-- Select Payment Mode --') }}</option>
                                                 <option value="Cash Payement" @if (old('payment_mode') == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
                                                 <option value="Debit/Credit Card" @if (old('payment_mode') == 'Debit/Credit Card') selected @endif>{{ __('Debit/Credit Card') }}</option>
+                                                <option value="Transfer" @if (old('payment_mode') == 'Transfer') selected @endif>{{ __('Transfer') }}</option>
                                                 <option value="QRIS" @if (old('payment_mode') == 'QRIS') selected @endif>{{ __('QRIS') }} </option>
                                                 <option value="GoPay" @if (old('payment_mode') == 'GoPay') selected @endif>{{ __('GoPay') }} </option>
                                                 <option value="OVO" @if (old('payment_mode') == 'OVO') selected @endif>{{ __('OVO') }} </option>

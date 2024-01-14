@@ -23,6 +23,7 @@
         "monthly-earning" => "Monthly Earning",
         "monthly-registered-users" => "Monthly Registered Users",
         "monthly-registered-customers-revenue" => "Monthly Registered Customers & Revenue",
+        "monthly-invoices-revenue" => "Monthly Invoices & Revenue",
         "latest-users" => "Latest Users",
         "prescription" => "Prescription",
         "list-of-prescription" => "List of Prescription",
@@ -64,6 +65,10 @@
         "transactions" => "Transactions",
         "transaction-history" => "Transaction History",
         "total-registration" => "Total Registration",
-        "total-therapist" => "Total Therapist"
+        "total-therapist" => "Total Therapist",
+        "total-invoices" => "Total Invoices",
+        "total-revenue" => "Total Revenue",
+        "charts" => "Charts",
+        "analytics" => "Analytics"
     ];
 ?>

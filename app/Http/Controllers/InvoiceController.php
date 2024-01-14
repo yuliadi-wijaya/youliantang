@@ -84,7 +84,7 @@ class InvoiceController extends Controller
         foreach ($invoices as $invoice) {
             $id = $invoice->id;
             $detail = InvoiceDetail::select(
-                \DB::raw('CONCAT(users.first_name, " ", users.last_name) as therapist_name'),
+                \DB::raw('CONCAT(users.first_name, " ", COALESCE(users.last_name,"")) as therapist_name'),
                 'invoice_details.room',
                 'reviews.rating'
             )

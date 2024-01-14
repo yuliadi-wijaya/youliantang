@@ -63,6 +63,43 @@ class ReportController extends Controller
         return $data;
     }
 
+    public function getMonthlyInvoicesRevenue() {
+        $user = Sentinel::getUser();
+        $userId = $user->id;
+
+        // Get Role Access
+        $invoice_type = RoleAccess::where('user_id', $userId)->first()->access_code;
+
+        $q_invoice_count = "SELECT MONTH(created_at) AS Month, count(id) AS total_invoice
+        FROM invoices
+        WHERE YEAR(created_at) = YEAR(CURDATE())";
+        if ($invoice_type === 'NC') {
+            $q_invoice_count .= " AND invoice_type = 'NC'";
+        } elseif ($invoice_type === 'CK') {
+            $q_invoice_count .= " AND invoice_type = 'CK'";
+        }
+        $q_invoice_count .= " GROUP BY MONTH(created_at)";
+        $invoice_count = DB::select($q_invoice_count);
+
+
+        $query = "SELECT MONTH(created_at) AS Month, SUM(grand_total) AS total_revenue
+        FROM invoices
+        WHERE YEAR(created_at) = YEAR(CURDATE())";
+        if ($invoice_type === 'NC') {
+            $query .= " AND invoice_type = 'NC'";
+        } elseif ($invoice_type === 'CK') {
+            $query .= " AND invoice_type = 'CK'";
+        }
+        $query .= " GROUP BY MONTH(created_at)";
+        $revenue = DB::select($query);
+
+        $data = [
+            'total_invoice' => $invoice_count,
+            'total_revenue' => $revenue
+        ];
+        return $data;
+    }
+
     /**
      * Get Monthly Appointments for each therapist.
      *
