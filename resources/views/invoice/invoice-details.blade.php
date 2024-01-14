@@ -595,7 +595,7 @@
                 let discount = parseFloat(document.getElementById('discount').value.replace(/,/g, '')) || 0;
                 let tax_amount = parseFloat(document.getElementById('tax_amount').value.replace(/,/g, '')) || 0;
 
-                let grandTotal = total_price - discount + tax_amount;
+                let grandTotal = Math.ceil(total_price - discount + tax_amount);
 
                 var formatGrandTotal = new Intl.NumberFormat('en-US', {
                     currency: 'USD'

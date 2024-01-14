@@ -605,19 +605,23 @@
                         document.getElementById('discount').value = formatDiscount;
                         document.getElementById('reuse_voucher').value = reuse;
 
+                        calTax();
                         grandTotal();
                     }else{
                         document.getElementById('discount').value = 0;
+
+                        calTax();
                         grandTotal();
                     }
                 }
             }
 
             function grandTotal() {
-                var total_price = document.getElementById('total_price').value.replace(/,/g, '');
-                var discount = document.getElementById('discount').value.replace(/,/g, '');
+                let total_price = parseFloat(document.getElementById('total_price').value.replace(/,/g, '')) || 0;
+                let discount = parseFloat(document.getElementById('discount').value.replace(/,/g, '')) || 0;
+                let tax_amount = parseFloat(document.getElementById('tax_amount').value.replace(/,/g, '')) || 0;
 
-                var grandTotal = total_price - discount;
+                let grandTotal = Math.ceil(total_price - discount + tax_amount);
 
                 var formatGrandTotal = new Intl.NumberFormat('en-US', {
                     currency: 'USD'
