@@ -345,7 +345,7 @@
 
                 $('.voucher_list').html('');
                 for(var i = 1; i <= voucherTotal; i++) {
-                    voucherGeneratedText = voucherPrefix.replaceAll(/\s/g,'').toUpperCase() + today.getFullYear() + today.getMonth() + today.getDate() + i.toString().padStart(3, '0')
+                    voucherGeneratedText = voucherPrefix.replaceAll(/\s/g,'').toUpperCase() + i.toString().padStart(5, '0')
                     //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
                     $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
                 }
