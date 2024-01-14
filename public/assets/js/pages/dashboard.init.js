@@ -364,7 +364,7 @@
                             }
                         }
                     },
-                    colors: ['#556ee6'],
+                    colors: ['#e0b402'],
                     fill: {
                         type: 'gradient',
                         gradient: {

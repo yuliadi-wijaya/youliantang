@@ -200,7 +200,7 @@
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <div class="col-md-4 form-group">
-                                                                <label class="control-label">{{ __('Price ') }}<span class="text-info">{{ __('(Auto-Fill)') }}</span></label>
+                                                                <label class="control-label">{{ __('Price ') }}<span class="text-primary">{{ __('(Auto-Fill)') }}</span></label>
                                                                 <input type="text" name="invoices[{{ $index }}][amount]" class="form-control" value="{{ old('invoices.' . $index . '.amount') }}" placeholder="{{ __('Enter Price') }}" readonly />
                                                                 <input type="hidden" name="invoices[{{ $index }}][fee]" class="form-control" value="{{ old('invoices.' . $index . '.fee') }}" readonly />
                                                             </div>
@@ -217,7 +217,7 @@
                                                                 @enderror
                                                             </div>
                                                             <div class="col-md-4 form-group">
-                                                                <label class="control-label">{{ __('Time To ') }}<span class="text-info">{{ __('(Auto-Fill)') }}</span></label>
+                                                                <label class="control-label">{{ __('Time To ') }}<span class="text-primary">{{ __('(Auto-Fill)') }}</span></label>
                                                                 <input type="time" name="invoices[{{ $index }}][time_to]" class="form-control" value="{{ old('invoices.' . $index . '.time_to') }}" readonly />
                                                             </div>
                                                         </div>

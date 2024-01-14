@@ -131,7 +131,7 @@ var options = {
   fill: {
     opacity: 1
   },
-  colors: ['#556ee6']
+  colors: ['#e0b402']
 };
 if(document.querySelector("#revenue-chart")) {
   var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);

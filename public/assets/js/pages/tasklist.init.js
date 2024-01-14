@@ -112,7 +112,7 @@ var options = {
       endingShape: 'rounded'
     }
   },
-  colors: ['#556ee6', '#34c38f'],
+  colors: ['#e0b402', '#34c38f'],
   series: [{
     name: 'Complete Tasks',
     type: 'column',

@@ -55,10 +55,10 @@
                 <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Invoice List') }}
             </button>
         </a>
-        <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light mb-4">
+        <a href="javascript:window.print()" class="btn btn-dark waves-effect waves-light mb-4">
             <i class="fa fa-print"></i>
         </a>
-        <a href="{{ url('invoice-pdf/' . $invoices->id) }}" class="btn btn-success waves-effect waves-light mb-4">
+        <a href="{{ url('invoice-pdf/' . $invoices->id) }}" class="btn btn-dark waves-effect waves-light mb-4">
             <i class="fa fa-file-pdf"></i>
         </a>
     </div>
@@ -67,15 +67,17 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header" style="background-color: #2a3042 !important">
                     <div class="invoice-title">
-                        <h4 class="float-right font-size-16">{{ __('INVOICE') }}</h4>
-                        <div class="mb-4">
-                            <h3>YOU LIAN tANG</h3>
-                            <h6>Family Refleksi & Massage</h6>
+                        <div class="col-12 text-center text-white">
+                            <img src="{{ URL::asset('assets/images/logo-light.png') }}" alt="" width="300" style="margin:-40px 0 -60px 0">
+                        </div>
+                        <div class="col-12 text-center text-white mb-1" style="font-size: 10pt">
+                            Ruko Inkopal Blok C6-C7, Kelapa Gading Barat, Jakarta Utara
                         </div>
                     </div>
-                    <hr>
+                </div>
+                <div class="card-body">
                     <div class="row">
                         <div class="col-9">
                             <address>
@@ -123,11 +125,13 @@
                                     <td colspan="2" class="text-right">{{ __('Sub Total') }}</td>
                                     <td class="text-right">Rp {{ number_format($invoices->total_price) }}</td>
                                 </tr>
-                                <tr>
-                                    <td colspan="2" class="text-right">{{ __('Discount') }}</td>
-                                    <td class="text-right">Rp {{ number_format($invoices->discount) }}</td>
-                                </tr>
-                                @if($invoices->use_member !== 1 && $invoices->voucher_code !== '')
+                                @if($invoices->discount > 0)
+                                    <tr>
+                                        <td colspan="2" class="text-right">{{ __('Discount') }}</td>
+                                        <td class="text-right">Rp {{ number_format($invoices->discount) }}</td>
+                                    </tr>
+                                @endif
+                                @if($invoices->use_member != 1 && $invoices->voucher_code != '')
                                     <tr>
                                         <td colspan="2" class="text-right">{{ __('Voucer Code') }}</td>
                                         <td class="text-right">{{ $invoices->voucher_code }}</td>

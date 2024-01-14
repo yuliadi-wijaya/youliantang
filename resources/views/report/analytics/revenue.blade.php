@@ -88,7 +88,7 @@
                             }
                             var options = {
                                 theme: {
-                                    palette: 'palette1' // upto palette10
+                                    palette: 'palette3' // upto palette10
                                 },
                                 series: [{
                                     name: 'Invoice',
