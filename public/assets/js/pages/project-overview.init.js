@@ -136,7 +136,7 @@ var options = {
       text: 'Week'
     }
   },
-  colors: ['#556ee6']
+  colors: ['#e0b402']
 };
 var chart = new ApexCharts(document.querySelector("#overview-chart"), options);
 chart.render();

@@ -104,7 +104,7 @@
     $('#sa-basic').on('click', function () {
       Swal.fire({
         title: 'Any fool can use a computer',
-        confirmButtonColor: '#556ee6'
+        confirmButtonColor: '#e0b402'
       });
     }); //A title with a text under
 
@@ -113,7 +113,7 @@
         title: "The Internet?",
         text: 'That thing is still around?',
         type: 'question',
-        confirmButtonColor: '#556ee6'
+        confirmButtonColor: '#e0b402'
       });
     }); //Success Message
 
@@ -123,7 +123,7 @@
         text: 'You clicked the button!',
         type: 'success',
         showCancelButton: true,
-        confirmButtonColor: '#556ee6',
+        confirmButtonColor: '#e0b402',
         cancelButtonColor: "#f46a6a"
       });
     }); //Warning Message
@@ -179,7 +179,7 @@
         text: 'Modal with a custom image.',
         imageUrl: 'assets/images/logo-dark.png',
         imageHeight: 20,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         animation: false
       });
     }); //Auto Close Timer
@@ -238,7 +238,7 @@
         title: 'Custom width, padding, background.',
         width: 600,
         padding: 100,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         background: '#fff url(//subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/geometry.png)'
       });
     }); //Ajax
@@ -250,7 +250,7 @@
         showCancelButton: true,
         confirmButtonText: 'Submit',
         showLoaderOnConfirm: true,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         cancelButtonColor: "#f46a6a",
         preConfirm: function preConfirm(email) {
           return new Promise(function (resolve, reject) {
@@ -278,7 +278,7 @@
         input: 'text',
         confirmButtonText: 'Next &rarr;',
         showCancelButton: true,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         cancelButtonColor: "#74788d",
         progressSteps: ['1', '2', '3']
       }).queue([{
@@ -298,7 +298,7 @@
     $('#dynamic-alert').click(function () {
       swal.queue([{
         title: 'Your public IP',
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         confirmButtonText: 'Show my public IP',
         text: 'Your public IP will be received ' + 'via AJAX request',
         showLoaderOnConfirm: true,

@@ -158,7 +158,7 @@ var theme = {
     lineColor: 'rgba(166, 176, 207, 0.1)'
   },
   series: {
-    colors: ['#556ee6', '#34c38f']
+    colors: ['#e0b402', '#34c38f']
   },
   legend: {
     label: {
@@ -248,7 +248,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#34c38f', '#556ee6', '#f46a6a']
+    colors: ['#34c38f', '#e0b402', '#f46a6a']
   }
 }; // For apply theme
 
@@ -336,7 +336,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#f46a6a', '#34c38f', '#556ee6']
+    colors: ['#f46a6a', '#34c38f', '#e0b402']
   }
 };
 tui.chart.registerTheme('myTheme', theme);
@@ -424,7 +424,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#f46a6a', '#34c38f', '#556ee6']
+    colors: ['#f46a6a', '#34c38f', '#e0b402']
   }
 }; // For apply theme
 
@@ -511,7 +511,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#556ee6', '#34c38f', '#f1b44c', '#f46a6a']
+    colors: ['#e0b402', '#34c38f', '#f1b44c', '#f46a6a']
   }
 }; // For apply theme
 
@@ -1013,7 +1013,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#556ee6', '#34c38f', '#f1b44c', '#f46a6a']
+    colors: ['#e0b402', '#34c38f', '#f1b44c', '#f46a6a']
   }
 }; // For apply theme
 
@@ -2615,7 +2615,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#34c38f', '#556ee6']
+    colors: ['#34c38f', '#e0b402']
   }
 }; // For apply theme
 
@@ -2680,7 +2680,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#556ee6', '#34c38f', '#f46a6a', '#50a5f1', '#f1b44c']
+    colors: ['#e0b402', '#34c38f', '#f46a6a', '#ffdc73', '#f1b44c']
   }
 }; // For apply theme
 
@@ -2761,7 +2761,7 @@ var theme = {
   },
   series: {
     series: {
-      colors: ['#556ee6', '#34c38f', '#f46a6a', '#50a5f1', '#f1b44c']
+      colors: ['#e0b402', '#34c38f', '#f46a6a', '#ffdc73', '#f1b44c']
     },
     label: {
       color: '#fff',
@@ -2846,7 +2846,7 @@ var theme = {
     }
   },
   series: {
-    startColor: '#556ee6',
+    startColor: '#e0b402',
     endColor: '#34c38f',
     overColor: '#75b5aa',
     borderColor: '#F4511E'
@@ -2942,7 +2942,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#556ee6', '#34c38f', '#f1b44c', '#f46a6a'],
+    colors: ['#e0b402', '#34c38f', '#f1b44c', '#f46a6a'],
     borderColor: 'rgba(255, 255, 255, 0.4)',
     borderWidth: 4
   }
@@ -3141,7 +3141,7 @@ var theme = {
     }
   },
   series: {
-    startColor: '#556ee6',
+    startColor: '#e0b402',
     endColor: '#34c38f',
     overColor: '#75b5aa',
     borderColor: '#F4511E'
@@ -3229,7 +3229,7 @@ var theme = {
     }
   },
   series: {
-    colors: ['#556ee6', '#34c38f']
+    colors: ['#e0b402', '#34c38f']
   }
 }; // For apply theme
 
@@ -3325,12 +3325,12 @@ var theme = {
     }
   },
   series: {
-    colors: ['#556ee6', '#34c38f', '#f1b44c', '#f46a6a'],
+    colors: ['#e0b402', '#34c38f', '#f1b44c', '#f46a6a'],
     ranges: [{
       color: '#eee',
       opacity: 0.7
     }, null, {
-      color: '#556ee6'
+      color: '#e0b402'
     }]
   }
 }; // For apply theme

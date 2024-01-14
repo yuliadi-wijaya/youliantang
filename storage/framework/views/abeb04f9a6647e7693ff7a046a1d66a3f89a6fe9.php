@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-xl-4">
         <div class="card overflow-hidden">
-            <div class="bg-soft-primary">
+            <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                 <div class="row">
                     <div class="col-7">
                         <div class="text-primary p-3">
