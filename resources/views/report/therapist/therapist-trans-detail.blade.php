@@ -112,11 +112,11 @@
                                             <td class="no-wrap">{{ $row->payment_status }}</td>
                                             <td class="no-wrap">{{ $row->note }}</td>
                                             <td class="no-wrap">{{ $row->voucher_code }}</td>
-                                            <td class="no-wrap">Rp. {{ number_format($row->total_price, 0, ',', '.') }}</td>
-                                            <td class="no-wrap">Rp. {{ number_format($row->discount, 0, ',', '.') }}</td>
+                                            <td class="no-wrap">Rp {{ number_format($row->total_price, 0, ',', '.') }}</td>
+                                            <td class="no-wrap">Rp {{ number_format($row->discount, 0, ',', '.') }}</td>
                                             <td class="no-wrap">{{ $row->tax_rate }}</td>
-                                            <td class="no-wrap">Rp. {{ number_format($row->tax_amount, 0, ',', '.') }}</td>
-                                            <td class="no-wrap">Rp. {{ number_format($row->grand_total, 0, ',', '.') }}</td>
+                                            <td class="no-wrap">Rp {{ number_format($row->tax_amount, 0, ',', '.') }}</td>
+                                            <td class="no-wrap">Rp {{ number_format($row->grand_total, 0, ',', '.') }}</td>
                                             <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->therapist_name : '' }}</td>
                                             <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->room : '' }}</td>
                                             <td class="no-wrap">{{ $row->old_data == 'Y' ? $row->time_from : '' }}</td>
@@ -152,9 +152,9 @@
                                                 <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->treatment_time_from : '' }}</td>
                                                 <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->treatment_time_to : '' }}</td>
                                                 <td class="no-wrap">{{ $rd->product_name }}</td>
-                                                <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
+                                                <td class="no-wrap">Rp {{ number_format($rd->amount, 0, ',', '.') }}</td>
                                                 <td class="no-wrap">{{ $rd->duration }}</td>
-                                                <td class="no-wrap">Rp. {{ number_format($rd->commission_fee, 0, ',', '.') }}</td>
+                                                <td class="no-wrap">Rp {{ number_format($rd->commission_fee, 0, ',', '.') }}</td>
                                                 <td class="no-wrap">{{ $rd->rating }}</td>
                                                 <td class="no-wrap">{{ $rd->comment }}</td>
                                             </tr>
@@ -165,13 +165,13 @@
                                     <tr>
                                         <th class="no-wrap" colspan="6">&nbsp;</th>
                                         <th class="no-wrap">{{ __('Total') }}</th>
-                                        <th class="no-wrap">Rp. {{ number_format($t_price, 0, ',', '.') }}</th>
-                                        <th class="no-wrap">Rp. {{ number_format($t_discount, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($t_price, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($t_discount, 0, ',', '.') }}</th>
                                         <th class="no-wrap">&nbsp;</th>
-                                        <th class="no-wrap">Rp. {{ number_format($t_tax_amount, 0, ',', '.') }}</th>
-                                        <th class="no-wrap">Rp. {{ number_format($t_grand_total, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($t_tax_amount, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($t_grand_total, 0, ',', '.') }}</th>
                                         <th class="no-wrap" colspan="7">&nbsp;</th>
-                                        <th class="no-wrap">Rp. {{ number_format($t_fee, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($t_fee, 0, ',', '.') }}</th>
                                         <th class="no-wrap" colspan="2">&nbsp;</th>
                                     </tr>
                                 </tfoot>

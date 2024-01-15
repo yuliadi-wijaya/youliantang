@@ -68,6 +68,8 @@
         "total-therapist" => "Total Therapist",
         "total-invoices" => "Total Invoices",
         "total-revenue" => "Total Revenue",
+        "total-customers" => "Total Customers",
+        "total-new-customers" => "Total New Customers",
         "charts" => "Charts",
         "analytics" => "Analytics"
     ];

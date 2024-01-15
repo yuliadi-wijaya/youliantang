@@ -19,7 +19,7 @@ class AdminSeeder extends Seeder
             'first_name' => 'Super',
             'last_name' => 'Admin',
             'phone_number' => '5142323114',
-            'profile_photo' =>'avatar-5.jpg',
+            'profile_photo' =>'avatar-1.jpg',
             'email' => 'admin@youliantang.com',
             'password' => 'admin123',
             'status' => 1,

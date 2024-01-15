@@ -68,26 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.monthly-earning') }}</h4>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p class="text-muted">{{ __('This month') }}</p>
-                        <h3>Rp. {{ number_format($data['monthly_earning']) }}</h3>
-                        <p class="text-muted">
-                            <span class="@if ($data['monthly_diff'] > 0) text-success @else text-danger @endif mr-2">
-                                {{ $data['monthly_diff'] }}% <i class="mdi @if ($data['monthly_diff'] > 0) mdi-arrow-up @else mdi-arrow-down @endif"></i>
-                            </span>{{ __('From previous month') }}
-                        </p>
-                    </div>
-                    <div class="col-sm-6">
-                        <div id="radialBar-chart" class="apex-charts"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-8">
+        <div class="col-xl-8 pl-0 pr-0">
             <div class="card mini-stats-wid">
                 <div class="card-body">
                     <div class="media">
@@ -128,13 +109,13 @@
 
     <div class="col-xl-8">
         <div class="row">
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium">{{ __('translation.revenue') }}</p>
-                                <h4 class="mb-0">Rp. {{ number_format($data['revenue'], 2) }}</h4>
+                                <h4 class="mb-0">Rp {{ number_format($data['revenue'], 2) }}</h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -144,14 +125,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium">{{ __("translation.today's-earning") }}</p>
-                                <h4 class="mb-0">Rp. {{ number_format($data['daily_earning'], 2) }}</h4>
+                                <h4 class="mb-0">Rp {{ number_format($data['daily_earning']) }}</h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -162,15 +143,36 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">{{ __('translation.monthly-earning') }}</h4>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="text-muted">{{ __('This month') }}</p>
+                                <h3>Rp {{ number_format($data['monthly_earning']) }}</h3>
+                                <p class="text-muted">
+                                    <span class="@if ($data['monthly_diff'] > 0) text-success @else text-danger @endif mr-2">
+                                        {{ $data['monthly_diff'] }}% <i class="mdi @if ($data['monthly_diff'] > 0) mdi-arrow-up @else mdi-arrow-down @endif"></i>
+                                    </span>{{ __('From previous month') }}
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <div id="radialBar-chart" class="apex-charts"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- end row -->
-        <div class="card">
+        {{-- <div class="card">
             <div class="card-body">
                 <h4 class="card-title mb-4">{{ __('translation.monthly-registered-customers-revenue') }}</h4>
                 <div id="monthly_users" class="apex-charts" dir="ltr"></div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 <!-- end row -->

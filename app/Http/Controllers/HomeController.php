@@ -112,9 +112,7 @@ class HomeController extends Controller
                 })
                 ->select(DB::raw('SUM(grand_total) as total'))
                 ->first();
-            // return $invoice;
             $daily_earning = $invoice->total;
-            // return $daily_earning;
             $monthlyEarning = ReportController::getMonthlyEarning();
             $today_appointment = Appointment::with('timeSlot')->where('appointment_date', $today)->get();
             $tomorrow_appointment = Appointment::where('appointment_date', '=', Carbon::tomorrow())->get();
@@ -262,6 +260,18 @@ class HomeController extends Controller
                     $re->whereTime('available_time', '>=', $time);
                 })
                 ->get();
+
+            $invoice = Invoice::whereDate('created_at', Carbon::today())
+                ->when($invoice_type === 'NC', function ($query) {
+                    return $query->where('invoice_type', 'NC');
+                })
+                ->when($invoice_type === 'CK', function ($query) {
+                    return $query->where('invoice_type', 'CK');
+                })
+                ->select(DB::raw('SUM(grand_total) as total'))
+                ->first();
+            $daily_earning = $invoice->total;
+
             $data = [
                 'total_appointment' => $tot_appointment->count(),
                 'total_customer' => $tot_customer->count(),
@@ -269,6 +279,7 @@ class HomeController extends Controller
                 'today_appointment' => $today_appointment->count(),
                 'Upcoming_appointment' => $Upcoming_appointment->count(),
                 'tomorrow_appointment' => $tomorrow_appointment->count(),
+                'daily_earning' => $daily_earning,
                 'monthly_earning' => $monthlyEarning['monthlyEarning'],
                 'monthly_diff' => $monthlyEarning['diff']
             ];

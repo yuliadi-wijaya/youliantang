@@ -88,7 +88,9 @@ Route::get('customer-appointment', 'AppointmentController@customer_appointment')
 // Revenue / Earning / calender
 Route::get('getMonthlyUsersRevenue', 'ReportController@getMonthlyUsersRevenue');
 Route::get('getMonthlyInvoicesRevenue', 'ReportController@getMonthlyInvoicesRevenue');
+Route::get('getYearlyInvoicesRevenue', 'ReportController@getYearlyInvoicesRevenue');
 Route::get('getMonthlyEarning', 'ReportController@getMonthlyEarning');
+Route::get('analytics', 'ReportController@analytics');
 Route::get('calender', 'HomeController@calender');
 
 // Notification routes
@@ -156,7 +158,4 @@ Route::get('/ex-therapist-trans', 'ReportTherapistController@exportReportTherapi
 Route::get('/rf-trans', 'ReportTransController@fiterReportTrans');
 Route::get('/rs-trans', 'ReportTransController@showReportTrans')->name('rs-trans');
 Route::get('/ex-trans', 'ReportTransController@exportReportTrans')->name('ex-trans');
-
-// Report Analytics
-Route::get('/analytics-revenue', 'ReportAnalyticsController@revenue');
 });

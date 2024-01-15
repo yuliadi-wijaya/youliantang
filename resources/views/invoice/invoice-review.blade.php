@@ -56,6 +56,7 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <br />
                                     <blockquote>{{ __('Review Details') }}</blockquote>
                                     @php
                                         $record = 0;
@@ -64,6 +65,10 @@
                                     @foreach($invoice_details as $index => $row)
                                         <div class="row">
                                             <div class="col-md-4 form-group">
+                                                <label class="control-label">{{ __('Treatment ') }}</label>
+                                                <input type="text" class="form-control" value="{{ old('product_name.' . $index, $row->product_name) }}" readonly>
+                                            </div>
+                                            <div class="col-md-3 form-group">
                                                 <label class="control-label">{{ __('Therapist ') }}</label>
                                                 <input type="text" class="form-control" value="{{ old('therapist_name.' . $index, $row->therapist_name) }}" readonly>
                                                 <input type="hidden" name="therapist_id[{{ $index }}]" value="{{ old('therapist_id.' . $index, $row->therapist_id) }}">
@@ -83,7 +88,7 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="col-md-6 form-group">
+                                            <div class="col-md-3 form-group">
                                                 <label for="comment{{ $index }}">{{ __('Comment (optional) ') }}</label>
                                                 <textarea class="form-control" name="comment[{{ $index }}]" rows="4">{{ old('comment.' . $index, $row->comment) }}</textarea>
                                             </div>

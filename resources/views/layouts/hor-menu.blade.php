@@ -111,13 +111,7 @@
                                 </div>
 
                                 <a href="{{ url('rf-trans') }}" class="nav-link">{{ __('translation.transactions') }}</a>
-
-                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ __('translation.analytics') }} <div class="arrow-down"></div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
-                                    <a href="{{ url('analytics-revenue') }}" class="nav-link">{{ __('translation.revenue') }}</a>
-                                </div>
+                                <a href="{{ url('analytics') }}" class="nav-link">{{ __('translation.analytics') }}</a>
                             </div>
                         </li>
                     @elseif ($role == 'receptionist')

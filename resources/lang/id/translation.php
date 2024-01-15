@@ -68,6 +68,8 @@
         "total-therapist" => "Total Terapis",
         "total-invoices" => "Total Transaksi",
         "total-revenue" => "Total Pendapatan",
+        "total-customers" => "Total Pelanggan",
+        "total-new-customers" => "Total Pelanggan Baru",
         "charts" => "Grafik",
         "analytics" => "Analytics"
     ];

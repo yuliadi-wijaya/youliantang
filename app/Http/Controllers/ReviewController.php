@@ -92,9 +92,11 @@ class ReviewController extends Controller
             \DB::raw("CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) as therapist_name"),
             'reviews.id as review_id',
             \DB::raw("COALESCE(reviews.rating, 0) as rating"),
-            \DB::raw("COALESCE(reviews.comment, '') as comment")
+            \DB::raw("COALESCE(reviews.comment, '') as comment"),
+            'products.name as product_name'
         )
         ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+        ->join('products', 'products.id', '=', 'invoice_details.product_id')
         ->leftJoin('reviews', function ($join) {
             $join->on('reviews.invoice_id', '=', 'invoice_details.invoice_id')
                 ->on('reviews.invoice_detail_id', '=', 'invoice_details.id');

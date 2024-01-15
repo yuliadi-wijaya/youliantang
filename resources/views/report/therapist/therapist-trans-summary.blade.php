@@ -106,7 +106,7 @@
                                             <td class="no-wrap">{{ $row->phone_number }}</td>
                                             <td class="no-wrap">{{ $row->treatment_month_year }}</td>
                                             <td class="no-wrap">{{ $row->total_duration }} Minutes</td>
-                                            <td class="no-wrap">Rp. {{ number_format($row->total_commission_fee, 0, ',', '.') }}</td>
+                                            <td class="no-wrap">Rp {{ number_format($row->total_commission_fee, 0, ',', '.') }}</td>
                                             <td class="no-wrap">{{ $row->avg_rating }}</td>
                                         </tr>
                                     @endforeach
@@ -116,7 +116,7 @@
                                         <th class="no-wrap" colspan="2">&nbsp;</th>
                                         <th class="no-wrap">{{ __('Total') }}</th>
                                         <th class="no-wrap">{{ $gt_duration }} Minutes</th>
-                                        <th class="no-wrap">Rp. {{ number_format($gt_fee, 0, ',', '.') }}</td>
+                                        <th class="no-wrap">Rp {{ number_format($gt_fee, 0, ',', '.') }}</td>
                                         <th class="no-wrap">&nbsp;</th>
                                     </tr>
                                 </tfoot>

@@ -80,24 +80,24 @@
                                     <tr>
                                         <td>1</td>
                                         <td>{{ $transaction_detail->product }}</td>
-                                        <td class="text-right">Rp. {{ number_format($transaction_detail->total_cost, 2, '.', ',') }}</td>
+                                        <td class="text-right">Rp {{ number_format($transaction_detail->total_cost, 2, '.', ',') }}</td>
                                     </tr>
                                     {{-- <tr>
                                         <td colspan="2" class="text-right">{{ __('Sub Total') }}</td>
-                                        <td class="text-right">Rp. {{ number_format($transaction_detail->total_cost, 2, '.', ',') }}</td>
+                                        <td class="text-right">Rp {{ number_format($transaction_detail->total_cost, 2, '.', ',') }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" class="border-0 text-right">
                                             <strong>{{ __('Tax (10%)') }}</strong>
                                         </td>
-                                        <td class="border-0 text-right">Rp. {{ number_format(($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</td>
+                                        <td class="border-0 text-right">Rp {{ number_format(($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" class="border-0 text-right">
                                             <strong>{{ __('Total') }}</strong>
                                         </td>
                                         <td class="border-0 text-right">
-                                            <h4 class="m-0">Rp. {{ number_format($transaction_detail->total_cost + ($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</h4>
+                                            <h4 class="m-0">Rp {{ number_format($transaction_detail->total_cost + ($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</h4>
                                         </td>
                                     </tr> --}}
                                     <tr>
@@ -105,7 +105,7 @@
                                             <strong>{{ __('Total') }}</strong>
                                         </td>
                                         <td class="border-0 text-right">
-                                            <h4 class="m-0">Rp. {{ number_format($transaction_detail->total_cost + ($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</h4>
+                                            <h4 class="m-0">Rp {{ number_format($transaction_detail->total_cost + ($transaction_detail->total_cost * 5) / 100, 2, '.', ',') }}</h4>
                                         </td>
                                     </tr>
                                 </tbody>

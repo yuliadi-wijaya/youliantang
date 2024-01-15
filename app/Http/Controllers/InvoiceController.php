@@ -341,6 +341,7 @@ class InvoiceController extends Controller
                     'invoices.id',
                     'invoices.invoice_code',
                     \DB::raw("CONCAT(COALESCE(users.first_name,''), ' ', COALESCE(users.last_name,'')) AS customer_name"),
+                    'users.phone_number as customer_phone_number',
                     'invoices.treatment_date',
                     'invoices.created_at',
                     'invoices.payment_mode',
@@ -353,12 +354,15 @@ class InvoiceController extends Controller
                     'invoices.discount',
                     'invoices.tax_rate',
                     'invoices.tax_amount',
-                    'invoices.grand_total'
+                    'invoices.grand_total',
+                    'invoices.created_by'
                 )
                 ->join('users', 'invoices.customer_id', '=', 'users.id')
                 ->where('invoices.is_deleted', 0)
                 ->where('invoices.id', $invoice->id)
                 ->first();
+
+            $receptionist = Sentinel::findById($invoices->created_by);
 
             $invoice_detail = InvoiceDetail::select(
                     'products.name as product_name',
@@ -381,9 +385,9 @@ class InvoiceController extends Controller
         }
 
         if($invoice->old_data == 'Y') {
-            return view('invoice.view-invoice-old', compact('user', 'role', 'invoice', 'invoice_detail'));
+            return view('invoice.view-invoice-old', compact('user', 'role', 'invoice', 'invoice_detail','receptionist'));
         }else{
-            return view('invoice.view-invoice-new', compact('user', 'role', 'invoices', 'invoice_detail'));
+            return view('invoice.view-invoice-new', compact('user', 'role', 'invoices', 'invoice_detail','receptionist'));
         }
     }
 
@@ -419,12 +423,15 @@ class InvoiceController extends Controller
                 'invoices.discount',
                 'invoices.tax_rate',
                 'invoices.tax_amount',
-                'invoices.grand_total'
+                'invoices.grand_total',
+                'invoices.created_by'
             )
             ->join('users', 'invoices.customer_id', '=', 'users.id')
             ->where('invoices.is_deleted', 0)
             ->where('invoices.id', $id)
             ->first();
+
+            $receptionist = Sentinel::findById($invoices->created_by);
 
             $invoice_detail = InvoiceDetail::select(
                 'products.name as product_name',
@@ -439,10 +446,10 @@ class InvoiceController extends Controller
             ->where('invoice_details.invoice_id', $id)
             ->get();
 
-            $pdf = PDF::loadView('invoice.invoice-pdf-new', compact('user', 'role', 'invoices', 'invoice_detail'));
+            //$pdf = PDF::loadView('invoice.invoice-pdf-new', compact('user', 'role', 'invoices', 'invoice_detail', 'receptionist'));
         }
-
-        return $pdf->download('invoice_' . date('Y-m-d') . '_' . $id . '.pdf');
+        return view('invoice.invoice-pdf-new', compact('user', 'role', 'invoices', 'invoice_detail','receptionist'));
+        //return $pdf->download('invoice_' . date('Y-m-d') . '_' . $id . '.pdf');
     }
 
     /**

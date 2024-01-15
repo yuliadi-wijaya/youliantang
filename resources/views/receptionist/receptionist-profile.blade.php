@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-xl-4">
                 <div class="card overflow-hidden">
-                    <div class="bg-soft-primary">
+                    <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
@@ -143,7 +143,7 @@
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                        <h4 class="mb-0">Rp {{ number_format($data['revenue']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">

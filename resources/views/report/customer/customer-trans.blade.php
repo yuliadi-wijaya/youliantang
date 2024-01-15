@@ -107,10 +107,10 @@
 
                                         @php
                                             $treatment_date = date('d-m-Y', strtotime($row->treatment_date));
-                                            $total_price = 'Rp. '. number_format($row->total_price, 0, ',', '.');
-                                            $discount = 'Rp. '. number_format($row->discount, 0, ',', '.');
-                                            $tax_amount = 'Rp. '. number_format($row->tax_amount, 0, ',', '.');
-                                            $grand_total = 'Rp. '. number_format($row->grand_total, 0, ',', '.');
+                                            $total_price = 'Rp '. number_format($row->total_price, 0, ',', '.');
+                                            $discount = 'Rp '. number_format($row->discount, 0, ',', '.');
+                                            $tax_amount = 'Rp '. number_format($row->tax_amount, 0, ',', '.');
+                                            $grand_total = 'Rp '. number_format($row->grand_total, 0, ',', '.');
 
                                             $sub_price += $row->total_price;
                                             $sub_discount += $row->discount;
@@ -165,7 +165,7 @@
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">&nbsp;</td>
                                                 <td class="no-wrap">{{ $rd->product_name }}</td>
-                                                <td class="no-wrap">Rp. {{ number_format($rd->amount, 0, ',', '.') }}</td>
+                                                <td class="no-wrap">Rp {{ number_format($rd->amount, 0, ',', '.') }}</td>
                                                 <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->therapist_name : '' }}</td>
                                                 <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->room : '' }}</td>
                                                 <td class="no-wrap">{{ $row->old_data == 'N' ? $rd->treatment_time_from : '' }}</td>
@@ -178,11 +178,11 @@
                                     <tr>
                                         <th class="no-wrap" colspan="11">&nbsp;</th>
                                         <th class="no-wrap">{{ __('Total') }}</th>
-                                        <th class="no-wrap">Rp. {{ number_format($sub_price, 0, ',', '.') }}</th>
-                                        <th class="no-wrap">Rp. {{ number_format($sub_discount, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($sub_price, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($sub_discount, 0, ',', '.') }}</th>
                                         <th class="no-wrap">&nbsp;</th>
-                                        <th class="no-wrap">Rp. {{ number_format($sub_tax_amount, 0, ',', '.') }}</th>
-                                        <th class="no-wrap">Rp. {{ number_format($sub_grand_total, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($sub_tax_amount, 0, ',', '.') }}</th>
+                                        <th class="no-wrap">Rp {{ number_format($sub_grand_total, 0, ',', '.') }}</th>
                                         <th class="no-wrap" colspan="6">&nbsp;</th>
                                     </tr>
                                 </tfoot>

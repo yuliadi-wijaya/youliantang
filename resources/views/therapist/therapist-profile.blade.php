@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-xl-4">
                 <div class="card overflow-hidden">
-                    <div class="bg-soft-primary">
+                    <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
@@ -119,36 +119,36 @@
                         <p>Available Day</p>
                         @if ($availableDay)
                             @if ($availableDay->sun == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Sunday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Sunday') }}</span>
                             @endif
                             @if ($availableDay->mon == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Monday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Monday') }}</span>
                             @endif
                             @if ($availableDay->tue == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Tuesday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Tuesday') }}</span>
                             @endif
                             @if ($availableDay->wen == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Wednesday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Wednesday') }}</span>
                             @endif
                             @if ($availableDay->thu == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Thursday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Thursday') }}</span>
                             @endif
                             @if ($availableDay->fri == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Friday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Friday') }}</span>
                             @endif
                             @if ($availableDay->sat == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Saturday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Saturday') }}</span>
                             @endif
                         @endif
                         <hr>
-                        <p>Available Time</p>
+                        {{-- <p>Available Time</p>
                         @if ($availableTime)
                             @foreach ($availableTime as $item)
                                 <span class="badge badge-info font-size-15 my-2">
                                     {{ \Carbon\Carbon::createFromFormat('H:i:s', $item->from)->format('h:i') . ' To ' . \Carbon\Carbon::createFromFormat('H:i:s', $item->to)->format('h:i') }}
                                 </span>
                             @endforeach
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
                 <!-- end card -->
@@ -178,7 +178,7 @@
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                        <h4 class="mb-0">Rp {{ number_format($data['revenue']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">

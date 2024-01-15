@@ -108,13 +108,7 @@
                                 </div>
 
                                 <a href="<?php echo e(url('rf-trans')); ?>" class="nav-link"><?php echo e(__('translation.transactions')); ?></a>
-
-                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <?php echo e(__('translation.analytics')); ?> <div class="arrow-down"></div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
-                                    <a href="<?php echo e(url('analytics-revenue')); ?>" class="nav-link"><?php echo e(__('translation.revenue')); ?></a>
-                                </div>
+                                <a href="<?php echo e(url('analytics')); ?>" class="nav-link"><?php echo e(__('translation.analytics')); ?></a>
                             </div>
                         </li>
                     <?php elseif($role == 'receptionist'): ?>

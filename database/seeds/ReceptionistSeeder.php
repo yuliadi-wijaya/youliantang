@@ -21,10 +21,10 @@ class ReceptionistSeeder extends Seeder
         // User Data
         $user = [
             'first_name' => 'Receptionist',
-            'last_name' => 'One',
+            'last_name' => 'CK',
             'phone_number' => '0852' . $faker->numberBetween(10000000, 20000000),
-            'profile_photo' => 'Female_receptionist.png',
-            'email' => 'receptionist.one@example.com',
+            'profile_photo' => 'avatar-5.jpg',
+            'email' => 'receptionist.ck@youliantang.com',
             'password' => 'receptionist123',
             'status' => 1,
         ];
@@ -63,10 +63,10 @@ class ReceptionistSeeder extends Seeder
         // User Data
         $user = [
             'first_name' => 'Receptionist',
-            'last_name' => 'Two',
+            'last_name' => 'NC',
             'phone_number' => '0852' . $faker->numberBetween(10000000, 20000000),
-            'profile_photo' => 'Male_receptionist.png',
-            'email' => 'receptionist.two@example.com',
+            'profile_photo' => 'avatar-2.jpg',
+            'email' => 'receptionist.nc@youliantang.com',
             'password' => 'receptionist123',
             'status' => 1,
         ];

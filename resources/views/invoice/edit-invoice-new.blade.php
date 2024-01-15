@@ -166,7 +166,7 @@
                                                                     <option selected disabled>{{ __('-- Select Product --') }}</option>
                                                                     @foreach($products as $row)
                                                                         <option value="{{ $row->id }}" data-price="{{ $row->price }}" data-duration="{{ $row->duration }}" data-fee="{{ $row->commission_fee }}" {{ old('invoices.' . $index . '.product_id', $item->product_id) == $row->id ? 'selected' : '' }}>
-                                                                            {{ $row->name }} - Rp. {{ number_format($row->price) }}
+                                                                            {{ $row->name }} - Rp {{ number_format($row->price) }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -287,7 +287,7 @@
                                                         data-maxvalue = "{{ $row->discount_max_value }}"
                                                         data-reuse = "{{ $row->is_reuse_voucher }}"
                                                         {{ old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : '' }}>
-                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
+                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp '. number_format($row->discount_max_value) .')' }} @endif
                                                     </option>
                                                 @endforeach
                                                 @foreach($promos as $row)
@@ -297,7 +297,7 @@
                                                         data-maxvalue = "{{ $row->discount_max_value }}"
                                                         data-reuse = "{{ $row->is_reuse_voucher }}"
                                                         {{ old('voucher_code', $invoice->voucher_code) == $row->voucher_code ? 'selected' : '' }}>
-                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp. '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp. '. number_format($row->discount_max_value) .')' }} @endif
+                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp '. number_format($row->discount_max_value) .')' }} @endif
                                                     </option>
                                                 @endforeach
                                             </select>

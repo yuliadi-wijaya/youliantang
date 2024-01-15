@@ -7,10 +7,12 @@
         <div class="container">
             <div class="row justify-content-center">
                 
-                <div class="col-md-8 col-lg-6 col-xl-5">
-                    <div class="col-12" style="height: 250px">
-                        <img src="<?php echo e(URL::asset('assets/images/companies/ylt-black.png')); ?>" alt=""
-                                        class="img-fluid">
+                <div class="col-md-8 col-lg-6 col-xl-5 mt-5">
+                    <div class="col-12" style="margin-bottom: -50px">
+                        <div class="row justify-content-center">
+                            <img src="<?php echo e(URL::asset('assets/images/companies/ylt-black.png')); ?>" width="400" alt=""
+                            class="img-fluid">
+                        </div>
                     </div>
                     
                     <div class="card overflow-hidden">
