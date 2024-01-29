@@ -242,21 +242,28 @@
                                     <label class="control-label">{{ __('Filter ') }}<span
                                         class="text-danger">*</span></label>
                                     <div class="row">
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-2 form-group">
+                                            <input type="number"
+                                                class="form-control"
+                                                name="start_number" id="StartNumber" tabindex="1"
+                                                value="{{ old('start_number') }}"
+                                                placeholder="{{ __('Enter Start Number') }}">
+                                        </div>
+                                        <div class="col-md-3 form-group">
                                             <input type="number"
                                                 class="form-control"
                                                 name="voucher_total" id="VoucherTotal" tabindex="1"
                                                 value="{{ old('voucher_total') }}"
                                                 placeholder="{{ __('Enter Total Voucher Will Be Generated') }}">
                                         </div>
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-3 form-group">
                                             <input type="text"
                                                 class="form-control text-uppercase h-formfield-uppercase"
                                                 name="voucher_prefix" id="VoucherPrefix" tabindex="1"
                                                 value="{{ old('voucher_prefix') }}"
                                                 placeholder="{{ __('Enter Prefix Voucher') }}">
                                         </div>
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-3 form-group">
                                             <input type="hidden" id="IsGenerated" name="is_generated" value="0">
                                             <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
                                         </div>
@@ -333,19 +340,20 @@
             });
 
             $(document).on('click', '#GenerateVoucher', function() {
+                var startNumber = $('#StartNumber').val();
                 var voucherTotal = $('#VoucherTotal').val();
                 var voucherPrefix = $('#VoucherPrefix').val();
 
-                if (!voucherTotal || !voucherPrefix) {
+                if (!startNumber || !voucherTotal || !voucherPrefix) {
                     alert('Input filters are required.');
-                    return
+                    return;
                 }
 
                 today = new Date();
 
                 $('.voucher_list').html('');
-                for(var i = 1; i <= voucherTotal; i++) {
-                    voucherGeneratedText = voucherPrefix.replaceAll(/\s/g,'').toUpperCase() + i.toString().padStart(5, '0')
+                for(var i = parseInt(startNumber); i < parseInt(startNumber) + parseInt(voucherTotal); i++) {
+                    voucherGeneratedText = voucherPrefix.toUpperCase() + i.toString().padStart(6, '0')
                     //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
                     $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
                 }
