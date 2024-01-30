@@ -244,10 +244,15 @@
                                     <div class="row">
                                         <div class="col-md-2 form-group">
                                             <input type="number"
-                                                class="form-control"
+                                                class="form-control @error('start_number') is-invalid @enderror""
                                                 name="start_number" id="StartNumber" tabindex="1"
                                                 value="{{ old('start_number') }}"
                                                 placeholder="{{ __('Enter Start Number') }}">
+                                            @error('start_number')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                         <div class="col-md-3 form-group">
                                             <input type="number"
@@ -264,7 +269,7 @@
                                                 placeholder="{{ __('Enter Prefix Voucher') }}">
                                         </div>
                                         <div class="col-md-3 form-group">
-                                            <input type="hidden" id="IsGenerated" name="is_generated" value="0">
+                                            <input type="hidden" id="IsGenerated" name="is_generated" value="{{ old('is_generated', 0) }}">
                                             <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
                                         </div>
                                     </div>
@@ -339,26 +344,39 @@
                 format: 'yyyy-mm-dd'
             });
 
-            $(document).on('click', '#GenerateVoucher', function() {
-                var startNumber = $('#StartNumber').val();
-                var voucherTotal = $('#VoucherTotal').val();
-                var voucherPrefix = $('#VoucherPrefix').val();
+            $(document).ready(function() {
+                // Check if voucher_list is stored in localStorage
+                var storedVoucherList = localStorage.getItem('storedVoucherList');
+                var isGenerated =  $('#IsGenerated').val();
 
-                if (!startNumber || !voucherTotal || !voucherPrefix) {
-                    alert('Input filters are required.');
-                    return;
+                if (storedVoucherList && isGenerated !== '0') {
+                    $('.voucher_list').html(storedVoucherList);
                 }
 
-                today = new Date();
+                $(document).on('click', '#GenerateVoucher', function() {
+                    var startNumber = $('#StartNumber').val();
+                    var voucherTotal = $('#VoucherTotal').val();
+                    var voucherPrefix = $('#VoucherPrefix').val();
 
-                $('.voucher_list').html('');
-                for(var i = parseInt(startNumber); i < parseInt(startNumber) + parseInt(voucherTotal); i++) {
-                    voucherGeneratedText = voucherPrefix.toUpperCase() + i.toString().padStart(6, '0')
-                    //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
-                    $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
-                }
+                    if (!startNumber || !voucherTotal || !voucherPrefix) {
+                        alert('Input filters are required.');
+                        return;
+                    }
 
-                $('#IsGenerated').val(1);
+                    today = new Date();
+
+                    $('.voucher_list').html('');
+                    for (var i = parseInt(startNumber); i < parseInt(startNumber) + parseInt(voucherTotal); i++) {
+                        voucherGeneratedText = voucherPrefix.toUpperCase() + i.toString().padStart(6, '0');
+                        $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
+                    }
+
+                    $('#IsGenerated').val(1);
+
+                    // Store voucher_list in localStorage
+                    var voucherListHTML = $('.voucher_list').html();
+                    localStorage.setItem('storedVoucherList', voucherListHTML);
+                });
             });
 
             $(document).on('change', '#is_reuse_voucher', function() {

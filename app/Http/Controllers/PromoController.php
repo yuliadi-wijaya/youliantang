@@ -32,7 +32,7 @@ class PromoController extends Controller
     {
         // Get user session data
         $user = Sentinel::getUser();
-        
+
         // Check user access
         if (!$user->hasAccess('promo.list')) {
             return view('error.403');
@@ -128,7 +128,7 @@ class PromoController extends Controller
 
         // Default data null
         $promo = null;
-        
+
         return view('promo.promo-details', compact('user', 'role', 'promo'));
     }
 
@@ -157,8 +157,27 @@ class PromoController extends Controller
             'active_period_end' => 'required|date|after:active_period_start',
             'is_reuse_voucher' => 'required|numeric',
             'status' => 'required|numeric',
-            'voucher_list.*' => 'required'
+            'voucher_list.*' => 'required',
+            'start_number' => 'required|numeric',
+            'voucher_total' => 'required|numeric',
+            'voucher_prefix' => 'required|string|max:25'
         ]);
+
+        // Check if voucher_prefix already exists
+        $existingPromo = Promo::where('voucher_prefix', $request->voucher_prefix)->first();
+
+        if ($existingPromo) {
+            // Check if start_number is greater than the existing promo's start_number
+            $defaultStartNumber = $existingPromo->start_number + $existingPromo->voucher_total;
+
+            if ($request->start_number <= $defaultStartNumber) {
+                $errorMessage = 'Start Number must be greater equals ' . $defaultStartNumber;
+
+                return redirect()->back()
+                    ->withErrors(['start_number' => $errorMessage])
+                    ->withInput($request->all());
+            }
+        }
 
         try {
             // Mapping request to object and store data
@@ -302,7 +321,7 @@ class PromoController extends Controller
                 // Set available data to false
                 $obj->is_deleted = 1;
                 $obj->save();
-                
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Promo deleted successfully.',
@@ -313,13 +332,13 @@ class PromoController extends Controller
                     'success' => false,
                     'message' => 'Promo not found.',
                     'data' => [],
-                ], 409); 
+                ], 409);
             }
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong!!! ' . $e->getMessage(),
-                'data' => [], 
+                'data' => [],
             ], 409);
         }
     }
