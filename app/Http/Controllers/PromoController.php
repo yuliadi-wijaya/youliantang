@@ -170,7 +170,7 @@ class PromoController extends Controller
             // Check if start_number is greater than the existing promo's start_number
             $defaultStartNumber = $existingPromo->start_number + $existingPromo->voucher_total;
 
-            if ($request->start_number <= $defaultStartNumber) {
+            if ($request->start_number < $defaultStartNumber) {
                 $errorMessage = 'Start Number must be greater equals ' . $defaultStartNumber;
 
                 return redirect()->back()
