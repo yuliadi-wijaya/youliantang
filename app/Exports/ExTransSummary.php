@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ExTherapistTransSummary implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithColumnFormatting
+class ExTransSummary implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithColumnFormatting
 {
     protected $report;
 
@@ -30,7 +30,7 @@ class ExTherapistTransSummary implements FromCollection, WithHeadings, ShouldAut
         return [
             'Therapist Name',
             'Phone Number',
-            'Treatment Date',
+            'Invoice Date',
             'Duration',
             'Commission Fee',
             'Rating',

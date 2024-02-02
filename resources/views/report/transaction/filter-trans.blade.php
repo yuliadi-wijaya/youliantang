@@ -41,65 +41,32 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row" id="invoice_date_show" style="display: block;">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="input-group datepickerdiv">
-                                                        <input type="text"
-                                                            class="form-control @error('date_from') is-invalid @enderror"
-                                                            name="date_from" id="date_from" data-provide="datepicker"
-                                                            data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('date_from', date('Y-m-d')) }} placeholder="{{ __('Enter Date From') }}"
-                                                            value="{{ old('date_from') }}">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                                                        </div>
-                                                        @error('date_from')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="input-group datepickerdiv">
-                                                        <input type="text"
-                                                            class="form-control @error('date_to') is-invalid @enderror"
-                                                            name="date_to" id="date_to" data-provide="datepicker"
-                                                            data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('date_to', date('Y-m-d')) }} placeholder="{{ __('Enter Date To') }}"
-                                                            value="{{ old('date_to') }}">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                                                        </div>
-                                                        @error('date_to')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" id="therapist_show" style="display: none;">
+                            <div class="row">
                                 <div class="col-md-4 form-group">
-                                    <label class="control-label">{{ __('Select Therapist') }}</label>
-                                    <select class="form-control select2" name="therapist_id" id="therapist_id">
-                                        <option value="all" @if (old('therapist_id') == 'therapist ') selected @endif>{{ __('All Therapist') }}</option>
-                                        @foreach($therapists as $row)
-                                            <option value="{{ $row->id }}" {{ old('therapist_id') == $row->id ? 'selected' : '' }}>{{ $row->therapist_name }}</option>
-                                        @endforeach
+                                    <label class="control-label">{{ __('Filter Display') }}</label>
+                                    <select class="form-control select2" name="filter_display" id="filter_display">
+                                        <option value="daily" @if (old('filter_display') == 'daily') selected @endif>{{ __('Daily') }}</option>
+                                        <option value="monthly" @if (old('filter_display') == 'monthly') selected @endif>{{ __('Monthly') }}</option>
+                                        <option value="yearly" @if (old('filter_display') == 'yearly') selected @endif>{{ __('Yearly') }}</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="row" id="month_year_show" style="display: none;">
+                            <div class="row" id="daily_show">
+                                <div class="col-md-2 form-group">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="input-group datepickerdiv">
+                                        <input type="date" class="form-control @error('daily_date') is-invalid @enderror"
+                                            name="daily_date" id="daily_date" value="{{ old('daily_date') }}"
+                                            placeholder="{{ __('Select Date') }}">
+                                        @error('daily_date')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="monthly_show" style="display: none;">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-12 form-group">
@@ -107,7 +74,7 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="input-group datepickerdiv">
-                                                        <select class="custom-select @error('month') is-invalid @enderror" id="month" name="month">
+                                                        <select class="form-control select2 @error('month') is-invalid @enderror" id="month" name="month">
                                                             <option value="" disabled selected>Select Month</option>
                                                         </select>
                                                         @error('month')
@@ -119,7 +86,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group datepickerdiv">
-                                                        <select class="custom-select @error('year') is-invalid @enderror" id="year" name="year">
+                                                        <select class="form-control select2 @error('year') is-invalid @enderror" id="year" name="year">
                                                             <option value="" disabled selected>Select Year</option>
                                                         </select>
                                                         @error('year')
@@ -132,6 +99,32 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row" id="yearly_show" style="display: none;">
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="input-group datepickerdiv">
+                                        <select class="form-control select2 @error('yearly_date') is-invalid @enderror" id="yearly_date" name="yearly_date">
+                                            <option value="" disabled selected>Select Year</option>
+                                        </select>
+                                        @error('yearly_date')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="therapist_show" style="display: none;">
+                                <div class="col-md-4 form-group">
+                                    <label class="control-label">{{ __('Select Therapist') }}</label>
+                                    <select class="form-control select2" name="therapist_id" id="therapist_id">
+                                        <option value="all" @if (old('therapist_id') == 'therapist ') selected @endif>{{ __('All Therapist') }}</option>
+                                        @foreach($therapists as $row)
+                                            <option value="{{ $row->id }}" {{ old('therapist_id') == $row->id ? 'selected' : '' }}>{{ $row->therapist_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="row" id="order_by_show" style="display: none;">
@@ -164,7 +157,6 @@
         <script src="{{ URL::asset('assets/libs/moment/moment.js') }}"></script>
         <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
         <script src="{{ URL::asset('assets/js/pages/form-advanced.init.js') }}"></script>
-        <script src="{{ URL::asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 
         <script>
             $(document).ready(function(){
@@ -172,22 +164,43 @@
                     var selec_type = $("#report_type").val();
 
                     if (selec_type == 'summary') {
-                        $("#invoice_date_show").css("display", "none");
+                        $("#treatment_date_show").css("display", "none");
                         $("#therapist_show").css("display", "block");
-                        $("#month_year_show").css("display", "block");
                         $("#order_by_show").css("display", "block");
                     } else {
-                        $("#invoice_date_show").css("display", "block");
+                        $("#treatment_date_show").css("display", "block");
                         $("#therapist_show").css("display", "none");
-                        $("#month_year_show").css("display", "none");
                         $("#order_by_show").css("display", "none");
                     }
                 }
 
+                function toggleFilterDate() {
+                    var selec_type = $("#filter_display").val();
+
+                    if (selec_type == 'daily') {
+                        $("#daily_show").css("display", "block");
+                        $("#monthly_show").css("display", "none");
+                        $("#yearly_show").css("display", "none");
+                    } else if (selec_type == 'monthly') {
+                        $("#daily_show").css("display", "none");
+                        $("#monthly_show").css("display", "block");
+                        $("#yearly_show").css("display", "none");
+                    } else if (selec_type == 'yearly') {
+                        $("#daily_show").css("display", "none");
+                        $("#monthly_show").css("display", "none");
+                        $("#yearly_show").css("display", "block");
+                    }
+                }
+
                 toggleDisplay();
+                toggleFilterDate();
 
                 $("#report_type").on("change", function() {
                     toggleDisplay();
+                });
+
+                $("#filter_display").on("change", function() {
+                    toggleFilterDate();
                 });
             });
 
@@ -201,7 +214,16 @@
 
             var yearSelect = document.getElementById("year");
             var currentYear = new Date().getFullYear();
-            for (var year = currentYear; year >= currentYear - 3; year--) {
+            for (var year = currentYear; year >= currentYear - 24; year--) {
+                var option = document.createElement("option");
+                option.value = "" + year;
+                option.text = "" + year;
+                yearSelect.appendChild(option);
+            }
+
+            var yearSelect = document.getElementById("yearly_date");
+            var currentYear = new Date().getFullYear();
+            for (var year = currentYear; year >= currentYear - 24; year--) {
                 var option = document.createElement("option");
                 option.value = "" + year;
                 option.text = "" + year;

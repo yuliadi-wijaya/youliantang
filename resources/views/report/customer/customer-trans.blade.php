@@ -36,8 +36,10 @@
                 <form id="export-form" action="{{ route('ex-customer-trans') }}" method="GET" style="display: none;">
                     @csrf
 
-                    <input type="hidden" name="dateFrom" value="{{ $dateFrom }}">
-                    <input type="hidden" name="dateTo" value="{{ $dateTo }}">
+                    <input type="hidden" name="filter_display" value="{{ $filter_display }}">
+                    <input type="hidden" name="daily" value="{{ $daily }}">
+                    <input type="hidden" name="monthly" value="{{ $monthly }}">
+                    <input type="hidden" name="yearly" value="{{ $yearly }}">
                 </form>
             </div>
         </div>
@@ -46,8 +48,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="invoice-title">
-                            <div class="mb-4">
-                                <h4><strong>{{ __('Report') . ' ' . date('d M Y', strtotime($dateFrom)) . ' - ' . date('d M Y', strtotime($dateTo)) }}</strong></h4>
+                            <div class="mb-4" style="text-align: center;">
+                                <strong>
+                                    <h4>{{ ucfirst($filter_display) . ' Report' }}</h4>
+                                    <h5>
+                                        @if ($filter_display === 'daily')
+                                            {{ \Carbon\Carbon::parse($daily)->format('d F Y') }}
+                                        @elseif ($filter_display === 'monthly')
+                                            {{ \Carbon\Carbon::parse($monthly)->format('F Y') }}
+                                        @elseif ($filter_display === 'yearly')
+                                            {{ $yearly }}
+                                        @endif
+                                    </h5>
+                                </strong>
                             </div>
                         </div>
                         <hr>

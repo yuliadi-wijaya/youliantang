@@ -16,6 +16,7 @@
             @slot('title') Report Transaction History Detail @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
+            @slot('li_3') Transactions @endslot
             @slot('li_4') Report Transaction History Detail @endslot
         @endcomponent
         <!-- end page title -->
@@ -35,9 +36,11 @@
                 <form id="export-form" action="{{ route('ex-trans') }}" method="GET" style="display: none;">
                     @csrf
 
-                    <input type="hidden" name="dateFrom" value="{{ $dateFrom }}">
-                    <input type="hidden" name="dateTo" value="{{ $dateTo }}">
                     <input type="hidden" name="report_type" value="{{ $report_type }}">
+                    <input type="hidden" name="filter_display" value="{{ $filter_display }}">
+                    <input type="hidden" name="daily" value="{{ $daily }}">
+                    <input type="hidden" name="monthly" value="{{ $monthly }}">
+                    <input type="hidden" name="yearly" value="{{ $yearly }}">
                 </form>
             </div>
         </div>
@@ -46,12 +49,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="invoice-title">
-                            <div class="mb-4">
-                                <h4>
-                                    <strong>
-                                        {{ __('Report Type = ') . ucfirst($report_type) . ' (' . date('d M Y', strtotime($dateFrom)) . ' - ' . date('d M Y', strtotime($dateTo)) . ')' }}
-                                    </strong>
-                                </h4>
+                            <div class="mb-4" style="text-align: center;">
+                                <strong>
+                                    <h4>{{ ucfirst($report_type) . ' ' .ucfirst($filter_display) . ' Report' }}</h4>
+                                    <h5>
+                                        @if ($filter_display === 'daily')
+                                            {{ \Carbon\Carbon::parse($daily)->format('d F Y') }}
+                                        @elseif ($filter_display === 'monthly')
+                                            {{ \Carbon\Carbon::parse($monthly)->format('F Y') }}
+                                        @elseif ($filter_display === 'yearly')
+                                            {{ $yearly }}
+                                        @endif
+                                    </h5>
+                                </strong>
                             </div>
                         </div>
                         <hr>
@@ -111,7 +121,7 @@
 
                                         <tr>
                                             <td class="no-wrap">{{ $row->invoice_code }}</td>
-                                            <td class="no-wrap">{{ $row->invoice_date }}</td>
+                                            <td class="no-wrap">{{ \Carbon\Carbon::parse($row->invoice_date)->toDateString() }}</td>
                                             <td class="no-wrap">{{ $row->customer_name }}</td>
                                             <td class="no-wrap">{{ $row->customer_phone }}</td>
                                             <td class="no-wrap">{{ $row->treatment_date }}</td>

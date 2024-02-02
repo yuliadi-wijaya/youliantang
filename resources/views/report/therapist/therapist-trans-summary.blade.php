@@ -37,8 +37,10 @@
                     @csrf
 
                     <input type="hidden" name="report_type" value="{{ $report_type }}">
-                    <input type="hidden" name="month" value="{{ $month }}">
-                    <input type="hidden" name="year" value="{{ $year }}">
+                    <input type="hidden" name="filter_display" value="{{ $filter_display }}">
+                    <input type="hidden" name="daily" value="{{ $daily }}">
+                    <input type="hidden" name="monthly" value="{{ $monthly }}">
+                    <input type="hidden" name="yearly" value="{{ $yearly }}">
                     <input type="hidden" name="therapist_id" value="{{ $therapist_id }}">
                     <input type="hidden" name="order_by" value="{{ $order_by }}">
                 </form>
@@ -49,28 +51,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="invoice-title">
-                            <div class="mb-4">
-                                <h4>
-                                    @php
-                                        $monthTexts = [
-                                            "01" => "January",
-                                            "02" => "February",
-                                            "03" => "March",
-                                            "04" => "April",
-                                            "05" => "May",
-                                            "06" => "June",
-                                            "07" => "July",
-                                            "08" => "August",
-                                            "09" => "September",
-                                            "10" => "October",
-                                            "11" => "November",
-                                            "12" => "December",
-                                        ];
-                                    @endphp
-                                    <strong>
-                                        {{ __('Report Type = ') . ucfirst($report_type) . ' (' . $monthTexts[$month] . ' - ' . $year . ')' }}
-                                    </strong>
-                                </h4>
+                            <div class="mb-4" style="text-align: center;">
+                                <strong>
+                                    <h4>{{ ucfirst($report_type) . ' ' .ucfirst($filter_display) . ' Report' }}</h4>
+                                    <h5>
+                                        @if ($filter_display === 'daily')
+                                            {{ \Carbon\Carbon::parse($daily)->format('d F Y') }}
+                                        @elseif ($filter_display === 'monthly')
+                                            {{ \Carbon\Carbon::parse($monthly)->format('F Y') }}
+                                        @elseif ($filter_display === 'yearly')
+                                            {{ $yearly }}
+                                        @endif
+                                    </h5>
+                                </strong>
                             </div>
                         </div>
                         <hr>
@@ -104,7 +97,13 @@
                                         <tr>
                                             <td class="no-wrap">{{ $row->therapist_name }}</td>
                                             <td class="no-wrap">{{ $row->phone_number }}</td>
-                                            <td class="no-wrap">{{ $row->treatment_month_year }}</td>
+                                            @if ($filter_display === 'daily')
+                                                <td class="no-wrap">{{ $row->treatment_date }}</td>
+                                            @elseif ($filter_display === 'monthly')
+                                                <td class="no-wrap">{{ $row->treatment_month }}</td>
+                                            @elseif ($filter_display === 'yearly')
+                                                <td class="no-wrap">{{ $row->treatment_year }}</td>
+                                            @endif
                                             <td class="no-wrap">{{ $row->total_duration }} Minutes</td>
                                             <td class="no-wrap">Rp {{ number_format($row->total_commission_fee, 0, ',', '.') }}</td>
                                             <td class="no-wrap">{{ $row->avg_rating }}</td>

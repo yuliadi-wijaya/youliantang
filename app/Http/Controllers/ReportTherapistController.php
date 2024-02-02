@@ -168,20 +168,44 @@ class ReportTherapistController extends Controller
 
         $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
         $report_type = $request->report_type;
+        $filter_display = $request->filter_display;
+        $daily = NULL;
+        $monthly = NULL;
+        $yearly = NULL;
 
-        if($report_type == 'detail'){
-            // Validate input data
+        // Validate input data
+        if ($filter_display === 'daily') {
             $validatedData = $request->validate([
-                'date_from' => 'required|date',
-                'date_to' => 'required|date|after:date_from',
+                'daily_date' => 'required|date',
             ]);
 
-            try {
-                $dateFrom = date('Y-m-d', strtotime($validatedData['date_from']));
-                $dateTo = date('Y-m-d', strtotime($validatedData['date_to']));
+            $daily = date('Y-m-d', strtotime($validatedData['daily_date']));
+        } elseif ($filter_display === 'monthly') {
+            $validatedData = $request->validate([
+                'month' => 'required',
+                'year' => 'required',
+            ]);
 
-                $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
-                    return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
+            $monthly = $validatedData['year'] . '-' . $validatedData['month'];
+        } elseif ($filter_display === 'yearly') {
+            $validatedData = $request->validate([
+                'yearly_date' => 'required',
+            ]);
+
+            $yearly = $validatedData['yearly_date'];
+        }
+
+        if($report_type == 'detail'){
+            try {
+                $report = ReportTrans::when($filter_display === 'daily', function ($query) use ($daily) {
+                    return $query->whereDate('treatment_date', $daily);
+                })
+                ->when($filter_display === 'monthly', function ($query) use ($monthly) {
+                    return $query->whereYear('treatment_date', substr($monthly, 0, 4))
+                        ->whereMonth('treatment_date', substr($monthly, 5, 2));
+                })
+                ->when($filter_display === 'yearly', function ($query) use ($yearly) {
+                    return $query->whereYear('treatment_date', $yearly);
                 })
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
@@ -237,34 +261,33 @@ class ReportTherapistController extends Controller
                     $report_detail[$r->invoice_id] = $detail;
                 }
 
-                return view('report.therapist.therapist-trans-detail', compact('user', 'role', 'report' ,'report_detail', 'dateFrom', 'dateTo', 'report_type'));
+                $viewData = compact('user', 'role', 'report', 'report_detail', 'report_type', 'filter_display', 'daily', 'monthly', 'yearly');
+                return view('report.therapist.therapist-trans-detail', $viewData);
             } catch (Exception $e) {
                 return redirect()->back()->with($e->getMessage())->withInput($request->all());
             }
         }else{
-            $validatedData = $request->validate([
-                'month' => 'required',
-                'year' => 'required',
-            ]);
-
             try {
-                $month = $validatedData['month'];
-                $year = $validatedData['year'];
-                $month_year = $month.'-'.$year;
                 $therapist_id = $request->therapist_id;
                 $order_by = $request->order_by;
 
-                $report = ReportTranSum::select(
-                    'therapist_name',
-                    'phone_number',
-                    'treatment_month_year',
-                    \DB::raw('SUM(duration) as total_duration'),
-                    \DB::raw('SUM(commission_fee) as total_commission_fee'),
-                    \DB::raw('ROUND(AVG(rating), 2) as avg_rating')
-                )
-                ->when($month_year, function ($query) use ($month_year) {
-                    return $query->where('treatment_month_year', $month_year);
+                $report = ReportTranSum::select('therapist_name', 'phone_number')
+                ->when($filter_display === 'daily', function ($query) use ($daily) {
+                    return $query->addSelect('treatment_date')
+                        ->whereDate('treatment_date', $daily);
                 })
+                ->when($filter_display === 'monthly', function ($query) use ($monthly) {
+                    return $query->addSelect(\DB::raw('DATE_FORMAT(treatment_date, "%Y-%m") as treatment_month'))
+                        ->whereYear('treatment_date', substr($monthly, 0, 4))
+                        ->whereMonth('treatment_date', substr($monthly, 5, 2));
+                })
+                ->when($filter_display === 'yearly', function ($query) use ($yearly) {
+                    return $query->addSelect(\DB::raw('DATE_FORMAT(treatment_date, "%Y") as treatment_year'))
+                        ->whereYear('treatment_date', $yearly);
+                })
+                ->addSelect(\DB::raw('SUM(duration) as total_duration'))
+                ->addSelect(\DB::raw('SUM(commission_fee) as total_commission_fee'))
+                ->addSelect(\DB::raw('ROUND(AVG(rating), 2) as avg_rating'))
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
                 })
@@ -283,10 +306,19 @@ class ReportTherapistController extends Controller
                 ->when($order_by === 'highest_rating', function ($query) {
                     return $query->orderByRaw('AVG(rating) DESC');
                 })
-                ->groupBy('therapist_name', 'phone_number', 'treatment_month_year', 'therapist_id')
+                ->when($filter_display === 'daily', function ($query) {
+                    return $query->groupBy('therapist_name', 'phone_number', 'treatment_date', 'therapist_id');
+                })
+                ->when($filter_display === 'monthly', function ($query) {
+                    return $query->groupBy('therapist_name', 'phone_number', 'treatment_month', 'therapist_id');
+                })
+                ->when($filter_display === 'yearly', function ($query) {
+                    return $query->groupBy('therapist_name', 'phone_number', 'treatment_year', 'therapist_id');
+                })
                 ->get();
 
-                return view('report.therapist.therapist-trans-summary', compact('user', 'role', 'report' ,'month', 'year', 'therapist_id', 'order_by', 'report_type'));
+                $viewData = compact('user', 'role', 'report', 'report_type', 'filter_display', 'daily', 'monthly', 'yearly', 'therapist_id', 'order_by');
+                return view('report.therapist.therapist-trans-summary', $viewData);
             } catch (Exception $e) {
                 return redirect()->back()->with($e->getMessage())->withInput($request->all());
             }
@@ -299,13 +331,21 @@ class ReportTherapistController extends Controller
 
         $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
         $report_type = $request->report_type;
+        $filter_display = $request->filter_display;
+        $daily = $request->daily;
+        $monthly = $request->monthly;
+        $yearly = $request->yearly;
 
         if($report_type == 'detail'){
-            $dateFrom = date('Y-m-d', strtotime($request->dateFrom));
-            $dateTo = date('Y-m-d', strtotime($request->dateTo));
-
-            $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
-                return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
+            $report = ReportTrans::when($filter_display === 'daily', function ($query) use ($daily) {
+                return $query->whereDate('treatment_date', $daily);
+            })
+            ->when($filter_display === 'monthly', function ($query) use ($monthly) {
+                return $query->whereYear('treatment_date', substr($monthly, 0, 4))
+                    ->whereMonth('treatment_date', substr($monthly, 5, 2));
+            })
+            ->when($filter_display === 'yearly', function ($query) use ($yearly) {
+                return $query->whereYear('treatment_date', $yearly);
             })
             ->when($invoice_type === 'NC', function ($query) {
                 return $query->where('invoice_type', 'NC');
@@ -455,26 +495,36 @@ class ReportTherapistController extends Controller
                 'V' => '',
             ]);
 
-            $fileName = 'report_therapists_transaction_detail_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';
+            if ($filter_display === 'daily') {
+                $fileName = 'therapists_transaction_'.$report_type.'_'.$filter_display.'_report_'.Carbon::parse($daily)->format('d_m_Y').'.xlsx';
+            } elseif ($filter_display === 'monthly') {
+                $fileName = 'therapists_transaction_'.$report_type.'_'.$filter_display.'_report_'.Carbon::parse($monthly)->format('m_Y').'.xlsx';
+            } elseif ($filter_display === 'yearly') {
+                $fileName = 'therapists_transaction_'.$report_type.'_'.$filter_display.'_report_'.$yearly.'.xlsx';
+            }
+
             return Excel::download(new ExTherapistTransDetail($reportNew), $fileName);
         }else{
-            $month = $request->month;
-            $year = $request->year;
-            $month_year = $month.'-'.$year;
             $therapist_id = $request->therapist_id;
             $order_by = $request->order_by;
 
-            $report = ReportTranSum::select(
-                'therapist_name',
-                'phone_number',
-                'treatment_month_year',
-                \DB::raw('SUM(duration) as total_duration'),
-                \DB::raw('SUM(commission_fee) as total_commission_fee'),
-                \DB::raw('ROUND(AVG(rating), 2) as avg_rating')
-            )
-            ->when($month_year, function ($query) use ($month_year) {
-                return $query->where('treatment_month_year', $month_year);
+            $report = ReportTranSum::select('therapist_name', 'phone_number')
+            ->when($filter_display === 'daily', function ($query) use ($daily) {
+                return $query->addSelect('treatment_date')
+                    ->whereDate('treatment_date', $daily);
             })
+            ->when($filter_display === 'monthly', function ($query) use ($monthly) {
+                return $query->addSelect(\DB::raw('DATE_FORMAT(treatment_date, "%Y-%m") as treatment_month'))
+                    ->whereYear('treatment_date', substr($monthly, 0, 4))
+                    ->whereMonth('treatment_date', substr($monthly, 5, 2));
+            })
+            ->when($filter_display === 'yearly', function ($query) use ($yearly) {
+                return $query->addSelect(\DB::raw('DATE_FORMAT(treatment_date, "%Y") as treatment_year'))
+                    ->whereYear('treatment_date', $yearly);
+            })
+            ->addSelect(\DB::raw('SUM(duration) as total_duration'))
+            ->addSelect(\DB::raw('SUM(commission_fee) as total_commission_fee'))
+            ->addSelect(\DB::raw('ROUND(AVG(rating), 2) as avg_rating'))
             ->when($invoice_type === 'NC', function ($query) {
                 return $query->where('invoice_type', 'NC');
             })
@@ -493,7 +543,15 @@ class ReportTherapistController extends Controller
             ->when($order_by === 'highest_rating', function ($query) {
                 return $query->orderByRaw('AVG(rating) DESC');
             })
-            ->groupBy('therapist_name', 'phone_number', 'treatment_month_year', 'therapist_id')
+            ->when($filter_display === 'daily', function ($query) {
+                return $query->groupBy('therapist_name', 'phone_number', 'treatment_date', 'therapist_id');
+            })
+            ->when($filter_display === 'monthly', function ($query) {
+                return $query->groupBy('therapist_name', 'phone_number', 'treatment_month', 'therapist_id');
+            })
+            ->when($filter_display === 'yearly', function ($query) {
+                return $query->groupBy('therapist_name', 'phone_number', 'treatment_year', 'therapist_id');
+            })
             ->get();
 
             $gt_duration = 0;
@@ -505,10 +563,19 @@ class ReportTherapistController extends Controller
                 $gt_duration += $row->total_duration;
                 $gt_fee += $row->total_commission_fee;
 
+                $dateColumn = '';
+                if ($filter_display === 'daily') {
+                    $dateColumn = $row->treatment_date;
+                } elseif ($filter_display === 'monthly') {
+                    $dateColumn = $row->treatment_month;
+                } elseif ($filter_display === 'yearly') {
+                    $dateColumn = $row->treatment_year;
+                }
+
                 $reportNew->push([
                     'A' => $row->therapist_name,
                     'B' => $row->phone_number,
-                    'C' => $row->treatment_month_year,
+                    'C' => $dateColumn,
                     'D' => $row->total_duration,
                     'E' => $row->total_commission_fee,
                     'F' => $row->avg_rating,
@@ -524,7 +591,14 @@ class ReportTherapistController extends Controller
                 'F' => '',
             ]);
 
-            $fileName = 'report_therapists_transaction_summary_' . $month . '_' . $year . '.xlsx';
+            if ($filter_display === 'daily') {
+                $fileName = 'therapists_transaction_'.$report_type.'_'.$filter_display.'_report_'.Carbon::parse($daily)->format('d_m_Y').'.xlsx';
+            } elseif ($filter_display === 'monthly') {
+                $fileName = 'therapists_transaction_'.$report_type.'_'.$filter_display.'_report_'.Carbon::parse($monthly)->format('m_Y').'.xlsx';
+            } elseif ($filter_display === 'yearly') {
+                $fileName = 'therapists_transaction_'.$report_type.'_'.$filter_display.'_report_'.$yearly.'.xlsx';
+            }
+
             return Excel::download(new ExTherapistTransSummary($reportNew), $fileName);
         }
     }

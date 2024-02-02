@@ -14,7 +14,7 @@ class ReportTranSum extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'treatment_month_year',
+        'treatment_date',
         'therapist_name',
         'invoice_type',
     ];

@@ -185,19 +185,44 @@ class ReportCustomerController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        // Validate input data
-        $validatedData = $request->validate([
-            'date_from' => 'required|date',
-            'date_to' => 'required|date|after:date_from',
-        ]);
+        $filter_display = $request->filter_display;
+        $daily = NULL;
+        $monthly = NULL;
+        $yearly = NULL;
 
-        $dateFrom = date('Y-m-d', strtotime($validatedData['date_from']));
-        $dateTo = date('Y-m-d', strtotime($validatedData['date_to']));
+        // Validate input data
+        if ($filter_display === 'daily') {
+            $validatedData = $request->validate([
+                'daily_date' => 'required|date',
+            ]);
+
+            $daily = date('Y-m-d', strtotime($validatedData['daily_date']));
+        } elseif ($filter_display === 'monthly') {
+            $validatedData = $request->validate([
+                'month' => 'required',
+                'year' => 'required',
+            ]);
+
+            $monthly = $validatedData['year'] . '-' . $validatedData['month'];
+        } elseif ($filter_display === 'yearly') {
+            $validatedData = $request->validate([
+                'yearly_date' => 'required',
+            ]);
+
+            $yearly = $validatedData['yearly_date'];
+        }
 
         $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
 
-        $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
-            return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
+        $report = ReportTrans::when($filter_display === 'daily', function ($query) use ($daily) {
+            return $query->whereDate('treatment_date', $daily);
+        })
+        ->when($filter_display === 'monthly', function ($query) use ($monthly) {
+            return $query->whereYear('treatment_date', substr($monthly, 0, 4))
+                ->whereMonth('treatment_date', substr($monthly, 5, 2));
+        })
+        ->when($filter_display === 'yearly', function ($query) use ($yearly) {
+            return $query->whereYear('treatment_date', $yearly);
         })
         ->when($invoice_type === 'NC', function ($query) {
             return $query->where('invoice_type', 'NC');
@@ -240,20 +265,30 @@ class ReportCustomerController extends Controller
             $report_detail[$r->invoice_id] = $detail;
         }
 
-        return view('report.customer.customer-trans', compact('user', 'role', 'report', 'report_detail', 'dateFrom', 'dateTo'));
+        $viewData = compact('user', 'role', 'report', 'report_detail', 'filter_display', 'daily', 'monthly', 'yearly');
+        return view('report.customer.customer-trans', $viewData);
     }
 
     public function exportReportCustomerTrans(Request $request)
     {
         $user = Sentinel::getUser();
 
-        $dateFrom = date('Y-m-d', strtotime($request->dateFrom));
-        $dateTo = date('Y-m-d', strtotime($request->dateTo));
+        $filter_display = $request->filter_display;
+        $daily = $request->daily;
+        $monthly = $request->monthly;
+        $yearly = $request->yearly;
 
         $invoice_type = RoleAccess::where('user_id', $user->id)->first()->access_code;
 
-        $report = ReportTrans::when($dateFrom && $dateTo, function ($query) use ($dateFrom, $dateTo) {
-            return $query->whereBetween('treatment_date', [$dateFrom, $dateTo]);
+        $report = ReportTrans::when($filter_display === 'daily', function ($query) use ($daily) {
+            return $query->whereDate('treatment_date', $daily);
+        })
+        ->when($filter_display === 'monthly', function ($query) use ($monthly) {
+            return $query->whereYear('treatment_date', substr($monthly, 0, 4))
+                ->whereMonth('treatment_date', substr($monthly, 5, 2));
+        })
+        ->when($filter_display === 'yearly', function ($query) use ($yearly) {
+            return $query->whereYear('treatment_date', $yearly);
         })
         ->when($invoice_type === 'NC', function ($query) {
             return $query->where('invoice_type', 'NC');
@@ -389,7 +424,13 @@ class ReportCustomerController extends Controller
             'W' => '',
         ]);
 
-        $fileName = 'report_customer_transaction_' . Carbon::parse($dateFrom)->format('Ymd') . '_' . Carbon::parse($dateTo)->format('Ymd') . '.xlsx';
+        if ($filter_display === 'daily') {
+            $fileName = 'customer_transaction_'.$filter_display.'_report_'.Carbon::parse($daily)->format('d_m_Y').'.xlsx';
+        } elseif ($filter_display === 'monthly') {
+            $fileName = 'customer_transaction_'.$filter_display.'_report_'.Carbon::parse($monthly)->format('m_Y').'.xlsx';
+        } elseif ($filter_display === 'yearly') {
+            $fileName = 'customer_transaction_'.$filter_display.'_report_'.$yearly.'.xlsx';
+        }
 
         return Excel::download(new ExCustomerTrans($reportNew), $fileName);
     }
