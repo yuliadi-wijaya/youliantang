@@ -263,7 +263,7 @@ class CustomerController extends Controller
                     $invoices = Invoice::where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'invoice');
                     $tot_appointment = Appointment::where('appointment_for', $customer->id)->get();
                     $invoice = Invoice::where('customer_id', $customer->id)->pluck('id');
-                    $revenue = InvoiceDetail::whereIn('invoice_id',$invoice)->sum('amount');
+                    $revenue = Invoice::whereIn('id',$invoice)->sum('grand_total');
                     $pending_bill = Invoice::where(['customer_id' => $customer->id, 'payment_status' => 'Unpaid'])->count();
                     $data = [
                         'total_appointment' => $tot_appointment->count(),

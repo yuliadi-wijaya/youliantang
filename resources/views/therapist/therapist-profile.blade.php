@@ -86,24 +86,20 @@
                                         <td>{{ $therapist->first_name }} {{ $therapist->last_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Contact No:') }}</th>
-                                        <td> {{ $therapist->mobile }} </td>
+                                        <th scope="row">{{ __('ID Card:') }}</th>
+                                        <td> {{ $therapist_info->ktp }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">{{ __('Phone Number:') }}</th>
+                                        <td> {{ $therapist->phone_number }} </td>
                                     </tr>
                                     <tr>
                                         <th scope="row">{{ __('Email:') }}</th>
                                         <td> {{ $therapist->email }} </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Degree:') }}</th>
-                                        <td> {{ $therapist_info->degree }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Experience:') }}</th>
-                                        <td> {{ $therapist_info->experience }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Fees:') }}</th>
-                                        <td>{{ $therapist_info->fees }}</td>
+                                        <th scope="row">{{ __('Gender:') }}</th>
+                                        <td> {{ $therapist_info->gender }} </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -155,7 +151,24 @@
             </div>
             <div class="col-xl-8">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid">
+                            <div class="card-body">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="text-muted font-weight-medium">{{ __('Total Fee') }}</p>
+                                        <h4 class="mb-0">Rp {{ number_format($data['fee']) }}</h4>
+                                    </div>
+                                    <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
+                                        <span class="avatar-title">
+                                            <i class="bx bx-dollar font-size-24"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
@@ -172,7 +185,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">

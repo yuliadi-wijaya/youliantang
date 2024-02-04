@@ -328,11 +328,13 @@ class TherapistController extends Controller
                         $re->orWhere('appointment_with', $therapist_id);
                         $re->orWhere('booked_by', $therapist_id);
                     })->get();
-                    $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$therapist->id]);
-                    $pending_bill = DB::select("SELECT COUNT(*) AS total FROM invoices WHERE invoices.payment_status = 'Unpaid' AND created_by = ?", [$therapist->id]);
+                    $revenue = DB::select('SELECT SUM(invoice_details.amount) AS total FROM invoice_details WHERE invoice_details.therapist_id = ?', [$therapist->id]);
+                    $fee = DB::select('SELECT SUM(invoice_details.fee) AS total FROM invoice_details WHERE invoice_details.therapist_id = ?', [$therapist->id]);
+                    $pending_bill = DB::select("SELECT COUNT(invoices.id) AS total FROM invoices, invoice_details WHERE invoices.id = invoice_details.invoice_id AND invoices.payment_status = 'Unpaid' AND invoice_details.therapist_id = ?", [$therapist->id]);
                     $data = [
                         'total_appointment' => $tot_appointment->count(),
                         'revenue' => $revenue[0]->total,
+                        'fee' => $fee[0]->total,
                         'pending_bill' => $pending_bill[0]->total
                     ];
                     $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
@@ -636,8 +638,8 @@ class TherapistController extends Controller
                             $re->orWhere('appointment_with', $therapist_id);
                             $re->orWhere('booked_by', $therapist_id);
                         })->get();
-                        $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$therapist->id]);
-                        $pending_bill = DB::select("SELECT COUNT(*) AS total FROM invoices WHERE invoices.payment_status = 'Unpaid' AND created_by = ?", [$therapist->id]);
+                        $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND invoice_details.therapist_id = ?', [$therapist->id]);
+                        $pending_bill = DB::select("SELECT COUNT(invoices.id) AS total FROM invoices, invoice_details WHERE invoices.id = invoice_details.invoice_id AND invoices.payment_status = 'Unpaid' AND invoice_details.therapist_id = ?", [$therapist->id]);
                         $data = [
                             'total_appointment' => $tot_appointment->count(),
                             'revenue' => $revenue[0]->total,

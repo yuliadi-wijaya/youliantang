@@ -84,6 +84,10 @@
                                         <th scope="row">{{ __('Email:') }}</th>
                                         <td> {{ $therapist->email }} </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row">{{ __('Gender:') }}</th>
+                                        <td> {{ $therapist_info->gender }} </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
