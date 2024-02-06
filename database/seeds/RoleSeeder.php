@@ -134,7 +134,6 @@ class RoleSeeder extends Seeder
             'promo.show'=>true,
             'promo.create'=>true,
             'promo.update'=>true,
-            'promo.delete'=>true,
             'invoice.show' => true,
             'invoice.list' => true,
             'invoice.create' => true,
