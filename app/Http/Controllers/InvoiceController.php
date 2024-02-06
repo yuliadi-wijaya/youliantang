@@ -226,6 +226,7 @@ class InvoiceController extends Controller
         ->where('promos.status', 1)
         ->where('promos.is_deleted', 0)
         ->where('promo_vouchers.is_used', 0)
+        ->where()
         ->orderBy('promos.id')
         ->orderBy('promo_vouchers.id')
         ->get();
