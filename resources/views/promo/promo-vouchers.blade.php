@@ -110,8 +110,8 @@
                         <blockquote>{{ __('Voucher Information') }}</blockquote>
                         <div class="row" style="margin-bottom: 8px">
                             <div class="col-md-12 form-group">
-                                <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}</label>
-                                <div class="btn-group voucher_list d-block">
+                                <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List:") }}</label>
+                                <div class="btn-group voucher_list d-block" style="max-height: 500px; overflow: scroll; border: solid 1px grey; padding: 5px;">
                                     @if ($promo->promo_vouchers)
                                         @foreach ($promo->promo_vouchers as $item)
                                         <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>

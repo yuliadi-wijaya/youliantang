@@ -242,18 +242,6 @@
                                     <label class="control-label">{{ __('Filter ') }}<span
                                         class="text-danger">*</span></label>
                                     <div class="row">
-                                        <div class="col-md-2 form-group">
-                                            <input type="number"
-                                                class="form-control @error('start_number') is-invalid @enderror""
-                                                name="start_number" id="StartNumber" tabindex="1"
-                                                value="{{ old('start_number') }}"
-                                                placeholder="{{ __('Enter Start Number') }}">
-                                            @error('start_number')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
                                         <div class="col-md-3 form-group">
                                             <input type="number"
                                                 class="form-control"
@@ -268,6 +256,18 @@
                                                 value="{{ old('voucher_prefix') }}"
                                                 placeholder="{{ __('Enter Prefix Voucher') }}">
                                         </div>
+                                        <div class="col-md-2 form-group">
+                                            <input type="number"
+                                                class="form-control @error('start_number') is-invalid @enderror""
+                                                name="start_number" id="StartNumber" tabindex="1"
+                                                value="{{ old('start_number') }}"
+                                                placeholder="{{ __('Enter Start Number') }}">
+                                            @error('start_number')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                         <div class="col-md-3 form-group">
                                             <input type="hidden" id="IsGenerated" name="is_generated" value="{{ old('is_generated', 0) }}">
                                             <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
@@ -279,7 +279,7 @@
                                 <div class="col-md-12 form-group">
                                     <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}<span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(will be generated automatically after click the generate voucher button)") }}</span></label>
-                                    <div class="btn-group voucher_list d-block">
+                                    <div class="btn-group voucher_list d-block" style="max-height: 500px; overflow: scroll; border: solid 1px grey; padding: 5px;">
                                         @if ($promo != null && $promo->promo_vouchers)
                                             @foreach ($promo->promo_vouchers as $item)
                                             <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
