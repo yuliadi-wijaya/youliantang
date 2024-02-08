@@ -109,10 +109,10 @@
                                             <label class="control-label">{{ __('Reusable Voucher ? ') }}<span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control @error('is_reuse_voucher') is-invalid @enderror"
-                                                tabindex="11" name="is_reuse_voucher">
+                                                tabindex="11" name="is_reuse_voucher" id="is_reuse_voucher">
                                                 <option value="0" @if (($promo && $promo->is_reuse_voucher == '0') || old('is_reuse_voucher') == '0') selected @endif>{{ __('No') }}</option>
                                                 <option value="1" @if (($promo && $promo->is_reuse_voucher == '1') || old('is_reuse_voucher') == '1') selected @endif>{{ __('Yes') }}</option>
-                                                
+
                                             </select>
                                             @error('is_reuse_voucher')
                                                 <span class="invalid-feedback" role="alert">
@@ -165,7 +165,7 @@
                                                         class="text-danger">*</span></label>
                                                 </div>
                                             </div>
-                                            <div class="row"> 
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <input type="number" class="form-control @error('discount_value') is-invalid @enderror"
                                                         tabindex="4" name="discount_value" id="DiscountValue" value="@if ($promo ){{ old('discount_value', $promo->discount_value) }}@elseif(old('discount_value')){{ old('discount_value') }}@endif"
@@ -200,8 +200,8 @@
                                                             class="form-control active_period @error('active_period_start') is-invalid @enderror"
                                                             name="active_period_start" id="ActivePeriodStart" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_start', date('d/m/Y')) }} placeholder="{{ __('Enter Start Date') }}" 
-                                                            value="@if ($promo ){{ old('active_period_start', date('d/m/Y', strtotime($promo->active_period_start))) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
+                                                            {{ old('active_period_start', date('Y-m-d')) }} placeholder="{{ __('Enter Start Date') }}"
+                                                            value="@if ($promo ){{ old('active_period_start', date('Y-m-d', strtotime($promo->active_period_start))) }}@elseif(old('active_period_start')){{ old('active_period_start') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -218,8 +218,8 @@
                                                             class="form-control active_period @error('active_period_end') is-invalid @enderror"
                                                             name="active_period_end" id="ActivePeriodEnd" data-provide="datepicker"
                                                             data-date-autoclose="true" autocomplete="off"
-                                                            {{ old('active_period_end', date('d/m/Y')) }} placeholder="{{ __('Enter End Date') }}" 
-                                                            value="@if ($promo ){{ old('active_period_end', date('d/m/Y', strtotime($promo->active_period_end))) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
+                                                            {{ old('active_period_end', date('Y-m-d')) }} placeholder="{{ __('Enter End Date') }}"
+                                                            value="@if ($promo ){{ old('active_period_end', date('Y-m-d', strtotime($promo->active_period_end))) }}@elseif(old('active_period_end')){{ old('active_period_end') }}@endif">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                         </div>
@@ -242,22 +242,34 @@
                                     <label class="control-label">{{ __('Filter ') }}<span
                                         class="text-danger">*</span></label>
                                     <div class="row">
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-3 form-group">
                                             <input type="number"
                                                 class="form-control"
                                                 name="voucher_total" id="VoucherTotal" tabindex="1"
                                                 value="{{ old('voucher_total') }}"
                                                 placeholder="{{ __('Enter Total Voucher Will Be Generated') }}">
                                         </div>
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-3 form-group">
                                             <input type="text"
                                                 class="form-control text-uppercase h-formfield-uppercase"
                                                 name="voucher_prefix" id="VoucherPrefix" tabindex="1"
                                                 value="{{ old('voucher_prefix') }}"
                                                 placeholder="{{ __('Enter Prefix Voucher') }}">
                                         </div>
-                                        <div class="col-md-4 form-group">
-                                            <input type="hidden" id="IsGenerated" name="is_generated" value="0">
+                                        <div class="col-md-2 form-group">
+                                            <input type="number"
+                                                class="form-control @error('start_number') is-invalid @enderror""
+                                                name="start_number" id="StartNumber" tabindex="1"
+                                                value="{{ old('start_number') }}"
+                                                placeholder="{{ __('Enter Start Number') }}">
+                                            @error('start_number')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-3 form-group">
+                                            <input type="hidden" id="IsGenerated" name="is_generated" value="{{ old('is_generated', 0) }}">
                                             <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
                                         </div>
                                     </div>
@@ -267,7 +279,7 @@
                                 <div class="col-md-12 form-group">
                                     <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}<span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(will be generated automatically after click the generate voucher button)") }}</span></label>
-                                    <div class="btn-group voucher_list d-block">
+                                    <div class="btn-group voucher_list d-block" style="max-height: 500px; overflow: scroll; border: solid 1px grey; padding: 5px;">
                                         @if ($promo != null && $promo->promo_vouchers)
                                             @foreach ($promo->promo_vouchers as $item)
                                             <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
@@ -329,28 +341,52 @@
             // Script
             $('.active_period').datepicker({
                 startDate: new Date(),
-                format: 'dd/mm/yyyy'
+                format: 'yyyy-mm-dd'
             });
 
-            $(document).on('click', '#GenerateVoucher', function() {
-                var voucherTotal = $('#VoucherTotal').val();
-                var voucherPrefix = $('#VoucherPrefix').val();
+            $(document).ready(function() {
+                // Check if voucher_list is stored in localStorage
+                var storedVoucherList = localStorage.getItem('storedVoucherList');
+                var isGenerated =  $('#IsGenerated').val();
 
-                if (!voucherTotal || !voucherPrefix) {
-                    alert('Input filters are required.');
-                    return
+                if (storedVoucherList && isGenerated !== '0') {
+                    $('.voucher_list').html(storedVoucherList);
                 }
 
-                today = new Date();
+                $(document).on('click', '#GenerateVoucher', function() {
+                    var startNumber = $('#StartNumber').val();
+                    var voucherTotal = $('#VoucherTotal').val();
+                    var voucherPrefix = $('#VoucherPrefix').val();
 
-                $('.voucher_list').html('');
-                for(var i = 1; i <= voucherTotal; i++) {
-                    voucherGeneratedText = voucherPrefix.replaceAll(/\s/g,'').toUpperCase() + today.getFullYear() + today.getMonth() + today.getDate() + i.toString().padStart(3, '0')
-                    //$('.voucher_list').append('<div class="d-inline p-2 bg-success text-white font-weight-bold">' + voucherGeneratedText + '</div>');
-                    $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
+                    if (!startNumber || !voucherTotal || !voucherPrefix) {
+                        alert('Input filters are required.');
+                        return;
+                    }
+
+                    today = new Date();
+
+                    $('.voucher_list').html('');
+                    for (var i = parseInt(startNumber); i < parseInt(startNumber) + parseInt(voucherTotal); i++) {
+                        voucherGeneratedText = voucherPrefix.toUpperCase() + i.toString().padStart(6, '0');
+                        $('.voucher_list').append('<label class="btn btn-outline-secondary m-1">' + voucherGeneratedText + '<input type="hidden" name="voucher_list[]" value="' + voucherGeneratedText + '"></label>');
+                    }
+
+                    $('#IsGenerated').val(1);
+
+                    // Store voucher_list in localStorage
+                    var voucherListHTML = $('.voucher_list').html();
+                    localStorage.setItem('storedVoucherList', voucherListHTML);
+                });
+            });
+
+            $(document).on('change', '#is_reuse_voucher', function() {
+                if ($(this).val() == 1) {
+                    $('#VoucherTotal').val('1');
+                    $('#VoucherTotal').prop('readonly', true);
+                } else {
+                    $('#VoucherTotal').val('');
+                    $('#VoucherTotal').prop('readonly', false);
                 }
-                
-                $('#IsGenerated').val(1);
             });
         </script>
     @endsection

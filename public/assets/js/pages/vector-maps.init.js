@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Vector Maps init Js File
-*/
 !function ($) {
   "use strict";
 
@@ -121,7 +113,7 @@ File: Vector Maps init Js File
       markerStyle: {
         initial: {
           r: 9,
-          'fill': '#556ee6',
+          'fill': '#e0b402',
           'fill-opacity': 0.9,
           'stroke': '#fff',
           'stroke-width': 7,
@@ -204,7 +196,7 @@ File: Vector Maps init Js File
       backgroundColor: 'transparent',
       regionStyle: {
         initial: {
-          fill: '#556ee6'
+          fill: '#e0b402'
         }
       }
     });
@@ -213,7 +205,7 @@ File: Vector Maps init Js File
       backgroundColor: 'transparent',
       regionStyle: {
         initial: {
-          fill: '#556ee6'
+          fill: '#e0b402'
         }
       }
     });
@@ -222,7 +214,7 @@ File: Vector Maps init Js File
       backgroundColor: 'transparent',
       regionStyle: {
         initial: {
-          fill: '#556ee6'
+          fill: '#e0b402'
         }
       }
     });
@@ -231,7 +223,7 @@ File: Vector Maps init Js File
       backgroundColor: 'transparent',
       regionStyle: {
         initial: {
-          fill: '#556ee6'
+          fill: '#e0b402'
         }
       }
     });
@@ -240,7 +232,7 @@ File: Vector Maps init Js File
       backgroundColor: 'transparent',
       regionStyle: {
         initial: {
-          fill: '#556ee6'
+          fill: '#e0b402'
         }
       }
     });
@@ -249,7 +241,7 @@ File: Vector Maps init Js File
       backgroundColor: 'transparent',
       regionStyle: {
         initial: {
-          fill: '#556ee6'
+          fill: '#e0b402'
         }
       }
     });

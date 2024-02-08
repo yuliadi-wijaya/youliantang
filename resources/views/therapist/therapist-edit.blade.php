@@ -33,21 +33,12 @@
         <div class="row">
             <div class="col-12">
                 @if ($therapist && $therapist_info)
-                    @if ($role == 'therapist')
-                        <a href="{{ url('/') }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Dashboard') }}
-                            </button>
-                        </a>
-                    @else
-                        <a href="{{ url('therapist/' . $therapist->id) }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Profile') }}
-                            </button>
-                        </a>
-                    @endif
+                <a href="{{ url('therapist') }}">
+                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <i
+                            class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Therapist List') }}
+                    </button>
+                </a>
                 @else
                     <a href="{{ url('therapist') }}">
                         <button type="button" class="btn btn-primary waves-effect waves-light mb-4">

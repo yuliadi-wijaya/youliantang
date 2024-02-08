@@ -18,7 +18,7 @@ class Appointment extends Model
         'is_deleted',
     ];
 
-    function patient()
+    function customer()
     {
         return $this->hasOne(User::class, 'id', 'appointment_for');
     }
@@ -27,19 +27,19 @@ class Appointment extends Model
         return $this->hasOne(User::class, 'id', 'booked_by');
     }
 
-    function doctor()
+    function therapist()
     {
         return $this->hasOne(User::class, 'id', 'appointment_with');
     }
 
-    function receptionlist_doctor()
+    function receptionlist_therapist()
     {
-        return $this->hasMany(ReceptionListDoctor::class, 'doctor_id', 'appointment_with');
+        return $this->hasMany(Receptionist::class, 'therapist_id', 'appointment_with');
     }
 
     function timeSlot()
     {
-        return $this->hasOne(DoctorAvailableSlot::class, 'id', 'available_slot');
+        return $this->hasOne(TherapistAvailableSlot::class, 'id', 'available_slot');
     }
     function invoice(){
         return $this->hasOne(Invoice::class)->where('payment_status','Paid');

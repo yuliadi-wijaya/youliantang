@@ -48,30 +48,12 @@
         <!-- end page title -->
         <div class="row">
             <div class="col-12">
-                @if ($therapist && $therapist_info)
-                    @if ($role == 'therapist')
-                        <a href="{{ url('/') }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Dashboard') }}
-                            </button>
-                        </a>
-                    @else
-                        <a href="{{url('therapist/' . $therapist->id) }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                                <i
-                                    class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Profile') }}
-                            </button>
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ url('therapist') }} ">
-                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
-                            <i
-                                class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Therapist List') }}
-                        </button>
-                    </a>
-                @endif
+                <a href="{{ url('therapist') }} ">
+                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <i
+                            class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Therapist List') }}
+                    </button>
+                </a>
             </div>
         </div>
         <div class="row">
@@ -105,11 +87,11 @@
 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('ID Card ') }}<span
+                                            <label class="control-label">{{ __('KTP ') }}<span
                                                 class="text-danger">*</span></label>
                                             <input type="text"
                                                 class="form-control @error('ktp') is-invalid @enderror"
-                                                name="ktp" id="lastname" tabindex="2" value="@if ($therapist && $therapist_info){{ $therapist->ktp }}@elseif(old('ktp')){{ old('ktp') }}@endif"
+                                                name="ktp" id="lastname" tabindex="2" value="@if ($therapist && $therapist_info){{ $therapist_info->ktp }}@elseif(old('ktp')){{ old('ktp') }}@endif"
                                                 placeholder="{{ __('Enter ID Card') }}">
                                             @error('ktp')
                                                 <span class="invalid-feedback" role="alert">
@@ -125,8 +107,8 @@
                                             <select class="form-control select2 @error('gender') is-invalid @enderror"
                                                 name="gender" id="gender">
                                                 <option selected disabled>{{ __('-- Select Gender --') }}</option>
-                                                <option value="{{ 'Male' }}" {{ old('gender') == 'Male' ? 'selected' : '' }}>{{ 'Male' }}</option>
-                                                <option value="{{ 'Female' }}" {{ old('gender') == 'Female' ? 'selected' : '' }}>{{ 'Female' }}</option>
+                                                <option value="{{ 'Male' }}" {{ ($therapist && $therapist_info->gender == 'Male') || old('gender') == 'Male' ? 'selected' : '' }}>{{ 'Male' }}</option>
+                                                <option value="{{ 'Female' }}" {{ ($therapist && $therapist_info->gender == 'Female') || old('gender') == 'Female' ? 'selected' : '' }}>{{ 'Female' }}</option>
                                             </select>
                                             @error('gender')
                                                 <span class="invalid-feedback" role="alert">
@@ -178,39 +160,39 @@
                                             <label class="control-label d-block">{{ __("Therapist available days ") }}<span
                                                     class="text-danger">*</span></label>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
-                                                    value="1" name="sun" {{ old('sun') ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="inlineCheckbox1">Sun</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="1" name="mon" {{ old('mon') ? 'checked' : '' }}>
+                                                    value="1" name="mon" @if ($therapist && $availableDay->mon == 1){{ 'checked' }}@elseif(old('mon')){{ 'checked' }}@endif>
                                                 <label class="form-check-label" for="inlineCheckbox2">Mon</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox3"
-                                                    value="1" name="tue" {{ old('tue') ? 'checked' : '' }}>
+                                                    value="1" name="tue" @if ($therapist && $availableDay->tue == 1){{ 'checked' }}@elseif(old('tue')){{ 'checked' }}@endif>
                                                 <label class="form-check-label" for="inlineCheckbox3">Tue</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox4"
-                                                    value="1" name="wen" {{ old('wen') ? 'checked' : '' }}>
+                                                    value="1" name="wen" @if ($therapist && $availableDay->wen == 1){{ 'checked' }}@elseif(old('wen')){{ 'checked' }}@endif>
                                                 <label class="form-check-label" for="inlineCheckbox4">Wen</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox5"
-                                                    value="1" name="thu" {{ old('thu') ? 'checked' : '' }}>
+                                                    value="1" name="thu" @if ($therapist && $availableDay->thu == 1){{ 'checked' }}@elseif(old('thu')){{ 'checked' }}@endif>
                                                 <label class="form-check-label" for="inlineCheckbox5">Thu</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox6"
-                                                    value="1" name="fri" {{ old('fri') ? 'checked' : '' }}>
+                                                    value="1" name="fri" @if ($therapist && $availableDay->fri == 1){{ 'checked' }}@elseif(old('fri')){{ 'checked' }}@endif>
                                                 <label class="form-check-label" for="inlineCheckbox6">Fri</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox7"
-                                                    value="1" name="sat" {{ old('sat') ? 'checked' : '' }}>
+                                                    value="1" name="sat" @if ($therapist && $availableDay->sat == 1){{ 'checked' }}@elseif(old('sat')){{ 'checked' }}@endif>
                                                 <label class="form-check-label" for="inlineCheckbox7">Sat</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                                    value="1" name="sun" @if ($therapist && $availableDay->sun == 1){{ 'checked' }}@elseif(old('sun')){{ 'checked' }}@endif>
+                                                <label class="form-check-label" for="inlineCheckbox1">Sun</label>
                                             </div>
                                             @error('mon')
                                                 <span class="error d-block " role="alert">
@@ -223,7 +205,7 @@
                                         <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Status ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control @error('status') is-invalid @enderror"
+                                            <select class="form-control select2 @error('status') is-invalid @enderror"
                                                 tabindex="13" name="status">
                                                 <option selected disabled>{{ __('-- Select Status --') }}</option>
                                                 <option value="1" @if (($therapist && $therapist_info->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
@@ -284,7 +266,7 @@
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Rekening Number ') }}</label>
-                                            <input type="text" class="form-control @error('rekening_number') is-invalid @enderror"
+                                            <input type="number" class="form-control @error('rekening_number') is-invalid @enderror"
                                                 name="rekening_number" id="rekening_number" tabindex="11" value="@if ($therapist && $therapist_info){{ $therapist_info->rekening_number }}@elseif(old('rekening_number')){{ old('rekening_number') }}@endif"
                                                 placeholder="{{ __('Enter Rekening Number') }}">
                                             @error('rekening_number')
@@ -298,7 +280,7 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Profile Photo ') }}</label>
                                             <img class="@error('profile_photo') is-invalid @enderror"
-                                                src="@if ($therapist && $therapist_info && $therapist->profile_photo != 'noImage.png') {{ URL::asset('storage/images/users/' . $therapist->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
+                                                src="@if ($therapist && $therapist->profile_photo != '') {{ URL::asset('storage/images/users/' . $therapist->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
                                                 data-toggle="tooltip" data-placement="top"
                                                 title="Click to Upload Profile Photo" />
                                             <input type="file"

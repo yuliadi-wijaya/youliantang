@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Sweetalert Js File
-*/
 !function ($) {
   "use strict";
 
@@ -112,7 +104,7 @@ File: Sweetalert Js File
     $('#sa-basic').on('click', function () {
       Swal.fire({
         title: 'Any fool can use a computer',
-        confirmButtonColor: '#556ee6'
+        confirmButtonColor: '#e0b402'
       });
     }); //A title with a text under
 
@@ -121,7 +113,7 @@ File: Sweetalert Js File
         title: "The Internet?",
         text: 'That thing is still around?',
         type: 'question',
-        confirmButtonColor: '#556ee6'
+        confirmButtonColor: '#e0b402'
       });
     }); //Success Message
 
@@ -131,7 +123,7 @@ File: Sweetalert Js File
         text: 'You clicked the button!',
         type: 'success',
         showCancelButton: true,
-        confirmButtonColor: '#556ee6',
+        confirmButtonColor: '#e0b402',
         cancelButtonColor: "#f46a6a"
       });
     }); //Warning Message
@@ -187,7 +179,7 @@ File: Sweetalert Js File
         text: 'Modal with a custom image.',
         imageUrl: 'assets/images/logo-dark.png',
         imageHeight: 20,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         animation: false
       });
     }); //Auto Close Timer
@@ -219,7 +211,7 @@ File: Sweetalert Js File
       Swal.fire({
         title: '<i>HTML</i> <u>example</u>',
         type: 'info',
-        html: 'You can use <b>bold text</b>, ' + '<a href="//themesbrand.com/">links</a> ' + 'and other HTML tags',
+        html: 'You can use <b>bold text</b> and other HTML tags',
         showCloseButton: true,
         showCancelButton: true,
         confirmButtonClass: 'btn btn-success',
@@ -246,7 +238,7 @@ File: Sweetalert Js File
         title: 'Custom width, padding, background.',
         width: 600,
         padding: 100,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         background: '#fff url(//subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/geometry.png)'
       });
     }); //Ajax
@@ -258,7 +250,7 @@ File: Sweetalert Js File
         showCancelButton: true,
         confirmButtonText: 'Submit',
         showLoaderOnConfirm: true,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         cancelButtonColor: "#f46a6a",
         preConfirm: function preConfirm(email) {
           return new Promise(function (resolve, reject) {
@@ -286,7 +278,7 @@ File: Sweetalert Js File
         input: 'text',
         confirmButtonText: 'Next &rarr;',
         showCancelButton: true,
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         cancelButtonColor: "#74788d",
         progressSteps: ['1', '2', '3']
       }).queue([{
@@ -306,7 +298,7 @@ File: Sweetalert Js File
     $('#dynamic-alert').click(function () {
       swal.queue([{
         title: 'Your public IP',
-        confirmButtonColor: "#556ee6",
+        confirmButtonColor: "#e0b402",
         confirmButtonText: 'Show my public IP',
         text: 'Your public IP will be received ' + 'via AJAX request',
         showLoaderOnConfirm: true,

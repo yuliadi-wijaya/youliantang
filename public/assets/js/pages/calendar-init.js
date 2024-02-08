@@ -1,6 +1,4 @@
 /*
- Template Name: Doctorly - Patient Management System
- Author: Lndinghub(Themesbrand)
  File: Calendar Init
  */
 

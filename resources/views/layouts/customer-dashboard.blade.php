@@ -76,7 +76,7 @@
     </div>
     <div class="col-xl-8">
         <div class="row">
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-4">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
@@ -125,7 +125,7 @@
         </div>
         <!-- end row -->
 
-        <div class="card">
+        {{-- <div class="card">
             <div class="card-body">
                 <h4 class="card-title mb-4">{{ __('translation.latest-appointment') }}</h4>
                 <div class="table-responsive">
@@ -162,7 +162,7 @@
                 </div>
                 <!-- end table-responsive -->
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 <!-- end row -->

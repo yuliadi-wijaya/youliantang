@@ -73,11 +73,98 @@
                                             <label class="control-label">{{ __('First Name ') }}<span
                                                     class="text-danger">*</span></label>
                                             <input type="text"
-                                                class="form-control @error('first_name') is-invalid @enderror" tabindex="1"
-                                                name="first_name" id="firstname"
-                                                value="{{ old('first_name', $receptionist->first_name) }}"
+                                                class="form-control @error('first_name') is-invalid @enderror"
+                                                name="first_name" id="firstname" tabindex="1"
+                                                value="@if ($receptionist && $receptionist_info){{ $receptionist->first_name }}@elseif(old('first_name')){{ old('first_name') }}@endif"
                                                 placeholder="{{ __('Enter First Name') }}">
                                             @error('first_name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('KTP ') }}<span
+                                                class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control @error('ktp') is-invalid @enderror"
+                                                name="ktp" id="lastname" tabindex="2" value="@if ($receptionist && $receptionist_info){{ $receptionist_info->ktp }}@elseif(old('ktp')){{ old('ktp') }}@endif"
+                                                placeholder="{{ __('Enter ID Card') }}">
+                                            @error('ktp')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Gender ') }}<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control select2 @error('gender') is-invalid @enderror"
+                                                name="gender" id="gender">
+                                                <option selected disabled>{{ __('-- Select Gender --') }}</option>
+                                                <option value="{{ 'Male' }}" {{ ($receptionist && $receptionist_info->gender == 'Male') || old('gender') == 'Male' ? 'selected' : '' }}>{{ 'Male' }}</option>
+                                                <option value="{{ 'Female' }}" {{ ($receptionist && $receptionist_info->gender == 'Female') || old('gender') == 'Female' ? 'selected' : '' }}>{{ 'Female' }}</option>
+                                            </select>
+                                            @error('gender')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Place Of Birth ') }}</label>
+                                            <input type="text" class="form-control @error('place_of_birth') is-invalid @enderror"
+                                                name="place_of_birth" id="place_of_birth" tabindex="4" value="@if ($receptionist && $receptionist_info){{ $receptionist_info->place_of_birth }}@elseif(old('place_of_birth')){{ old('place_of_birth') }}@endif"
+                                                placeholder="{{ __('Enter Place Of Birth') }}">
+                                            @error('place_of_birth')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Birth Date ') }}</label>
+                                            <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
+                                                name="birth_date" id="birth_date" tabindex="10" value="@if ($receptionist && $receptionist_info){{ $receptionist_info->birth_date }}@elseif(old('birth_date')){{ old('birth_date') }}@endif"
+                                                placeholder="{{ __('Enter Birth Date') }}">
+                                            @error('birth_date')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Address ') }}</label>
+                                            <textarea rows="3"
+                                                class="form-control @error('address') is-invalid @enderror"
+                                                name="address" tabindex="5" id="address"
+                                                placeholder="{{ __('Enter Address') }}">@if ($receptionist && $receptionist_info){{ $receptionist_info->address }}@elseif(old('address')){{ old('address') }}@endif</textarea>
+                                            @error('address')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Last Name ') }}</label>
+                                            <input type="text"
+                                                class="form-control @error('last_name') is-invalid @enderror"
+                                                name="last_name" id="lastname" tabindex="8" value="@if ($receptionist && $receptionist_info){{ $receptionist->last_name }}@elseif(old('last_name')){{ old('last_name') }}@endif"
+                                                placeholder="{{ __('Enter Last Name') }}">
+                                            @error('last_name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -89,9 +176,8 @@
                                             <label class="control-label">{{ __('Email ') }}<span
                                                     class="text-danger">*</span></label>
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                name="email" tabindex="3" id="email"
-                                                value="{{ old('email', $receptionist->email) }}"
-                                                placeholder="{{ __('Enter Email') }}">
+                                                name="email" id="email" tabindex="3" value="@if ($receptionist && $receptionist_info){{ $receptionist->email }}@elseif(old('email')){{ old('email') }}@endif"
+                                                placeholder="{{ __('Enter Email @youliantang.com') }}">
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -101,35 +187,13 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Therapist ') }}<span
+                                            <label class="control-label">{{ __('Phone Number ') }}<span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control select2 @error('therapist') is-invalid @enderror"
-                                                name="therapist[]" id="therapist" multiple="multiple">
-                                                @foreach ($therapists as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ in_array($item->id, $therapist_user) ? 'selected' : '' }}>
-                                                        {{ $item->first_name }} {{ $item->last_name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('therapist')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Last Name ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('last_name') is-invalid @enderror"
-                                                tabindex="2" name="last_name" id="lastname"
-                                                value="{{ old('last_name', $receptionist->last_name) }}"
-                                                placeholder="{{ __('Enter Last Name') }}">
-                                            @error('last_name')
+                                            <input type="tel" class="form-control @error('phone_number') is-invalid @enderror"
+                                                name="phone_number" id="phone_number" tabindex="9"
+                                                value="@if ($receptionist && $receptionist_info){{ $receptionist->phone_number }}@elseif(old('phone_number')){{ old('phone_number') }}@endif"
+                                                placeholder="{{ __('Enter Phone Number') }}">
+                                            @error('phone_number')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -138,13 +202,11 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Contact Number ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="tel" class="form-control @error('mobile') is-invalid @enderror"
-                                                tabindex="4" name="mobile" id="customerMobile"
-                                                value="{{ old('mobile', $receptionist->mobile) }}"
-                                                placeholder="{{ __('Enter Contact Number') }}">
-                                            @error('mobile')
+                                            <label class="control-label">{{ __('Rekening Number ') }}</label>
+                                            <input type="number" class="form-control @error('rekening_number') is-invalid @enderror"
+                                                name="rekening_number" id="rekening_number" tabindex="11" value="@if ($receptionist && $receptionist_info){{ $receptionist_info->rekening_number }}@elseif(old('rekening_number')){{ old('rekening_number') }}@endif"
+                                                placeholder="{{ __('Enter Rekening Number') }}">
+                                            @error('rekening_number')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -155,14 +217,48 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Profile Photo ') }}</label>
                                             <img class="@error('profile_photo') is-invalid @enderror"
-                                                src="@if ($receptionist && $receptionist->profile_photo != null){{ URL::asset('storage/images/users/' . $receptionist->profile_photo) }}@else{{ URL::asset('assets/images/users/noImage.png') }}@endif" id="profile_display" onclick="triggerClick()"
+                                                src="@if ($receptionist && $receptionist->profile_photo != '') {{ URL::asset('storage/images/users/' . $receptionist->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
                                                 data-toggle="tooltip" data-placement="top"
                                                 title="Click to Upload Profile Photo" />
                                             <input type="file"
                                                 class="form-control @error('profile_photo') is-invalid @enderror"
-                                                tabindex="5" name="profile_photo" id="profile_photo" style="display:none;"
+                                                tabindex="12" name="profile_photo" id="profile_photo" style="display:none;"
                                                 onchange="displayProfile(this)">
                                             @error('profile_photo')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <blockquote>{{ __('Emergency Information') }}</blockquote>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Emergency Name ') }}</label>
+                                            <input type="text" class="form-control @error('emergency_name') is-invalid @enderror"
+                                                name="emergency_name" id="emergency_name" tabindex="7" value="@if ($receptionist && $receptionist_info){{ $receptionist_info->emergency_name }}@elseif(old('emergency_name')){{ old('emergency_name') }}@endif"
+                                                placeholder="{{ __('Enter Emergency Name') }}">
+                                            @error('emergency_name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Emergency Contact ') }}</label>
+                                            <input type="text" class="form-control @error('emergency_contact') is-invalid @enderror"
+                                                name="emergency_contact" id="emergency_contact" tabindex="6" value="@if ($receptionist && $receptionist_info){{ $receptionist_info->emergency_contact }}@elseif(old('emergency_contact')){{ old('emergency_contact') }}@endif"
+                                                placeholder="{{ __('Enter Emergency Contact') }}">
+                                            @error('emergency_contact')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>

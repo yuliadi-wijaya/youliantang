@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-xl-4">
                 <div class="card overflow-hidden">
-                    <div class="bg-soft-primary">
+                    <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
@@ -63,9 +63,9 @@
                                             <a href="{{ url('therapist/' . $therapist->id . '/edit') }}"
                                                 class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Profile') }}
                                                 <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                            <a href="{{ url('time-edit/' . $therapist->id) }}"
+                                            {{-- <a href="{{ url('time-edit/' . $therapist->id) }}"
                                                 class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Time Slot') }}
-                                                <i class="mdi mdi-arrow-right ml-1"></i></a>
+                                                <i class="mdi mdi-arrow-right ml-1"></i></a> --}}
                                         </div>
                                     @endif
 
@@ -86,24 +86,20 @@
                                         <td>{{ $therapist->first_name }} {{ $therapist->last_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Contact No:') }}</th>
-                                        <td> {{ $therapist->mobile }} </td>
+                                        <th scope="row">{{ __('ID Card:') }}</th>
+                                        <td> {{ $therapist_info->ktp }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">{{ __('Phone Number:') }}</th>
+                                        <td> {{ $therapist->phone_number }} </td>
                                     </tr>
                                     <tr>
                                         <th scope="row">{{ __('Email:') }}</th>
                                         <td> {{ $therapist->email }} </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{{ __('Degree:') }}</th>
-                                        <td> {{ $therapist_info->degree }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Experience:') }}</th>
-                                        <td> {{ $therapist_info->experience }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">{{ __('Fees:') }}</th>
-                                        <td>{{ $therapist_info->fees }}</td>
+                                        <th scope="row">{{ __('Gender:') }}</th>
+                                        <td> {{ $therapist_info->gender }} </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -119,36 +115,36 @@
                         <p>Available Day</p>
                         @if ($availableDay)
                             @if ($availableDay->sun == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Sunday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Sunday') }}</span>
                             @endif
                             @if ($availableDay->mon == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Monday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Monday') }}</span>
                             @endif
                             @if ($availableDay->tue == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Tuesday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Tuesday') }}</span>
                             @endif
                             @if ($availableDay->wen == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Wednesday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Wednesday') }}</span>
                             @endif
                             @if ($availableDay->thu == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Thursday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Thursday') }}</span>
                             @endif
                             @if ($availableDay->fri == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Friday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Friday') }}</span>
                             @endif
                             @if ($availableDay->sat == 1)
-                                <span class="badge badge-info font-size-15 my-2">{{ __('Saturday') }}</span>
+                                <span class="badge badge-primary font-size-15 my-2">{{ __('Saturday') }}</span>
                             @endif
                         @endif
                         <hr>
-                        <p>Available Time</p>
+                        {{-- <p>Available Time</p>
                         @if ($availableTime)
                             @foreach ($availableTime as $item)
                                 <span class="badge badge-info font-size-15 my-2">
                                     {{ \Carbon\Carbon::createFromFormat('H:i:s', $item->from)->format('h:i') . ' To ' . \Carbon\Carbon::createFromFormat('H:i:s', $item->to)->format('h:i') }}
                                 </span>
                             @endforeach
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
                 <!-- end card -->
@@ -160,12 +156,12 @@
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Appointments') }}</p>
-                                        <h4 class="mb-0">{{ number_format($data['total_appointment']) }}</h4>
+                                        <p class="text-muted font-weight-medium">{{ __('Total Fee') }}</p>
+                                        <h4 class="mb-0">Rp {{ number_format($data['fee']) }}</h4>
                                     </div>
-                                    <div class="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
+                                    <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
-                                            <i class="bx bx-check-circle font-size-24"></i>
+                                            <i class="bx bx-dollar font-size-24"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -195,7 +191,7 @@
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                        <h4 class="mb-0">Rp {{ number_format($data['revenue']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
@@ -212,18 +208,6 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#AppointmentList" role="tab">
-                                    <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Appointment List') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#PrescriptionList" role="tab">
-                                    <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Prescription List') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#Invoices" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Invoices') }}</span>
@@ -232,115 +216,14 @@
                         </ul>
                         <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted">
-                            <div class="tab-pane active" id="AppointmentList" role="tabpanel">
+                            <div class="tab-pane active" id="Invoices" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Sr. No') }}</th>
+                                            <th>{{ __('No') }}</th>
                                             <th>{{ __('Customer Name') }}</th>
-                                            <th>{{ __('Customer Contact no') }}</th>
-                                            <th>{{ __('Customer Email') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Time') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (session()->has('page_limit'))
-                                            @php
-                                                $per_page = session()->get('page_limit');
-                                            @endphp
-                                        @else
-                                            @php
-                                                $per_page = Config::get('app.page_limit');
-                                            @endphp
-                                        @endif
-                                        @php
-                                            $currentpage = $appointments->currentPage();
-                                        @endphp
-                                        @foreach ($appointments as $item)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td> {{ $item->customer->first_name }} {{ $item->customer->last_name }}
-                                                </td>
-                                                <td> {{ $item->customer->mobile }} </td>
-                                                <td> {{ $item->customer->email }} </td>
-                                                <td>{{ $item->appointment_date }}</td>
-                                                <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="col-md-12 text-center mt-3">
-                                    <div class="d-flex justify-content-start">
-                                        Showing {{ $appointments->firstItem() }} to {{ $appointments->lastItem() }} of
-                                        {{ $appointments->total() }} entries
-                                    </div>
-                                    <div class="d-flex justify-content-end">
-                                        {{ $appointments->links() }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="PrescriptionList" role="tabpanel">
-                                <table class="table table-bordered dt-responsive nowrap "
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('Sr. No') }}</th>
-                                            <th>{{ __('Customer Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Option') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (session()->has('page_limit'))
-                                            @php
-                                                $per_page = session()->get('page_limit');
-                                            @endphp
-                                        @else
-                                            @php
-                                                $per_page = Config::get('app.page_limit');
-                                            @endphp
-                                        @endif
-                                        @php
-                                            $currentpage = $prescriptions->currentPage();
-                                        @endphp
-                                        @foreach ($prescriptions as $item)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td>{{ $item->customer->first_name }} {{ $item->customer->last_name }}
-                                                </td>
-                                                <td>{{ date('d-m-Y') }}</td>
-                                                <td>
-                                                    <a href="{{ url('prescription/' . $item->id) }}">
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                                            {{ __('View') }}
-                                                        </button>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="col-md-12 text-center mt-3">
-                                    <div class="d-flex justify-content-start">
-                                        Showing {{ $prescriptions->firstItem() }} to {{ $prescriptions->lastItem() }}
-                                        of {{ $prescriptions->total() }} entries
-                                    </div>
-                                    <div class="d-flex justify-content-end">
-                                        {{ $prescriptions->links() }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="Invoices" role="tabpanel">
-                                <table class="table table-bordered dt-responsive nowrap "
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('Sr. No') }}</th>
-                                            <th>{{ __('Customer Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
+                                            <th>{{ __('Treatment Date') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Option') }}</th>
                                         </tr>

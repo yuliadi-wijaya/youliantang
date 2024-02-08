@@ -49,10 +49,12 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $user = Sentinel::getUser();
+        $role = $user->roles[0]->slug;
+
         if ($user->hasAccess('customer.list')) {
-            $role = $user->roles[0]->slug;
+            $user_id = $user->id;
             $customer_role = Sentinel::findRoleBySlug('customer');
-            $customers = $customer_role->users()->with('roles')->where('is_deleted', 0)->orderByDesc('id')->get();
+            $customers = $customer_role->users()->with(['roles', 'customer'])->where('is_deleted', 0)->orderByDesc('id')->get();
 
             // Load Datatables
             if ($request->ajax()) {
@@ -99,16 +101,51 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('customer.create')) {
-            $role = $user->roles[0]->slug;
-            $customer = null;
-            $customer_info = null;
-            return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info'));
-        } else {
-            return view('error.403');
 
+        // Check user access
+        if (!$user->hasAccess('customer.create')) {
+            return view('error.403');
         }
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Default data null
+        $customer = null;
+        $customer_info = null;
+
+        // Default email
+        $runningNumber = User::join('role_users as b', 'b.user_id', '=', 'users.id')
+            ->where('b.role_id', 4)
+            ->count() + 1;
+
+        $cust_mail = 'cust' . $runningNumber . '@youliantang.com';
+
+        return view('customer.customer-details', compact('user', 'role', 'customer', 'customer_info', 'cust_mail'));
+    }
+
+    public function create_from_invoice()
+    {
+        $user = Sentinel::getUser();
+        if (!$user->hasAccess('customer.create')) {
+            return view('error.403');
+        }
+
+        $role = $user->roles[0]->slug;
+
+        $customer = null;
+        $customer_info = null;
+
+        // Default email
+        $runningNumber = User::join('role_users as b', 'b.user_id', '=', 'users.id')
+            ->where('b.role_id', 4)
+            ->count() + 1;
+
+        $cust_mail = 'cust' . $runningNumber . '@youliantang.com';
+
+        return view('invoice.customer-add', compact('user', 'role', 'customer', 'customer_info', 'cust_mail'));
     }
 
     /**
@@ -119,18 +156,26 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        // Get user session data
         $user = Sentinel::getUser();
-        if ($user->hasAccess('customer.create')) {
-            $validatedData = $request->validate([
-                'first_name' => 'required|alpha',
-                'last_name' => 'alpha',
-                'phone_number' => 'required',
-                'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'address' => 'required|max:100',
-                'gender' => 'required',
-                'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
-                'status' => 'required'
-            ]);
+
+        // Check user access
+        if (!$user->hasAccess('customer.create')) {
+            return view('error.403');
+        }
+
+        // Validate input data
+        $validatedData = $request->validate([
+            'first_name' => 'required|alpha',
+            // 'phone_number' => 'required',
+            'email' => 'nullable|email',
+            'gender' => 'required',
+            'profile_photo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:500',
+            'status' => 'required'
+        ]);
+
+        try {
+            // Upload profile foto
             if ($request->profile_photo != null) {
                 $request->validate([
                     'profile_photo' => 'image'
@@ -141,46 +186,56 @@ class CustomerController extends Controller
                 $file->move(public_path('storage/images/users'), $imageName);
                 $validatedData['profile_photo'] = $imageName;
             }
-            try {
-                $user = Sentinel::getUser();
-                // Set Default Password for Customer
-                $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
-                $validatedData['created_by'] = $user->id;
-                $validatedData['updated_by'] = $user->id;
-                //Create a new user
-                $customer = Sentinel::registerAndActivate($validatedData);
-                //Attach the user to the role
-                $role = Sentinel::findRoleBySlug('customer');
-                $role->users()->attach($customer);
-                $validatedData['user_id'] = $customer->id;
 
-                $customer_info = new Customer();
-                $customer_info->user_id = $customer->id;
-                $customer_info->gender = $request->gender;
-                $customer_info->place_of_birth = $request->place_of_birth;
-                $customer_info->birth_date = $request->birth_date;
-                $customer_info->address = $request->address;
-                $customer_info->emergency_contact = $request->emergency_contact;
-                $customer_info->emergency_name = $request->emergency_name;
-                $customer_info->created_by = $user->id;
-                $customer_info->updated_by = $user->id;
-                $customer_info->status = $request->status;
-                $customer_info->save();
+            // Set Default Password for Customer
+            $validatedData['last_name'] = $request->last_name;
+            $validatedData['phone_number'] = $request->phone_number;
+            $validatedData['email'] = empty($validatedData['email']) ? $request->hidden_mail : $validatedData['email'];
+            $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
+            $validatedData['created_by'] = $user->id;
+            $validatedData['updated_by'] = $user->id;
 
-                $app_name =  AppSetting('title');
+            //Create a new user
+            $customer = Sentinel::registerAndActivate($validatedData);
+
+            //Attach the user to the role
+            $role = Sentinel::findRoleBySlug('customer');
+            $role->users()->attach($customer);
+
+            $customer_info = new Customer();
+            $customer_info->user_id = $customer->id;
+            $customer_info->gender = $request->gender;
+            $customer_info->place_of_birth = $request->place_of_birth;
+            $customer_info->birth_date = $request->birth_date;
+            $customer_info->address = $request->address;
+            $customer_info->emergency_contact = $request->emergency_contact;
+            $customer_info->emergency_name = $request->emergency_name;
+            $customer_info->created_by = $user->id;
+            $customer_info->updated_by = $user->id;
+            $customer_info->status = $request->status;
+            $customer_info->save();
+
+            $app_name =  AppSetting('title');
+            /*
+            if($request->email !== ''){
                 $verify_mail = trim($request->email);
                 Mail::send('emails.WelcomeEmail', ['user' => $customer, 'email' => $verify_mail], function ($message) use ($verify_mail, $app_name) {
                     $message->to($verify_mail);
                     $message->subject($app_name . ' ' . 'Welcome email from You Lian tAng - Reflexology & Massage Therapy');
                 });
-                return redirect('/customer')->with('success', 'Customer created successfully!');
-            } catch (Exception $e) {
-                return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
-                //dd($e->getMessage());
+            }*/
+            if($request->post_from == 'customer') {
+                return redirect('customer')->with('success', 'Customer created successfully!');
+            }else{
+                return redirect('invoice/create')->with('success', 'Customer created successfully!');
             }
-        } else {
-            return view('error.403');
 
+        } catch (Exception $e) {
+            if($request->post_from == 'customer') {
+                return redirect('customer')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            }else{
+                return redirect('invoice/create')->with('error', 'Something went wrong!!! ' . $e->getMessage());
+            }
         }
     }
 
@@ -208,7 +263,7 @@ class CustomerController extends Controller
                     $invoices = Invoice::where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'invoice');
                     $tot_appointment = Appointment::where('appointment_for', $customer->id)->get();
                     $invoice = Invoice::where('customer_id', $customer->id)->pluck('id');
-                    $revenue = InvoiceDetail::whereIn('invoice_id',$invoice)->sum('amount');
+                    $revenue = Invoice::whereIn('id',$invoice)->sum('grand_total');
                     $pending_bill = Invoice::where(['customer_id' => $customer->id, 'payment_status' => 'Unpaid'])->count();
                     $data = [
                         'total_appointment' => $tot_appointment->count(),
@@ -268,10 +323,8 @@ class CustomerController extends Controller
         if ($user->hasAccess('customer.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                'last_name' => 'alpha',
-                'phone_number' => 'required',
-                'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
-                'address' => 'required|max:100',
+                // 'phone_number' => 'required',
+                'email' => 'nullable|email',
                 'gender' => 'required',
                 'profile_photo'=>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'
@@ -291,9 +344,9 @@ class CustomerController extends Controller
                     $customer->profile_photo = $imageName;
                 }
                 $customer->first_name = $validatedData['first_name'];
-                $customer->last_name = $validatedData['last_name'];
-                $customer->phone_number = $validatedData['phone_number'];
-                $customer->email = $validatedData['email'];
+                $customer->last_name = $request->last_name;
+                $customer->phone_number = $request->phone_number;
+                $customer->email = empty($validatedData['email']) ? $request->hidden_mail : $validatedData['email'];
                 $customer->status = $validatedData['status'];
                 $customer->updated_by = $user->id;
                 $customer->save();

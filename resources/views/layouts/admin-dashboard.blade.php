@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-xl-4">
         <div class="card overflow-hidden">
-            <div class="bg-soft-primary">
+            <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                 <div class="row">
                     <div class="col-7">
                         <div class="text-primary p-3">
@@ -68,26 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.monthly-earning') }}</h4>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p class="text-muted">{{ __('This month') }}</p>
-                        <h3>${{ number_format($data['monthly_earning']) }}</h3>
-                        <p class="text-muted">
-                            <span class="@if ($data['monthly_diff'] > 0) text-success @else text-danger @endif mr-2">
-                                {{ $data['monthly_diff'] }}% <i class="mdi @if ($data['monthly_diff'] > 0) mdi-arrow-up @else mdi-arrow-down @endif"></i>
-                            </span>{{ __('From previous month') }}
-                        </p>
-                    </div>
-                    <div class="col-sm-6">
-                        <div id="radialBar-chart" class="apex-charts"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-8">
+        <div class="col-xl-8 pl-0 pr-0">
             <div class="card mini-stats-wid">
                 <div class="card-body">
                     <div class="media">
@@ -128,30 +109,13 @@
 
     <div class="col-xl-8">
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.appointments') }}</p>
-                                <h4 class="mb-0">{{ number_format($data['total_appointment']) }}</h4>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bxs-calendar-check font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
+            {{-- <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium">{{ __('translation.revenue') }}</p>
-                                <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                <h4 class="mb-0">Rp {{ number_format($data['revenue'], 2) }}</h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -161,14 +125,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
+            </div> --}}
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium">{{ __("translation.today's-earning") }}</p>
-                                <h4 class="mb-0">${{ number_format($data['daily_earning'], 2) }}</h4>
+                                <h4 class="mb-0">Rp {{ number_format($data['daily_earning']) }}</h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -179,74 +143,36 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
+            <div class="col-md-6">
+                <div class="card">
                     <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __("translation.today's-appointments") }}</p>
-                                <a href="{{ url('/today-appointment') }}"
-                                    class="mb-0 font-weight-medium font-size-24">
-                                    <h4 class="mb-0">{{ number_format($data['today_appointment']) }}</h4>
-                                </a>
+                        <h4 class="card-title mb-4">{{ __('translation.monthly-earning') }}</h4>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="text-muted">{{ __('This month') }}</p>
+                                <h3>Rp {{ number_format($data['monthly_earning']) }}</h3>
+                                <p class="text-muted">
+                                    <span class="@if ($data['monthly_diff'] > 0) text-success @else text-danger @endif mr-2">
+                                        {{ $data['monthly_diff'] }}% <i class="mdi @if ($data['monthly_diff'] > 0) mdi-arrow-up @else mdi-arrow-down @endif"></i>
+                                    </span>{{ __('From previous month') }}
+                                </p>
                             </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bx-calendar font-size-24"></i>
-                                </span>
+                            <div class="col-sm-6">
+                                <div id="radialBar-chart" class="apex-charts"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.tomorrow-appointments') }}</p>
-                                <h4 class="mb-0">{{ number_format($data['tomorrow_appointment']) }}</h4>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class="bx bx-calendar-event font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.upcoming-appointments') }}</p>
-                                <a href="{{ url('/upcoming-appointment') }}"
-                                    class="mb-0 font-weight-medium font-size-24">
-                                    <h4 class="mb-0">{{ number_format($data['Upcoming_appointment']) }}
-                                    </h4>
-                                </a>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class='bx bxs-calendar-minus font-size-24'></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
         <!-- end row -->
-        <div class="card">
+        {{-- <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.monthly-registered-users') }}</h4>
+                <h4 class="card-title mb-4">{{ __('translation.monthly-registered-customers-revenue') }}</h4>
                 <div id="monthly_users" class="apex-charts" dir="ltr"></div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 <!-- end row -->
@@ -293,17 +219,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($therapists as $item)
+                                    @foreach ($therapists as $row)
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $item->first_name }} {{ $item->last_name }}</td>
-                                            <td>{{ $item->gender }}</td>
-                                            <td>{{ $item->phone_number }}</td>
-                                            <td>{{ $item->email }}</td>
-                                            <td>{{ $item->status == 1 ? 'Active' : 'Inactive' }}</td>
+                                            <td>{{ $row->first_name }} {{ $row->last_name }}</td>
+                                            <td>{{ $row->gender }}</td>
+                                            <td>{{ $row->phone_number }}</td>
+                                            <td>{{ $row->email }}</td>
+                                            <td>{{ $row->status == 1 ? 'Active' : 'Inactive' }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('therapist/' . $item->id) }}">
+                                                <a href="{{ url('therapist/' . $row->user_id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
                                                         {{ __('View Details') }}
@@ -332,18 +258,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($receptionists as $receptionist)
+                                    @foreach ($receptionists as $row)
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $receptionist->first_name }} {{ $receptionist->last_name }}
+                                            <td>{{ $row->first_name }} {{ $row->last_name }}
                                             </td>
-                                            <td>{{ $receptionist->gender }}</td>
-                                            <td>{{ $receptionist->phone_number }}</td>
-                                            <td>{{ $receptionist->email }}</td>
-                                            <td>{{ $receptionist->status == 1 ? 'Active' : 'Inactive' }}</td>
+                                            <td>{{ $row->gender }}</td>
+                                            <td>{{ $row->phone_number }}</td>
+                                            <td>{{ $row->email }}</td>
+                                            <td>{{ $row->status == 1 ? 'Active' : 'Inactive' }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('receptionist/' . $receptionist->id) }}">
+                                                <a href="{{ url('receptionist/' . $row->user_id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">
@@ -383,7 +309,7 @@
                                             <td> {{ $customer->status == 1 ? 'Active' : 'Inactive' }} </td>
                                             <td>
                                                 <!-- Button trigger modal -->
-                                                <a href="{{ url('customer/' . $customer->id) }}">
+                                                <a href="{{ url('customer/' . $customer->user_id) }}">
                                                     <button type="button"
                                                         class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
                                                         data-toggle="modal" data-target=".exampleModal">

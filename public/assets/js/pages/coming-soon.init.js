@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: coming soon Init Js File
-*/
 $('[data-countdown]').each(function () {
   var $this = $(this),
       finalDate = $(this).data('countdown');

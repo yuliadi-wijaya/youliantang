@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-xl-4">
                 <div class="card overflow-hidden">
-                    <div class="bg-soft-primary">
+                    <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <!-- end card -->
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-4">{{ __('Assign Therapist Information') }}</h4>
                         <div class="table-responsive">
@@ -115,29 +115,12 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- end card -->
             </div>
             <div class="col-xl-8">
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Appointments') }}</p>
-                                        <h4 class="mb-0">{{ number_format($data['total_appointment']) }}</h4>
-                                    </div>
-                                    <div class="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
-                                        <span class="avatar-title">
-                                            <i class="bx bx-check-circle font-size-24"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
@@ -154,13 +137,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                        <h4 class="mb-0">Rp {{ number_format($data['revenue']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
@@ -177,12 +160,6 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#AppointmentList" role="tab">
-                                    <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Appointment List') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#Invoices" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Invoices') }}</span>
@@ -191,63 +168,14 @@
                         </ul>
                         <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted">
-                            <div class="tab-pane active" id="AppointmentList" role="tabpanel">
+                            <div class="tab-pane active" id="Invoices" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Sr. No') }}</th>
-                                            <th>{{ __('Therapist Name') }}</th>
+                                            <th>{{ __('No') }}</th>
+                                            <th>{{ __('Treatment Date') }}</th>
                                             <th>{{ __('Customer Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Time') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (session()->has('page_limit'))
-                                            @php
-                                                $per_page = session()->get('page_limit');
-                                            @endphp
-                                        @else
-                                            @php
-                                                $per_page = Config::get('app.page_limit');
-                                            @endphp
-                                        @endif
-                                        @php
-                                            $currentpage = $appointments->currentPage();
-                                        @endphp
-                                        @foreach ($appointments as $item)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td> {{ $item->therapist->first_name . ' ' . $item->therapist->last_name }}
-                                                </td>
-                                                <td> {{ $item->customer->first_name . ' ' . $item->customer->last_name }}
-                                                </td>
-                                                <td>{{ $item->appointment_date }}</td>
-                                                <td>{{ $item->timeSlot->from . ' ' . $item->timeSlot->to }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="col-md-12 text-center mt-3">
-                                    <div class="d-flex justify-content-start">
-                                        Showing {{ $appointments->firstItem() }} to {{ $appointments->lastItem() }} of
-                                        {{ $appointments->total() }} entries
-                                    </div>
-                                    <div class="d-flex justify-content-end">
-                                        {{ $appointments->links() }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane" id="Invoices" role="tabpanel">
-                                <table class="table table-bordered dt-responsive nowrap "
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('Sr. No') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Customer name') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Option') }}</th>
                                         </tr>

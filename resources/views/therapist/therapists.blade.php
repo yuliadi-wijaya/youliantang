@@ -38,7 +38,7 @@
                         </button>
                     </a>
                     @endif
-                    <table id="therapistList" class="table table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="therapistList" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>{{ __('No.') }}</th>
@@ -47,8 +47,9 @@
                                 <th>{{ __('Phone Number') }}</th>
                                 <th>{{ __('Email') }}</th>
                                 @if ($role != 'customer')
-                                <th>{{ __('Pending Appointment') }}</th>
-                                <th>{{ __('Complete Appointment') }}</th>
+                                {{-- <th>{{ __('Pending Appointment') }}</th>
+                                <th>{{ __('Complete Appointment') }}</th> --}}
+                                <th>{{ __('Complete Transaction') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 @endif
                                 @if ($role != 'customer')
@@ -109,7 +110,7 @@
                         data: 'email'
                         , name: 'email'
                     }
-                    , {
+                    /*, {
                         data: 'pending_appointment'
                         , name: 'pending_appointment'
                         , orderable: false
@@ -119,6 +120,13 @@
                     , {
                         data: 'completed_appointment'
                         , name: 'completed_appointment'
+                        , orderable: false
+                        , searchable: false
+                        , visible: (role != 'customer') ? true : false
+                    }*/
+                    , {
+                        data: 'completed_trans'
+                        , name: 'completed_trans'
                         , orderable: false
                         , searchable: false
                         , visible: (role != 'customer') ? true : false

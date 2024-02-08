@@ -93,21 +93,13 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Sparkline chart Init
-*/
 $(document).ready(function () {
   var SparklineCharts = function SparklineCharts() {
     $('#sparkline1').sparkline([20, 40, 30], {
       type: 'pie',
       height: '200',
       resize: true,
-      sliceColors: ['#34c38f', '#556ee6', '#e9ecef']
+      sliceColors: ['#34c38f', '#e0b402', '#e9ecef']
     });
     $("#sparkline2").sparkline([5, 6, 2, 8, 9, 4, 7, 10, 11, 12, 10, 4, 7, 10], {
       type: 'bar',
@@ -122,7 +114,7 @@ $(document).ready(function () {
       barWidth: '10',
       resize: true,
       barSpacing: '7',
-      barColor: '#556ee6'
+      barColor: '#e0b402'
     });
     $('#sparkline3').sparkline([5, 6, 2, 9, 4, 7, 10, 12, 4, 7, 10], {
       type: 'line',
@@ -138,9 +130,9 @@ $(document).ready(function () {
       type: 'line',
       width: '100%',
       height: '200',
-      lineColor: '#556ee6',
+      lineColor: '#e0b402',
       fillColor: 'transparent',
-      spotColor: '#556ee6',
+      spotColor: '#e0b402',
       lineWidth: 2,
       minSpotColor: undefined,
       maxSpotColor: undefined,
@@ -153,7 +145,7 @@ $(document).ready(function () {
       height: '200',
       chartRangeMax: 50,
       resize: true,
-      lineColor: '#556ee6',
+      lineColor: '#e0b402',
       fillColor: 'rgba(85, 110, 230, 0.3)',
       highlightLineColor: 'rgba(0,0,0,.1)',
       highlightSpotColor: 'rgba(0,0,0,.2)'
@@ -180,7 +172,7 @@ $(document).ready(function () {
       type: 'bullet',
       width: '280',
       height: '80',
-      targetColor: '#556ee6',
+      targetColor: '#e0b402',
       performanceColor: '#f46a6a'
     });
     $('#sparkline8').sparkline([4, 27, 34, 52, 54, 59, 61, 68, 78, 82, 85, 87, 91, 93, 100], {
@@ -198,7 +190,7 @@ $(document).ready(function () {
       height: '80',
       width: '100%',
       type: 'tristate',
-      posBarColor: '#556ee6',
+      posBarColor: '#e0b402',
       negBarColor: '#34c38f',
       zeroBarColor: '#f46a6a',
       barWidth: 8,

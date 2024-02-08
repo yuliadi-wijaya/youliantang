@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-xl-4">
                 <div class="card overflow-hidden">
-                    <div class="bg-soft-primary">
+                    <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
@@ -104,7 +104,7 @@
             </div>
             <div class="col-xl-8">
                 <div class="row">
-                    <div class="col-md-4">
+                    {{-- <div class="col-md-4">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
@@ -120,8 +120,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
+                    </div> --}}
+                    <div class="col-md-6">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
@@ -138,13 +138,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                        <h4 class="mb-0">Rp {{ number_format($data['revenue']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
@@ -168,7 +168,7 @@
                                 </a>
                             </li>
                             -->
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#AppointmentList" role="tab">
                                     <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Appointment List') }}</span>
@@ -179,7 +179,7 @@
                                     <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Prescription List') }}</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#Invoices" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
@@ -189,7 +189,7 @@
                         </ul>
                         <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted"></div>
-                            <div class="tab-pane" id="AppointmentList" role="tabpanel">
+                            {{-- <div class="tab-pane" id="AppointmentList" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
@@ -283,7 +283,7 @@
                                         {{ $prescriptions->links() }}
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="tab-pane" id="Invoices" role="tabpanel">
                                 <table class="table table-bordered dt-responsive nowrap "
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">

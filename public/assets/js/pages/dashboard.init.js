@@ -146,15 +146,6 @@
     /***/
         (function(module, exports) {
 
-        /*
-        Product Name: Doctorly - Patient Management System
-        Author: Themesbrand
-        Version: 1.0.0
-        Website: https://themesbrand.com/
-        Contact: support@themesbrand.com
-        File: Dashboard Init Js File
-        */
-
         // Mixed Chart
 
         if (document.querySelector("#monthly_users")) {
@@ -226,7 +217,7 @@
                             }, {
                                 opposite: true,
                                 title: {
-                                    text: '$ (thousands)'
+                                    text: 'Rupiah'
                                 }
                             }]
                         };
@@ -373,7 +364,7 @@
                             }
                         }
                     },
-                    colors: ['#556ee6'],
+                    colors: ['#e0b402'],
                     fill: {
                         type: 'gradient',
                         gradient: {

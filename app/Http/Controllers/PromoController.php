@@ -32,7 +32,7 @@ class PromoController extends Controller
     {
         // Get user session data
         $user = Sentinel::getUser();
-        
+
         // Check user access
         if (!$user->hasAccess('promo.list')) {
             return view('error.403');
@@ -128,7 +128,7 @@ class PromoController extends Controller
 
         // Default data null
         $promo = null;
-        
+
         return view('promo.promo-details', compact('user', 'role', 'promo'));
     }
 
@@ -157,8 +157,27 @@ class PromoController extends Controller
             'active_period_end' => 'required|date|after:active_period_start',
             'is_reuse_voucher' => 'required|numeric',
             'status' => 'required|numeric',
-            'voucher_list.*' => 'required'
+            'voucher_list.*' => 'required',
+            'start_number' => 'required|numeric',
+            'voucher_total' => 'required|numeric',
+            'voucher_prefix' => 'required|string|max:25'
         ]);
+
+        // Check if voucher_prefix already exists
+        $existingPromo = Promo::where('voucher_prefix', $request->voucher_prefix)->first();
+
+        if ($existingPromo) {
+            // Check if start_number is greater than the existing promo's start_number
+            $defaultStartNumber = $existingPromo->start_number + $existingPromo->voucher_total;
+
+            if ($request->start_number < $defaultStartNumber) {
+                $errorMessage = 'Start Number must be greater equals ' . $defaultStartNumber;
+
+                return redirect()->back()
+                    ->withErrors(['start_number' => $errorMessage])
+                    ->withInput($request->all());
+            }
+        }
 
         try {
             // Mapping request to object and store data
@@ -193,7 +212,7 @@ class PromoController extends Controller
         $obj = Promo::where('id', $promo->id)->where('is_deleted', 0)->with('promo_vouchers')->first();
 
         // Check user access and available data
-        if (!$user->hasAccess('promo.update') || $obj == NULL) {
+        if (!$user->hasAccess('promo.show') || $obj == NULL) {
             return view('error.403');
         }
 
@@ -260,8 +279,13 @@ class PromoController extends Controller
             $obj->updated_by = $user->id;
             $obj->save();
 
-             // Store detail promo voucher
-             $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($promo, $request));
+            // If generated delete the old data
+            if ($request->is_generated == 1) {
+                PromoVoucher::where('promo_id', $promo->id)->update('is_deleted', 1);
+            }
+
+            // Store detail promo voucher
+            $obj->promo_vouchers()->saveMany($this->toObjectVoucherList($promo, $request));
 
             return redirect('promo')->with('success', 'Promo updated successfully!');
         } catch (Exception $e) {
@@ -297,7 +321,7 @@ class PromoController extends Controller
                 // Set available data to false
                 $obj->is_deleted = 1;
                 $obj->save();
-                
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Promo deleted successfully.',
@@ -308,13 +332,13 @@ class PromoController extends Controller
                     'success' => false,
                     'message' => 'Promo not found.',
                     'data' => [],
-                ], 409); 
+                ], 409);
             }
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong!!! ' . $e->getMessage(),
-                'data' => [], 
+                'data' => [],
             ], 409);
         }
     }
@@ -342,12 +366,9 @@ class PromoController extends Controller
     private function toObjectVoucherList(Promo $promo, Request $request) {
         $promoVouchers = [];
 
+        // If voucher wasn't generated, keep exists the promo voucher
         if ($request->is_generated == 0) {
             return $promoVouchers;
-        }
-        // For update check the voucher list, if generated replace the existing vouchers with the new one
-        if ($promo->id != null && $promo->id > 0 && $request->is_generated == 1) {
-            PromoVoucher::where('promo_id', $promo->id)->delete();
         }
 
         foreach($request->input('voucher_list') as $item) {

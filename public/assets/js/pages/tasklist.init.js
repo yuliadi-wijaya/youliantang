@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Task list Init Js File
-*/
 var options = {
   chart: {
     height: 280,
@@ -120,7 +112,7 @@ var options = {
       endingShape: 'rounded'
     }
   },
-  colors: ['#556ee6', '#34c38f'],
+  colors: ['#e0b402', '#34c38f'],
   series: [{
     name: 'Complete Tasks',
     type: 'column',

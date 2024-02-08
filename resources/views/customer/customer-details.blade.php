@@ -77,6 +77,7 @@
                             @if ($customer )
                                 <input type="hidden" name="_method" value="PATCH" />
                             @endif
+                            <input type="hidden" name="post_from" value="customer" />
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
@@ -97,16 +98,12 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Email ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                name="email" id="email" tabindex="2" value="@if ($customer && $customer_info){{ $customer->email }}@elseif(old('email')){{ old('email') }}@endif"
+                                            <label class="control-label">{{ __('Email ') }}</label>
+                                            <input type="email" class="form-control"
+                                                name="email" id="email" tabindex="2"
+                                                value="@if ($customer && $customer->email){{ $customer->email }}@elseif(old('email')){{ old('email', $cust_mail) }}@else{{ $cust_mail }}@endif"
                                                 placeholder="{{ __('Enter Email') }}">
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                            <input type="hidden" name="hidden_mail" value="@if ($customer && $customer->email){{ $customer->email }}@else{{ $cust_mail }}@endif">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -124,8 +121,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Phone Number ') }}<span
-                                                    class="text-danger">*</span></label>
+                                            <label class="control-label">{{ __('Phone Number ') }}</label>
                                             <input type="tel" class="form-control @error('phone_number') is-invalid @enderror"
                                                 name="phone_number" id="phone_number" tabindex="4"
                                                 value="@if ($customer && $customer_info){{ $customer->phone_number }}@elseif(old('phone_number')){{ old('phone_number') }}@endif"
@@ -169,7 +165,6 @@
                                                     class="text-danger">*</span></label>
                                             <select class="form-control @error('status') is-invalid @enderror"
                                                 tabindex="7" name="status">
-                                                <option selected disabled>{{ __('-- Select Status --') }}</option>
                                                 <option value="1" @if (($customer && $customer_info->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
                                                 <option value="0" @if (($customer && $customer_info->status == '0') || old('status') == '0') selected @endif>{{ __('In Active') }}</option>
                                             </select>
@@ -244,7 +239,7 @@
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Profile Photo ') }}</label>
                                             <img class="@error('profile_photo') is-invalid @enderror"
-                                                src="@if ($customer && $customer_info && $customer->profile_photo != 'noImage.png') {{ URL::asset('storage/images/users/' . $customer->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
+                                                src="@if ($customer && $customer->profile_photo != '') {{ URL::asset('storage/images/users/' . $customer->profile_photo) }}  @else {{ URL::asset('assets/images/users/noImage.png') }} @endif" id="profile_display" onclick="triggerClick()"
                                                 data-toggle="tooltip" data-placement="top"
                                                 title="Click to Upload Profile Photo" />
                                             <input type="file"

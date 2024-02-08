@@ -7,12 +7,18 @@
 @endsection
 
 @section('content')
-    <div class="account-pages my-5 pt-5">
+    <div class="account-pages mb-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="col-12" style="margin-bottom: -25px">
+                        <div class="row justify-content-center">
+                            <img src="{{ URL::asset('assets/images/companies/ylt-black.png') }}" width="325" alt=""
+                            class="img-fluid">
+                        </div>
+                    </div>
                     <div class="card overflow-hidden">
-                        <div class="bg-soft-primary">
+                        {{-- <div class="bg-soft-primary">
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
@@ -25,9 +31,9 @@
                                         class="img-fluid">
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div>
+                        </div> --}}
+                        <div class="card-body">
+                            {{-- <div>
                                 <a href="{{ url('/') }}">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
@@ -36,7 +42,7 @@
                                         </span>
                                     </div>
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="p-2">
                                 <form method="POST" class="form-horizontal mt-4" action="{{ url('register') }}">
                                     @csrf
@@ -59,28 +65,16 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="last_name">{{ __("Last Name ") }}<span
-                                            class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                        <label for="last_name">{{ __("Last Name ") }}</label>
+                                        <input type="text" class="form-control"
                                             value="{{ old('last_name') }}" name="last_name" id="userlastname"
                                             placeholder="{{ __("Enter Last Name") }}">
-                                        @error('last_name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="usermobile">{{ __("Contact No ") }}<span
-                                            class="text-danger">*</span></label>
-                                        <input type="tel" class="form-control @error('mobile') is-invalid @enderror"
-                                            value="{{ old('mobile') }}" name="mobile" id="usermobile"
-                                            placeholder="{{ __("Enter Contact Number") }}">
-                                        @error('mobile')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                        <label for="userphone_number">{{ __("Phone Number ") }}</label>
+                                        <input type="tel" class="form-control"
+                                            value="{{ old('phone_number') }}" name="phone_number" id="userphone_number"
+                                            placeholder="{{ __("Enter Phone Number") }}">
                                     </div>
                                     <div class="form-group">
                                         <label for="useremail">{{ __("Email ") }}<span
@@ -97,10 +91,19 @@
                                     <div class="form-group">
                                         <label for="userpassword">{{ __("Password ") }}<span
                                             class="text-danger">*</span></label>
-                                        <input type="password"
-                                            class="form-control @error('password') is-invalid @enderror"
-                                            value="{{ old('password') }}" name="password" id="userpassword"
-                                            placeholder="{{ __("Enter password") }}">
+                                        <div class="input-group">
+                                            <input type="password"
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                value="{{ old('password') }}" name="password" id="userpassword"
+                                                placeholder="{{ __("Enter password") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -110,9 +113,17 @@
                                     <div class="form-group">
                                         <label for="userpassword">{{ __("Confirm Password ") }} <span
                                             class="text-danger">*</span></label>
-                                        <input id="password-confirm" type="password" name="password_confirmation"
-                                            class="form-control @error('password') is-invalid @enderror"
-                                            placeholder="{{ __("Enter confirm password ") }}">
+                                        <div class="input-group">
+                                            <input id="password-confirm" type="password" name="password_confirmation"
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                placeholder="{{ __("Enter confirm password ") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_confirm_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye_confirm"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye_confirm"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -133,10 +144,42 @@
                     <div class="mt-5 text-center">
                         <p>{{ __("Already have an account ?") }} <a href="{{ url('login') }}"
                                 class="font-weight-medium text-primary">{{ __("Login") }} </a> </p>
-                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}. Crafted with <i class="mdi mdi-heart text-danger"></i> {{ __("by Themesbrand") }}</p>
+                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function password_show_hide() {
+            var x = document.getElementById("userpassword");
+            var show_eye = document.getElementById("show_eye");
+            var hide_eye = document.getElementById("hide_eye");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+        function password_confirm_show_hide() {
+            var x = document.getElementById("password-confirm");
+            var show_eye = document.getElementById("show_eye_confirm");
+            var hide_eye = document.getElementById("hide_eye_confirm");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+    </script>
 @endsection

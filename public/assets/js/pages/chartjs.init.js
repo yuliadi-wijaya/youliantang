@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: ChartJs init Js File
-*/
 !function ($) {
   "use strict";
 
@@ -184,16 +176,16 @@ File: ChartJs init Js File
         fill: true,
         lineTension: 0.5,
         backgroundColor: "rgba(85, 110, 230, 0.2)",
-        borderColor: "#556ee6",
+        borderColor: "#e0b402",
         borderCapStyle: 'butt',
         borderDash: [],
         borderDashOffset: 0.0,
         borderJoinStyle: 'miter',
-        pointBorderColor: "#556ee6",
+        pointBorderColor: "#e0b402",
         pointBackgroundColor: "#fff",
         pointBorderWidth: 1,
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: "#556ee6",
+        pointHoverBackgroundColor: "#e0b402",
         pointHoverBorderColor: "#fff",
         pointHoverBorderWidth: 2,
         pointRadius: 1,
@@ -238,8 +230,8 @@ File: ChartJs init Js File
       labels: ["Desktops", "Tablets"],
       datasets: [{
         data: [300, 210],
-        backgroundColor: ["#556ee6", "#ebeff2"],
-        hoverBackgroundColor: ["#556ee6", "#ebeff2"],
+        backgroundColor: ["#e0b402", "#ebeff2"],
+        hoverBackgroundColor: ["#e0b402", "#ebeff2"],
         hoverBorderColor: "#fff"
       }]
     };
@@ -291,11 +283,11 @@ File: ChartJs init Js File
       }, {
         label: "Tablets",
         backgroundColor: "rgba(85, 110, 230, 0.2)",
-        borderColor: "#556ee6",
-        pointBackgroundColor: "#556ee6",
+        borderColor: "#e0b402",
+        pointBackgroundColor: "#e0b402",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "#556ee6",
+        pointHoverBorderColor: "#e0b402",
         data: [28, 48, 40, 19, 96, 27, 100]
       }]
     };
@@ -304,7 +296,7 @@ File: ChartJs init Js File
     var polarChart = {
       datasets: [{
         data: [11, 16, 7, 18],
-        backgroundColor: ["#f46a6a", "#34c38f", "#f1b44c", "#556ee6"],
+        backgroundColor: ["#f46a6a", "#34c38f", "#f1b44c", "#e0b402"],
         label: 'My dataset',
         // for legend
         hoverBorderColor: "#fff"

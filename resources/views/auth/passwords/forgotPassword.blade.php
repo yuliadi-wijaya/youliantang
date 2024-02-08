@@ -7,12 +7,18 @@
 @endsection
 
 @section('content')
-    <div class="account-pages my-5 pt-5">
+    <div class="account-pages my-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="col-12" style="margin-bottom: -25px">
+                        <div class="row justify-content-center">
+                            <img src="{{ URL::asset('assets/images/companies/ylt-black.png') }}" width="325" alt=""
+                            class="img-fluid">
+                        </div>
+                    </div>
                     <div class="card overflow-hidden">
-                        <div class="bg-soft-primary">
+                        {{-- <div class="bg-soft-primary">
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
@@ -24,9 +30,9 @@
                                     <img src="{{ URL::asset('assets/images/profile-img.png') }}" alt="" class="img-fluid">
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div>
+                        </div> --}}
+                        <div class="card-body">
+                            {{-- <div>
                                 <a href="{{ url('/') }}">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
@@ -34,7 +40,7 @@
                                         </span>
                                     </div>
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="p-2">
                                 <form class="form-horizontal" method="POST" action="{{ url('forgot-password') }}">
                                     @csrf
@@ -69,7 +75,7 @@
                     </div>
                     <div class="mt-5 text-center">
                         <p>{{ __("Remember It ?") }} <a href="{{ url('login') }}" class="font-weight-medium text-primary"> {{ __("Sign In here") }}</a> </p>
-                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}. Crafted with <i class="mdi mdi-heart text-danger"></i> {{ __("by Themesbrand") }}</p>
+                        <p>© {{ date('Y') }} {{ AppSetting('title'); }}</p>
                     </div>
                 </div>
             </div>

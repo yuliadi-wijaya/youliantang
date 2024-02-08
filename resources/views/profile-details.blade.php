@@ -32,47 +32,14 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Age ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('age') is-invalid @enderror" name="age"
-                                                        id="customerAge" value="{{ old('age') }}"
-                                                        placeholder="{{ __('Enter Age') }}">
-                                                    @error('age')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Current Address ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <textarea id="formmessage" name="address"
-                                                        class="form-control @error('address') is-invalid @enderror"
-                                                        value="{{ old('address') }}" rows="3"
-                                                        placeholder="{{ __('Enter Current Address') }}"></textarea>
-                                                    @error('address')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
                                                 <div class="form-group col-md-12">
-                                                    <label for="formmessage">{{ __('Gender ') }}<span
+                                                    <label class="control-label">{{ __('Gender ') }}<span
                                                             class="text-danger">*</span></label>
-                                                    <select class="form-control @error('gender') is-invalid @enderror"
-                                                        name="gender">
-                                                        <option hidden selected disabled>{{ __('-- Select Gender --') }}</option>
-                                                        <option value="Male">{{ __('Male') }}</option>
-                                                        <option value="Female">{{ __('Female') }}</option>
-                                                        <option value="Other">{{ __('Other') }}</option>
+                                                    <select class="form-control select2 @error('gender') is-invalid @enderror"
+                                                        name="gender" id="gender" tabindex="9">
+                                                        <option selected disabled>{{ __('-- Select Gender --') }}</option>
+                                                        <option value="{{ 'Male' }}" @if (old('gender') == 'Male') selected @endif>{{ __('Male') }}</option>
+                                                        <option value="{{ 'Female' }}" @if (old('gender') == 'Female') selected @endif>{{ __('Female') }}</option>
                                                     </select>
                                                     @error('gender')
                                                         <span class="invalid-feedback" role="alert">
@@ -83,8 +50,42 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Profile Photo ') }}<span
-                                                            class="text-danger">*</span></label>
+                                                    <label class="control-label">{{ __('Place Of Birth ') }}</label>
+                                                    <input type="text" class="form-control"
+                                                        name="place_of_birth" id="place_of_birth" tabindex="3" value="{{ old('place_of_birth') }}"
+                                                        placeholder="{{ __('Enter Place Of Birth') }}">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 form-group">
+                                                    <label class="control-label">{{ __('Birth Date ') }}</label>
+                                                    <input type="date" class="form-control"
+                                                        name="birth_date" id="birth_date" tabindex="10" value="{{ old('birth_date') }}"
+                                                        placeholder="{{ __('Enter Birth Date') }}">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 form-group">
+                                                    <label class="control-label">{{ __('Emergency Name ') }}</label>
+                                                    <input type="text" class="form-control"
+                                                        name="emergency_name" id="emergency_name" tabindex="6" value="{{ old('emergency_name') }}"
+                                                        placeholder="{{ __('Enter Emergency Name') }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12 form-group">
+                                                    <label class="control-label">{{ __('Address ') }}</label>
+                                                    <textarea id="formmessage" name="address"
+                                                        class="form-control @error('address') is-invalid @enderror"
+                                                        value="{{ old('address') }}" rows="3"
+                                                        placeholder="{{ __('Enter Address') }}"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 form-group">
+                                                    <label class="control-label">{{ __('Profile Photo ') }}</label>
                                                     <img class="@error('profile_photo') is-invalid @enderror"
                                                         src="{{ URL::asset('assets/images/users/noImage.png') }}"
                                                         id="profile_display" onclick="triggerClick()" data-toggle="tooltip"
@@ -100,145 +101,13 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <blockquote>{{ __('Medical Information') }}</blockquote>
-                                    <div class="row">
-                                        <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Height ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('height') is-invalid @enderror"
-                                                        name="height" value="{{ old('height') }}" id="customerHeight"
-                                                        placeholder="{{ __('Enter Height In Centimeter') }}">
-                                                    @error('height')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-12">
-                                                    <label for="formmessage">{{ __('Blood Group ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <select class="form-control @error('b_group') is-invalid @enderror"
-                                                        name="b_group">
-                                                        <option hidden selected disabled>{{ __('-- Select Blood Group --') }}</option>
-                                                        <option value="A+">{{ __('A+') }}</option>
-                                                        <option value="A-">{{ __('A-') }}</option>
-                                                        <option value="B+">{{ __('B+') }}</option>
-                                                        <option value="B-">{{ __('B-') }}</option>
-                                                        <option value="O+">{{ __('O+') }}</option>
-                                                        <option value="O-">{{ __('O-') }}</option>
-                                                        <option value="AB+">{{ __('AB+') }}</option>
-                                                        <option value="AB-">{{ __('AB-') }}</option>
-                                                    </select>
-                                                    @error('b_group')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Pulse ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('pulse') is-invalid @enderror"
-                                                        name="pulse" value="{{ old('pulse') }}" id="customerPulse"
-                                                        placeholder="{{ __('Enter Pulse') }}">
-                                                    @error('pulse')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Allergy ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('allergy') is-invalid @enderror"
-                                                        name="allergy" id="customerAllergy" value="{{ old('allergy') }}"
-                                                        placeholder="{{ __('Enter Allergy Symptoms') }}">
-                                                    @error('allergy')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Weight ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('weight') is-invalid @enderror"
-                                                        name="weight" id="customerWeight" value="{{ old('weight') }}"
-                                                        placeholder="{{ __('Enter Weight') }}">
-                                                    @error('weight')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Blood Pressure ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('b_pressure') is-invalid @enderror"
-                                                        name="b_pressure" id="blood_pressure"
-                                                        value="{{ old('b_pressure') }}"
-                                                        placeholder="{{ __('Enter Blood Pressure') }}">
-                                                    @error('b_pressure')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Respiration ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        class="form-control @error('respiration') is-invalid @enderror"
-                                                        name="respiration" id="customerRespiration"
-                                                        value="{{ old('respiration') }}"
-                                                        placeholder="{{ __('Enter Respiration') }}">
-                                                    @error('respiration')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="control-label">{{ __('Diet ') }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <select class="form-control @error('diet') is-invalid @enderror"
-                                                        name="diet">
-                                                        <option hidden selected disabled>{{ __('-- Select Diet --') }}</option>
-                                                        <option value="Vegetarian">{{ __('Vegetarian') }}</option>
-                                                        <option value="Non-vegetarian">{{ __('Non-vegetarian') }}
-                                                        </option>
-                                                        <option value="Vegan">{{ __('Vegan') }}</option>
-                                                    </select>
-                                                    @error('diet')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
+                                                    <label class="control-label">{{ __('Emergency Contact ') }}</label>
+                                                    <input type="text" class="form-control"
+                                                        name="emergency_contact" id="emergency_contact" tabindex="5" value="{{ old('emergency_contact') }}"
+                                                        placeholder="{{ __('Enter Emergency Contact') }}">
+                                                    <input type="hidden" name="status" value="1">
                                                 </div>
                                             </div>
                                         </div>

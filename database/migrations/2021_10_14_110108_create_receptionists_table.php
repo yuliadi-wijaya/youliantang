@@ -15,7 +15,6 @@ class CreateReceptionistsTable extends Migration
     {
         Schema::create('receptionists', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('therapist_id');
             $table->unsignedBigInteger('user_id');
             $table->string('ktp', 16);
             $table->enum('gender', ['Male', 'Female']);
@@ -29,9 +28,9 @@ class CreateReceptionistsTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
-            $table->foreign('therapist_id')->references('id')->on('users');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->tinyInteger('is_deleted')->default(0);
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

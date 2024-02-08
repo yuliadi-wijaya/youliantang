@@ -140,6 +140,22 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'invoices.*.product_id' => [
+            'required' => 'The product field is required.',
+            'exists' => 'The selected product is invalid.',
+        ],
+        'invoices.*.time_from' => [
+            'required' => 'The time from field is required.',
+        ],
+        'invoices.*.therapist_id' => [
+            'required' => 'The therapist field is required.',
+        ],
+        'invoices.*.room' => [
+            'required' => 'The room field is required.',
+        ],
+        'rating.*' => [
+            'required' => 'The rating must be at least 1.',
+        ],
     ],
 
     /*

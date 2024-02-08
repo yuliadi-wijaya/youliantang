@@ -11,12 +11,12 @@
                         <img src="{{ URL::asset('assets/images/logo-dark1.png') }}" alt="" height="17">
                     </span>
                 </a>
-                <a href="{{ url('/') }}" class="logo logo-light">
+                <a href="{{ url('/') }}" class="logo logo-light pt-2">
                     <span class="logo-lg">
-                        <img src="{{ URL::asset('assets/images/logo-light.png') }}" alt="" height="22">
+                        <img src="{{ URL::asset('assets/images/logo-light.png') }}" alt="" height="100">
                     </span>
                     <span class="logo-sm">
-                        <img src="{{ URL::asset('assets/images/logo-light1.png') }}" alt="" height="19">
+                        <img src="{{ URL::asset('assets/images/logo-light1.png') }}" alt="" height="50">
                     </span>
                 </a>
             </div>
@@ -270,6 +270,9 @@
                         <a class="dropdown-item" href="{{ url('profile-view') }}"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
                             {{ __('translation.profile') }}</a>
+                        {{-- <a class="dropdown-item" href="{{ url('invoice-setting') }}"><i
+                                class="fa fa-file-invoice-dollar font-size-16 align-middle ml-1 mr-1"></i>
+                            {{ __('translation.invoice-setting') }}</a> --}}
                     @elseif($role == 'admin')
                         <a class="dropdown-item" href="{{ url('profile-edit') }}"><i
                                 class="bx bx-user font-size-16 align-middle mr-1"></i>
@@ -280,6 +283,9 @@
                         <a class="dropdown-item" href="{{ url('app-setting') }}"><i
                                 class="bx bx-cog font-size-16 align-middle mr-1"></i>
                             {{ __('translation.app-setting') }}</a>
+                        {{-- <a class="dropdown-item" href="{{ url('invoice-setting') }}"><i
+                                class="fa fa-file-invoice-dollar font-size-16 align-middle ml-1 mr-1"></i>
+                            {{ __('translation.invoice-setting') }}</a> --}}
                     @endif
                     <a class="dropdown-item d-block" href="{{ url('change-password') }}"><i
                             class="bx bx-wrench font-size-16 align-middle mr-1"></i>
@@ -294,11 +300,11 @@
                     </form>
                 </div>
             </div>
-            <div class="dropdown d-inline-block">
+            {{-- <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect ">
                     <i class="bx bx-cog bx-spin"></i>
                 </button>
-            </div>
+            </div> --}}
         </div>
     </div>
 </header>

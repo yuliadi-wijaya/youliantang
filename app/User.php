@@ -39,4 +39,12 @@ class User extends EloquentUser
         return $this->hasOne(Therapist::class);
     }
 
+    function receptionist(){
+        return $this->hasOne(Receptionist::class);
+    }
+
+    function customer(){
+        return $this->hasOne(Customer::class);
+    }
+
 }

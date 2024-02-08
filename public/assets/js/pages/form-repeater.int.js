@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Form repeater Js File
-*/
 $(document).ready(function () {
   'use strict';
 
@@ -112,6 +104,7 @@ $(document).ready(function () {
     show: function show() {
       console.log('Item Created');
       $(this).slideDown();
+      $(this).find(".select2").select2();
     },
     hide: function hide(deleteElement) {
         $(this).slideUp(deleteElement);
@@ -147,6 +140,49 @@ $(document).ready(function () {
   //     }
   //   }]
   // });
+
+  $('.repeater-product').repeater({
+    initEmpty: false,
+    defaultValues: {
+      'text-input': 'foo'
+    },
+    show: function show() {
+        $(this).slideDown();
+
+        $(this).find('select').find('option:contains("-- Select Product --")').prop('selected', true).trigger('change');
+        $(this).find('select').find('option:contains("-- Select Therapist --")').prop('selected', true).trigger('change');
+        $(this).find('select').find('option:contains("-- Select Room --")').prop('selected', true).trigger('change');
+        $(this).find('select').each(function() {
+          if (typeof $(this).attr('id') === "undefined") {
+            // ...
+          } else {
+            $('.select2').removeAttr("id").removeAttr("data-select2-id");
+            $('.select2').select2();
+            $('.select2-container').css('width','100%');
+            $('.select2').next().next().remove();
+          }
+        });
+    },
+
+    hide: function (deleteElement) {
+        $(this).find('select').each(function() {
+            var selectId = $(this).attr('id');
+
+            if (typeof selectId !== "undefined") {
+                $(this).select2('destroy');
+            }
+        });
+
+        $(this).slideUp(deleteElement, function() {
+            $(this).remove();
+            calTotal();
+        });
+    },
+
+    ready: function ready(setIndexes) {},
+    isFirstItemUndeletable: true
+  });
+
 });
 
 /***/ }),

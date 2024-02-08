@@ -93,14 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/*
-Product Name: Doctorly - Patient Management System
-Author: Themesbrand
-Version: 1.0.0
-Website: https://themesbrand.com/
-Contact: support@themesbrand.com
-File: Profile Init Js File
-*/
 var options = {
   chart: {
     height: 300,
@@ -139,7 +131,7 @@ var options = {
   fill: {
     opacity: 1
   },
-  colors: ['#556ee6']
+  colors: ['#e0b402']
 };
 if(document.querySelector("#revenue-chart")) {
   var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);

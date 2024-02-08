@@ -51,9 +51,9 @@
                                     <a href="{{ url('profile-edit') }}"
                                         class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Profile') }}
                                         <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                    <a href="{{ url('time-edit/' . $user->id) }}"
+                                    {{-- <a href="{{ url('time-edit/' . $user->id) }}"
                                         class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Time Slot') }}
-                                        <i class="mdi mdi-arrow-right ml-1"></i></a>
+                                        <i class="mdi mdi-arrow-right ml-1"></i></a> --}}
                                 </div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
     </div>
     <div class="col-xl-8">
         <div class="row">
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
@@ -133,14 +133,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
+            </div> --}}
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium">{{ __('translation.revenue') }}</p>
-                                <h4 class="mb-0">${{ number_format($data['revenue'], 2) }}</h4>
+                                <h4 class="mb-0">${{ number_format($data['revenue']) }}</h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -151,13 +151,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <p class="text-muted font-weight-medium">{{ __("translation.today's-earning") }}</p>
-                                <h4 class="mb-0">${{ number_format($data['daily_earning'], 2) }}</h4>
+                                <h4 class="mb-0">${{ number_format($data['daily_earning']) }}</h4>
                             </div>
                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                 <span class="avatar-title rounded-circle bg-primary">
@@ -168,7 +168,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
@@ -225,7 +225,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
         <!-- end row -->
         <div class="card">
