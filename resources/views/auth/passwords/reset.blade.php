@@ -14,9 +14,9 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
-                    <div class="col-12" style="margin-bottom: -50px">
+                    <div class="col-12" style="margin-bottom: -25px">
                         <div class="row justify-content-center">
-                            <img src="{{ URL::asset('assets/images/companies/ylt-black.png') }}" width="400" alt=""
+                            <img src="{{ URL::asset('assets/images/companies/ylt-black.png') }}" width="325" alt=""
                             class="img-fluid">
                         </div>
                     </div>
