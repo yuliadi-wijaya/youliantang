@@ -61,7 +61,16 @@
                                     <div class="form-group">
                                         <label for="oldpassword">{{ __("Current Password ") }}<span
                                             class="text-danger">*</span></label>
-                                        <input type="password" class="form-control @error('oldpassword') is-invalid @enderror" name="oldpassword" id="oldpassword" placeholder="{{ __("Enter Current password") }}">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control @error('oldpassword') is-invalid @enderror" name="oldpassword" id="oldpassword" placeholder="{{ __("Enter Current password") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_old_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye_old"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye_old"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
                                         @error('oldpassword')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -71,7 +80,16 @@
                                     <div class="form-group">
                                         <label for="newpassword">{{ __("New Password ") }}<span
                                             class="text-danger">*</span></label>
-                                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="newpassword" placeholder="{{ __("Enter New password") }}">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="newpassword" placeholder="{{ __("Enter New password") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_new_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye_new"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye_new"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -81,7 +99,16 @@
                                     <div class="form-group">
                                         <label for="userpassword">{{ __("Confirm Password ") }}<span
                                             class="text-danger">*</span></label>
-                                        <input type="password" id="userpassword" name="password_confirmation" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="{{ __("Enter confirm password") }}">
+                                        <div class="input-group">
+                                            <input type="password" id="userpassword" name="password_confirmation" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="{{ __("Enter confirm password") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_confirm_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye_confirm"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye_confirm"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
                                     <div class="form-group row mb-0">
                                         <div class="col-12 text-right">
@@ -99,4 +126,51 @@
             </div>
         </div>
     </div>
+    <script>
+        function password_old_show_hide() {
+            var x = document.getElementById("oldpassword");
+            var show_eye = document.getElementById("show_eye_old");
+            var hide_eye = document.getElementById("hide_eye_old");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+        function password_new_show_hide() {
+            var x = document.getElementById("newpassword");
+            var show_eye = document.getElementById("show_eye_new");
+            var hide_eye = document.getElementById("hide_eye_new");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+        function password_confirm_show_hide() {
+            var x = document.getElementById("userpassword");
+            var show_eye = document.getElementById("show_eye_confirm");
+            var hide_eye = document.getElementById("hide_eye_confirm");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+    </script>
 @endsection

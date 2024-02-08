@@ -12,6 +12,10 @@
         width: 75mm;
     }
 
+    #table-content-invoice td {
+        font-size: 9pt;
+    }
+
     @media print {
         .view-invoice {
             display: none;
@@ -70,9 +74,9 @@
                 <div class="card-header" style="background-color: #2a3042 !important">
                     <div class="invoice-title">
                         <div class="col-12 text-center text-white">
-                            <img src="{{ URL::asset('assets/images/logo-light.png') }}" alt="" width="300" style="margin:-37px 0 -60px 0">
+                            <img src="{{ URL::asset('assets/images/logo-light.png') }}" alt="" width="250" style="margin:-31px 0 -51px 0">
                         </div>
-                        <div class="col-12 text-center text-white mb-2" style="font-size: 10pt">
+                        <div class="col-12 text-center text-white mb-2" style="font-size: 9pt">
                             Ruko Inkopal Blok C6-C7, Kelapa Gading Barat, Jakarta Utara
                         </div>
                     </div>
@@ -156,21 +160,20 @@
 <div class="print-invoice">
     <div class="invoice-title mb-3">
         <div class="col-12 text-center text-white">
-            <img src="{{ URL::asset('assets/images/logo-dark.png') }}" alt="" width="225" style="margin:-30px 0 -48px 0">
+            <img src="{{ URL::asset('assets/images/logo-dark.png') }}" alt="" width="190" style="margin:-50px 0 -38px 0">
         </div>
-        <div class="col-12 text-center mb-2" style="font-size: 8pt">
-            Ruko Inkopal Blok C6-C7
-            Kelapa Gading Barat, Jakarta Utara
+        <div class="col-12 text-center mb-1" style="font-size: 8pt; margin-bottom:-3px">
+            Ruko Inkopal Blok C6-C7, Kelapa Gading Barat, Jakarta Utara
         </div>
     </div>
-    <div class="row mb-3" style="font-size: 8pt">
-        <div class="col-12 text-center font-weight-bold mb-1"><h6><strong>Receipt #{{ $invoices->invoice_code }}</strong></h6></div>
+    <div class="row mb-3" style="font-size: 9pt">
+        <div class="col-12 text-center font-weight-bold mb-2"><h6><strong>Receipt #{{ $invoices->invoice_code }}</strong></h6></div>
         <div class="col-6">
             <div class="row">
                 <div class="col-12 mb-1 font-weight-bold">{{ date("d-m-Y", strtotime($invoices->treatment_date)); }}</div>
                 <div class="col-12 font-weight-bold">{{ __('Bill To: ') }}</div>
                 <div class="col-12">{{ $invoices->customer_name }}</div>
-                <div class="col-12">{{ $invoices->customer_phone_number }}</div>
+                <div class="col-12">{{ substr_replace($invoices->customer_phone_number, '****', 5, 4) }}</div>
             </div>
         </div>
         <div class="col-6 pull-right" style="text-align: right">
@@ -181,8 +184,8 @@
             </div>
         </div>
     </div>
-    <table cellpadding="0" cellspacing="0" style="width: 100%">
-        <tr style="border-top:1px dashed grey; border-bottom:1px dashed grey">
+    <table id="table-content-invoice" cellpadding="0" cellspacing="0" style="width: 100%;">
+        <tr style="border-top:1px dashed grey; border-bottom:1px dashed grey;">
             <td class="font-weight-bold">Product Name</td>
             <td class="font-weight-bold" style="width: 90px; text-align:right">Amount</td>
         </tr>
@@ -193,12 +196,13 @@
                 <td class="text-right">Rp {{ number_format($row->amount) }}</td>
             </tr>
         @endforeach
+
         <tr style="border-top:1px dashed grey;">
             <td>&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
     </table>
-    <div class="row" style="font-size: 8pt; margin-top: -10px">
+    <div class="row" style="font-size: 9pt; margin-top: -8px">
         <div class="col-6 mb-1">{{ __('Sub Total') }}</div>
         <div class="col-6 mb-1 text-right">Rp {{ number_format($invoices->total_price) }}</div>
 
@@ -211,10 +215,10 @@
             <div class="col-6 mb-1">{{ __('PPN ('.$invoices->tax_rate.'%)') }}</div>
             <div class="col-6 mb-1 text-right">Rp {{ number_format($invoices->tax_amount) }}</div>
         @endif
-        <div class="col-6 mb-1"><h6><strong>{{ __('Total') }}</strong></h6></div>
-        <div class="col-6 mb-1 text-right"><h6><strong>Rp {{ number_format($invoices->grand_total) }}</strong></h6></div>
+        <div class="col-6 mb-1" style="font-size: 11pt"><strong>{{ __('Total') }}</strong></div>
+        <div class="col-6 mb-1 text-right" style="font-size: 11pt"><strong>Rp {{ number_format($invoices->grand_total) }}</strong></div>
     </div>
-    <div class="row mt-3" style="font-size: 8pt">
+    <div class="row mt-3" style="font-size: 9pt">
         <div class="col-12 text-center font-weight-bold">Thank you for your visit</div>
     </div>
 </div>

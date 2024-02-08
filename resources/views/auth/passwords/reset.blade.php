@@ -63,7 +63,15 @@
                                     <input type="hidden" name="token" value="{{ $token }}">
                                     <div class="form-group">
                                         <label for="userpassword">{{ __("New Password") }}</label>
-                                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="userpassword" placeholder="{{ __("Enter password") }}">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="userpassword" placeholder="{{ __("Enter password") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -72,7 +80,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="userpassword">{{ __("Confirm Password") }}</label>
-                                        <input id="password-confirm" type="password" name="password_confirmation" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="{{ __("Enter confirm password") }}">
+                                        <div class="input-group">
+                                            <input id="password-confirm" type="password" name="password_confirmation" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="{{ __("Enter confirm password") }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_confirm_show_hide();">
+                                                    <i class="fas fa-eye" id="show_eye_confirm"></i>
+                                                    <i class="fas fa-eye-slash d-none" id="hide_eye_confirm"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <div class="col-12 text-right">
@@ -91,4 +107,36 @@
             </div>
         </div>
     </div>
+    <script>
+        function password_show_hide() {
+            var x = document.getElementById("userpassword");
+            var show_eye = document.getElementById("show_eye");
+            var hide_eye = document.getElementById("hide_eye");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+        function password_confirm_show_hide() {
+            var x = document.getElementById("password-confirm");
+            var show_eye = document.getElementById("show_eye_confirm");
+            var hide_eye = document.getElementById("hide_eye_confirm");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
+    </script>
 @endsection

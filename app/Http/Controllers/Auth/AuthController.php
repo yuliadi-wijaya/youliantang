@@ -259,7 +259,8 @@ class AuthController extends Controller
 
         $request->validate([
             'oldpassword' => 'required',
-            'password' => 'required|min:8|confirmed|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:50'
+            // 'password' => 'required|min:8|confirmed|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:50'
+            'password' => 'required|min:8|confirmed|max:50'
         ],
         [
             'oldpassword.required'=>'The current password field is required',

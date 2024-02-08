@@ -72,9 +72,17 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="userpassword">{{ __("Password") }}</label>
-                                        <input type="password" name="password" id="pass"
-                                            class="form-control  @error('password') is-invalid @enderror"
-                                            id="userpassword" @if (old('password')) value="{{ old('password') }}" @else value="" @endif placeholder="Enter password">
+                                        <div class="input-group">
+                                            <input type="password" name="password" id="pass"
+                                                class="form-control  @error('password') is-invalid @enderror"
+                                                id="userpassword" @if (old('password')) value="{{ old('password') }}" @else value="" @endif placeholder="Enter password">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="password_show_hide();">
+                                                  <i class="fas fa-eye" id="show_eye"></i>
+                                                  <i class="fas fa-eye-slash d-none" id="hide_eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -108,5 +116,20 @@
         </div>
     </div>
     <script>
+        function password_show_hide() {
+            var x = document.getElementById("pass");
+            var show_eye = document.getElementById("show_eye");
+            var hide_eye = document.getElementById("hide_eye");
+            hide_eye.classList.remove("d-none");
+            if (x.type === "password") {
+                x.type = "text";
+                show_eye.style.display = "none";
+                hide_eye.style.display = "block";
+            } else {
+                x.type = "password";
+                show_eye.style.display = "block";
+                hide_eye.style.display = "none";
+            }
+        }
     </script>
 @endsection
