@@ -23,6 +23,7 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Yajra\DataTables\DataTables;
 use Exception;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -226,7 +227,6 @@ class InvoiceController extends Controller
         ->where('promos.status', 1)
         ->where('promos.is_deleted', 0)
         ->where('promo_vouchers.is_used', 0)
-        ->where()
         ->orderBy('promos.id')
         ->orderBy('promo_vouchers.id')
         ->get();
@@ -270,8 +270,8 @@ class InvoiceController extends Controller
 
         try {
             // Validate invoices
-            if ($request->invoices[0]['product_id'] == null && $request->invoices[0]['amount'] == null) {
-                return redirect()->back()->with('error', 'Add at least one Invoice product and amount to create invoice!!!');
+            if (!$this->validateInvoiceDetails($request)) {
+                return redirect()->back()->with('error', 'Therapist not available, check your therapist schedule!!!')->withInput($request->all());
             }
 
             // Generate invoice code
@@ -790,5 +790,60 @@ class InvoiceController extends Controller
         }
 
         return $invoiceDetails;
+    }
+
+    private function validateInvoiceDetails(Request $request) {
+        foreach ($request->invoices as $item) {
+            if (!$this->is_therapist_availability($item['therapist_id'], $item['time_from'], $item['time_to'])) {
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function is_therapist_availability($therapist_id, $treatment_start_time, $treatment_end_time) {
+        // DB::enableQueryLog();
+
+        $therapist_available = DB::select(
+            'select * from `invoice_details` where date(`created_at`) = curdate() and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
+            [$therapist_id, $treatment_start_time, $treatment_start_time, $treatment_end_time, $treatment_end_time]
+        );
+
+        // echo '<pre>';
+        // print_r($therapist_available);
+        // echo '</pre>';
+        // die();
+
+        return count($therapist_available) == 0;
+    }
+
+    public function therapist_availability(Request $request)
+    {
+        $user = Sentinel::getUser();
+        if ($user->hasAccess('invoice.create')) {
+            if ($request->ajax()) {
+                $therapist_available = DB::select(
+                    'select * from `invoice_details` where date(`created_at`) = curdate() and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
+                    [$request->therapist_id, $request->treatment_start_time, $request->treatment_start_time, $request->treatment_end_time, $request->treatment_end_time]
+                );
+
+                $data = [];
+
+                if (count($therapist_available) > 0) {
+                    $data = [
+                        $therapist_available[0]->therapist_id, $therapist_available[0]->treatment_time_from, $therapist_available[0]->treatment_time_to
+                    ];
+                }
+
+                return response()->json([
+                    'isSuccess' => true,
+                    'Message' => "Therapist available time successfully",
+                    'data' => $data
+                ]);
+            }
+        } else {
+            return view('error.403');
+        }
     }
 }

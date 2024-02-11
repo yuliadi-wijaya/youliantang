@@ -183,8 +183,10 @@
                                                         <div class="row">
                                                             <div class="col-md-12 form-group">
                                                                 <label class="control-label">{{ __('Therapist ') }}<span class="text-danger">*</span></label>
-                                                                <select class="form-control select2 @error('invoices.' . $index . '.therapist_id') is-invalid @enderror" name="invoices[{{ $index }}][therapist_id]">
-                                                                    <option selected disabled>{{ __('-- Select Therapist --') }}</option>
+                                                                <select class="form-control select2 @error('invoices.' . $index . '.therapist_id') is-invalid @enderror" name="invoices[{{ $index }}][therapist_id]"
+                                                                    onchange="checkTherapistAvailability(this, 'therapist_id')">
+
+                                                                    <option selected disabled value="">{{ __('-- Select Therapist --') }}</option>
                                                                     @foreach($therapists as $row)
                                                                         <option value="{{ $row->id }}" {{ old('invoices.' . $index . '.therapist_id') == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
                                                                     @endforeach
@@ -218,7 +220,7 @@
                                                             </div>
                                                             <div class="col-md-4 form-group">
                                                                 <label class="control-label">{{ __('Time To ') }}<span class="text-primary">{{ __('(Auto-Fill)') }}</span></label>
-                                                                <input type="time" name="invoices[{{ $index }}][time_to]" class="form-control" value="{{ old('invoices.' . $index . '.time_to') }}" readonly />
+                                                                <input type="time" id="invoices[{{ $index }}][time_to]" name="invoices[{{ $index }}][time_to]" class="form-control" value="{{ old('invoices.' . $index . '.time_to') }}" readonly />
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -488,6 +490,8 @@
                     var objName = name;
                     var inputName = document.querySelector('input[name="' + objName + '"]');
                     var timeFromValue = inputName.value;
+
+                    obj = inputName;
                 } else {
                     var objName = obj.getAttribute('name');
                     var timeFromValue = obj.value;
@@ -515,6 +519,8 @@
 
                     //Set the calculated time_to value
                     timeToInput.value = calculatedTime;
+
+                    checkTherapistAvailability(obj, 'time_from');
                 }
             }
 
@@ -621,6 +627,50 @@
                 }
 
                 grandTotal();
+            }
+
+            function checkTherapistAvailability(obj, source) {
+                var objName = obj.getAttribute('name');
+                var therapist_id = document.querySelector('select[name="' + objName.replace(source, 'therapist_id') + '"]');
+                var treatment_start_time = document.querySelector('input[name="' + objName.replace(source, 'time_from') + '"]');
+                var treatment_end_time = document.querySelector('input[name="' + objName.replace(source, 'time_to') + '"]');
+
+                var token = $("input[name='_token']").val();
+                // console.log(treatment_start_time.value);
+                // console.log(treatment_end_time.value);
+                // console.log(therapist_id.value);
+                if (treatment_start_time.value == "" || treatment_end_time.value == "" || therapist_id.value == "") {
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('therapist_availability') }}",
+                    data: { 
+                        'therapist_id': therapist_id.value, 
+                        'treatment_start_time': treatment_start_time.value,
+                        'treatment_end_time': treatment_end_time.value,
+                        '_token': token
+                    },
+                    beforeSend: function() {
+                        $('#preloader').show()
+                    },
+                    success: function(response) {
+                        if(response.data.length > 0) {
+                            toastr.error('Therapist not available at around ' + response.data[1] + ' - ' + response.data[2]);
+                        } else {
+                            toastr.success('Threapist is available at around that time');
+                        }
+                        $(".complete").attr('disabled', false);
+                    },
+                    error: function(response) {
+                        $(".complete").attr('disabled', false);
+                        toastr.error(response.responseJSON.Message);
+                    },
+                    complete: function() {
+                        $('#preloader').hide();
+                    }
+                });
             }
 
         </script>

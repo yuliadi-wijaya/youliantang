@@ -73,6 +73,8 @@ Route::post('appointment-status/{id}', 'AppointmentController@appointment_status
 Route::get('getMonthlyAppointments', 'ReportController@getMonthlyAppointments');
 Route::post('customer-by-appointment', 'InvoiceController@customer_by_appointment')->name('customer_by_appointment');
 Route::post('appointment-by-therapist', 'InvoiceController@appointment_by_therapist')->name('appointment_by_therapist');
+Route::post('therapist-availability', 'InvoiceController@therapist_availability')->name('therapist_availability');
+
 Route::post('/therapist-by-day-time', 'AppointmentController@therapist_by_day_time')->name('therapist_by_day_time');
 Route::post('/appointment-time-by-appointment-slot', 'AppointmentController@time_by_slot')->name('timeBySlot');
 Route::get('appointment-create', 'AppointmentController@appointment_create');
@@ -158,4 +160,6 @@ Route::get('/ex-therapist-trans', 'ReportTherapistController@exportReportTherapi
 Route::get('/rf-trans', 'ReportTransController@fiterReportTrans');
 Route::get('/rs-trans', 'ReportTransController@showReportTrans')->name('rs-trans');
 Route::get('/ex-trans', 'ReportTransController@exportReportTrans')->name('ex-trans');
+
+
 });
