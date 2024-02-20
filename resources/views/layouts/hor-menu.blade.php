@@ -110,7 +110,15 @@
                                     <a href="{{ url('/rf-therapist-total') }}" class="dropdown-item">{{ __('translation.total-therapist') }}</a>
                                 </div>
 
-                                <a href="{{ url('rf-trans') }}" class="nav-link">{{ __('translation.transactions') }}</a>
+                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="transactionsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ __('translation.transactions') }} <div class="arrow-down"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
+                                    <a href="{{ url('transactions-revenue-report') }}" class="dropdown-item">{{ __('translation.revenue') }}</a>
+                                    <a href="{{ url('transactions-commission-fee-report') }}" class="dropdown-item">{{ __('translation.commission-fee') }}</a>
+                                    <a href="{{ url('/rf-trans') }}" class="dropdown-item">{{ __('translation.raw-data') }}</a>
+                                </div>
+
                                 <a href="{{ url('analytics') }}" class="nav-link">{{ __('translation.analytics') }}</a>
                             </div>
                         </li>

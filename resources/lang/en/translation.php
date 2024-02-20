@@ -71,6 +71,9 @@
         "total-customers" => "Total Customers",
         "total-new-customers" => "Total New Customers",
         "charts" => "Charts",
-        "analytics" => "Analytics"
+        "analytics" => "Analytics",
+        "raw-data" => "Raw Data",
+        "revenue" => "Revenue",
+        "commission-fee" => "Commission Fee"
     ];
 ?>

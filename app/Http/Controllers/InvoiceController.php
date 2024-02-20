@@ -314,7 +314,7 @@ class InvoiceController extends Controller
             // Store invoice detail
             $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
 
-            return redirect('invoice')->with('success', 'Invoice created successfully!');
+            return redirect('invoice/'. $obj->id)->with('success', 'Invoice created successfully!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage())->withInput($request->all());
         }
@@ -355,6 +355,7 @@ class InvoiceController extends Controller
                     'invoices.discount',
                     'invoices.tax_rate',
                     'invoices.tax_amount',
+                    'invoices.additional_price',
                     'invoices.grand_total',
                     'invoices.created_by'
                 )
@@ -566,7 +567,9 @@ class InvoiceController extends Controller
 
         // Get invoice setting
         // $invoice_type = InvoiceSettings::first()->invoice_type;
-
+        // echo '<pre>';
+        // print_r($request->all());
+        // echo '</pre>';die();
         // Validate input data
         if($request->old_data == 'Y') {
             $request->validate([
@@ -588,12 +591,13 @@ class InvoiceController extends Controller
 
                 'invoices' => 'required|array',
                 'invoices.*.product_id' => 'required',
-                'invoices.*.time_from' => 'required',
+                'invoices.*.treatment_time_from' => 'required',
                 'invoices.*.therapist_id' => 'required',
                 'invoices.*.room' => 'required'
             ]);
         }
         try {
+            
             // Mapping request to object and store data
             $obj = $this->toObject($request, $invoice);
             $obj->updated_by = $user->id;
@@ -632,7 +636,7 @@ class InvoiceController extends Controller
             InvoiceDetail::where('invoice_id', $invoice->id)->update(['is_deleted' => 1]);
 
             // Store invoice detail
-            $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
+            $obj->invoice_detail()->saveMany($this->toObjectDetailsUpdate($request, $obj));
 
             return redirect('invoice')->with('success', 'Invoice updated successfully!');
         } catch (Exception $e) {
@@ -755,6 +759,7 @@ class InvoiceController extends Controller
             $invoice->discount = str_replace(',', '', $request->discount);
             $invoice->tax_rate = $request->tax_rate;
             $invoice->tax_amount = $request->tax_amount;
+            $invoice->additional_price = $request->additional_price;
             $invoice->grand_total = str_replace(',', '', $request->grand_total);
 
         }else{
@@ -766,6 +771,30 @@ class InvoiceController extends Controller
         }
 
         return $invoice;
+    }
+
+    private function toObjectDetailsUpdate(Request $request, Invoice $invoice) {
+        $invoiceDetails = [];
+
+        foreach ($request->invoices as $item) {
+            $obj = new InvoiceDetail();
+            if($request->old_data == 'N') {
+                $obj->product_id = $item['product_id'];
+                $obj->amount = str_replace(',', '', $item['amount']);
+                $obj->fee = $item['fee'];
+                $obj->treatment_time_from = $item['treatment_time_from'];
+                $obj->treatment_time_to = $item['treatment_time_to'];
+                $obj->therapist_id = $item['therapist_id'];
+                $obj->room = $item['room'];
+            }else{
+                $obj->title = $item['title'];
+                $obj->amount = str_replace(',', '', $item['amount']);
+            }
+
+            $invoiceDetails[] = $obj;
+        }
+
+        return $invoiceDetails;
     }
 
     private function toObjectDetails(Request $request, Invoice $invoice) {

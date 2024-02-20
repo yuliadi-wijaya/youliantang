@@ -71,6 +71,9 @@
         "total-customers" => "Total Pelanggan",
         "total-new-customers" => "Total Pelanggan Baru",
         "charts" => "Grafik",
-        "analytics" => "Analytics"
+        "analytics" => "Analytics",
+        "raw-data" => "Raw Data",
+        "revenue" => "Revenue",
+        "commission-fee" => "Commission Fee"
     ];
 ?>

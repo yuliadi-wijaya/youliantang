@@ -361,4 +361,87 @@ class ReportController extends Controller
         ];
         return $data;
     }
+
+    public function transactionRevenueReport() {
+        // Get user session data
+        $user = Sentinel::getUser();
+
+        // Check user access
+        // if (!$user->hasAccess('report.filter')) {
+        //     return view('error.403');
+        // }
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        return view('report.transaction.transaction-revenue', compact('user', 'role', 'reportType', 'months', 'years'));
+    }
+
+    public function showTransactionRevenueReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+
+        // Check user access
+        // if (!$user->hasAccess('report.filter')) {
+        //     return view('error.403');
+        // }
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        return view('report.transaction.transaction-revenue', compact('user', 'role', 'reportType', 'months', 'years'))->withInput($request->all());
+    }
+
+    private function getReportType() {
+        return [
+            'daily' => 'Daily',
+            'monthly' => 'Monthly',
+            'yearly' => 'Yearly'
+        ];
+    }
+
+    private function getMonths() {
+        return [
+            '1' => 'January',
+            '2' => 'February',
+            '3' => 'March',
+            '4' => 'April',
+            '5' => 'May',
+            '6' => 'June',
+            '7' => 'July',
+            '8' => 'August',
+            '9' => 'September',
+            '10' => 'October',
+            '11' => 'November',
+            '12' => 'December',
+        ];
+    }
+
+    private function getYears() {
+        $years = [];
+        $curYear = date('Y');
+        for ($i = 0; $i < 5; $i++) {
+            $years[$curYear - $i] = $curYear - $i;
+        }
+
+        return $years;
+    }
 }
