@@ -2,7 +2,14 @@
 @section('title') {{ __('Create New Invoice') }} @endsection
 @section('css')
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/libs/select2/select2.min.css') }}">
+    <style>
+        input[readonly]{
+            background-color:#e9ecef !important;
+            opacity: 1;
+        }
+    </style>
 @endsection
+
 @section('body')
 
     <body data-topbar="dark" data-layout="horizontal">
@@ -38,7 +45,7 @@
                                 <div class="col-md-6 form-group">
                                     <label class="control-label">{{ __('Treatment Date ') }}<span class="text-danger">*</span></label>
                                     <div class="input-group datepickerdiv">
-                                        <input type="text"
+                                        <input type="text" id="treatment_date"
                                             class="form-control @error('treatment_date') is-invalid @enderror"
                                             name="treatment_date" placeholder="{{ __('Enter Date') }}"
                                             value="{{ now()->format('Y-m-d') }}" readonly>
@@ -69,7 +76,7 @@
                                                                         <select class="form-control select2 @error('invoices.' . $index . '.product_id') is-invalid @enderror"
                                                                             name="invoices[{{ $index }}][product_id]"
                                                                             id="product_id"
-                                                                            onchange="getAmount(this)">
+                                                                            onchange="getAmount(this); checkTherapistAvailability({{ $index }})">
                                                                             <option selected disabled>{{ __('-- Select Product --') }}</option>
                                                                             @foreach($products as $row)
                                                                                 <option value="{{ $row->id }}" data-price="{{ $row->price }}" data-duration="{{ $row->duration }}" data-fee="{{ $row->commission_fee }}" {{ old('invoices.' . $index . '.product_id') == $row->id ? 'selected' : '' }}>
@@ -88,7 +95,7 @@
                                                                     <div class="col-md-12 form-group">
                                                                         <label class="control-label">{{ __('Therapist ') }}<span class="text-danger">*</span></label>
                                                                         <select class="form-control select2 @error('invoices.' . $index . '.therapist_id') is-invalid @enderror" name="invoices[{{ $index }}][therapist_id]"
-                                                                            onchange="checkTherapistAvailability(this, 'therapist_id')">
+                                                                            onchange="checkTherapistAvailability({{ $index }})">
         
                                                                             <option selected disabled value="">{{ __('-- Select Therapist --') }}</option>
                                                                             @foreach($therapists as $row)
@@ -112,10 +119,10 @@
                                                                     </div>
                                                                     <div class="col-md-4 form-group">
                                                                         <label class="control-label">{{ __('Time From ') }}<span class="text-danger">*</span></label>
-                                                                        <input type="time" name="invoices[{{ $index }}][time_from]"
+                                                                        <input type="time" name="invoices[{{ $index }}][time_from]" 
                                                                             class="form-control @error('invoices.' . $index . '.time_from') is-invalid @enderror"
-                                                                            value="{{ old('invoices.' . $index . '.time_from') }}"
-                                                                            onchange="getTimeTo(this,'')" />
+                                                                            id="treatment_time_from_{{ $index }}" value="{{ old('invoices.' . $index . '.time_from') }}"
+                                                                            onchange="getTimeTo(this,''); checkTherapistAvailability({{ $index }})" />
                                                                         @error('invoices.' . $index . '.time_from')
                                                                             <span class="invalid-feedback" role="alert">
                                                                                 <strong>{{ $message }}</strong>
@@ -124,7 +131,7 @@
                                                                     </div>
                                                                     <div class="col-md-4 form-group">
                                                                         <label class="control-label">{{ __('Time To ') }}<span class="text-primary">{{ __('(Auto-Fill)') }}</span></label>
-                                                                        <input type="time" id="invoices[{{ $index }}][time_to]" name="invoices[{{ $index }}][time_to]" class="form-control" value="{{ old('invoices.' . $index . '.time_to') }}" readonly />
+                                                                        <input type="time" id="invoices[{{ $index }}][time_to]" name="invoices[{{ $index }}][time_to]" id="treatment_time_to_{{ $index }}" class="form-control" value="{{ old('invoices.' . $index . '.time_to') }}" readonly />
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -198,58 +205,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="row_member" style="display: none">
-                                <div class="col-md-12 form-group">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" value="1" name="use_member" id="use_member" onchange="useMember(this)">
-                                        <label class="form-check-label" for="use_member">
-                                            Use Membership
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card" id="row_member_plan" style="display: none">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Member Plan ') }}</label>
-                                            <input type="text"
-                                                class="form-control" name="member_plan" id="member_plan"
-                                                value="@if(old('member_plan')){{ old('member_plan') }}@endif" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card" id="row_voucher_code" style="display: block">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Voucher Code ') }}</label>
-                                            <select class="form-control select2 col-sm-12"
-                                                name="voucher_code"
-                                                id="voucher_code"
-                                                onchange="calDiscount()">
-                                                <option value="" selected>{{ __('-- Select Voucher Code --') }}</option>
-                                                @foreach($promos as $row)
-                                                    <option value="{{ $row->voucher_code }}"
-                                                        data-type = "{{ $row->discount_type }}"
-                                                        data-value = "{{ $row->discount_value }}"
-                                                        data-maxvalue = "{{ $row->discount_max_value }}"
-                                                        data-reuse = "{{ $row->is_reuse_voucher }}"
-                                                        {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
-                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp '. number_format($row->discount_max_value) .')' }} @endif
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="card">
                                 <div class="card-body">
                                     {{-- <blockquote>{{ __('Invoice Summary') }}</blockquote> --}}
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        {{-- <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="control-label" data-toggle="tooltip" data-placement="top" title="excluded from discount">{{ __('Additional Charge') }}</label>
                                                 <div class="input-group">
@@ -271,7 +231,7 @@
                                                     <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', 0) }}">
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Payment Mode ') }}<span
                                                 class="text-danger">*</span></label>
@@ -320,10 +280,58 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row" id="row_member" style="display: none">
+                                <div class="col-md-12 form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" value="1" name="use_member" id="use_member" onchange="useMember(this)">
+                                        <label class="form-check-label" for="use_member">
+                                            Use Membership
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" id="row_member_plan" style="display: none">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Member Plan ') }}</label>
+                                            <input type="text"
+                                                class="form-control" name="member_plan" id="member_plan"
+                                                value="@if(old('member_plan')){{ old('member_plan') }}@endif" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" id="row_voucher_code" style="display: block">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Voucher Code ') }}</label>
+                                            <select class="form-control select2 col-sm-12"
+                                                name="voucher_code"
+                                                id="voucher_code"
+                                                onchange="calDiscount()">
+                                                <option value="" selected>{{ __('-- Select Voucher Code --') }}</option>
+                                                @foreach($promos as $row)
+                                                    <option value="{{ $row->voucher_code }}"
+                                                        data-type = "{{ $row->discount_type }}"
+                                                        data-value = "{{ $row->discount_value }}"
+                                                        data-maxvalue = "{{ $row->discount_max_value }}"
+                                                        data-reuse = "{{ $row->is_reuse_voucher }}"
+                                                        {{ old('voucher_code') == $row->voucher_code ? 'selected' : '' }}>
+                                                        {{ $row->voucher_code }} - {{ $row->name }} - @if ($row->discount_type == 0) {{ '(Discount : Rp '. number_format($row->discount_value) .')' }} @else {{ '(Discount Max : Rp '. number_format($row->discount_max_value) .')' }} @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="row mb-4" style="border-top:1px dashed #e0b402; margin-top:30px">
                                 <div class="col-md-12 mt-4">
-                                    <div class="row" style="font-size:11pt">
+                                    <div class="row">
                                         <label class="col-sm-6 col-form-label">{{ __('Total Price') }}</label>
                                         <div class="col-sm-6 text-right">
                                             {{-- <label class="col-form-label" id="total_price_txt">{{ __('Rp 1,000,000') }}</label> --}}
@@ -333,7 +341,7 @@
                                                 value="{{ old('total_price', 0) }}" readonly style="font-weight: bold">
                                         </div>
                                     </div>
-                                    <div class="row" style="font-size:11pt">
+                                    <div class="row">
                                         <label class="col-sm-6 col-form-label">{{ __('Discount') }}</label>
                                         <div class="col-sm-6 text-right">
                                             {{-- <label class="col-form-label" id="discount_txt">{{ __('Rp 1,000,000') }}</label> --}}
@@ -344,6 +352,22 @@
                                             <input type="hidden"
                                                 name="reuse_voucher" id="reuse_voucher"
                                                 value="{{ old('reuse_voucher', 0) }}" readonly style="font-weight: bold">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-6 col-form-label" data-toggle="tooltip" data-placement="top" title="excluded from discount">{{ __('Additional Charge') }}</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control text-right" style="font-weight: bold" data-toggle="tooltip" data-placement="top" title="excluded from discount" onchange="calAdditionalPrice()" name="additional_price" id="additional_price" value="{{ old('additional_price', 0) }}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-6 col-form-label">{{ __('PPN') }}</label>
+                                        <div class="input-group col-sm-6">
+                                            <input type="number" class="form-control text-right" style="font-weight: bold" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', 0) }}" onchange="calTax()">
+                                            <div class="input-group-append" style="height: 36.5px">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', 0) }}">
                                         </div>
                                     </div>
                                     <div class="row" style="font-size: 11pt">
@@ -536,8 +560,6 @@
 
                     //Set the calculated time_to value
                     timeToInput.value = calculatedTime;
-
-                    checkTherapistAvailability(obj, 'time_from');
                 }
             }
 
@@ -634,6 +656,16 @@
             }
 
             function calAdditionalPrice() {
+                let additional_price = parseFloat(document.getElementById('additional_price').value.replace(/,/g, '')) || 0;
+
+                if (!isNaN(additional_price)) {
+                    var formatAmount = new Intl.NumberFormat('en-US', {
+                        currency: 'USD'
+                    }).format(additional_price);
+
+                    document.getElementById('additional_price').value = formatAmount;
+                }
+
                 calTax();
                 grandTotal();
             }
@@ -657,17 +689,20 @@
                 grandTotal();
             }
 
-            function checkTherapistAvailability(obj, source) {
-                var objName = obj.getAttribute('name');
-                var therapist_id = document.querySelector('select[name="' + objName.replace(source, 'therapist_id') + '"]');
-                var treatment_start_time = document.querySelector('input[name="' + objName.replace(source, 'time_from') + '"]');
-                var treatment_end_time = document.querySelector('input[name="' + objName.replace(source, 'time_to') + '"]');
+            function checkTherapistAvailability(index) {
+                var treatment_date = $('#treatment_date').val();
+                var therapist_id = "";
+
+                if (document.querySelector('select[name="invoices['+index+'][therapist_id]"]') != undefined) {
+                    therapist_id = document.querySelector('select[name="invoices['+index+'][therapist_id]"]').value;
+                }
+
+                var treatment_start_time = $("#treatment_time_from_"+index).val();
+                var treatment_end_time = $("#treatment_time_to_"+index).val();
 
                 var token = $("input[name='_token']").val();
-                // console.log(treatment_start_time.value);
-                // console.log(treatment_end_time.value);
-                // console.log(therapist_id.value);
-                if (treatment_start_time.value == "" || treatment_end_time.value == "" || therapist_id.value == "") {
+                
+                if (treatment_start_time == "" || treatment_end_time == "" || therapist_id == "") {
                     return;
                 }
 
@@ -675,9 +710,10 @@
                     type: "POST",
                     url: "{{ route('therapist_availability') }}",
                     data: { 
-                        'therapist_id': therapist_id.value, 
-                        'treatment_start_time': treatment_start_time.value,
-                        'treatment_end_time': treatment_end_time.value,
+                        'therapist_id': therapist_id, 
+                        'treatment_start_time': treatment_start_time,
+                        'treatment_end_time': treatment_end_time,
+                        'treatment_date': treatment_date,
                         '_token': token
                     },
                     beforeSend: function() {

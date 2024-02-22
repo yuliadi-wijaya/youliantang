@@ -2,6 +2,12 @@
 @section('title') {{ __('Update Invoice') }} @endsection
 @section('css')
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/libs/select2/select2.min.css') }}">
+    <style>
+        input[readonly]{
+            background-color:#e9ecef !important;
+            opacity: 1;
+        }
+    </style>
 @endsection
 @section('body')
 
@@ -47,7 +53,7 @@
                                         <input type="text"
                                             class="form-control @error('treatment_date') is-invalid @enderror"
                                             name="treatment_date" placeholder="{{ __('Enter Date') }}"
-                                            value="{{ $invoice->treatment_date }}" readonly>
+                                            value="{{ $invoice->treatment_date }}" readonly id="treatment_date">
                                         <div class="input-group-append">
                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                         </div>
@@ -97,19 +103,19 @@
                                                                 <div class="row">
                                                                     <div class="col-md-12 form-group">
                                                                         <label class="control-label">{{ __('Therapist ') }}<span class="text-danger">*</span></label>
-                                                                        <select class="form-control select2 @error('invoices.' . $index . '.therapist_id') is-invalid @enderror" name="invoices[{{ $index }}][therapist_id]" onchange="checkTherapistAvailability(this, 'therapist_id')">
+                                                                        <select class="form-control select2 @error('invoices.' . $index . '.therapist_id') is-invalid @enderror" id="therapist_id_{{ $index }}" name="invoices[{{ $index }}][therapist_id]" onchange="checkTherapistAvailability({{ $index }})">
                                                                             <option selected disabled>{{ __('-- Select Therapist --') }}</option>
                                                                             @foreach($therapists as $row)
                                                                                 <option value="{{ $row->id }}" {{ old('invoices.' . $index . '.therapist_id', $item['therapist_id']) == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
                                                                             @endforeach
                                                                         </select>
-                                                                        {{-- <input type="hidden" name="invoices_old[{{ $index }}][therapist_id]" class="form-control" value="{{ old('invoices_old.' . $index . '.therapist_id', $item['therapist_id']) }}" /> --}}
                                                                         @error('invoices.' . $index . '.therapist_id')
                                                                             <span class="invalid-feedback" role="alert">
                                                                                 <strong>{{ $message }}</strong>
                                                                             </span>
                                                                         @enderror
                                                                     </div>
+                                                                    <input type="hidden" id="old_therapist_id_{{ $index }}" name="old_therapist_id_{{ $index }}" name class="form-control" value="{{ $item['therapist_id'] }}" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
@@ -121,21 +127,21 @@
                                                                     </div>
                                                                     <div class="col-md-4 form-group">
                                                                         <label class="control-label">{{ __('Time From ') }}<span class="text-danger">*</span></label>
-                                                                        <input type="time" name="invoices[{{ $index }}][treatment_time_from]"
+                                                                        <input type="time" name="invoices[{{ $index }}][treatment_time_from]" id="treatment_time_from_{{ $index }}" 
                                                                             class="form-control @error('invoices.' . $index . '.treatment_time_from') is-invalid @enderror"
                                                                             value="{{ old('invoices.' . $index . '.treatment_time_from', $item['treatment_time_from']) }}"
-                                                                            onchange="getTimeTo(this,'')" />
+                                                                            onchange="getTimeTo(this,''); checkTherapistAvailability({{ $index }})" />
                                                                         @error('invoices.' . $index . '.treatment_time_from')
                                                                             <span class="invalid-feedback" role="alert">
                                                                                 <strong>{{ $message }}</strong>
                                                                             </span>
                                                                         @enderror
-                                                                        {{-- <input type="hidden" name="invoices_old[{{ $index }}][treatment_time_from]" class="form-control" value="{{ old('invoices_old.' . $index . '.treatment_time_from', $item['treatment_time_from']) }}" /> --}}
+                                                                        <input type="hidden" name="old_treatment_time_from_{{ $index }}" id="old_treatment_time_from_{{ $index }}" class="form-control" value="{{ $item['treatment_time_from'] }}" />
                                                                     </div>
                                                                     <div class="col-md-4 form-group">
                                                                         <label class="control-label">{{ __('Time To ') }}<span class="text-info">{{ __('(Auto-Fill)') }}</span></label>
-                                                                        <input type="time" name="invoices[{{ $index }}][treatment_time_to]" class="form-control" value="{{ old('invoices.' . $index . '.treatment_time_to', $item['treatment_time_to']) }}" readonly />
-                                                                        {{-- <input type="hidden" name="invoices_old[{{ $index }}][treatment_time_to]" class="form-control" value="{{ old('invoices_old.' . $index . '.treatment_time_to', $item['treatment_time_to']) }}" /> --}}
+                                                                        <input type="time" name="invoices[{{ $index }}][treatment_time_to]" id="treatment_time_to_{{ $index }}" class="form-control" value="{{ old('invoices.' . $index . '.treatment_time_to', $item['treatment_time_to']) }}" readonly />
+                                                                        <input type="hidden" name="old_treatment_time_to_{{ $index }}" id="old_treatment_time_to_{{ $index }}" class="form-control" value="{{ $item['treatment_time_to'] }}" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -269,7 +275,7 @@
                                 <div class="card-body">
                                     {{-- <blockquote>{{ __('Invoice Summary') }}</blockquote> --}}
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        {{-- <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="control-label" data-toggle="tooltip" data-placement="top" title="excluded from discount">{{ __('Additional Charge') }}</label>
                                                 <div class="input-group">
@@ -291,7 +297,7 @@
                                                     <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', $invoice->tax_amount) }}">
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Payment Mode ') }}<span
                                                 class="text-danger">*</span></label>
@@ -341,7 +347,7 @@
                             </div>
                             <div class="row mb-4" style="border-top:1px dashed #e0b402; margin-top:30px">
                                 <div class="col-md-12 mt-4">
-                                    <div class="row" style="font-size:11pt">
+                                    <div class="row">
                                         <label class="col-sm-6 col-form-label">{{ __('Total Price') }}</label>
                                         <div class="col-sm-6 text-right">
                                             {{-- <label class="col-form-label" id="total_price_txt">{{ __('Rp 1,000,000') }}</label> --}}
@@ -351,7 +357,7 @@
                                                 value="{{ old('total_price', number_format($invoice->total_price)) }}" readonly style="font-weight: bold">
                                         </div>
                                     </div>
-                                    <div class="row" style="font-size:11pt">
+                                    <div class="row">
                                         <label class="col-sm-6 col-form-label">{{ __('Discount') }}</label>
                                         <div class="col-sm-6 text-right">
                                             {{-- <label class="col-form-label" id="discount_txt">{{ __('Rp 1,000,000') }}</label> --}}
@@ -362,6 +368,22 @@
                                             <input type="hidden"
                                                 name="reuse_voucher" id="reuse_voucher"
                                                 value="{{ old('reuse_voucher', 0) }}" readonly style="font-weight: bold">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-6 col-form-label" data-toggle="tooltip" data-placement="top" title="excluded from discount">{{ __('Additional Charge') }}</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control text-right" style="font-weight: bold" data-toggle="tooltip" data-placement="top" title="excluded from discount" onchange="calAdditionalPrice()" name="additional_price" id="additional_price" value="{{ old('additional_price', number_format($invoice->additional_price)) }}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-6 col-form-label">{{ __('PPN') }}</label>
+                                        <div class="input-group col-sm-6">
+                                            <input type="number" class="form-control text-right" style="font-weight: bold" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', $invoice->tax_rate) }}" onchange="calTax()">
+                                            <div class="input-group-append" style="height: 36.5px">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', $invoice->tax_amount) }}">
                                         </div>
                                     </div>
                                     <div class="row" style="font-size: 11pt">
@@ -569,15 +591,16 @@
                     // Format the calculated time as 'HH:mm'
                     var hours = timeFrom.getHours().toString().padStart(2, '0');
                     var minutes = timeFrom.getMinutes().toString().padStart(2, '0');
-                    var calculatedTime = hours + ':' + minutes;
+                    var second = timeFrom.getSeconds().toString().padStart(2, '0');
+                    var calculatedTime = hours + ':' + minutes + ':' + second;
 
                     //Set the calculated treatment_time_to value
                     timeToInput.value = calculatedTime;
 
-                    checkTherapistAvailability(obj, 'treatment_time_from');
-                }
+                    // checkTherapistAvailability(obj, 'treatment_time_from', index);
 
-                console.log(timeFromValue);
+                    obj.value = timeFromValue + ':' + second;
+                }
             }
 
             function calTotal() {
@@ -673,6 +696,16 @@
             }
 
             function calAdditionalPrice() {
+                let additional_price = parseFloat(document.getElementById('additional_price').value.replace(/,/g, '')) || 0;
+
+                if (!isNaN(additional_price)) {
+                    var formatAmount = new Intl.NumberFormat('en-US', {
+                        currency: 'USD'
+                    }).format(additional_price);
+
+                    document.getElementById('additional_price').value = formatAmount;
+                }
+
                 calTax();
                 grandTotal();
             }
@@ -696,17 +729,33 @@
                 grandTotal();
             }
 
-            function checkTherapistAvailability(obj, source) {
-                var objName = obj.getAttribute('name');
-                var therapist_id = document.querySelector('select[name="' + objName.replace(source, 'therapist_id') + '"]');
-                var treatment_start_time = document.querySelector('input[name="' + objName.replace(source, 'treatment_time_from') + '"]');
-                var treatment_end_time = document.querySelector('input[name="' + objName.replace(source, 'treatment_time_to') + '"]');
+            function checkTherapistAvailability(index) {
+                // var objName = obj.getAttribute('name');
+                // var therapist_id = document.querySelector('select[name="' + objName.replace(source, 'therapist_id') + '"]');
+                // var treatment_start_time = document.querySelector('input[name="' + objName.replace(source, 'treatment_time_from') + '"]');
+                // var treatment_end_time = document.querySelector('input[name="' + objName.replace(source, 'treatment_time_to') + '"]');
+
+                var treatment_date = $('#treatment_date').val();
+                var therapist_id = "";
+                if (document.querySelector('select[name="invoices['+index+'][therapist_id]"]') != undefined) {
+                    therapist_id = document.querySelector('select[name="invoices['+index+'][therapist_id]"]').value;
+                }
+                var treatment_start_time = $('#treatment_time_from_'+index).val();
+                var treatment_end_time = $('#treatment_time_to_'+index).val();
+
+                var old_therapist_id = $('#old_therapist_id_'+index).val();
+                var old_treatment_start_time = $('#old_treatment_time_from_'+index).val();
+                var old_treatment_end_time = $('#old_treatment_time_to_'+index).val();
+
+                console.log(treatment_date);
 
                 var token = $("input[name='_token']").val();
-                // console.log(treatment_start_time.value);
-                // console.log(treatment_end_time.value);
-                // console.log(therapist_id.value);
-                if (treatment_start_time.value == "" || treatment_end_time.value == "" || therapist_id.value == "") {
+                if (treatment_start_time == "" || treatment_end_time == "" || therapist_id == "") {
+                    return;
+                }
+
+                if ((therapist_id == old_therapist_id) && (treatment_start_time == old_treatment_start_time) && (treatment_end_time == old_treatment_end_time)) {
+                    console.log('in');
                     return;
                 }
 
@@ -714,9 +763,10 @@
                     type: "POST",
                     url: "{{ route('therapist_availability') }}",
                     data: { 
-                        'therapist_id': therapist_id.value, 
-                        'treatment_start_time': treatment_start_time.value,
-                        'treatment_end_time': treatment_end_time.value,
+                        'therapist_id': therapist_id, 
+                        'treatment_start_time': treatment_start_time,
+                        'treatment_end_time': treatment_end_time,
+                        'treatment_date': treatment_date,
                         '_token': token
                     },
                     beforeSend: function() {

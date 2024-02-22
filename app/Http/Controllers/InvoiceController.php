@@ -759,7 +759,7 @@ class InvoiceController extends Controller
             $invoice->discount = str_replace(',', '', $request->discount);
             $invoice->tax_rate = $request->tax_rate;
             $invoice->tax_amount = $request->tax_amount;
-            $invoice->additional_price = $request->additional_price;
+            $invoice->additional_price = str_replace(',', '', $request->additional_price);
             $invoice->grand_total = str_replace(',', '', $request->grand_total);
 
         }else{
@@ -852,10 +852,15 @@ class InvoiceController extends Controller
         $user = Sentinel::getUser();
         if ($user->hasAccess('invoice.create')) {
             if ($request->ajax()) {
+                DB::connection()->enableQueryLog();
                 $therapist_available = DB::select(
-                    'select * from `invoice_details` where date(`created_at`) = curdate() and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
-                    [$request->therapist_id, $request->treatment_start_time, $request->treatment_start_time, $request->treatment_end_time, $request->treatment_end_time]
+                    'select * from `invoice_details` where date(`created_at`) = ? and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
+                    [$request->treatment_date, $request->therapist_id, $request->treatment_start_time, $request->treatment_start_time, $request->treatment_end_time, $request->treatment_end_time]
                 );
+
+                // echo '<pre>';
+                // print_r(DB::getQueryLog());
+                // echo '</pre>';die();
 
                 $data = [];
 
