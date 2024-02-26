@@ -49,7 +49,7 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ url('therapist') }} ">
-                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                         <i
                             class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Therapist List') }}
                     </button>
@@ -58,10 +58,10 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form id="addtime" action="@if ($therapist && $therapist_info) {{ url('therapist/' . $therapist->id) }} @else {{ route('therapist.store') }} @endif" method="post" enctype="multipart/form-data">
+                <form id="addtime" action="@if ($therapist && $therapist_info) {{ url('therapist/' . $therapist->id) }} @else {{ route('therapist.store') }} @endif" method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-body">
+                            <blockquote>{{ __('Basic Information') }}</blockquote>
                             @csrf
                             @if ($therapist && $therapist_info)
                                 <input type="hidden" name="_method" value="PATCH" />
@@ -296,7 +296,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <br>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
                             <blockquote>{{ __('Emergency Information') }}</blockquote>
                             <div class="row">
                                 <div class="col-md-6">
@@ -330,20 +333,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        @if ($therapist && $therapist_info)
-                                            {{ __('Update Details') }}
-                                        @else
-                                            {{ __('Add New Therapist') }}
-                                        @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary">
+                                @if ($therapist && $therapist_info)
+                                    {{ __('Update Details') }}
+                                @else
+                                    {{ __('Add New Therapist') }}
+                                @endif
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <!-- end row -->

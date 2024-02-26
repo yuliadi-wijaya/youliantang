@@ -37,7 +37,7 @@
                         </button>
                     </a>
                     @endif
-                    <table id="productList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="productList" class="table table-bordered dt-responsive nowrap display table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>{{ __('No.') }}</th>

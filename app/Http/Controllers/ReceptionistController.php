@@ -67,7 +67,7 @@ class ReceptionistController extends Controller
                             if ($role == 'admin') {
                                 $option .= '
                                     <a href="receptionist/'.$row->id.'">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
                                         </button>
                                     </a>
@@ -75,7 +75,7 @@ class ReceptionistController extends Controller
                             } elseif ($role == 'receptionist') {
                                 $option .= '
                                     <a href="receptionist-view/'.$row->id.'">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
                                         </button>
                                     </a>
@@ -85,12 +85,12 @@ class ReceptionistController extends Controller
                             if ($role != 'receptionist') {
                                 $option .= '
                                     <a href="receptionist/'.$row->id.'/edit">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
+                                        <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
                                             <i class="mdi mdi-lead-pencil"></i>
                                         </button>
                                     </a>
                                     <a href=" javascript:void(0) ">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="'.$row->id.'" id="delete-receptionist">
+                                        <button type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="'.$row->id.'" id="delete-receptionist">
                                             <i class="mdi mdi-trash-can"></i>
                                         </button>
                                     </a>
@@ -141,7 +141,6 @@ class ReceptionistController extends Controller
             $validatedData = $request->validate(
                 [
                     'first_name' => 'required|alpha',
-                    // 'last_name' => 'alpha',
                     'ktp' => 'required|unique:receptionists|regex:/^[0-9]*$/|max:16',
                     'gender' => 'required',
                     'email' => 'required|email|unique:users|regex:/(.+)@(.+)\.(.+)/i|max:50',
@@ -163,6 +162,7 @@ class ReceptionistController extends Controller
             }
 
             try {
+                $validatedData['last_name'] = $request->last_name;
                 $validatedData['password'] = Config::get('app.DEFAULT_PASSWORD');
                 $validatedData['created_by'] = $user->id;
                 $validatedData['updated_by'] = $user->id;
@@ -210,7 +210,7 @@ class ReceptionistController extends Controller
      * @param  \App\User  $receptionist
      * @return \Illuminate\Http\Response
      */
-    public function show(User $receptionist)
+    public function show(User $receptionist, Request $request)
     {
         $user = Sentinel::getUser();
         if ($user->hasAccess('receptionist.view')) {
@@ -221,25 +221,91 @@ class ReceptionistController extends Controller
             if ($receptionist) {
                 $role = $user->roles[0]->slug;
 
-                $revenue = DB::select('SELECT SUM(amount) AS total FROM invoice_details, invoices WHERE invoices.id = invoice_details.invoice_id AND created_by = ?', [$receptionist->id]);
-                $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                    ->where(function ($re) use ($user_id) {
-                        $re->orWhere('created_by', $user_id);
-                    })->count();
+                $invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                    ->join('users', 'users.id', '=', 'invoices.customer_id')
+                    ->where('invoices.created_by', $user_id)
+                    ->where('invoices.status', '1')
+                    ->where('invoices.is_deleted', '0')
+                    ->where('invoice_details.is_deleted', '0')
+                    ->where('invoices.payment_status', 'Paid')
+                    ->orderby('invoices.id', 'desc')->distinct('invoices.id')->paginate(
+                        $this->limit, 
+                        ['invoices.id',
+                            'invoices.invoice_code',
+                            'invoices.payment_status',
+                            'invoices.treatment_date',
+                            'invoices.grand_total',
+                            'users.first_name',
+                            'users.last_name',
+                            'users.phone_number']
+                        , 'invoices');
+
+                $pending_invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                    ->join('users', 'users.id', '=', 'invoices.customer_id')
+                    ->where('invoices.created_by', $user_id)
+                    ->where('invoices.status', '1')
+                    ->where('invoices.is_deleted', '0')
+                    ->where('invoice_details.is_deleted', '0')
+                    ->where('invoices.payment_status', 'Unpaid')
+                    ->orderby('invoices.id', 'desc')->distinct('invoices.id')->paginate(
+                        $this->limit, 
+                        ['invoices.id',
+                            'invoices.invoice_code',
+                            'invoices.payment_status',
+                            'invoices.treatment_date',
+                            'invoices.grand_total',
+                            'users.first_name',
+                            'users.last_name',
+                            'users.phone_number']
+                        , 'pending_invoices');
+
+                $receptionist_info = Receptionist::where('user_id', $user_id)->first();
+
+                DB::connection()->enableQueryLog();
+                $invoice_transaction_paid = Invoice::select(DB::raw('count(id) as invoice_total
+                        ,sum(total_price) as price_total
+                        ,sum(discount) as discount_total 
+                        ,sum(tax_amount) as tax_amount_total
+                        ,sum(grand_total) as revenue_total'))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('payment_status', 'Paid')
+                    ->whereYear('treatment_date', Carbon::now()->year)
+                    ->where('created_by', $receptionist->id)
+                    ->groupBy(DB::raw('year(treatment_date)'))
+                    ->first();
+
+                $invoice_transaction_unpaid = Invoice::select(DB::raw('count(id) as invoice_total
+                        ,sum(total_price) as price_total
+                        ,sum(discount) as discount_total 
+                        ,sum(tax_amount) as tax_amount_total
+                        ,sum(grand_total) as revenue_total'))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('payment_status', 'Unpaid')
+                    ->whereYear('treatment_date', Carbon::now()->year)
+                    ->where('created_by', $receptionist->id)
+                    ->groupBy(DB::raw('year(treatment_date)'))
+                    ->first();
+                
                 $data = [
-                    'revenue' => $revenue[0]->total,
-                    'pending_bill' => $pending_bill
+                    'invoice_total' => ($invoice_transaction_paid) ? $invoice_transaction_paid->invoice_total : 0,
+                    'revenue' => ($invoice_transaction_paid) ? $invoice_transaction_paid->revenue_total : 0,
+                    'pending_invoice_total' => ($invoice_transaction_unpaid) ? $invoice_transaction_unpaid->invoice_total : 0,
+                    'pending_revenue' => ($invoice_transaction_unpaid) ? $invoice_transaction_unpaid->revenue_total : 0
+                    
                 ];
 
-                $invoices = Invoice::with('user')
-                    ->where(function ($re) use ($user_id) {
-                        $re->orWhere('created_by', $user_id);
-                    })->paginate($this->limit, '*', 'invoice');
-                $therapist_role = Sentinel::findRoleBySlug('therapist');
-                $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
-                $therapist_user = User::join('role_users', 'role_users.user_id', '=', 'users.id')
-                    ->where('role_users.role_id', 2)->get();
-                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'data', 'invoices', 'therapist_user'));
+                $pagination = 0;
+                if($request->has('invoices')) {
+                    $pagination = 1;
+                }
+                
+                $config = [
+                    'pagination' => $pagination
+                ];
+
+                return view('receptionist.receptionist-profile', compact('user', 'role', 'receptionist', 'receptionist_info', 'data', 'config', 'invoices', 'pending_invoices'));
             } else {
                 return redirect('/')->with('error', 'Receptionist not found');
             }
@@ -291,12 +357,10 @@ class ReceptionistController extends Controller
         if ($user->hasAccess('receptionist.update')) {
             $validatedData = $request->validate([
                 'first_name' => 'required|alpha',
-                // 'last_name' => 'alpha',
                 'ktp' => 'required|regex:/^[0-9]*$/|max:16',
                 'email' => 'required|email|regex:/(.+)@(.+)\.(.+)/i|max:50',
                 'gender' => 'required',
                 'phone_number' => 'required',
-                // 'rekening_number' => 'required|numeric',
                 'profile_photo' =>'image|mimes:jpg,png,jpeg,gif,svg|max:500',
                 'status' => 'required'
             ]);
@@ -315,7 +379,7 @@ class ReceptionistController extends Controller
                     $receptionist->profile_photo = $imageName;
                 }
                 $receptionist->first_name = $validatedData['first_name'];
-                $receptionist->last_name = $validatedData['last_name'];
+                $receptionist->last_name = $request->last_name;
                 $receptionist->email = $validatedData['email'];
                 $receptionist->phone_number = $validatedData['phone_number'];
                 $receptionist->status = $validatedData['status'];

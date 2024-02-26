@@ -6,6 +6,7 @@ use App\Appointment;
 use Illuminate\Http\Request;
 use App\RoleAccess;
 use App\Invoice;
+use App\InvoiceDetail;
 use App\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Collection;
@@ -279,7 +280,7 @@ class ReportController extends Controller
         }
 
         if ($role == 'customer') {
-            $invoice = Invoice::whereMonth('created_at', date('m'))
+            $invoice = Invoice::whereMonth('created_at', Carbon::now()->month)
                 ->where('customer_id', $userId)
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
@@ -287,6 +288,8 @@ class ReportController extends Controller
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
+                ->where('status', 1)
+                ->where('is_deleted', 0)
                 ->selectRaw('SUM(grand_total) as total')
                 ->first();
             $currentMonthEarning = $invoice->total;
@@ -299,41 +302,37 @@ class ReportController extends Controller
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
+                ->where('status', 1)
+                ->where('is_deleted', 0)
                 ->selectRaw('SUM(grand_total) as total')
                 ->first();
             $prevMonthEarning = $preInvoice ->total;
         } elseif ($role == 'therapist') {
-            $invoice = Invoice::whereMonth('created_at', date('m'))
-                ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoice_type', 'NC');
-                })
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoice_type', 'CK');
-                })
-                ->where('created_by', $userId)
-                ->select(DB::raw('SUM(grand_total) as total'))
+            $invoice = InvoiceDetail::whereMonth('created_at', Carbon::now()->month)
+                ->where('therapist_id', $userId)
+                ->where('status', 1)
+                ->where('is_deleted', 0)
+                ->select(DB::raw('SUM(fee) as total'))
                 ->first();
             $currentMonthEarning = $invoice->total;
 
-            $preInvoice = Invoice::whereMonth('created_at', Carbon::now()->subMonth()->month)
-                ->where('created_by', $userId)
-                ->when($invoice_type === 'NC', function ($query) {
-                    return $query->where('invoice_type', 'NC');
-                })
-                ->when($invoice_type === 'CK', function ($query) {
-                    return $query->where('invoice_type', 'CK');
-                })
-                ->select(DB::raw('SUM(grand_total) as total'))
+            $preInvoice = InvoiceDetail::whereMonth('created_at', Carbon::now()->subMonth()->month)
+                ->where('therapist_id', $userId)
+                ->where('status', 1)
+                ->where('is_deleted', 0)
+                ->select(DB::raw('SUM(fee) as total'))
                 ->first();
             $prevMonthEarning = $preInvoice ->total;
         } else {
-            $invoice = Invoice::whereMonth('created_at', date('m'))
+            $invoice = Invoice::whereMonth('created_at', Carbon::now()->month)
                 ->when($invoice_type === 'NC', function ($query) {
                     return $query->where('invoice_type', 'NC');
                 })
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
+                ->where('status', 1)
+                ->where('is_deleted', 0)
                 ->select(DB::raw('SUM(grand_total) as total'))
                 ->first();
             $currentMonthEarning = $invoice->total;
@@ -345,6 +344,8 @@ class ReportController extends Controller
                 ->when($invoice_type === 'CK', function ($query) {
                     return $query->where('invoice_type', 'CK');
                 })
+                ->where('status', 1)
+                ->where('is_deleted', 0)
                 ->select(DB::raw('SUM(grand_total) as total'))
                 ->first();
             $prevMonthEarning = $preInvoice ->total;
@@ -353,7 +354,7 @@ class ReportController extends Controller
         if ($prevMonthEarning == 0) {
             $total_diff = 100;
         } else {
-            $total_diff = $diff / $prevMonthEarning * 100;
+            $total_diff = ($diff / $prevMonthEarning) * 100;
         }
         $data = [
             'monthlyEarning' => $currentMonthEarning,

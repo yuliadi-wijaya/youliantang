@@ -364,7 +364,7 @@
                                         <label class="col-sm-6 col-form-label">{{ __('PPN') }}</label>
                                         <div class="input-group col-sm-6">
                                             <input type="number" class="form-control text-right" style="font-weight: bold" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', 0) }}" onchange="calTax()">
-                                            <div class="input-group-append" style="height: 36.5px">
+                                            <div class="input-group-append" style="height: 37px">
                                                 <span class="input-group-text">%</span>
                                             </div>
                                             <input type="hidden" name="tax_amount" id="tax_amount" value="{{ old('tax_amount', 0) }}">

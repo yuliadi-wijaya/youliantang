@@ -72,6 +72,7 @@ class TherapistController extends Controller
                     ->where('invoices.status', '1')
                     ->where('invoices.is_deleted', '0')
                     ->where('invoice_details.is_deleted', '0')
+                    ->distinct()
                     ->count();
                 $therapists[$key]['completed_trans'] = $completed_trans;
             }
@@ -127,7 +128,7 @@ class TherapistController extends Controller
                             if ($role == 'admin') {
                                 $option .= '
                                     <a href="therapist/'.$row->id.'">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
                                         </button>
                                     </a>
@@ -135,7 +136,7 @@ class TherapistController extends Controller
                             } elseif ($role == 'receptionist') {
                                 $option .= '
                                     <a href="therapist-view/'.$row->id.'">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                             <i class="mdi mdi-eye"></i>
                                         </button>
                                     </a>
@@ -145,12 +146,12 @@ class TherapistController extends Controller
                             if ($role != 'receptionist') {
                                 $option .= '
                                     <a href="therapist/'.$row->id.'/edit">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
+                                        <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
                                             <i class="mdi mdi-lead-pencil"></i>
                                         </button>
                                     </a>
                                     <a href=" javascript:void(0) ">
-                                        <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="'.$row->id.'" id="delete-therapist">
+                                        <button type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="'.$row->id.'" id="delete-therapist">
                                             <i class="mdi mdi-trash-can"></i>
                                         </button>
                                     </a>
@@ -316,30 +317,68 @@ class TherapistController extends Controller
             if ($therapist) {
                 $therapist_info = Therapist::where('user_id', '=', $therapist->id)->orwhere('is_deleted', 0)->first();
                 if ($therapist_info) {
-                    $appointments = Appointment::where(function ($re) use ($therapist_id) {
-                        $re->orWhere('appointment_with', $therapist_id);
-                        $re->orWhere('booked_by', $therapist_id);
-                    })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointment');
-                    $prescriptions = Prescription::with('customer')->where('created_by', $therapist->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
-                    $invoices = Invoice::with('user')->where('invoices.created_by', '=', $therapist->id)->orderby('id', 'desc')->get();
-                    $invoices = Invoice::with('user')->paginate($this->limit, '*', 'invoice');
+                    $invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                        ->join('users', 'users.id', '=', 'invoices.customer_id')
+                        ->join('products', 'products.id', '=', 'invoice_details.product_id')
+                        ->where('invoice_details.therapist_id', $therapist->id)
+                        ->where('invoices.status', '1')
+                        ->where('invoices.is_deleted', '0')
+                        ->where('invoice_details.status', '1')
+                        ->where('invoice_details.is_deleted', '0')
+                        ->orderby('invoice_details.id', 'desc')->paginate(
+                            $this->limit, 
+                            ['invoices.id',
+                                'invoices.invoice_code',
+                                'invoices.payment_status',
+                                'invoices.treatment_date',
+                                'users.first_name',
+                                'users.last_name',
+                                'users.phone_number',
+                                'products.name as product_name',
+                                'invoice_details.fee',
+                                'invoice_details.treatment_time_from',
+                                'invoice_details.treatment_time_to']
+                            , 'invoice');
 
-                    $tot_appointment = Appointment::where(function ($re) use ($therapist_id) {
-                        $re->orWhere('appointment_with', $therapist_id);
-                        $re->orWhere('booked_by', $therapist_id);
-                    })->get();
-                    $revenue = DB::select('SELECT SUM(invoice_details.amount) AS total FROM invoice_details WHERE invoice_details.therapist_id = ?', [$therapist->id]);
-                    $fee = DB::select('SELECT SUM(invoice_details.fee) AS total FROM invoice_details WHERE invoice_details.therapist_id = ?', [$therapist->id]);
-                    $pending_bill = DB::select("SELECT COUNT(invoices.id) AS total FROM invoices, invoice_details WHERE invoices.id = invoice_details.invoice_id AND invoices.payment_status = 'Unpaid' AND invoice_details.therapist_id = ?", [$therapist->id]);
+                    $revenue = Invoice::join('invoice_details', 'invoices.id', '=', 'invoice_details.invoice_id')
+                        ->where('invoice_details.therapist_id', $therapist_id)
+                        ->where('invoices.status', 1)
+                        ->where('invoices.is_deleted', 0)
+                        ->where('invoice_details.status', 1)
+                        ->where('invoice_details.is_deleted', 0)
+                        ->sum('invoice_details.amount');
+
+                    $therapist_transaction_fee = DB::select("
+                        SELECT YEAR(invds.created_at) AS treatment_date
+                            ,COUNT(DISTINCT invds.invoice_id) AS invoice_total
+                            ,COUNT(DISTINCT invds.id) AS treatment_total
+                            ,SUM(invds.fee) AS commission_fee_total 
+                        FROM invoice_details invds
+                            JOIN users usrs ON invds.therapist_id = usrs.id
+                        WHERE invds.status = 1 
+                            AND invds.is_deleted = 0 
+                            AND usrs.id = ? 
+                            AND YEAR(invds.created_at) = YEAR(curdate())
+                        GROUP BY YEAR(invds.created_at)
+                    ", [$therapist_id]);
+
+                    $commission_fee_total = 0;
+                    $treatment_total = 0;
+                    $invoice_total = 0;
+                    if (count($therapist_transaction_fee) > 0) {
+                        $commission_fee_total = $therapist_transaction_fee[0]->commission_fee_total;
+                        $treatment_total = $therapist_transaction_fee[0]->treatment_total;
+                        $invoice_total = $therapist_transaction_fee[0]->invoice_total;
+                    }
+         
                     $data = [
-                        'total_appointment' => $tot_appointment->count(),
-                        'revenue' => $revenue[0]->total,
-                        'fee' => $fee[0]->total,
-                        'pending_bill' => $pending_bill[0]->total
+                        'revenue' => $revenue,
+                        'fee' => $commission_fee_total,
+                        'total_treatments' => $treatment_total,
+                        'total_invoices' => $invoice_total
                     ];
                     $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
-                    $availableTime = TherapistAvailableTime::where('therapist_id', $therapist->id)->where('is_deleted', 0)->get();
-                    return view('therapist.therapist-profile', compact('user', 'role', 'therapist', 'therapist_info', 'data', 'appointments', 'availableTime', 'prescriptions', 'invoices', 'availableDay'));
+                    return view('therapist.therapist-profile', compact('user', 'role', 'therapist', 'therapist_info', 'data', 'invoices', 'availableDay'));
                 } else {
                     return redirect('/')->with('error', 'Therapists details not found');
                 }

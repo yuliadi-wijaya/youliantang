@@ -16,12 +16,12 @@
 <div class="row">
     <div class="col-xl-4">
         <div class="card overflow-hidden">
-            <div class="bg-soft-primary">
+            <div class="bg-soft-primary" style="background-color: #2a3042 !important">
                 <div class="row">
                     <div class="col-7">
                         <div class="text-primary p-3">
                             <h5 class="text-primary">{{ __('translation.welcome-back') }} !</h5>
-                            <p>{{ __('translation.dashboards') }}</p>
+                            <p>{{ __("translation.dashboards") }}</p>
                         </div>
                     </div>
                     <div class="col-5 align-self-end">
@@ -31,14 +31,14 @@
             </div>
             <div class="card-body pt-0">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="avatar-md profile-user-wid mb-4">
                             <img src="@if ($user->profile_photo != ''){{ URL::asset('storage/images/users/' . $user->profile_photo) }}@else{{ URL::asset('assets/images/users/noImage.png') }}@endif" alt="" class="img-thumbnail rounded-circle">
                         </div>
                         <h5 class="font-size-15 text-truncate">{{ $user->first_name }} {{ $user->last_name }}</h5>
                         <p class="text-muted mb-0 text-truncate">{{ $therapist_info->title }}</p>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="pt-4">
                             <div class="row">
                                 <div class="col-12">
@@ -49,14 +49,26 @@
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <a href="{{ url('profile-edit') }}"
-                                        class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Profile') }}
+                                        class="btn btn-success waves-effect waves-light btn-sm">{{ __('Edit Profile') }}
                                         <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                    {{-- <a href="{{ url('time-edit/' . $user->id) }}"
-                                        class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Time Slot') }}
-                                        <i class="mdi mdi-arrow-right ml-1"></i></a> --}}
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mini-stats-wid">
+            <div class="card-body">
+                <div class="media">
+                    <div class="media-body">
+                        <p class="text-muted font-weight-bold">{{ __('Current Payout') }}</p>
+                        <h4 class="mb-0 text-danger" style="font-weight: bold">Rp {{ number_format($data['payroll_fee']) }} <span style="font-size:9pt; font-weight:normal;"> of {{ number_format((float)$data['payroll_treatments']) }} treatments</span></h4>
+                    </div>
+                    <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-danger">
+                        <span class="avatar-title" style="background-color: #f46a6a">
+                            <i class="fa fa-money-check-alt font-size-24"></i>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -67,7 +79,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <p class="text-muted">{{ __('This month') }}</p>
-                        <h3>${{ number_format($data['monthly_earning']) }}</h3>
+                        <h3>Rp {{ number_format($data['monthly_earning']) }}  <span style="font-size:9pt; font-weight:normal;"> of {{ number_format((float)$data['monthly_total_treatments']) }} treatments</span></h3>
                         <p class="text-muted"><span class="@if ($data['monthly_diff'] > 0) text-success @else text-danger @endif mr-2"> {{ $data['monthly_diff'] }}% <i class="mdi @if ($data['monthly_diff'] > 0) mdi-arrow-up @else mdi-arrow-down @endif"></i> </span>
                             {{ __('From previous month') }}</p>
                     </div>
@@ -77,73 +89,36 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-8">
-            <div class="card mini-stats-wid">
-                <div class="card-body">
-                    <div class="media">
-                        @if (session()->has('page_limit'))
-                            @php
-                                $per_page = session()->get('page_limit');
-                            @endphp
-                        @else
-                            @php
-                                $per_page = Config::get('app.page_limit');
-                            @endphp
-                        @endif
-                        <div class="media-body">
-                            <p class="text-muted font-weight-medium">{{ __('translation.items-per-page') }}</p>
-                            <button
-                                class="btn  {{ $per_page == 10 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
-                                data-page="10">10</button>
-                            <button
-                                class="btn  {{ $per_page == 25 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
-                                data-page="25">25</button>
-                            <button
-                                class="btn  {{ $per_page == 50 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
-                                data-page="50">50</button>
-                            <button
-                                class="btn  {{ $per_page == 100 ? 'btn-primary' : 'btn-info' }}  btn-sm mr-2 per-page-items  mb-md-1"
-                                data-page="100">100</button>
-                        </div>
-                        <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span class="avatar-title rounded-circle bg-primary">
-                                <i class="bx bx-book-open font-size-24"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="col-xl-8">
         <div class="row">
-            {{-- <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.appointments') }}</p>
-                                <h4 class="mb-0">{{ number_format($data['total_appointment']) }}</h4>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                <span class="avatar-title">
-                                    <i class="bx bxs-calendar-check font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
             <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.revenue') }}</p>
-                                <h4 class="mb-0">${{ number_format($data['revenue']) }}</h4>
+                                <p class="text-muted font-weight-medium">{{ __("Today's Treatment") }}</p>
+                                <h4 class="mb-0">{{ number_format((float)$data['todays_total_treatments']) }} <span style="font-size:9pt; font-weight:normal;"> of {{ number_format((float)$data['todays_total_invoices']) }} invoices</span></h4>
                             </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
+                            <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
+                                <span class="avatar-title">
+                                    <i class="fa fa-file-invoice font-size-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mini-stats-wid">
+                    <div class="card-body">
+                        <div class="media">
+                            <div class="media-body">
+                                <p class="text-muted font-weight-medium">{{ __("Today's Eearning") }}</p>
+                                <h4 class="mb-0">Rp {{ number_format($data['todays_fee']) }}</h4>
+                            </div>
+                            <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
+                                <span class="avatar-title">
                                     <i class="bx bx-dollar font-size-24"></i>
                                 </span>
                             </div>
@@ -156,131 +131,107 @@
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __("translation.today's-earning") }}</p>
-                                <h4 class="mb-0">${{ number_format($data['daily_earning']) }}</h4>
+                                <p class="text-muted font-weight-medium">{{ __('Total Treatment') }}</p>
+                                <h4 class="mb-0">{{ number_format((float)$data['total_treatments']) }} <span style="font-size:9pt; font-weight:normal;"> of {{ number_format((float)$data['total_invoices']) }} invoices</span></h4>
                             </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class="bx bxs-dollar-circle  font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{-- <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __("translation.today's-appointments") }}</p>
-                                <a href="{{ url('today-appointment') }}"
-                                    class="mb-0 font-weight-medium font-size-20">
-                                    <h4 class="mb-0">{{ number_format($data['today_appointment']) }}</h4>
-                                </a>
-                            </div>
-                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                            <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                 <span class="avatar-title">
-                                    <i class="bx bx-calendar font-size-24"></i>
+                                    <i class="fa fa-file-invoice font-size-24"></i>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card mini-stats-wid">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.tomorrow-appointments') }}</p>
-                                <h4 class="mb-0">{{ number_format($data['tomorrow_appointment']) }}</h4>
+                                <p class="text-muted font-weight-medium">{{ __('Total Earning') }}</p>
+                                <h4 class="mb-0">Rp {{ number_format($data['fee']) }}</h4>
                             </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class="bx bx-calendar-event font-size-24"></i>
+                            <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
+                                <span class="avatar-title">
+                                    <i class="bx bx-dollar font-size-24"></i>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mini-stats-wid">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <p class="text-muted font-weight-medium">{{ __('translation.upcoming-appointments') }}</p>
-                                <a href="{{ url('upcoming-appointment') }}"
-                                    class="mb-0 font-weight-medium font-size-20">
-                                    <h4 class="mb-0">{{ number_format($data['Upcoming_appointment']) }}
-                                    </h4>
-                                </a>
-                            </div>
-                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                <span class="avatar-title rounded-circle bg-primary">
-                                    <i class='bx bxs-calendar-minus font-size-24'></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
-        <!-- end row -->
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('translation.monthly-appointments') }}</h4>
-                <div id="monthly_appointment" class="apex-charts" dir="ltr"></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end row -->
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">{{ __("translation.today's-appointments") }}</h4>
-                <div class="table-responsive">
-                    <table class="table table-centered table-nowrap mb-0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>{{ __('No.') }}</th>
-                                <th>{{ __('Customer Name') }}</th>
-                                <th>{{ __('Customer Contact No') }}</th>
-                                <th>{{ __('Customer Email') }}</th>
-                                <th>{{ __('Date') }}</th>
-                                <th>{{ __('Time') }}</th>
-                                <th>{{ __('Options') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($appointments as $item)
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#Invoices" role="tab">
+                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                            <span class="d-none d-sm-block">{{ __('Transaction') }}</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content p-3 text-muted">
+                    <div class="tab-pane active" id="Invoices" role="tabpanel">
+                        <table class="table dt-responsive nowrap table-hover">
+                            <thead>
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
-                                    <td>{{ $item->customer->first_name }} {{ $item->customer->last_name }}</td>
-                                    <td>{{ $item->customer->mobile }}</td>
-                                    <td>{{ $item->customer->email }}</td>
-                                    <td>{{ $item->appointment_date }}</td>
-                                    <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>
-                                    <td>
-                                        <a href="tel:{{ $item->customer->mobile }}">
-                                            <button type="button"
-                                                class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
-                                                data-toggle="modal" data-target=".exampleModal">
-                                                {{ __('Call') }}
-                                            </button>
-                                        </a>
-                                    </td>
+                                    <th>{{ __('No') }}</th>
+                                    <th>{{ __('Invoice Number') }}</th>
+                                    <th>{{ __('Treatment') }}</th>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Time') }}</th>
+                                    <th>{{ __('Fee') }}</th>
+                                    <th>{{ __('Option') }}</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @if (session()->has('page_limit'))
+                                    @php
+                                        $per_page = session()->get('page_limit');
+                                    @endphp
+                                @else
+                                    @php
+                                        $per_page = Config::get('app.page_limit');
+                                    @endphp
+                                @endif
+                                @php
+                                    $currentpage = $invoices->currentPage();
+                                @endphp
+                                @foreach ($invoices as $item)
+                                    <tr>
+                                        <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
+                                        <td>{{ $item->invoice_code }}</td>
+                                        <td>{{ $item->product_name }}</td>
+                                        <td>{{ date('d M Y', strtotime($item->treatment_date)) }}</td>
+                                        <td>{{ substr($item->treatment_time_from, 0, 5) . ' - ' . substr($item->treatment_time_to, 0, 5) }}</td>
+                                        <td>Rp {{ number_format($item->fee) }}</td>
+                                        <td>
+                                            <a href="{{ url('invoice/' . $item->id) }}" target="_blank">
+                                                <button type="button"
+                                                    class="btn btn-info btn-sm btn-rounded waves-effect waves-light">
+                                                    {{ __('View') }}
+                                                </button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="row mt-3">
+                            <div class="col-md-6 d-flex justify-content-start">
+                                Showing {{ $invoices->firstItem() }} to {{ $invoices->lastItem() }} of
+                                {{ $invoices->total() }} entries
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-end">
+                                {{ $invoices->links() }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- end table-responsive -->
             </div>
         </div>
     </div>
 </div>
-<!-- end row -->

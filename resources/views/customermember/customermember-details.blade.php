@@ -6,6 +6,15 @@
         {{ __('Add New Member') }}
     @endif
 @endsection
+@section('css')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/libs/select2/select2.min.css') }}">
+    <style>
+        input[readonly]{
+            background-color:#e9ecef !important;
+            opacity: 1;
+        }
+    </style>
+@endsection
 @section('body')
 
     <body data-topbar="dark" data-layout="horizontal">
@@ -42,24 +51,23 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ url('customermember') }}">
-                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Member List') }}
                     </button>
                 </a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form action="@if ($customermember ) {{ url('customermember/' . $customermember->id) }} @else {{ route('customermember.store') }} @endif" method="post" enctype="multipart/form-data">
+        <form action="@if ($customermember ) {{ url('customermember/' . $customermember->id) }} @else {{ route('customermember.store') }} @endif" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
                             @csrf
                             @if ($customermember )
                                 <input type="hidden" name="_method" value="PATCH" />
                             @endif
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Customer ') }}<span class="text-danger">*</span></label>
@@ -67,7 +75,7 @@
                                                 name="customer_id" tabindex="1">
                                                 <option selected disabled>{{ __('-- Select Customer --') }}</option>
                                                 @foreach($customers as $row)
-                                                    <option value="{{ $row->id }}" {{ $customermember && $customermember->customer_id == $row->id || old('customer_id') == $row->id ? 'selected' : '' }}>{{ $row->first_name.' '.$row->last_name }}</option>
+                                                    <option value="{{ $row->id }}" {{ $customermember && $customermember->customer_id == $row->id || old('customer_id') == $row->id ? 'selected' : '' }}>{{ ucwords($row->first_name).' '.ucwords($row->last_name.' - '.$row->phone_number) }}</option>
                                                 @endforeach
                                             </select>
                                             @error('customer_id')
@@ -78,23 +86,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Expired Date ') }}<span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control @error('expired_date') is-invalid @enderror"
-                                                name="expired_date" id="expired_date" tabindex="2"
-                                                value="{{ $customermember && $customermember->expired_date ? $customermember->expired_date : old('expired_date', now()->format('Y-m-d')) }}"
-                                                placeholder="{{ __('Enter Expired Date') }}" readonly>
-                                            @error('expired_date')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
+                                        <div class="col-md-6 form-group">
                                             <label class="control-label">{{ __('Membership Plan ') }}<span class="text-danger">*</span></label>
                                             <select class="form-control select2 @error('membership_id') is-invalid @enderror"
                                                 name="membership_id" tabindex="3" onchange="getPlan(this)">
@@ -108,6 +100,23 @@
                                                 @endforeach
                                             </select>
                                             @error('membership_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label">{{ __('Expired Date ') }}<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="date" class="form-control @error('expired_date') is-invalid @enderror"
+                                                    name="expired_date" id="expired_date" tabindex="2"
+                                                    value="{{ $customermember && $customermember->expired_date ? $customermember->expired_date : old('expired_date', now()->format('Y-m-d')) }}"
+                                                    placeholder="{{ __('Enter Expired Date') }}" readonly>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                </div>
+                                            </div>
+                                            @error('expired_date')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -133,25 +142,31 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        @if ($customermember)
-                                            {{ __('Update Member Details') }}
-                                        @else
-                                            {{ __('Add New Member') }}
-                                        @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary">
+                                @if ($customermember)
+                                    {{ __('Update Member Details') }}
+                                @else
+                                    {{ __('Add New Member') }}
+                                @endif
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
         <!-- end row -->
     @endsection
     @section('script')
+        <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+        <!-- form mask -->
+        <script src="{{ URL::asset('assets/libs/jquery-repeater/jquery-repeater.min.js') }}"></script>
+        <!-- form init -->
+        <script src="{{ URL::asset('assets/js/pages/form-repeater.int.js') }}"></script>
+        <script src="{{ URL::asset('assets/js/pages/form-advanced.init.js') }}"></script>
         <script>
             function getPlan(obj) {
                 var selectedOption = obj.options[obj.selectedIndex];

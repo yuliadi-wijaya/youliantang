@@ -142,17 +142,17 @@ class InvoiceController extends Controller
                     if ($role == 'admin' or $role == 'receptionist') {
                         $option = '
                         <a href="invoice/' . $row->id . '">
-                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="View Invoice">
+                            <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light" title="View Invoice">
                                 <i class="mdi mdi-eye"></i>
                             </button>
                         </a>
                         <a href="invoice/' . $row->id . '/edit">
-                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="Update invoice">
+                            <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light" title="Update invoice">
                                 <i class="mdi mdi-lead-pencil"></i>
                             </button>
                         </a>
                         <a href="review/' . $row->id . '">
-                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="Review">
+                            <button type="button" class="btn btn-success btn-sm btn-rounded waves-effect waves-light" title="Review">
                                 <i class="fa fa-star"></i>
                             </button>
                         </a>';
@@ -823,7 +823,7 @@ class InvoiceController extends Controller
 
     private function validateInvoiceDetails(Request $request) {
         foreach ($request->invoices as $item) {
-            if (!$this->is_therapist_availability($item['therapist_id'], $item['time_from'], $item['time_to'])) {
+            if (!$this->is_therapist_availability($request->treatment_date, $item['therapist_id'], $item['time_from'], $item['time_to'])) {
                     return false;
             }
         }
@@ -831,12 +831,12 @@ class InvoiceController extends Controller
         return true;
     }
 
-    private function is_therapist_availability($therapist_id, $treatment_start_time, $treatment_end_time) {
+    private function is_therapist_availability($treatment_date, $therapist_id, $treatment_start_time, $treatment_end_time) {
         // DB::enableQueryLog();
 
         $therapist_available = DB::select(
-            'select * from `invoice_details` where date(`created_at`) = curdate() and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
-            [$therapist_id, $treatment_start_time, $treatment_start_time, $treatment_end_time, $treatment_end_time]
+            'select * from `invoice_details` where date(`created_at`) = ? and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
+            [date('Y-m-d', strtotime($treatment_date)), $therapist_id, $treatment_start_time, $treatment_start_time, $treatment_end_time, $treatment_end_time]
         );
 
         // echo '<pre>';

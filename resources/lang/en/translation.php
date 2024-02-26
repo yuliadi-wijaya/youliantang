@@ -17,6 +17,7 @@
         "add-new-transaction" => "Add New Transaction",
         "revenue" => "Revenue",
         "today's-earning" => "Today's Earning",
+        "today's-invoice" => "Today's Invoice",
         "today's-appointments" => "Today's Appointments",
         "tomorrow-appointments" => "Tomorrow Appointments",
         "upcoming-appointments" => "Upcoming Appointments",

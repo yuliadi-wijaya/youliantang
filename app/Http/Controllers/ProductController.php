@@ -70,12 +70,12 @@ class ProductController extends Controller
                     if ($role == 'admin') {
                         $option = '
                             <a href="product/'.$row->id.'/edit">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Product">
+                                <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Product">
                                     <i class="mdi mdi-lead-pencil"></i>
                                 </button>
                             </a>
                             <a href="javascript:void(0)">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Product" data-id="'.$row->id.'" id="delete-product">
+                                <button type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Product" data-id="'.$row->id.'" id="delete-product">
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';

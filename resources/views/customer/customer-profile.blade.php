@@ -42,15 +42,15 @@
                     </div>
                     <div class="card-body pt-0">
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="avatar-md profile-user-wid mb-4">
                                     <img src="@if ($customer->profile_photo != null){{ URL::asset('storage/images/users/' . $customer->profile_photo) }}@else{{ URL::asset('assets/images/users/noImage.png') }}@endif" alt="{{ $customer->first_name }}"
                                         class="img-thumbnail rounded-circle">
                                 </div>
-                                <h5 class="font-size-15 text-truncate"> {{ $customer->first_name }}
-                                    {{ $customer->last_name }}</h5>
+                                <h5 class="font-size-15 text-truncate"> {{ ucwords($customer->first_name) }}
+                                    {{ ucwords($customer->last_name) }}</h5>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <div class="pt-4">
                                     <div class="row">
                                         <div class="col-12">
@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="mt-4">
                                         <a href="{{ url('customer/' . $customer->id . '/edit') }}"
-                                            class="btn btn-primary waves-effect waves-light btn-sm">{{ __('Edit Profile ') }}<i
+                                            class="btn btn-success waves-effect waves-light btn-sm">{{ __('Edit Profile ') }}<i
                                                 class="mdi mdi-arrow-right ml-1"></i></a>
                                     </div>
                                 </div>
@@ -104,34 +104,17 @@
             </div>
             <div class="col-xl-8">
                 <div class="row">
-                    {{-- <div class="col-md-4">
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Appointments') }}</p>
-                                        <h4 class="mb-0">{{ number_format($data['total_appointment']) }}</h4>
-                                    </div>
-                                    <div class="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
-                                        <span class="avatar-title">
-                                            <i class="bx bx-check-circle font-size-24"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                     <div class="col-md-6">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
-                                        <p class="text-muted font-weight-medium">{{ __('Pending Bills') }}</p>
-                                        <h4 class="mb-0">{{ number_format($data['pending_bill']) }}</h4>
+                                        <p class="text-muted font-weight-medium">{{ __('Total Invoice') }}</p>
+                                        <h4 class="mb-0">{{ number_format($data['invoice_total']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
-                                            <i class="bx bx-hourglass font-size-24"></i>
+                                            <i class="fa fa-file-invoice font-size-24"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -144,11 +127,11 @@
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="text-muted font-weight-medium">{{ __('Total Bill') }}</p>
-                                        <h4 class="mb-0">Rp {{ number_format($data['revenue']) }}</h4>
+                                        <h4 class="mb-0">Rp {{ number_format($data['bill_total']) }}</h4>
                                     </div>
                                     <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-primary">
                                         <span class="avatar-title">
-                                            <i class="bx bx-package font-size-24"></i>
+                                            <i class="fa fa-money-bill font-size-24"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -160,137 +143,23 @@
                     <div class="card-body">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
-                            <!--
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#Medical_info" role="tab">
-                                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Medical Information') }}</span>
-                                </a>
-                            </li>
-                            -->
-                            {{-- <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#AppointmentList" role="tab">
-                                    <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Appointment List') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#PrescriptionList" role="tab">
-                                    <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                    <span class="d-none d-sm-block">{{ __('Prescription List') }}</span>
-                                </a>
-                            </li> --}}
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#Invoices" role="tab">
+                                <a class="nav-link active" data-toggle="tab" href="#Invoices" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
                                     <span class="d-none d-sm-block">{{ __('Invoices') }}</span>
                                 </a>
                             </li>
                         </ul>
                         <!-- Tab panes -->
-                        <div class="tab-content p-3 text-muted"></div>
-                            {{-- <div class="tab-pane" id="AppointmentList" role="tabpanel">
-                                <table class="table table-bordered dt-responsive nowrap "
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <div class="tab-content p-3 text-muted">
+                            <div class="tab-pane active" id="Invoices" role="tabpanel">
+                                <table class="table dt-responsive table-hover nowrap ">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('No.') }}</th>
-                                            <th>{{ __('Therapy Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Time') }}</th>
-                                        </tr>
-                                    </thead>
-                                    @if (session()->has('page_limit'))
-                                        @php
-                                            $per_page = session()->get('page_limit');
-                                        @endphp
-                                    @else
-                                        @php
-                                            $per_page = Config::get('app.page_limit');
-                                        @endphp
-                                    @endif
-                                    @php
-                                        $currentpage = $invoices->currentPage();
-                                    @endphp
-                                    @foreach ($appointments as $item)
-                                        <tr>
-                                            <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                            <td>{{ $item->therapy->first_name }} {{ $item->therapy->last_name }}</td>
-                                            <td>{{ $item->appointment_date }}</td>
-                                            <td>{{ $item->timeSlot->from . ' to ' . $item->timeSlot->to }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="col-md-12 text-center mt-3">
-                                    <div class="d-flex justify-content-start">
-                                        Showing {{ $appointments->firstItem() }} to {{ $appointments->lastItem() }} of
-                                        {{ $appointments->total() }} entries
-                                    </div>
-                                    <div class="d-flex justify-content-end">
-                                        {{ $appointments->links() }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="PrescriptionList" role="tabpanel">
-                                <table class="table table-bordered dt-responsive nowrap "
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('No.') }}</th>
-                                            <th>{{ __('Therapy Name') }}</th>
-                                            <th>{{ __('Date') }}</th>
-                                            <th>{{ __('Option') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (session()->has('page_limit'))
-                                            @php
-                                                $per_page = session()->get('page_limit');
-                                            @endphp
-                                        @else
-                                            @php
-                                                $per_page = Config::get('app.page_limit');
-                                            @endphp
-                                        @endif
-                                        @php
-                                            $currentpage = $prescriptions->currentPage();
-                                        @endphp
-                                        @foreach ($prescriptions as $item)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td>{{ $item->therapy->first_name }} {{ $item->therapy->last_name }}
-                                                </td>
-                                                <td>{{ date('d-m-Y') }}</td>
-                                                <td>
-                                                    <a href="{{ url('prescription/' . $item->id) }}">
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                                            {{ __('View') }}
-                                                        </button>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="col-md-12 text-center mt-3">
-                                    <div class="d-flex justify-content-start">
-                                        Showing {{ $prescriptions->firstItem() }} to {{ $prescriptions->lastItem() }}
-                                        of {{ $prescriptions->total() }} entries
-                                    </div>
-                                    <div class="d-flex justify-content-end">
-                                        {{ $prescriptions->links() }}
-                                    </div>
-                                </div>
-                            </div> --}}
-                            <div class="tab-pane" id="Invoices" role="tabpanel">
-                                <table class="table table-bordered dt-responsive nowrap "
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('No.') }}</th>
-                                            <th>{{ __('Date') }}</th>
+                                            <th>{{ __('No') }}</th>
+                                            <th>{{ __('Invoice Number') }}</th>
+                                            <th>{{ __('Treatment Date') }}</th>
+                                            <th>{{ __('Bill') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Option') }}</th>
                                         </tr>
@@ -311,12 +180,14 @@
                                         @foreach ($invoices as $item)
                                             <tr>
                                                 <td>{{ $loop->index + 1 + $per_page * ($currentpage - 1) }}</td>
-                                                <td>{{ date('d-m-Y') }}</td>
+                                                <td>{{ $item->invoice_code }}</td>
+                                                <td>{{ date('d M Y', strtotime($item->treatment_date)) }}</td>
+                                                <td>Rp {{ number_format($item->grand_total) }}</td>
                                                 <td>{{ $item->payment_status }}</td>
                                                 <td>
-                                                    <a href="{{ url('invoice/' . $item->id) }}">
+                                                    <a href="{{ url('invoice/' . $item->id) }}" target="_blank">
                                                         <button type="button"
-                                                            class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
+                                                            class="btn btn-info btn-sm btn-rounded waves-effect waves-light">
                                                             {{ __('View') }}
                                                         </button>
                                                     </a>

@@ -66,10 +66,6 @@ class RoleSeeder extends Seeder
             'customer.update' => true,
             'customer.delete' => true,
             'customer.view' => true,
-            // 'appointment.list' => true,
-            // 'appointment.status' => true,
-            // 'prescription.list' => true,
-            // 'prescription.show' => true,
             'membership.list'=>true,
             'membership.create'=>true,
             'membership.update'=>true,
@@ -124,12 +120,6 @@ class RoleSeeder extends Seeder
             'customermember.create'=>true,
             'customermember.update'=>true,
             'customermember.delete'=>true,
-            // 'appointment.list' => true,
-            // 'appointment.create' => true,
-            // 'appointment.status' => true,
-            // 'prescription.list' => true,
-            // 'prescription.show' => true,
-            // 'receptionist.delete' => true,
             'promo.list'=>true,
             'promo.show'=>true,
             'promo.create'=>true,
@@ -146,45 +136,20 @@ class RoleSeeder extends Seeder
         ];
         $role_receptionist->save();
 
-        // // therapist permission add
-        // $role_therapist = Sentinel::findRoleBySlug('therapist');
-        // $role_therapist->permissions = [
-        //     'receptionist.list' => true,
-        //     'therapist.time_edit' => true,
-        //     'therapist.delete' => true,
-        //     'profile.update' => true,
-        //     'customer.list' => true,
-        //     'customer.create' => true,
-        //     'customer.update' => true,
-        //     'customer.delete' => true,
-        //     'customer.view' => true,
-        //     'appointment.list' => true,
-        //     'appointment.create' => true,
-        //     'appointment.status' => true,
-        //     'prescription.list' => true,
-        //     'prescription.create' => true,
-        //     'prescription.update' => true,
-        //     'prescription.delete' => true,
-        //     'prescription.show' => true,
-        //     'invoice.show' => true,
-        //     'invoice.list' => true,
-        //     'invoice.create' => true,
-        //     'invoice.update' => true,
-        //     'invoice.delete' => true,
-        //     'invoice.edit'=>true,
-        // ];
-        // $role_therapist->save();
+        // therapist permission add
+        $role_therapist = Sentinel::findRoleBySlug('therapist');
+        $role_therapist->permissions = [
+            'profile.update' => true,
+            'invoice.show' => true,
+        ];
+        $role_therapist->save();
 
-        // // customer permission add
-        // $role_customer = Sentinel::findRoleBySlug('customer');
-        // $role_customer->permissions = [
-        //     'therapist.list' => true,
-        //     'profile.update' => true,
-        //     // 'customer.delete' => true,
-        //     'customer-appointment.list' => true,
-        //     'appointment.create' => true,
-        //     'appointment.status' => true,
-        // ];
-        // $role_customer->save();
+        // customer permission add
+        $role_customer = Sentinel::findRoleBySlug('customer');
+        $role_customer->permissions = [
+            'profile.update' => true,
+            'invoice.show' => true,
+        ];
+        $role_customer->save();
     }
 }

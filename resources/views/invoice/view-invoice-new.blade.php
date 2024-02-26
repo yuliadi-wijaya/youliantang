@@ -66,20 +66,25 @@
 <!-- end page title -->
 <div class="row d-print-none">
     <div class="col-12">
-        <a href="{{ url('invoice') }}">
-            <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
-                <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Invoice List') }}
-            </button>
-        </a>
-        <a href="javascript:window.print()" class="btn btn-dark waves-effect waves-light mb-4">
-            <i class="fa fa-print"></i>
-        </a>
+        @if ($role == 'admin' || $role == 'receptionist') 
+            <a href="{{ url('invoice') }}">
+                <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
+                    <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Invoice List') }}
+                </button>
+            </a>
+            <a href="{{ url('invoice/'. $invoices->id . '/edit') }}" class="btn btn-warning waves-effect waves-light mb-4">
+                <i class="fa fa-pencil-alt"></i>
+            </a>
+            <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light mb-4">
+                <i class="fa fa-print"></i>
+            </a>
+        @endif
         {{-- <a href="{{ url('invoice-pdf/' . $invoices->id) }}" class="btn btn-dark waves-effect waves-light mb-4">
             <i class="fa fa-file-pdf"></i>
         </a> --}}
     </div>
 </div>
-<div class="view-invoice">
+<div class="view-invoice mb-3">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card">
@@ -99,13 +104,13 @@
                             <div class="row">
                                 <div class="col-12 mb-1"><strong>{{ __('Receptionist : ') }}</strong>{{ $receptionist->first_name . " " . $receptionist->last_name }}</div>
                                 <div class="col-12 mb-1"><strong>{{ __('Bill To : ') }}</strong></div>
-                                <div class="col-12 mb-1">{{ $invoices->customer_name }}</div>
+                                <div class="col-12 mb-1">{{ ucwords($invoices->customer_name) }}</div>
                                 <div class="col-12">{{ $invoices->customer_phone_number }}</div>
                             </div>
                         </div>
                         <div class="col-6 pull-right" style="text-align: right">
                             <div class="row">
-                                <div class="col-12"><h5>#{{ $invoices->invoice_code }}</h5></div>
+                                <div class="col-12"><h4>#{{ $invoices->invoice_code }}</h4></div>
                                 <div class="col-12 mb-1"><strong>{{ __('Invoice Date : ') }}</strong>{{ date("d-m-Y", strtotime($invoices->treatment_date)); }}</div>
                             </div>
                         </div>
@@ -127,7 +132,7 @@
                                 @foreach ($invoice_detail as $row)
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
-                                        <td>{{ $row->product_name }}</td>
+                                        <td><span style="font-weight:500">{{ $row->product_name }}</span> / {{ $row->therapist_name . ' / ' . $row->room . ' / ' . substr($row->treatment_time_from,0,5) . '-' . substr($row->treatment_time_to,0,5) }} </td>
                                         <td class="text-right">Rp {{ number_format($row->amount) }}</td>
                                     </tr>
                                 @endforeach
@@ -192,7 +197,7 @@
             <div class="row">
                 <div class="col-12 mb-1 font-weight-bold">{{ date("d-m-Y", strtotime($invoices->treatment_date)); }}</div>
                 <div class="col-12 font-weight-bold">{{ __('Bill To: ') }}</div>
-                <div class="col-12">{{ $invoices->customer_name }}</div>
+                <div class="col-12">{{ ucwords($invoices->customer_name) }}</div>
                 <div class="col-12">{{ substr_replace($invoices->customer_phone_number, '****', 5, 4) }}</div>
             </div>
         </div>

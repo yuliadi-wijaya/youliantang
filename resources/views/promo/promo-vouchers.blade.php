@@ -41,80 +41,73 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ url('promo') }}">
-                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Promo List') }}
                     </button>
                 </a>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-5">
                 <div class="card">
                     <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Promo Name: ') }} </label>
-                                        {{ $promo->name }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Status: ') }} </label>
-                                        @if ($promo->status == 1) 
-                                            {{ "Active" }}
-                                        @else 
-                                            {{ "In Active" }}
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Reusable Voucher ? ') }} </label>
-                                        @if ($promo->is_reuse_voucher == 1)
-                                            {{ "Yes" }}
-                                        @else
-                                            {{ "No" }}
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Note: ') }} </label>
-                                        {{ $promo->description }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Discount: ') }} </label>
-                                        @if ($promo->discount_type == 0)
-                                            {{ "Rp " . number_format($promo->discount_value) }}
-                                        @else 
-                                            {{ $promo->discount_value . "% " . "(Max: Rp " . number_format($promo->discount_max_value) . ")"}}
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 form-group">
-                                        <label class="control-label">{{ __('Active Period: ') }} </label>
-                                        {{ date('Y-m-d', strtotime($promo->active_period_start)) . " to " . date('Y-m-d', strtotime($promo->active_period_end)) }}
-                                    </div>
-                                </div>
+                        <div class="row mb-3" style="background-color: #2a3042">
+                            <div class="col-md-12 text-center mt-4 mb-4">
+                                <span class="font-weight-bold" style="font-size: 15pt; color: #eff2f7 !important">{{ $promo->name }}</span>
                             </div>
                         </div>
-                        <br />
-                        <blockquote>{{ __('Voucher Information') }}</blockquote>
-                        <div class="row" style="margin-bottom: 8px">
+                        <div class="row mb-4">
+                            <div class="col-md-12 text-center">
+                                @if ($promo->discount_type == 0)
+                                    <span class="font-weight-bold" style="font-size: 25pt; color: #2a3042">{{ "Rp " . number_format($promo->discount_value) }}</span>
+                                @else 
+                                    @if ((float)$promo->discount_max_value > 0)
+                                        <span class="font-weight-bold" style="font-size: 25pt; color: #2a3042">{{ $promo->discount_value . "%"}}</span> <span style="font-weight: bold">(Max: {{number_format($promo->discount_max_value)}})</span>
+                                    @else
+                                        <span class="font-weight-bold" style="font-size: 25pt; color: #2a3042">{{ $promo->discount_value . "%"}}</span>
+                                    @endif
+                                @endif <br>
+                                <span>({{ date('d M Y', strtotime($promo->active_period_start)) . " - " . date('d M Y', strtotime($promo->active_period_end)) }})</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group mt-2">
+                                <label class="control-label">{{ __('Reusable Voucher ? ') }} </label>
+                                @if ($promo->is_reuse_voucher == 1)
+                                    {{ "Yes" }}
+                                @else
+                                    {{ "No" }}
+                                @endif
+                            </div>
+                            <div class="col-md-6 text-right">
+                                @if ($promo->status == 1) 
+                                    <span class="btn btn-sm btn-success">{{ "Active" }}</span>
+                                @else 
+                                    <span class="btn btn-sm btn-danger">{{ "In Active" }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: -10px">
+                            <div class="col-md-12 form-group" style="font-size: 8pt">
+                                @if(isset($promo->description))
+                                    * {{ $promo->description }}
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center" style="margin-bottom: 8px">
                             <div class="col-md-12 form-group">
-                                <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List:") }}</label>
-                                <div class="btn-group voucher_list d-block" style="max-height: 500px; overflow: scroll; border: solid 1px grey; padding: 5px;">
+                                <label for="" class="d-block">{{ __("Voucher List") }}</label>
+                                <hr>
+                                <div class="btn-group voucher_list d-block" style="max-height: 500px; overflow: scroll; border: solid 1px #f8f8fb; padding: 5px;">
                                     @if ($promo->promo_vouchers)
                                         @foreach ($promo->promo_vouchers as $item)
-                                        <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
+                                        <label class="btn btn-outline-secondary col-sm-2 m-2">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
                                         @endforeach
                                     @endif
                                 </div>

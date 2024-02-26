@@ -37,13 +37,12 @@
                         </button>
                     </a>
                     @endif
-                    <table id="promoList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="promoList" class="table table-bordered dt-responsive nowrap display table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>{{ __('No.') }}</th>
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Discount') }}</th>
-                                <th>{{ __('Max Discount') }}</th>
                                 <th>{{ __('Active Period') }}</th>
                                 <th>{{ __('Reusable Voucher ?') }}</th>
                                 <th>{{ __('Status') }}</th>
@@ -81,7 +80,6 @@
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name' },
                     { data: 'discount', name: 'discount', orderable: false },
-                    { data: 'discount_max', name: 'discount_max', orderable: false },
                     { data: 'active_period', name: 'active_period' },
                     { data: 'is_reuse_voucher', name: 'is_reuse_voucher', orderable: false },
                     { data: 'status', name: 'status', orderable: false },

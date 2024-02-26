@@ -53,24 +53,23 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ url('promo') }}">
-                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Promo List') }}
                     </button>
                 </a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form action="@if ($promo ) {{ url('promo/' . $promo->id) }} @else {{ route('promo.store') }} @endif" method="post" enctype="multipart/form-data">
+        <form action="@if ($promo ) {{ url('promo/' . $promo->id) }} @else {{ route('promo.store') }} @endif" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
                             @csrf
                             @if ($promo )
                                 <input type="hidden" name="_method" value="PATCH" />
                             @endif
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Promo Name ') }}<span
@@ -87,55 +86,6 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Status ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <select class="form-control @error('status') is-invalid @enderror"
-                                                tabindex="11" name="status">
-                                                <option selected disabled>{{ __('-- Select Status --') }}</option>
-                                                <option value="1" @if (($promo && $promo->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
-                                                <option value="0" @if (($promo && $promo->status == '0') || old('status') == '0') selected @endif>{{ __('In Active') }}</option>
-                                            </select>
-                                            @error('status')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Reusable Voucher ? ') }}<span
-                                                    class="text-danger">*</span></label>
-                                            <select class="form-control @error('is_reuse_voucher') is-invalid @enderror"
-                                                tabindex="11" name="is_reuse_voucher" id="is_reuse_voucher">
-                                                <option value="0" @if (($promo && $promo->is_reuse_voucher == '0') || old('is_reuse_voucher') == '0') selected @endif>{{ __('No') }}</option>
-                                                <option value="1" @if (($promo && $promo->is_reuse_voucher == '1') || old('is_reuse_voucher') == '1') selected @endif>{{ __('Yes') }}</option>
-
-                                            </select>
-                                            @error('is_reuse_voucher')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 form-group">
-                                            <label class="control-label">{{ __('Note') }}</label>
-                                                    <textarea id="Description" name="description" tabindex="7"
-                                                    class="form-control @error('description') is-invalid @enderror" rows="4"
-                                                    placeholder="{{ __('Enter Note') }}">@if ($promo){{ $promo->description }}@elseif(old('description')){{ old('description') }}@endif</textarea>
-                                            @error('duration')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <label class="control-label">{{ __('Discount Type ') }}<span
@@ -160,8 +110,8 @@
                                                     <label class="control-label">{{ __('Total Discount ') }}<span
                                                         class="text-danger">*</span></label>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label class="control-label discount-max-value">{{ __('Max Discount ') }}<span
+                                                <div class="col-md-6 discount-max-value">
+                                                    <label class="control-label">{{ __('Max Discount ') }}<span
                                                         class="text-danger">*</span></label>
                                                 </div>
                                             </div>
@@ -176,15 +126,20 @@
                                                         </span>
                                                     @enderror
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <input type="number" class="form-control discount-max-value @error('discount_max_value') is-invalid @enderror"
-                                                        tabindex="4" name="discount_max_value" id="DiscountMaxValue" value="@if ($promo ){{ old('discount_max_value', $promo->discount_max_value) }}@elseif(old('discount_max_value')){{ old('discount_max_value') }}@endif"
-                                                        placeholder="{{ __('Enter Max Discount (Fix Rate)') }}">
-                                                    @error('discount_max_value')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
+                                                <div class="col-md-6 discount-max-value">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp</span>
+                                                        </div>
+                                                        <input type="number" class="form-control @error('discount_max_value') is-invalid @enderror"
+                                                            tabindex="4" name="discount_max_value" id="DiscountMaxValue" value="@if ($promo ){{ old('discount_max_value', $promo->discount_max_value) }}@elseif(old('discount_max_value')){{ old('discount_max_value') }}@endif"
+                                                            placeholder="{{ __('Enter Max Discount') }}">
+                                                        @error('discount_max_value')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -233,30 +188,85 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Status ') }}<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control @error('status') is-invalid @enderror"
+                                                tabindex="11" name="status">
+                                                <option selected disabled>{{ __('-- Select Status --') }}</option>
+                                                <option value="1" @if (($promo && $promo->status == '1') || old('status') == '1') selected @endif>{{ __('Active') }}</option>
+                                                <option value="0" @if (($promo && $promo->status == '0') || old('status') == '0') selected @endif>{{ __('In Active') }}</option>
+                                            </select>
+                                            @error('status')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Reusable Voucher ? ') }}<span
+                                                    class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(voucher code can be used more than 1x transaction)") }}</span></label>
+                                            <select class="form-control @error('is_reuse_voucher') is-invalid @enderror"
+                                                tabindex="11" name="is_reuse_voucher" id="is_reuse_voucher">
+                                                <option value="0" @if (($promo && $promo->is_reuse_voucher == '0') || old('is_reuse_voucher') == '0') selected @endif>{{ __('No') }}</option>
+                                                <option value="1" @if (($promo && $promo->is_reuse_voucher == '1') || old('is_reuse_voucher') == '1') selected @endif>{{ __('Yes') }}</option>
+
+                                            </select>
+                                            @error('is_reuse_voucher')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <label class="control-label">{{ __('Note') }}</label>
+                                                    <textarea id="Description" name="description" tabindex="7"
+                                                    class="form-control @error('description') is-invalid @enderror" rows="4"
+                                                    placeholder="{{ __('Enter Note') }}">@if ($promo){{ $promo->description }}@elseif(old('description')){{ old('description') }}@endif</textarea>
+                                            @error('duration')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <br />
-                            <blockquote>{{ __('Voucher Information') }}</blockquote>
-                            <div class="row">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label class="control-label">{{ __('Filter ') }}<span
-                                        class="text-danger">*</span></label>
                                     <div class="row">
-                                        <div class="col-md-3 form-group">
+                                        <div class="col-md-4 form-group">
+                                            <label class="control-label">{{ __('Total Voucher Generated ') }}<span
+                                                class="text-danger">*</span></label>
                                             <input type="number"
                                                 class="form-control"
                                                 name="voucher_total" id="VoucherTotal" tabindex="1"
                                                 value="{{ old('voucher_total') }}"
-                                                placeholder="{{ __('Enter Total Voucher Will Be Generated') }}">
+                                                placeholder="{{ __('Enter Total Vouchers') }}">
                                         </div>
-                                        <div class="col-md-3 form-group">
+                                        <div class="col-md-4 form-group">
+                                            <label class="control-label">{{ __('Voucher Prefix ') }}<span
+                                                class="text-danger">*</span></label>
                                             <input type="text"
                                                 class="form-control text-uppercase h-formfield-uppercase"
                                                 name="voucher_prefix" id="VoucherPrefix" tabindex="1"
                                                 value="{{ old('voucher_prefix') }}"
-                                                placeholder="{{ __('Enter Prefix Voucher') }}">
+                                                placeholder="{{ __('Enter Prefix') }}">
                                         </div>
-                                        <div class="col-md-2 form-group">
+                                        <div class="col-md-4 form-group">
+                                            <label class="control-label">{{ __('Voucher Start Number ') }}<span
+                                                class="text-danger">*</span></label>
                                             <input type="number"
                                                 class="form-control @error('start_number') is-invalid @enderror""
                                                 name="start_number" id="StartNumber" tabindex="1"
@@ -268,47 +278,46 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        <div class="col-md-3 form-group">
-                                            <input type="hidden" id="IsGenerated" name="is_generated" value="{{ old('is_generated', 0) }}">
-                                            <button type="button" id="GenerateVoucher" class="btn btn-primary">{{ __('Generate Voucher') }}</button>
-                                        </div>
+                                        
                                     </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="hidden" id="IsGenerated" name="is_generated" value="{{ old('is_generated', 0) }}">
+                                    <button type="button" id="GenerateVoucher" class="btn btn-success">{{ __('Generate Voucher') }}</button>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 8px">
                                 <div class="col-md-12 form-group">
-                                    <label for="" class="d-block" style="margin-bottom: 15px">{{ __("Voucher List") }}<span
+                                    <label for="" class="d-block mb-3">{{ __("Voucher List") }}<span
                                             class="text-danger">*</span> <span style="font-size: 8pt; font-style: italic;">{{ __("(will be generated automatically after click the generate voucher button)") }}</span></label>
-                                    <div class="btn-group voucher_list d-block" style="max-height: 500px; overflow: scroll; border: solid 1px grey; padding: 5px;">
+                                    @error('voucher_list')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    <div class="btn-group voucher_list d-block" style="max-height: 428px; overflow: scroll; border: dashed 1px #f8f8fb; padding: 5px;">
                                         @if ($promo != null && $promo->promo_vouchers)
                                             @foreach ($promo->promo_vouchers as $item)
-                                            <label class="btn btn-outline-secondary m-1">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
+                                                <label class="btn btn-outline-secondary m-2 col-sm-2" style="width: 300px !important;">{{ $item->voucher_code }}<input type="hidden" name="voucher_list[]" value="{{ $item->voucher_code }}"></label>
                                             @endforeach
                                         @endif
-                                        @error('voucher_list')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        @if ($promo)
-                                            {{ __('Update Promo Details') }}
-                                        @else
-                                            {{ __('Add New Promo') }}
-                                        @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
+                <div class="col-lg-12 mb-4">
+                    <button type="submit" class="btn btn-primary">
+                        @if ($promo)
+                            {{ __('Update Promo Details') }}
+                        @else
+                            {{ __('Add New Promo') }}
+                        @endif
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
         <!-- end row -->
     @endsection
     @section('script')

@@ -17,6 +17,7 @@
         "add-new-transaction" => "Tambah Transaksi Baru",
         "revenue" => "Pendapatan",
         "today's-earning" => "Pendapatan Hari Ini",
+        "today's-invoice" => "Transaksi Hari Ini",
         "today's-appointments" => "Janji Hari Ini",
         "tomorrow-appointments" => "Janji Besok",
         "upcoming-appointments" => "Janji Mendatang",
