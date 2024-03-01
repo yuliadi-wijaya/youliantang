@@ -72,6 +72,21 @@
                     </div>
                 </div>
                 <!-- end card -->
+                <div class="card mini-stats-wid">
+                    <div class="card-body">
+                        <div class="media">
+                            <div class="media-body">
+                                <p class="text-muted font-weight-bold">{{ __('Current Payout') }}</p>
+                                <h4 class="mb-0 text-danger" style="font-weight: bold">Rp {{ number_format($data['payroll_fee']) }} <span style="font-size:9pt; font-weight:normal;"> of {{ number_format((float)$data['payroll_treatments']) }} treatments</span></h4>
+                            </div>
+                            <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-danger">
+                                <span class="avatar-title" style="background-color: #f46a6a">
+                                    <i class="fa fa-money-check-alt font-size-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-4">{{ __('Personal Information') }}</h4>

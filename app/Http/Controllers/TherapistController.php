@@ -370,12 +370,45 @@ class TherapistController extends Controller
                         $treatment_total = $therapist_transaction_fee[0]->treatment_total;
                         $invoice_total = $therapist_transaction_fee[0]->invoice_total;
                     }
+
+                    // payroll logic
+                    $current_date = Carbon::now();
+                    $payroll_date = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25);
+                    
+                    $payroll_start_date = Carbon::now();
+                    $payroll_end_date = Carbon::now();
+
+                    if ($current_date >= Carbon::now()->firstOfMonth() && $current_date <= Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25)) {
+                        $payroll_start_date = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25)->addMonths(-1)->addDays(1);
+                        $payroll_end_date = $current_date;
+                    }
+
+                    if ($current_date > Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25) && $current_date <= Carbon::now()->endOfMonth()) {
+                        $payroll_start_date = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25)->addDay();
+                        $payroll_end_date = $current_date;
+                    }
+                    
+                    DB::connection()->enableQueryLog();
+                    $payroll_transaction_fee = InvoiceDetail::select(DB::raw('COUNT(DISTINCT invoice_id) AS invoice_total
+                    ,COUNT(DISTINCT id) AS treatment_total
+                    ,SUM(fee) AS commission_fee_total '))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('therapist_id', $therapist_id)
+                    ->whereBetween(DB::raw('DATE(created_at)'), [$payroll_start_date->format('Y-m-d'), $payroll_end_date->format('Y-m-d')])
+                    ->groupBy(DB::raw('YEAR(created_at)'))
+                    ->first();
+                    // end payroll logic
          
                     $data = [
                         'revenue' => $revenue,
                         'fee' => $commission_fee_total,
                         'total_treatments' => $treatment_total,
-                        'total_invoices' => $invoice_total
+                        'total_invoices' => $invoice_total,
+
+                        'payroll_fee' => ($payroll_transaction_fee) ? $payroll_transaction_fee->commission_fee_total : 0,
+                        'payroll_treatments' => ($payroll_transaction_fee) ? $payroll_transaction_fee->treatment_total : 0,
+                        'payroll_invoices' => ($payroll_transaction_fee) ? $payroll_transaction_fee->invoice_total : 0
                     ];
                     $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
                     return view('therapist.therapist-profile', compact('user', 'role', 'therapist', 'therapist_info', 'data', 'invoices', 'availableDay'));

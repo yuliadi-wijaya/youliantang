@@ -26,18 +26,17 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ url('/') }}">
-                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Dashboard') }}
                     </button>
                 </a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form action="{{ url('profile-update') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url('profile-update') }}" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -216,18 +215,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Update  Details') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">
+                        {{ __('Update  Details') }}
+                    </button>
+                </div>
+            </div>
+        </form>
         <!-- end row -->
     @endsection
     @section('script')

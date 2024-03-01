@@ -560,7 +560,7 @@ class UserController extends Controller
                     ->where('status', 1)
                     ->where('is_deleted', 0)
                     ->where('therapist_id', $therapist->id)
-                    ->whereBetween('created_at', [$payroll_start_date, $payroll_end_date])
+                    ->whereBetween(DB::raw('DATE(created_at)'), [$payroll_start_date->format('Y-m-d'), $payroll_end_date->format('Y-m-d')])
                     ->groupBy(DB::raw('YEAR(created_at)'))
                     ->first();
                     // end payroll logic

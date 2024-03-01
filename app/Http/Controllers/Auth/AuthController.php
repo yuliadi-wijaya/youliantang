@@ -42,8 +42,10 @@ class AuthController extends Controller
             'password' => 'required|max:50'
         ]);
         try {
+            
             $remember = $request->remember == 'On' ? true : false;
             $user = Sentinel::authenticate($validatedData, $remember);
+            
             if ($user) {
                 $customer = Customer::where('user_id', '=', $user->id)->count();
                 if ($user->roles[0]->slug == 'customer' && ($customer == 0)) {

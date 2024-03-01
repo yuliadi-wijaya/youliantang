@@ -293,8 +293,9 @@ class InvoiceController extends Controller
             }
 
             $dateCode = now()->format('ym');
-
-            $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+            
+            // $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+            $runningNumber = Invoice::where('invoice_code', 'like', $prefix . $dateCode . '%')->max('invoice_code');
             $runningNumber = $runningNumber ? (int) substr($runningNumber, -4) + 1 : 1;
             $invoiceCode = $prefix . $dateCode . str_pad($runningNumber, 4, '0', STR_PAD_LEFT);
             // End
@@ -372,7 +373,7 @@ class InvoiceController extends Controller
                     'treatment_time_from',
                     'treatment_time_to',
                     'room',
-                    \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS therapist_name")
+                    \DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name,'')) AS therapist_name")
                 )
                 ->join('products', 'products.id', '=', 'invoice_details.product_id')
                 ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
@@ -613,7 +614,8 @@ class InvoiceController extends Controller
             if($invoice_type != $request->invoice_type_old){
                 $dateCode = now()->format('ym');
 
-                $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+                // $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+                $runningNumber = Invoice::where('invoice_code', 'like', $prefix . $dateCode . '%')->max('invoice_code');
                 $runningNumber = $runningNumber ? (int) substr($runningNumber, -4) + 1 : 1;
                 $invoiceCode = $prefix . $dateCode . str_pad($runningNumber, 4, '0', STR_PAD_LEFT);
                 // End

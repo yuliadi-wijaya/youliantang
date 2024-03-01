@@ -10,16 +10,16 @@
     .print-invoice {
         display: none;
         /* width: 75mm; */
-        width: 123mm;
-        color: black;
-        font-size: 14pt !important;
+        width: 139mm;
+        color: black !important;
+        font-size: 15pt !important;
         padding: -5px;
-        font-family: 'Courier New', monospace;
+        font-family: 'courier';
         margin: 0;
     }
 
     #table-content-invoice td {
-        font-size: 14pt;
+        font-size: 15pt;
     }
 
     @media print {
@@ -29,12 +29,13 @@
 
         @page {
             /* size: 58mm 120mm; */
-            size: 90mm 175mm;
+            size: 100mm 200mm;
             margin: 0;
         }
         body {
-            font-family: 'Courier New', monospace;
+            font-family: 'courier';
             margin: 0;
+            color: black !important;
         }
         .print-invoice {
             display: block;
@@ -183,16 +184,16 @@
 <div class="print-invoice">
     <div class="invoice-title">
         <div class="text-center">
-            <img src="{{ URL::asset('assets/images/logo-dark.png') }}" alt="" width="275" style="margin:-65px 0 -52px 0">
+            <img src="{{ URL::asset('assets/images/logo-dark.png') }}" alt="" width="295" style="margin:-65px 0 -62px 0">
         </div>
     </div>
     <div class="invoice-address">
-        <div class="text-center text-black font-weight-bold" style="color:black; font-size: 12pt;">
+        <div class="text-center text-black font-weight-bold" style="color:black; font-size: 13pt;">
             Ruko Inkopal Blok C6-C7, Kelapa Gading Barat, Jakarta Utara
         </div>
     </div>
     <div class="row mt-5 mb-3">
-        <div class="col-12 text-center font-weight-bold mb-3"><h4><strong>Receipt #{{ $invoices->invoice_code }}</strong></h4></div>
+        <div class="col-12 text-center font-weight-bold mb-3" style="font-size: 16pt"><strong>Receipt #{{ $invoices->invoice_code }}</strong></div>
         <div class="col-6">
             <div class="row">
                 <div class="col-12 mb-1 font-weight-bold">{{ date("d-m-Y", strtotime($invoices->treatment_date)); }}</div>
