@@ -406,6 +406,9 @@ class TherapistController extends Controller
                         'total_treatments' => $treatment_total,
                         'total_invoices' => $invoice_total,
 
+                        'payroll_start_date' => $payroll_start_date,
+                        'payroll_end_date' => $payroll_end_date,
+
                         'payroll_fee' => ($payroll_transaction_fee) ? $payroll_transaction_fee->commission_fee_total : 0,
                         'payroll_treatments' => ($payroll_transaction_fee) ? $payroll_transaction_fee->treatment_total : 0,
                         'payroll_invoices' => ($payroll_transaction_fee) ? $payroll_transaction_fee->invoice_total : 0
