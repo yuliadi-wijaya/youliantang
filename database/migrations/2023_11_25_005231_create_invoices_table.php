@@ -39,6 +39,9 @@ class CreateInvoicesTable extends Migration
             $table->string('voucher_code')->nullable();
             $table->double('total_price')->nullable();
             $table->double('discount')->nullable();
+            $table->double('additional_price')->nullable();
+            $table->double('tax_rate')->nullable()->default(null);
+            $table->double('tax_amount')->nullable()->default(null);
             $table->double('grand_total')->nullable();
 
             $table->foreign('created_by')->references('id')->on('users');

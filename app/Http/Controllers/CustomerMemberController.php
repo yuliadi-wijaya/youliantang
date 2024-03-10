@@ -55,7 +55,7 @@ class CustomerMemberController extends Controller
             return Datatables::of($customermembers)
                 ->addIndexColumn()
                 ->addColumn('name', function($row) {
-                    $name = $row->first_name.' '.$row->last_name;
+                    $name = ucwords($row->first_name).' '.ucwords($row->last_name);
                     return $name;
                 })
                 ->addColumn('phone_number', function($row) {
@@ -71,18 +71,21 @@ class CustomerMemberController extends Controller
                     return Config::get('constants.status.' . $row->status, 'Undefined');
                 })
                 ->addColumn('option', function($row) use ($role) {
+                    $option = "";
                     if ($role == 'admin') {
                         $option = '
                             <a href="customermember/'.$row->id.'/edit">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update CustomerMember">
+                                <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update CustomerMember">
                                     <i class="mdi mdi-lead-pencil"></i>
                                 </button>
                             </a>
                             <a href="javascript:void(0)">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate CustomerMember" data-id="'.$row->id.'" id="delete-customermember">
+                                <button type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate CustomerMember" data-id="'.$row->id.'" id="delete-customermember">
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';
+                    } else if ($role == 'receptionist') {
+                        $option = '<i>No Access</i>';
                     }
                     return $option;
                 })->rawColumns(['option'])->make(true);
@@ -112,7 +115,7 @@ class CustomerMemberController extends Controller
 
         // Default data null
         $customermember = null;
-        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name')
+        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name', 'users.phone_number')
             ->join('users', 'users.id', '=', 'customers.user_id')
             ->where('users.status', 1)
             ->where('users.is_deleted', 0)
@@ -190,10 +193,12 @@ class CustomerMemberController extends Controller
         $role = $user->roles[0]->slug;
 
         $customer_id = $customermember->customer_id;
-
+        // echo '<pre>';
+        // print_r($customermember);
+        // echo '</pre>';die();
         // Get available data only
         $obj = CustomerMember::where('id', $customermember->id)->where('is_deleted', 0)->first();
-        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name')
+        $customers = Customer::select('users.id', 'users.first_name', 'users.last_name', 'users.phone_number')
             ->join('users', 'users.id', '=', 'customers.user_id')
             ->where('users.status', 1)
             ->where('users.is_deleted', 0)

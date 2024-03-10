@@ -24,6 +24,9 @@ return new class extends Migration
             $table->date('active_period_end')->default(now());
             $table->tinyInteger('status')->default(0)->comment('0=>inactive,1=>active');
             $table->tinyInteger('is_reuse_voucher')->comment('0=>no,1=>yes');
+            $table->integer('start_number')->nullable();
+            $table->integer('voucher_total')->nullable();
+            $table->string('voucher_prefix', 25)->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users');

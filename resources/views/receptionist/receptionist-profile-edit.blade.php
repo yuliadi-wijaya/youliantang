@@ -36,14 +36,14 @@
                 @if ($receptionist)
                     @if ($role == 'receptionist')
                         <a href="{{ url('/') }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                            <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                                 <i
                                     class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Dashboard') }}
                             </button>
                         </a>
                     @else
                         <a href="{{ url('receptionist/' . $receptionist->id) }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                            <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                                 <i
                                     class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Receptionist Profile') }}
                             </button>
@@ -51,7 +51,7 @@
                     @endif
                 @else
                     <a href="{{ url('receptionist') }}">
-                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                             <i
                                 class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Receptionist List') }}
                         </button>
@@ -59,12 +59,12 @@
                 @endif
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form action="{{ url('profile-update') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url('profile-update') }}" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <blockquote>{{ __('Basic Information') }}</blockquote>
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -234,6 +234,12 @@
                                 </div>
                             </div>
                             <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
                             <blockquote>{{ __('Emergency Information') }}</blockquote>
                             <div class="row">
                                 <div class="col-md-6">
@@ -267,18 +273,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Update Details') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
+                <div class="col-lg-12 mb-4">
+                    <button type="submit" class="btn btn-primary">
+                        {{ __('Update Details') }}
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
         <!-- end row -->
     @endsection
     @section('script')

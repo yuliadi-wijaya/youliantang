@@ -42,18 +42,17 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ url('product') }}">
-                    <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                         <i class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Product List') }}
                     </button>
                 </a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form action="@if ($product ) {{ url('product/' . $product->id) }} @else {{ route('product.store') }} @endif" method="post" enctype="multipart/form-data">
+        <form action="@if ($product ) {{ url('product/' . $product->id) }} @else {{ route('product.store') }} @endif" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
                             @csrf
                             @if ($product )
                                 <input type="hidden" name="_method" value="PATCH" />
@@ -131,7 +130,7 @@
                                                     class="text-danger">*</span></label>
                                             <input type="number" class="form-control @error('commission_fee') is-invalid @enderror"
                                                 tabindex="4" name="commission_fee" id="CommissionFee" value="@if ($product ){{ old('commission_fee', $product->commission_fee) }}@elseif(old('commission_fee')){{ old('commission_fee') }}@endif"
-                                                placeholder="{{ __('Enter Commission Fee That Will Be Paid to The Therapist') }}">
+                                                placeholder="{{ __('Enter Commission Fee For Therapist') }}">
                                             @error('commission_fee')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -141,22 +140,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        @if ($product)
-                                            {{ __('Update Product Details') }}
-                                        @else
-                                            {{ __('Add New Product') }}
-                                        @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
+                <div class="col-lg-12 mb-4">
+                    <button type="submit" class="btn btn-primary">
+                        @if ($product)
+                            {{ __('Update Product Details') }}
+                        @else
+                            {{ __('Add New Product') }}
+                        @endif
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
         <!-- end row -->
     @endsection
     @section('script')

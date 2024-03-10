@@ -16,6 +16,7 @@ use App\Receptionist;
 use App\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
@@ -453,7 +454,7 @@ class UserController extends Controller
     public function destroy($id)
     {
     }
-    public function profile_view()
+    public function profile_view(Request $request)
     {
         $user = Sentinel::getUser();
         $role = $user->roles[0]->slug;
@@ -461,96 +462,250 @@ class UserController extends Controller
             $customer = Sentinel::getUser();
             $customer_info = Customer::where('user_id', '=', $customer->id)->first();
             if ($customer) {
-                $medical_Info = MedicalInfo::where('user_id', '=', $customer->id)->first();
-                $customer_role = Sentinel::findRoleBySlug('customer');
-                $customers = $customer_role->users()->with('roles')->get();
-                $appointments = Appointment::with('therapist')->where('appointment_for', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'appointment');
-                $prescriptions = Prescription::with('therapist')->where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'prescription');
-                $invoices = Invoice::where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'invoice');
-                $tot_appointment = Appointment::where('appointment_for', $customer->id)->get();
-                $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                    $re->select(DB::raw('SUM(amount)'));
-                }])->where('customer_id', $customer->id)->pluck('id');
-                $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
-                $pending_bill = Invoice::where(['customer_id' => $customer->id, 'payment_status' => 'Unpaid'])->count();
-                $data = [
-                    'total_appointment' => $tot_appointment->count(),
-                    'revenue' => $revenue,
-                    'pending_bill' => $pending_bill
-                ];
-                return view('customer.customer-profile-view', compact('user', 'role', 'customer', 'customer_info', 'medical_Info', 'data', 'appointments', 'prescriptions', 'invoices'));
+                $invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                    ->join('users', 'users.id', '=', 'invoices.customer_id')
+                    ->where('invoices.customer_id', $customer->id)
+                    ->where('invoices.status', '1')
+                    ->where('invoices.is_deleted', '0')
+                    ->where('invoice_details.is_deleted', '0')
+                    ->orderby('invoices.id', 'desc')->distinct('invoices.id')->paginate(
+                        $this->limit, 
+                        ['invoices.id',
+                            'invoices.invoice_code',
+                            'invoices.payment_status',
+                            'invoices.treatment_date',
+                            'invoices.grand_total',
+                            'users.first_name',
+                            'users.last_name',
+                            'users.phone_number']
+                        , 'invoice');
+
+                    $invoice_transaction = DB::select("
+                        SELECT year(treatment_date) as treatment_date, count(id) as invoice_total
+                            ,sum(total_price) as price_total
+                            ,sum(discount) as discount_total 
+                            ,sum(tax_amount) as tax_amount_total
+                            ,sum(grand_total) as revenue_total
+                        FROM invoices
+                        WHERE status = 1 
+                            AND is_deleted = 0 
+                            AND year(treatment_date) = year(curdate())
+                            AND customer_id = ?
+                        GROUP BY year(treatment_date)
+                            ", [$customer->id]);
+
+                    $invoice_total = 0;
+                    $revenue_total = 0;
+                    if (count($invoice_transaction) > 0) {
+                        $invoice_total = $invoice_transaction[0]->invoice_total;
+                        $revenue_total = $invoice_transaction[0]->revenue_total;
+                    }
+                            
+                    $data = [
+                        'invoice_total' => $invoice_total,
+                        'bill_total' => $revenue_total
+                    ];
+                return view('customer.customer-profile-view', compact('user', 'role', 'customer', 'customer_info', 'data', 'invoices'));
             } else {
                 return redirect('/')->with('error', 'Customer not found');
             }
         } elseif ($role == 'therapist') {
             $therapist = Sentinel::getUser();
-            $therapist_id = $therapist->id;
             $role = $user->roles[0]->slug;
             $therapist_info = Therapist::where('user_id', '=', $therapist->id)->first();
             if ($therapist_info) {
-                $appointments = Appointment::where(function ($re) use ($therapist_id) {
-                    $re->orWhere('appointment_with', $therapist_id);
-                    $re->orWhere('booked_by', $therapist_id);
-                })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
-                $prescriptions = Prescription::with('customer')->where('created_by', $therapist->id)->orderby('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
-                $invoices = Invoice::with('user')->where('invoices.created_by', '=', $therapist->id)->orderby('id', 'desc')->get();
-                $invoices = Invoice::with('user')->where('therapist_id', $therapist_id)->paginate($this->limit, '*', 'invoices');
-                $tot_appointment = Appointment::where(function ($re) use ($therapist_id) {
-                    $re->orWhere('appointment_with', $therapist_id);
-                    $re->orWhere('booked_by', $therapist_id);
-                })->get();
-                $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                    $re->select(DB::raw('SUM(amount)'));
-                }])->where('therapist_id', $therapist_id)->pluck('id');
-                $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
+                $invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                        ->join('users', 'users.id', '=', 'invoices.customer_id')
+                        ->join('products', 'products.id', '=', 'invoice_details.product_id')
+                        ->where('invoice_details.therapist_id', $therapist->id)
+                        ->where('invoices.status', '1')
+                        ->where('invoices.is_deleted', '0')
+                        ->where('invoice_details.status', '1')
+                        ->where('invoice_details.is_deleted', '0')
+                        ->orderby('invoice_details.id', 'desc')->paginate(
+                            $this->limit, 
+                            ['invoices.id',
+                                'invoices.invoice_code',
+                                'invoices.payment_status',
+                                'invoices.treatment_date',
+                                'users.first_name',
+                                'users.last_name',
+                                'users.phone_number',
+                                'products.name as product_name',
+                                'invoice_details.fee',
+                                'invoice_details.treatment_time_from',
+                                'invoice_details.treatment_time_to']
+                            , 'invoices');
 
-                $pending_bill = Invoice::where(['therapist_id' => $therapist_id, 'payment_status' => 'Unpaid'])->count();
+                    // payroll logic
+                    $current_date = Carbon::now();
+                    $payroll_date = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25);
+                    
+                    $payroll_start_date = Carbon::now();
+                    $payroll_end_date = Carbon::now();
+        
+                    if ($current_date >= Carbon::now()->firstOfMonth() && $current_date <= Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25)) {
+                        $payroll_start_date = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25)->addMonths(-1)->addDays(1);
+                        $payroll_end_date = $current_date;
+                    }
+        
+                    if ($current_date > Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25) && $current_date <= Carbon::now()->endOfMonth()) {
+                        $payroll_start_date = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, 25)->addDay();
+                        $payroll_end_date = $current_date;
+                    }
+                    
+                    $payroll_transaction_fee = InvoiceDetail::select(DB::raw('COUNT(DISTINCT invoice_id) AS invoice_total
+                    ,COUNT(DISTINCT id) AS treatment_total
+                    ,SUM(fee) AS commission_fee_total '))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('therapist_id', $therapist->id)
+                    ->whereBetween(DB::raw('DATE(created_at)'), [$payroll_start_date->format('Y-m-d'), $payroll_end_date->format('Y-m-d')])
+                    ->groupBy(DB::raw('YEAR(created_at)'))
+                    ->first();
+                    // end payroll logic
 
-                $data = [
-                    'total_appointment' => $tot_appointment->count(),
-                    'revenue' => $revenue,
-                    'pending_bill' => $pending_bill
-                ];
-                $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
-                $availableTime = TherapistAvailableTime::where('therapist_id', $therapist->id)->where('is_deleted', 0)->get();
-                return view('therapist.therapist-profile-view', compact('user', 'role', 'therapist', 'therapist_info', 'data', 'appointments', 'availableTime', 'prescriptions', 'invoices', 'availableDay'));
+                    $todays_transaction_fee = InvoiceDetail::select(DB::raw('COUNT(DISTINCT invoice_id) AS invoice_total
+                    ,COUNT(DISTINCT id) AS treatment_total
+                    ,SUM(fee) AS commission_fee_total '))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('therapist_id', $therapist->id)
+                    ->whereDate('created_at', Carbon::now())
+                    ->groupBY(DB::raw('YEAR(created_at)'))
+                    ->first();
+
+                    $monthly_transaction_fee = InvoiceDetail::select(DB::raw('COUNT(DISTINCT invoice_id) AS invoice_total
+                    ,COUNT(DISTINCT id) AS treatment_total
+                    ,SUM(fee) AS commission_fee_total '))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('therapist_id', $therapist->id)
+                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->groupBY(DB::raw('YEAR(created_at)'))
+                    ->first();
+
+                    $therapist_transaction_fee = InvoiceDetail::select(DB::raw('COUNT(DISTINCT invoice_id) AS invoice_total
+                    ,COUNT(DISTINCT id) AS treatment_total
+                    ,SUM(fee) AS commission_fee_total '))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('therapist_id', $therapist->id)
+                    ->whereYear('created_at', Carbon::now()->year)
+                    ->groupBY(DB::raw('YEAR(created_at)'))
+                    ->first();
+
+                    $data = [
+                        'todays_fee' => ($todays_transaction_fee) ? $todays_transaction_fee->commission_fee_total : 0,
+                        'todays_total_treatments' => ($todays_transaction_fee) ? $todays_transaction_fee->treatment_total : 0,
+                        'todays_total_invoices' => ($todays_transaction_fee) ? $todays_transaction_fee->invoice_total : 0,
+
+                        'monthly_fee' => ($monthly_transaction_fee) ? $monthly_transaction_fee->commission_fee_total : 0,
+                        'monthly_total_treatments' => ($monthly_transaction_fee) ? $monthly_transaction_fee->treatment_total : 0,
+                        'monthly_total_invoices' => ($monthly_transaction_fee) ? $monthly_transaction_fee->invoice_total : 0,
+
+                        'fee' => ($therapist_transaction_fee) ? $therapist_transaction_fee->commission_fee_total : 0,
+                        'total_treatments' => ($therapist_transaction_fee) ? $therapist_transaction_fee->treatment_total : 0,
+                        'total_invoices' => ($therapist_transaction_fee) ? $therapist_transaction_fee->invoice_total : 0,
+
+                        'payroll_start_date' => $payroll_start_date,
+                        'payroll_end_date' => $payroll_end_date,
+                        
+                        'payroll_fee' => ($payroll_transaction_fee) ? $payroll_transaction_fee->commission_fee_total : 0,
+                        'payroll_treatments' => ($payroll_transaction_fee) ? $payroll_transaction_fee->treatment_total : 0,
+                        'payroll_invoices' => ($payroll_transaction_fee) ? $payroll_transaction_fee->invoice_total : 0
+                    ];
+
+                    $availableDay = TherapistAvailableDay::where('therapist_id', $therapist->id)->first();
+                return view('therapist.therapist-profile-view', compact('user', 'role', 'therapist', 'therapist_info', 'data', 'invoices', 'availableDay'));
             } else {
                 return redirect('/')->with('error', 'Therapists details not found');
             }
         } elseif ($role == 'receptionist') {
             $receptionist = Sentinel::getUser();
-            $user_id = $receptionist->id;
-            $role = $user->roles[0]->slug;
-            $tot_appointment = Appointment::where(function ($re) use ($user_id) {
-                $re->orWhere('booked_by', $user_id);
-            })->get();
+            $receptionist_info = Receptionist::where('user_id', $receptionist->id)->first();
+            
+            $invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                ->join('users', 'users.id', '=', 'invoices.customer_id')
+                ->where('invoices.created_by', $receptionist->id)
+                ->where('invoices.status', '1')
+                ->where('invoices.is_deleted', '0')
+                ->where('invoice_details.is_deleted', '0')
+                ->where('invoices.payment_status', 'Paid')
+                ->orderby('invoices.id', 'desc')->distinct('invoices.id')->paginate(
+                    $this->limit, 
+                    ['invoices.id',
+                        'invoices.invoice_code',
+                        'invoices.payment_status',
+                        'invoices.treatment_date',
+                        'invoices.grand_total',
+                        'users.first_name',
+                        'users.last_name',
+                        'users.phone_number']
+                    , 'invoices');
 
-            $invoice = Invoice::withCount(['invoice_detail as total' => function ($re) {
-                $re->select(DB::raw('SUM(amount)'));
-            }])->where(function ($re) use ($user_id) {
-                $re->orWhere('created_by', $user_id);
-            })->pluck('id');
-            $revenue = InvoiceDetail::whereIn('invoice_id', $invoice)->sum('amount');
+            $pending_invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                ->join('users', 'users.id', '=', 'invoices.customer_id')
+                ->where('invoices.created_by', $receptionist->id)
+                ->where('invoices.status', '1')
+                ->where('invoices.is_deleted', '0')
+                ->where('invoice_details.is_deleted', '0')
+                ->where('invoices.payment_status', 'Unpaid')
+                ->orderby('invoices.id', 'desc')->distinct('invoices.id')->paginate(
+                    $this->limit, 
+                    ['invoices.id',
+                        'invoices.invoice_code',
+                        'invoices.payment_status',
+                        'invoices.treatment_date',
+                        'invoices.grand_total',
+                        'users.first_name',
+                        'users.last_name',
+                        'users.phone_number']
+                    , 'pending_invoices');
 
-            $pending_bill = Invoice::where(['payment_status' => 'Unpaid'])
-                ->where(function ($re) use ($user_id) {
-                    $re->orWhere('created_by', $user_id);
-                })->count();
+            $invoice_transaction_paid = Invoice::select(DB::raw('count(id) as invoice_total
+                        ,sum(total_price) as price_total
+                        ,sum(discount) as discount_total 
+                        ,sum(tax_amount) as tax_amount_total
+                        ,sum(grand_total) as revenue_total'))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('payment_status', 'Paid')
+                    ->whereYear('treatment_date', Carbon::now()->year)
+                    ->where('created_by', $receptionist->id)
+                    ->groupBy(DB::raw('year(treatment_date)'))
+                    ->first();
+
+            $invoice_transaction_unpaid = Invoice::select(DB::raw('count(id) as invoice_total
+                        ,sum(total_price) as price_total
+                        ,sum(discount) as discount_total 
+                        ,sum(tax_amount) as tax_amount_total
+                        ,sum(grand_total) as revenue_total'))
+                    ->where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->where('payment_status', 'Unpaid')
+                    ->whereYear('treatment_date', Carbon::now()->year)
+                    ->where('created_by', $receptionist->id)
+                    ->groupBy(DB::raw('year(treatment_date)'))
+                    ->first();
+                
             $data = [
-                'total_appointment' => $tot_appointment->count(),
-                'revenue' => $revenue,
-                'pending_bill' => $pending_bill
+                'invoice_total' => ($invoice_transaction_paid) ? $invoice_transaction_paid->invoice_total : 0,
+                'revenue' => ($invoice_transaction_paid) ? $invoice_transaction_paid->revenue_total : 0,
+                'pending_invoice_total' => ($invoice_transaction_unpaid) ? $invoice_transaction_unpaid->invoice_total : 0,
+                'pending_revenue' => ($invoice_transaction_unpaid) ? $invoice_transaction_unpaid->revenue_total : 0
             ];
-            $appointments = Appointment::where(function ($re) use ($user_id) {
-                $re->orWhere('booked_by', $user_id);
-            })->orderBy('id', 'DESC')->paginate($this->limit, '*', 'appointments');
-            $invoices = Invoice::with('user')
-                ->where(function ($re) use ($user_id) {
-                    $re->orWhere('created_by', $user_id);
-                })->paginate($this->limit, '*', 'invoice');
-            $therapist_role = Sentinel::findRoleBySlug('therapist');
-            $therapists = $therapist_role->users()->with(['roles', 'therapist'])->where('is_deleted', 0)->get();
-            return view('receptionist.receptionist-profile-view', compact('user', 'role', 'receptionist', 'data', 'appointments', 'invoices'));
+
+            $pagination = 0;
+            if($request->has('invoices')) {
+                $pagination = 1;
+            }
+            
+            $config = [
+                'pagination' => $pagination
+            ];
+
+            return view('receptionist.receptionist-profile-view', compact('user', 'role', 'receptionist', 'receptionist_info', 'data', 'config', 'invoices', 'pending_invoices'));
         } else {
             return redirect('/')->with('error', 'role not found');
         }

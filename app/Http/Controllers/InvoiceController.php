@@ -23,6 +23,7 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Yajra\DataTables\DataTables;
 use Exception;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -141,17 +142,17 @@ class InvoiceController extends Controller
                     if ($role == 'admin' or $role == 'receptionist') {
                         $option = '
                         <a href="invoice/' . $row->id . '">
-                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="View Invoice">
+                            <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light" title="View Invoice">
                                 <i class="mdi mdi-eye"></i>
                             </button>
                         </a>
                         <a href="invoice/' . $row->id . '/edit">
-                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="Update invoice">
+                            <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light" title="Update invoice">
                                 <i class="mdi mdi-lead-pencil"></i>
                             </button>
                         </a>
                         <a href="review/' . $row->id . '">
-                            <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" title="Review">
+                            <button type="button" class="btn btn-success btn-sm btn-rounded waves-effect waves-light" title="Review">
                                 <i class="fa fa-star"></i>
                             </button>
                         </a>';
@@ -226,7 +227,6 @@ class InvoiceController extends Controller
         ->where('promos.status', 1)
         ->where('promos.is_deleted', 0)
         ->where('promo_vouchers.is_used', 0)
-        ->where()
         ->orderBy('promos.id')
         ->orderBy('promo_vouchers.id')
         ->get();
@@ -270,8 +270,8 @@ class InvoiceController extends Controller
 
         try {
             // Validate invoices
-            if ($request->invoices[0]['product_id'] == null && $request->invoices[0]['amount'] == null) {
-                return redirect()->back()->with('error', 'Add at least one Invoice product and amount to create invoice!!!');
+            if (!$this->validateInvoiceDetails($request)) {
+                return redirect()->back()->with('error', 'Therapist not available, check your therapist schedule!!!')->withInput($request->all());
             }
 
             // Generate invoice code
@@ -293,8 +293,9 @@ class InvoiceController extends Controller
             }
 
             $dateCode = now()->format('ym');
-
-            $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+            
+            // $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+            $runningNumber = Invoice::where('invoice_code', 'like', $prefix . $dateCode . '%')->max('invoice_code');
             $runningNumber = $runningNumber ? (int) substr($runningNumber, -4) + 1 : 1;
             $invoiceCode = $prefix . $dateCode . str_pad($runningNumber, 4, '0', STR_PAD_LEFT);
             // End
@@ -314,7 +315,7 @@ class InvoiceController extends Controller
             // Store invoice detail
             $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
 
-            return redirect('invoice')->with('success', 'Invoice created successfully!');
+            return redirect('invoice/'. $obj->id)->with('success', 'Invoice created successfully!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong!!! ' . $e->getMessage())->withInput($request->all());
         }
@@ -355,6 +356,7 @@ class InvoiceController extends Controller
                     'invoices.discount',
                     'invoices.tax_rate',
                     'invoices.tax_amount',
+                    'invoices.additional_price',
                     'invoices.grand_total',
                     'invoices.created_by'
                 )
@@ -371,7 +373,7 @@ class InvoiceController extends Controller
                     'treatment_time_from',
                     'treatment_time_to',
                     'room',
-                    \DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS therapist_name")
+                    \DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name,'')) AS therapist_name")
                 )
                 ->join('products', 'products.id', '=', 'invoice_details.product_id')
                 ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
@@ -566,7 +568,9 @@ class InvoiceController extends Controller
 
         // Get invoice setting
         // $invoice_type = InvoiceSettings::first()->invoice_type;
-
+        // echo '<pre>';
+        // print_r($request->all());
+        // echo '</pre>';die();
         // Validate input data
         if($request->old_data == 'Y') {
             $request->validate([
@@ -588,12 +592,13 @@ class InvoiceController extends Controller
 
                 'invoices' => 'required|array',
                 'invoices.*.product_id' => 'required',
-                'invoices.*.time_from' => 'required',
+                'invoices.*.treatment_time_from' => 'required',
                 'invoices.*.therapist_id' => 'required',
                 'invoices.*.room' => 'required'
             ]);
         }
         try {
+            
             // Mapping request to object and store data
             $obj = $this->toObject($request, $invoice);
             $obj->updated_by = $user->id;
@@ -609,7 +614,8 @@ class InvoiceController extends Controller
             if($invoice_type != $request->invoice_type_old){
                 $dateCode = now()->format('ym');
 
-                $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+                // $runningNumber = Invoice::where('invoice_code', 'like', $prefix . '%')->max('invoice_code');
+                $runningNumber = Invoice::where('invoice_code', 'like', $prefix . $dateCode . '%')->max('invoice_code');
                 $runningNumber = $runningNumber ? (int) substr($runningNumber, -4) + 1 : 1;
                 $invoiceCode = $prefix . $dateCode . str_pad($runningNumber, 4, '0', STR_PAD_LEFT);
                 // End
@@ -632,7 +638,7 @@ class InvoiceController extends Controller
             InvoiceDetail::where('invoice_id', $invoice->id)->update(['is_deleted' => 1]);
 
             // Store invoice detail
-            $obj->invoice_detail()->saveMany($this->toObjectDetails($request, $obj));
+            $obj->invoice_detail()->saveMany($this->toObjectDetailsUpdate($request, $obj));
 
             return redirect('invoice')->with('success', 'Invoice updated successfully!');
         } catch (Exception $e) {
@@ -755,6 +761,7 @@ class InvoiceController extends Controller
             $invoice->discount = str_replace(',', '', $request->discount);
             $invoice->tax_rate = $request->tax_rate;
             $invoice->tax_amount = $request->tax_amount;
+            $invoice->additional_price = str_replace(',', '', $request->additional_price);
             $invoice->grand_total = str_replace(',', '', $request->grand_total);
 
         }else{
@@ -766,6 +773,30 @@ class InvoiceController extends Controller
         }
 
         return $invoice;
+    }
+
+    private function toObjectDetailsUpdate(Request $request, Invoice $invoice) {
+        $invoiceDetails = [];
+
+        foreach ($request->invoices as $item) {
+            $obj = new InvoiceDetail();
+            if($request->old_data == 'N') {
+                $obj->product_id = $item['product_id'];
+                $obj->amount = str_replace(',', '', $item['amount']);
+                $obj->fee = $item['fee'];
+                $obj->treatment_time_from = $item['treatment_time_from'];
+                $obj->treatment_time_to = $item['treatment_time_to'];
+                $obj->therapist_id = $item['therapist_id'];
+                $obj->room = $item['room'];
+            }else{
+                $obj->title = $item['title'];
+                $obj->amount = str_replace(',', '', $item['amount']);
+            }
+
+            $invoiceDetails[] = $obj;
+        }
+
+        return $invoiceDetails;
     }
 
     private function toObjectDetails(Request $request, Invoice $invoice) {
@@ -790,5 +821,65 @@ class InvoiceController extends Controller
         }
 
         return $invoiceDetails;
+    }
+
+    private function validateInvoiceDetails(Request $request) {
+        foreach ($request->invoices as $item) {
+            if (!$this->is_therapist_availability($request->treatment_date, $item['therapist_id'], $item['time_from'], $item['time_to'])) {
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function is_therapist_availability($treatment_date, $therapist_id, $treatment_start_time, $treatment_end_time) {
+        // DB::enableQueryLog();
+
+        $therapist_available = DB::select(
+            'select * from `invoice_details` where date(`created_at`) = ? and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
+            [date('Y-m-d', strtotime($treatment_date)), $therapist_id, $treatment_start_time, $treatment_start_time, $treatment_end_time, $treatment_end_time]
+        );
+
+        // echo '<pre>';
+        // print_r($therapist_available);
+        // echo '</pre>';
+        // die();
+
+        return count($therapist_available) == 0;
+    }
+
+    public function therapist_availability(Request $request)
+    {
+        $user = Sentinel::getUser();
+        if ($user->hasAccess('invoice.create')) {
+            if ($request->ajax()) {
+                DB::connection()->enableQueryLog();
+                $therapist_available = DB::select(
+                    'select * from `invoice_details` where date(`created_at`) = ? and `therapist_id` = ? and ((`treatment_time_from` <= ? and `treatment_time_to` >= ?) or (`treatment_time_from` <= ? and `treatment_time_to` >= ?))', 
+                    [$request->treatment_date, $request->therapist_id, $request->treatment_start_time, $request->treatment_start_time, $request->treatment_end_time, $request->treatment_end_time]
+                );
+
+                // echo '<pre>';
+                // print_r(DB::getQueryLog());
+                // echo '</pre>';die();
+
+                $data = [];
+
+                if (count($therapist_available) > 0) {
+                    $data = [
+                        $therapist_available[0]->therapist_id, $therapist_available[0]->treatment_time_from, $therapist_available[0]->treatment_time_to
+                    ];
+                }
+
+                return response()->json([
+                    'isSuccess' => true,
+                    'Message' => "Therapist available time successfully",
+                    'data' => $data
+                ]);
+            }
+        } else {
+            return view('error.403');
+        }
     }
 }

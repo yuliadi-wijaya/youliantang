@@ -52,13 +52,13 @@ Route::get('profile-view', 'UserController@profile_view');
 Route::get('user/profile-details', 'UserController@userProfileDetails');
 Route::resource('user', 'UserController');
 Route::resource('therapist', 'TherapistController');
+Route::get('therapist-view/{id}', 'TherapistController@therapist_view');
 Route::resource('customer', 'CustomerController');
 Route::resource('receptionist', 'ReceptionistController');
+Route::get('receptionist-view/{id}', 'ReceptionistController@receptionist_view');
 Route::resource('appointment', 'AppointmentController');
 Route::resource('prescription', 'PrescriptionController');
 Route::resource('invoice', 'InvoiceController');
-Route::get('receptionist-view/{id}', 'ReceptionistController@receptionist_view');
-Route::get('therapist-view/{id}', 'TherapistController@therapist_view');
 Route::resource('membership', 'MembershipController');
 Route::resource('customermember', 'CustomerMemberController');
 Route::resource('product', 'ProductController');
@@ -73,6 +73,8 @@ Route::post('appointment-status/{id}', 'AppointmentController@appointment_status
 Route::get('getMonthlyAppointments', 'ReportController@getMonthlyAppointments');
 Route::post('customer-by-appointment', 'InvoiceController@customer_by_appointment')->name('customer_by_appointment');
 Route::post('appointment-by-therapist', 'InvoiceController@appointment_by_therapist')->name('appointment_by_therapist');
+Route::post('therapist-availability', 'InvoiceController@therapist_availability')->name('therapist_availability');
+
 Route::post('/therapist-by-day-time', 'AppointmentController@therapist_by_day_time')->name('therapist_by_day_time');
 Route::post('/appointment-time-by-appointment-slot', 'AppointmentController@time_by_slot')->name('timeBySlot');
 Route::get('appointment-create', 'AppointmentController@appointment_create');
@@ -158,4 +160,10 @@ Route::get('/ex-therapist-trans', 'ReportTherapistController@exportReportTherapi
 Route::get('/rf-trans', 'ReportTransController@fiterReportTrans');
 Route::get('/rs-trans', 'ReportTransController@showReportTrans')->name('rs-trans');
 Route::get('/ex-trans', 'ReportTransController@exportReportTrans')->name('ex-trans');
+Route::get('transactions-revenue-report', 'ReportController@transactionRevenueReport');
+Route::post('show-transactions-revenue-report', 'ReportController@showTransactionRevenueReport')->name('show-transactions-revenue-report');
+
+Route::get('transactions-commission-fee-report', 'ReportController@transactionCommissionFeeReport');
+
+
 });

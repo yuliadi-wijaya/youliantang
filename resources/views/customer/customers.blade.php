@@ -34,7 +34,7 @@
                             <i class="bx bx-plus font-size-16 align-middle mr-2"></i> {{ __('New Customer') }}
                         </button>
                     </a>
-                    <table id="customerList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="customerList" class="table table-bordered dt-responsive nowrap display table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>{{ __('No.') }}</th>

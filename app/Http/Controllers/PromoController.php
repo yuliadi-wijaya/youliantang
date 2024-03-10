@@ -55,14 +55,16 @@ class PromoController extends Controller
                     if ($row->discount_type == 0) {
                         return 'Rp ' . number_format($row->discount_value);
                     } else if ($row->discount_type == 1) {
-                        return $row->discount_value . '%';
+                        if ($row->discount_max_value > 0) {
+                            return $row->discount_value . '% (Max: Rp ' . number_format($row->discount_max_value) . ')';
+                        } else {
+                            return $row->discount_value . '%';
+                        }
+                        
                     }
                 })
-                ->addColumn('discount_max', function($row) {
-                    return 'Rp ' . number_format($row->discount_max_value);
-                })
                 ->addColumn('active_period', function($row) {
-                    return $row->active_period_start . ' - ' . $row->active_period_end;
+                    return date('d M Y', strtotime($row->active_period_start)) . ' - ' . date('d M Y', strtotime($row->active_period_end));
                 })
                 ->addColumn('is_reuse_voucher', function($row) {
                     if ($row->is_reuse_voucher == 0) {
@@ -78,24 +80,24 @@ class PromoController extends Controller
                     if ($role == 'admin') {
                         $option = '
                             <a href="promo/'.$row->id.'">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Promo Voucher">
+                                <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Promo Voucher">
                                     <i class="mdi mdi-eye"></i>
                                 </button>
                             </a>
                             <a href="promo/'.$row->id.'/edit">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Promo">
+                                <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Promo">
                                     <i class="mdi mdi-lead-pencil"></i>
                                 </button>
                             </a>
                             <a href="javascript:void(0)">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Promo" data-id="'.$row->id.'" id="delete-promo">
+                                <button type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Promo" data-id="'.$row->id.'" id="delete-promo">
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';
                     } else if ($role == 'receptionist') {
                         $option = '
                             <a href="promo/'.$row->id.'">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Promo Voucher">
+                                <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Promo Voucher">
                                     <i class="mdi mdi-eye"></i>
                                 </button>
                             </a>';

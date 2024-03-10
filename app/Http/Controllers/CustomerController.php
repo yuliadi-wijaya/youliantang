@@ -61,7 +61,7 @@ class CustomerController extends Controller
                 return Datatables::of($customers)
                     ->addIndexColumn()
                     ->addColumn('name', function($row){
-                        $name = $row->first_name.' '.$row->last_name;
+                        $name = ucwords($row->first_name).' '.ucwords($row->last_name);
                         return $name;
                     })
                     ->addColumn('status', function($row) {
@@ -70,17 +70,17 @@ class CustomerController extends Controller
                     ->addColumn('option', function($row){
                         $option = '
                             <a href="customer/'.$row->id.'">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
+                                <button type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="View Profile">
                                     <i class="mdi mdi-eye"></i>
                                 </button>
                             </a>
                             <a href="customer/'.$row->id.'/edit">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
+                                <button type="button" class="btn btn-warning btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Update Profile">
                                     <i class="mdi mdi-lead-pencil"></i>
                                 </button>
                             </a>
                             <a href=" javascript:void(0)">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="'.$row->id.'" id="delete-customer">
+                                <button type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light mb-2 mb-md-0" title="Deactivate Profile" data-id="'.$row->id.'" id="delete-customer">
                                     <i class="mdi mdi-trash-can"></i>
                                 </button>
                             </a>';
@@ -258,19 +258,51 @@ class CustomerController extends Controller
                 if ($customer_info) {
                     $customer_role = Sentinel::findRoleBySlug('customer');
                     $customers = $customer_role->users()->with('roles')->get();
-                    $appointments = Appointment::with('therapist')->where('appointment_for', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'appointment');
-                    $prescriptions = Prescription::with('therapist')->where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'prescriptions');
-                    $invoices = Invoice::where('customer_id', $customer->id)->orderBy('id', 'desc')->paginate($this->limit, '*', 'invoice');
-                    $tot_appointment = Appointment::where('appointment_for', $customer->id)->get();
-                    $invoice = Invoice::where('customer_id', $customer->id)->pluck('id');
-                    $revenue = Invoice::whereIn('id',$invoice)->sum('grand_total');
-                    $pending_bill = Invoice::where(['customer_id' => $customer->id, 'payment_status' => 'Unpaid'])->count();
+
+                    $invoices = Invoice::join('invoice_details', 'invoice_details.invoice_id', '=', 'invoices.id')
+                    ->join('users', 'users.id', '=', 'invoices.customer_id')
+                    ->where('invoices.customer_id', $customer->id)
+                    ->where('invoices.status', '1')
+                    ->where('invoices.is_deleted', '0')
+                    ->where('invoice_details.is_deleted', '0')
+                    ->orderby('invoices.id', 'desc')->distinct('invoices.id')->paginate(
+                        $this->limit, 
+                        ['invoices.id',
+                            'invoices.invoice_code',
+                            'invoices.payment_status',
+                            'invoices.treatment_date',
+                            'invoices.grand_total',
+                            'users.first_name',
+                            'users.last_name',
+                            'users.phone_number']
+                        , 'invoice');
+
+                    $invoice_transaction = DB::select("
+                        SELECT year(treatment_date) as treatment_date, count(id) as invoice_total
+                            ,sum(total_price) as price_total
+                            ,sum(discount) as discount_total 
+                            ,sum(tax_amount) as tax_amount_total
+                            ,sum(grand_total) as revenue_total
+                        FROM invoices
+                        WHERE status = 1 
+                            AND is_deleted = 0 
+                            AND year(treatment_date) = year(curdate())
+                            AND customer_id = ?
+                        GROUP BY year(treatment_date)
+                            ", [$customer->id]);
+
+                    $invoice_total = 0;
+                    $revenue_total = 0;
+                    if (count($invoice_transaction) > 0) {
+                        $invoice_total = $invoice_transaction[0]->invoice_total;
+                        $revenue_total = $invoice_transaction[0]->revenue_total;
+                    }
+                            
                     $data = [
-                        'total_appointment' => $tot_appointment->count(),
-                        'revenue' => $revenue,
-                        'pending_bill' => $pending_bill
+                        'invoice_total' => $invoice_total,
+                        'bill_total' => $revenue_total
                     ];
-                    return view('customer.customer-profile', compact('user', 'role', 'customer', 'customer_info', 'data', 'appointments', 'prescriptions', 'invoices'));
+                    return view('customer.customer-profile', compact('user', 'role', 'customer', 'customer_info', 'data', 'invoices'));
                 } else {
                     return redirect('/')->with('error', 'Customer information  not found, update customer information');
                 }

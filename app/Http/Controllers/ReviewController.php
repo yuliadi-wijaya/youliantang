@@ -76,6 +76,8 @@ class ReviewController extends Controller
         $role = $user->roles[0]->slug;
         $invoice = Invoice::select([
             'invoices.id',
+            'invoices.invoice_code',
+            'invoices.treatment_date',
             'invoices.old_data',
             'invoices.customer_id',
             'invoices.therapist_name',
@@ -93,7 +95,11 @@ class ReviewController extends Controller
             'reviews.id as review_id',
             \DB::raw("COALESCE(reviews.rating, 0) as rating"),
             \DB::raw("COALESCE(reviews.comment, '') as comment"),
-            'products.name as product_name'
+            'products.name as product_name',
+            'invoice_details.room',
+            'invoice_details.treatment_time_from',
+            'invoice_details.treatment_time_to',
+            'users.profile_photo as therapist_profile_photo'
         )
         ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
         ->join('products', 'products.id', '=', 'invoice_details.product_id')

@@ -4,6 +4,7 @@
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" src="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" src="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
 <style type="text/css">
 
     #invoiceList_length label {
@@ -44,7 +45,7 @@
                         </button>
                     </a>
                     @endif
-                    <table id="invoiceList" class="table table-bordered dt-responsive nowrap display" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="invoiceList" class="table table-bordered dt-responsive nowrap display table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>{{ __('No.') }}</th>

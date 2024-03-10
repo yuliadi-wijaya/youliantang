@@ -44,14 +44,14 @@
                 @if ($customer && $customer_info)
                     @if ($role == 'customer')
                         <a href="{{ url('/') }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                            <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                                 <i
                                     class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Dashboard') }}
                             </button>
                         </a>
                     @else
                         <a href="{{ url('customer/' . $customer->id) }}">
-                            <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                            <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                                 <i
                                     class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Profile') }}
                             </button>
@@ -59,7 +59,7 @@
                     @endif
                 @else
                     <a href="{{ url('customer') }}">
-                        <button type="button" class="btn btn-primary waves-effect waves-light mb-4">
+                        <button type="button" class="btn btn-secondary waves-effect waves-light mb-4">
                             <i
                                 class="bx bx-arrow-back font-size-16 align-middle mr-2"></i>{{ __('Back to Customer List') }}
                         </button>
@@ -67,12 +67,11 @@
                 @endif
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote>{{ __('Basic Information') }}</blockquote>
-                        <form action="@if ($customer ) {{ url('customer/' . $customer->id) }} @else {{ route('customer.store') }} @endif" method="post" enctype="multipart/form-data">
+        <form action="@if ($customer ) {{ url('customer/' . $customer->id) }} @else {{ route('customer.store') }} @endif" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
                             @csrf
                             @if ($customer )
                                 <input type="hidden" name="_method" value="PATCH" />
@@ -255,22 +254,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary">
-                                        @if ($customer && $customer_info)
-                                            {{ __('Update Customer Details') }}
-                                        @else
-                                            {{ __('Add New Customer') }}
-                                        @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">
+                        @if ($customer && $customer_info)
+                            {{ __('Update Customer Details') }}
+                        @else
+                            {{ __('Add New Customer') }}
+                        @endif
+                    </button>
+                </div>
+            </div>
+        </form>
         <!-- end row -->
     @endsection
     @section('script')

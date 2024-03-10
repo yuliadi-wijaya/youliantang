@@ -17,6 +17,7 @@
         "add-new-transaction" => "Add New Transaction",
         "revenue" => "Revenue",
         "today's-earning" => "Today's Earning",
+        "today's-invoice" => "Today's Invoice",
         "today's-appointments" => "Today's Appointments",
         "tomorrow-appointments" => "Tomorrow Appointments",
         "upcoming-appointments" => "Upcoming Appointments",
@@ -71,6 +72,9 @@
         "total-customers" => "Total Customers",
         "total-new-customers" => "Total New Customers",
         "charts" => "Charts",
-        "analytics" => "Analytics"
+        "analytics" => "Analytics",
+        "raw-data" => "Raw Data",
+        "revenue" => "Revenue",
+        "commission-fee" => "Commission Fee"
     ];
 ?>
