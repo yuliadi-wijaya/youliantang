@@ -131,21 +131,33 @@
                                     <th>{{ __('New Order Total') }}</th>
                                 </tr>
                             </thead>
+                            @php 
+                                $no = 1;
+                                $sum_customer_regist = 0;
+                            @endphp
                             <tbody>
                                 @if ($new_orders && count($new_orders) > 0)
-                                    @php 
-                                        $no = 1;
-                                    @endphp
                                     @foreach ($new_orders as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
                                             <td>{{ $item->regist_date }}</td>
                                             <td class="text-right">{{ number_format($item->customer_regist_total) }}</td>
                                         </tr>
-                                        @php $no++; @endphp
+                                        @php 
+                                            $no++; 
+                                            $sum_customer_regist += $item->customer_regist_total;
+                                        @endphp
                                     @endforeach
                                 @endif
                             </tbody>
+                            @if ($new_orders && count($new_orders) > 0)
+                                <tfoot class="text-white" style="background-color: #2a3042">
+                                    <tr>
+                                        <th class="text-right" colspan="2">TOTAL</th>
+                                        <th class="text-right">{{ number_format($sum_customer_regist) }}</th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                 </div>
@@ -161,21 +173,33 @@
                                     <th>{{ __('Repeat Order Total') }}</th>
                                 </tr>
                             </thead>
+                            @php 
+                                $no1 = 1;
+                                $sum_repeat_order = 0;
+                            @endphp
                             <tbody>
                                 @if ($repeat_orders && count($repeat_orders) > 0)
-                                    @php 
-                                        $no1 = 1;
-                                    @endphp
                                     @foreach ($repeat_orders as $item)
                                         <tr>
                                             <td class="text-right">{{ $no1 }}</td>
                                             <td>{{ $item->treatment_date }}</td>
                                             <td class="text-right">{{ number_format($item->repeat_order_total) }}</td>
                                         </tr>
-                                        @php $no1++; @endphp
+                                        @php 
+                                            $no1++; 
+                                            $sum_repeat_order += $item->repeat_order_total;
+                                        @endphp
                                     @endforeach
                                 @endif
                             </tbody>
+                            @if ($repeat_orders && count($repeat_orders) > 0)
+                                <tfoot class="text-white" style="background-color: #2a3042">
+                                    <tr>
+                                        <th class="text-right" colspan="2">TOTAL</th>
+                                        <th class="text-right">{{ number_format($sum_repeat_order) }}</th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                 </div>

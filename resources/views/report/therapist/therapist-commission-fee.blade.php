@@ -134,11 +134,14 @@
                                     <th>{{ __('Commission Fee') }}</th>
                                 </tr>
                             </thead>
+                            @php 
+                                $no = 1;
+                                $sum_invoice = 0;
+                                $sum_treatment = 0;
+                                $sum_commission_fee = 0;
+                            @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
-                                    @php 
-                                        $no = 1;
-                                    @endphp
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
@@ -148,10 +151,25 @@
                                             <td class="text-right">{{ number_format($item->treatment_total) }}</td>
                                             <td class="text-right">Rp {{ number_format($item->commission_fee_total) }}</td>
                                         </tr>
-                                        @php $no++; @endphp
+                                        @php 
+                                            $no++; 
+                                            $sum_invoice += $item->invoice_total;
+                                            $sum_treatment += $item->treatment_total;
+                                            $sum_commission_fee += $item->commission_fee_total;
+                                        @endphp
                                     @endforeach
                                 @endif
                             </tbody>
+                            @if ($reports && count($reports) > 0)
+                                <tfoot class="text-white" style="background-color: #2a3042">
+                                    <tr>
+                                        <th class="text-right" colspan="3">TOTAL</th>
+                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
+                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_commission_fee) }}</th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                 </div>

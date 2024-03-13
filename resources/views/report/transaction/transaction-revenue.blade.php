@@ -138,11 +138,19 @@
                                     <th>{{ __('Revenue Total') }}</th>
                                 </tr>
                             </thead>
+                            @php 
+                                $no = 1;
+                                $sum_invoice = 0;
+                                $sum_price = 0;
+                                $sum_discount = 0;
+                                $sum_additional_price = 0;
+                                $sum_tax_amount = 0;
+                                $sum_revenue_nc = 0;
+                                $sum_revenue_ck = 0;
+                                $sum_revenue_total = 0;
+                            @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
-                                    @php 
-                                        $no = 1;
-                                    @endphp
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
@@ -156,10 +164,35 @@
                                             <td class="text-right">Rp {{ number_format($item->revenue_ck) }}</td>
                                             <td class="text-right">Rp {{ number_format($item->revenue_total) }}</td>
                                         </tr>
-                                        @php $no++; @endphp
+                                        @php 
+                                            $no++; 
+                                            $sum_invoice += $item->invoice_total;
+                                            $sum_price += $item->price_total;
+                                            $sum_discount += $item->discount_total;
+                                            $sum_additional_price += $item->additional_price;
+                                            $sum_tax_amount += $item->tax_amount_total;
+                                            $sum_revenue_nc += $item->revenue_nc;
+                                            $sum_revenue_ck += $item->revenue_ck;
+                                            $sum_revenue_total +=$item->revenue_total;
+                                        @endphp
                                     @endforeach
                                 @endif
                             </tbody>
+                            @if ($reports && count($reports) > 0)
+                                <tfoot class="text-white" style="background-color: #2a3042">
+                                    <tr>
+                                        <th class="text-right" colspan="2">TOTAL</th>
+                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_price) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_discount) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_additional_price) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_tax_amount) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_revenue_nc) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_revenue_ck) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_revenue_total) }}</th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                 </div>
