@@ -16,22 +16,11 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('therapist') }}" class="dropdown-item">{{ __('translation.therapists') }}</a>
                                 <a href="{{ url('receptionist') }}" class="dropdown-item">{{ __('translation.receptionist') }}</a>
+                                <a href="{{ url('therapist') }}" class="dropdown-item">{{ __('translation.therapists') }}</a>
+                                <a href="{{ url('product') }}" class="dropdown-item">{{ __('translation.products') }}</a>
                                 <a href="{{ url('room') }}" class="dropdown-item">{{ __('translation.rooms') }}</a>
                                 <a href="{{ url('membership') }}" class="dropdown-item">{{ __('translation.memberships') }}</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-clipboard-list mr-2"></i>{{ __('translation.products') }} <div class="arrow-down">
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="topnav-layout">
-                                <a href="{{ url('product') }}" class="dropdown-item">{{ __('translation.list-of-products') }}</a>
-                                <a href="{{ route('product.create') }}"
-                                    class="dropdown-item">{{ __('translation.add-new-product') }}</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -92,16 +81,19 @@
                                     {{ __('translation.customers') }} <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="customerDropdown">
-                                    <a href="{{ url('/rf-customer-reg') }}" class="dropdown-item">{{ __('translation.total-registration') }}</a>
-                                    <a href="{{ url('/rf-customer-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a>
+                                    <a href="{{ url('customer-new-and-repeat-order-report') }}" class="dropdown-item">{{ __('translation.new-and-repeat-order') }}</a>
+                                    {{-- <a href="{{ url('/rf-customer-reg') }}" class="dropdown-item">{{ __('translation.total-registration') }}</a>
+                                    <a href="{{ url('/rf-customer-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a> --}}
                                 </div>
 
                                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{ __('translation.therapists') }} <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
-                                    <a href="{{ url('/rf-therapist-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a>
-                                    <a href="{{ url('/rf-therapist-total') }}" class="dropdown-item">{{ __('translation.total-therapist') }}</a>
+                                    <a href="{{ url('therapist-commission-fee-report') }}" class="dropdown-item">{{ __('translation.commission-fee') }}</a>
+                                    <a href="{{ url('therapist-review-report') }}" class="dropdown-item">{{ __('translation.review') }}</a>
+                                    {{-- <a href="{{ url('/rf-therapist-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a>
+                                    <a href="{{ url('/rf-therapist-total') }}" class="dropdown-item">{{ __('translation.total-therapist') }}</a> --}}
                                 </div>
 
                                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="transactionsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -110,7 +102,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
                                     <a href="{{ url('transactions-revenue-report') }}" class="dropdown-item">{{ __('translation.revenue') }}</a>
                                     <a href="{{ url('transactions-commission-fee-report') }}" class="dropdown-item">{{ __('translation.commission-fee') }}</a>
-                                    <a href="{{ url('/rf-trans') }}" class="dropdown-item">{{ __('translation.raw-data') }}</a>
+                                    {{-- <a href="{{ url('/rf-trans') }}" class="dropdown-item">{{ __('translation.raw-data') }}</a> --}}
                                 </div>
 
                                 <a href="{{ url('analytics') }}" class="nav-link">{{ __('translation.analytics') }}</a>

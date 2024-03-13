@@ -177,7 +177,7 @@ class ReportTransController extends Controller
                 ->when($filter_display === 'monthly', function ($query) use ($monthly) {
                     return $query->addSelect(\DB::raw('DATE_FORMAT(treatment_date, "%Y-%m") as treatment_month'))
                         ->whereYear('treatment_date', substr($monthly, 0, 4))
-                        ->whereMonth('treatment_date', substr($monthly, 5, 2));
+                        ->whereMonth('treatment_date', substr($x, 5, 2));
                 })
                 ->when($filter_display === 'yearly', function ($query) use ($yearly) {
                     return $query->addSelect(\DB::raw('DATE_FORMAT(treatment_date, "%Y") as treatment_year'))

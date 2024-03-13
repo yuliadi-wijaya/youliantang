@@ -160,10 +160,10 @@ Route::get('/ex-therapist-trans', 'ReportTherapistController@exportReportTherapi
 Route::get('/rf-trans', 'ReportTransController@fiterReportTrans');
 Route::get('/rs-trans', 'ReportTransController@showReportTrans')->name('rs-trans');
 Route::get('/ex-trans', 'ReportTransController@exportReportTrans')->name('ex-trans');
-Route::get('transactions-revenue-report', 'ReportController@transactionRevenueReport');
-Route::post('show-transactions-revenue-report', 'ReportController@showTransactionRevenueReport')->name('show-transactions-revenue-report');
-
-Route::get('transactions-commission-fee-report', 'ReportController@transactionCommissionFeeReport');
-
+Route::get('transactions-revenue-report', 'ReportController@TransactionRevenueReport');
+Route::get('transactions-commission-fee-report', 'ReportController@TransactionCommissionFeeReport');
+Route::get('therapist-commission-fee-report', 'ReportController@TherapistCommissionFeeReport');
+Route::get('therapist-review-report', 'ReportController@TherapistReviewReport');
+Route::get('customer-new-and-repeat-order-report', 'ReportController@CustomerNewAndRepeatOrderReport');
 
 });

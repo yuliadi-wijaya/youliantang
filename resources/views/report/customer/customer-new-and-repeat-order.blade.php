@@ -28,7 +28,7 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Transaction Commission Fee Report @endslot
+            @slot('title') Customer New And Repeat Order Report @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Transactions @endslot
@@ -120,56 +120,83 @@
                     </div>
                 </form>
             </div>
-            <div class="col-lg-12">
+            <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
-                        <table id="datas" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <table id="tbl-new-orders" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
                                     <th>{{ __('Date') }}</th>
-                                    <th>{{ __('Invoice') }}</th>
-                                    <th>{{ __('Treatment') }}</th>
-                                    <th>{{ __('Therapist') }}</th>
-                                    <th>{{ __('Commission Fee') }}</th>
+                                    <th>{{ __('New Order Total') }}</th>
                                 </tr>
                             </thead>
                             @php 
                                 $no = 1;
-                                $sum_invoice = 0;
-                                $sum_treatment = 0;
-                                $sum_therapist = 0;
-                                $sum_commission_fee = 0;
+                                $sum_customer_regist = 0;
                             @endphp
                             <tbody>
-                                @if ($reports && count($reports) > 0)
-                                    @foreach ($reports as $item)
+                                @if ($new_orders && count($new_orders) > 0)
+                                    @foreach ($new_orders as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->treatment_date}}</td>
-                                            <td class="text-right">{{ number_format($item->invoice_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->treatment_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->therapist_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->commission_fee_total) }}</td>
+                                            <td>{{ $item->regist_date }}</td>
+                                            <td class="text-right">{{ number_format($item->customer_regist_total) }}</td>
                                         </tr>
                                         @php 
                                             $no++; 
-                                            $sum_invoice += $item->invoice_total;
-                                            $sum_treatment += $item->treatment_total;
-                                            $sum_therapist += $item->therapist_total;
-                                            $sum_commission_fee += $item->commission_fee_total;
+                                            $sum_customer_regist += $item->customer_regist_total;
                                         @endphp
                                     @endforeach
                                 @endif
                             </tbody>
-                            @if ($reports && count($reports) > 0)
+                            @if ($new_orders && count($new_orders) > 0)
                                 <tfoot class="text-white" style="background-color: #2a3042">
                                     <tr>
                                         <th class="text-right" colspan="2">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
-                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
-                                        <th class="text-right">{{ number_format($sum_therapist) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_commission_fee) }}</th>
+                                        <th class="text-right">{{ number_format($sum_customer_regist) }}</th>
+                                    </tr>
+                                </tfoot>
+                            @endif
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="tbl-repeat-orders" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead class="text-white" style="background-color: #2a3042">
+                                <tr>
+                                    <th style="width: 75px">{{ __('#') }}</th>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Repeat Order Total') }}</th>
+                                </tr>
+                            </thead>
+                            @php 
+                                $no1 = 1;
+                                $sum_repeat_order = 0;
+                            @endphp
+                            <tbody>
+                                @if ($repeat_orders && count($repeat_orders) > 0)
+                                    @foreach ($repeat_orders as $item)
+                                        <tr>
+                                            <td class="text-right">{{ $no1 }}</td>
+                                            <td>{{ $item->treatment_date }}</td>
+                                            <td class="text-right">{{ number_format($item->repeat_order_total) }}</td>
+                                        </tr>
+                                        @php 
+                                            $no1++; 
+                                            $sum_repeat_order += $item->repeat_order_total;
+                                        @endphp
+                                    @endforeach
+                                @endif
+                            </tbody>
+                            @if ($repeat_orders && count($repeat_orders) > 0)
+                                <tfoot class="text-white" style="background-color: #2a3042">
+                                    <tr>
+                                        <th class="text-right" colspan="2">TOTAL</th>
+                                        <th class="text-right">{{ number_format($sum_repeat_order) }}</th>
                                     </tr>
                                 </tfoot>
                             @endif
@@ -201,7 +228,19 @@
             $(document).ready(function(){
                 showFormDaily();
 
-                $('#datas').DataTable({
+                $('#tbl-new-orders').DataTable({
+                    buttons: [
+                        'copy',
+                        {extend : 'excel', footer: true},
+                        'colvis' ],
+                    pagingType: 'full_numbers',
+                    "drawCallback": function() {
+                        $('.dataTables_paginate > .pagination').addClass('justify-content-end');
+                        $('.dataTables_filter').addClass('d-flex justify-content-end');
+                    }
+                });
+
+                $('#tbl-repeat-orders').DataTable({
                     buttons: [
                         'copy',
                         {extend : 'excel', footer: true},
@@ -288,4 +327,3 @@
             }
         </script>
     @endsection
-

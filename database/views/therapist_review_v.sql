@@ -8,5 +8,4 @@ SELECT CONCAT(usr.first_name, ' ', COALESCE(usr.last_name, '')) AS therapist_nam
 FROM invoice_details ids 
     JOIN users usr on ids.therapist_id = usr.id 
     LEFT JOIN reviews rws on ids.id = rws.invoice_detail_id
-GROUP BY ids.therapist_id
-ORDER BY COUNT(ids.id) DESC;
+GROUP BY CONCAT(usr.first_name, ' ', COALESCE(usr.last_name, ''));
