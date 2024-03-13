@@ -8,6 +8,22 @@ use App\RoleAccess;
 use App\Invoice;
 use App\InvoiceDetail;
 use App\User;
+use App\TransactionRevenueDailyView;
+use App\TransactionRevenueMonthlyView;
+use App\TransactionRevenueYearlyView;
+use App\TransactionCommissionFeeDailyView;
+use App\TransactionCommissionFeeMonthlyView;
+use App\TransactionCommissionFeeYearlyView;
+use App\TherapistCommissionFeeDailyView;
+use App\TherapistCommissionFeeMonthlyView;
+use App\TherapistCommissionFeeYearlyView;
+use App\TherapistReviewView;
+use App\CustomerRegistrationTotalDailyView;
+use App\CustomerRegistrationTotalMonthlyView;
+use App\CustomerRegistrationTotalYearlyView;
+use App\CustomerRepeatOrderDailyView;
+use App\CustomerRepeatOrderMonthlyView;
+use App\CustomerRepeatOrderYearlyView;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -363,14 +379,52 @@ class ReportController extends Controller
         return $data;
     }
 
-    public function transactionRevenueReport() {
+    public function CustomerNewAndRepeatOrderReport(Request $request) {
         // Get user session data
         $user = Sentinel::getUser();
+        $new_orders = null;
+        $repeat_orders = null;
+        
+        switch ($request->report_type) {
+            case 'daily':
+                // Validate input data
+                $validatedData = $request->validate([
+                    'daily_start_date' => 'required',
+                    'daily_end_date' => 'required'
+                ]);
 
-        // Check user access
-        // if (!$user->hasAccess('report.filter')) {
-        //     return view('error.403');
-        // }
+                $new_orders = CustomerRegistrationTotalDailyView::whereBetween('regist_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))])
+                    ->get();
+                
+                $repeat_orders = CustomerRepeatOrderDailyView::whereBetween('treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))])
+                ->get();
+                break;
+            case 'monthly';
+                $month = $request->month != "All Months"? $request->month : NULL;
+                $year = $request->year != "All Years"? $request->year : NULL;
+
+
+                $new_orders = CustomerRegistrationTotalMonthlyView::get()
+                    ->when($month != NULL, function ($query) use($month) {
+                        return $query->where('month_num', $month);
+                    })
+                    ->when($year != NULL, function ($query) use($year) {
+                        return $query->where('year_num', $year);
+                    });
+
+                $repeat_orders = CustomerRepeatOrderMonthlyView::get()
+                    ->when($month != NULL, function ($query) use($month) {
+                        return $query->where('month_num', $month);
+                    })
+                    ->when($year != NULL, function ($query) use($year) {
+                        return $query->where('year_num', $year);
+                    });
+                break;
+            case 'yearly':
+                $new_orders = CustomerRegistrationTotalYearlyView::get();
+                $repeat_orders = CustomerRepeatOrderYearlyView::get();
+                break;
+        }
 
         // Report Type Filter
         $reportType = $this->getReportType();
@@ -384,17 +438,59 @@ class ReportController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        return view('report.transaction.transaction-revenue', compact('user', 'role', 'reportType', 'months', 'years'));
+        return view('report.customer.customer-registration-total', compact('user', 'role', 'reportType', 'months', 'years', 'new_orders', 'repeat_orders', 'request'));
     }
 
-    public function showTransactionRevenueReport(Request $request) {
+    public function TherapistReviewReport(Request $request) {
         // Get user session data
         $user = Sentinel::getUser();
+        $reports = null;
+        // Get user role
+        $role = $user->roles[0]->slug;
 
-        // Check user access
-        // if (!$user->hasAccess('report.filter')) {
-        //     return view('error.403');
-        // }
+        $reports = TherapistReviewView::orderBy('rating_average', 'DESC')
+                    ->orderBy('rating_total', 'DESC')
+                    ->orderBy('reviewer_total', 'DESC')
+                    ->orderBy('treatment_total', 'DESC')
+                    ->orderBy('therapist_name', 'ASC')
+                    ->get();
+
+        return view('report.therapist.therapist-review', compact('user', 'role', 'reports', 'request'));
+    }
+
+    public function TherapistCommissionFeeReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        
+        switch ($request->report_type) {
+            case 'daily':
+                // Validate input data
+                $validatedData = $request->validate([
+                    'daily_start_date' => 'required',
+                    'daily_end_date' => 'required'
+                ]);
+
+                $reports = TherapistCommissionFeeDailyView::whereBetween('treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))])
+                    ->get();
+                break;
+            case 'monthly';
+                $month = $request->month != "All Months"? $request->month : NULL;
+                $year = $request->year != "All Years"? $request->year : NULL;
+
+
+                $reports = TherapistCommissionFeeMonthlyView::get()
+                    ->when($month != NULL, function ($query) use($month) {
+                        return $query->where('month_num', $month);
+                    })
+                    ->when($year != NULL, function ($query) use($year) {
+                        return $query->where('year_num', $year);
+                    });
+                break;
+            case 'yearly':
+                $reports = TherapistCommissionFeeYearlyView::get();
+                break;
+        }
 
         // Report Type Filter
         $reportType = $this->getReportType();
@@ -408,7 +504,105 @@ class ReportController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        return view('report.transaction.transaction-revenue', compact('user', 'role', 'reportType', 'months', 'years'))->withInput($request->all());
+        return view('report.therapist.therapist-commission-fee', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
+    }
+
+    public function TransactionCommissionFeeReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        
+        switch ($request->report_type) {
+            case 'daily':
+                // Validate input data
+                $validatedData = $request->validate([
+                    'daily_start_date' => 'required',
+                    'daily_end_date' => 'required'
+                ]);
+
+                $reports = TransactionCommissionFeeDailyView::whereBetween('treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))])
+                    ->get();
+                break;
+            case 'monthly';
+                $month = $request->month != "All Months"? $request->month : NULL;
+                $year = $request->year != "All Years"? $request->year : NULL;
+
+
+                $reports = TransactionCommissionFeeMonthlyView::get()
+                    ->when($month != NULL, function ($query) use($month) {
+                        return $query->where('month_num', $month);
+                    })
+                    ->when($year != NULL, function ($query) use($year) {
+                        return $query->where('year_num', $year);
+                    });
+                break;
+            case 'yearly':
+                $reports = TransactionCommissionFeeYearlyView::get();
+                break;
+        }
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        return view('report.transaction.transaction-commission-fee', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
+    }
+
+    public function TransactionRevenueReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        
+        switch ($request->report_type) {
+            case 'daily':
+                // Validate input data
+                $validatedData = $request->validate([
+                    'daily_start_date' => 'required',
+                    'daily_end_date' => 'required'
+                ]);
+
+                $reports = TransactionRevenueDailyView::whereBetween('treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))])
+                    ->get();
+                break;
+            case 'monthly';
+                $month = $request->month != "All Months"? $request->month : NULL;
+                $year = $request->year != "All Years"? $request->year : NULL;
+
+
+                $reports = TransactionRevenueMonthlyView::get()
+                    ->when($month != NULL, function ($query) use($month) {
+                        return $query->where('month_num', $month);
+                    })
+                    ->when($year != NULL, function ($query) use($year) {
+                        return $query->where('year_num', $year);
+                    });
+                break;
+            case 'yearly':
+                $reports = TransactionRevenueYearlyView::get();
+                break;
+        }
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        return view('report.transaction.transaction-revenue', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
     }
 
     private function getReportType() {

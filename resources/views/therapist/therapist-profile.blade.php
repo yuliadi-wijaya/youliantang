@@ -78,7 +78,7 @@
                             <div class="media-body">
                                 <p class="text-muted font-weight-bold">{{ __('Current Payout') }}</p>
                                 <h4 class="text-danger" style="font-weight: bold">Rp {{ number_format($data['payroll_fee']) }} <span style="font-size:9pt; font-weight:normal;"> of {{ number_format((float)$data['payroll_treatments']) }} treatments</span></h4>
-                                <span class="mt-2 badge badge-success font-size-8" style="padding-top:6px; padding-bottom:6px;">({{ date('d M Y', strtotime($data['payroll_start_date'])) . ' - ' . date('d M Y', strtotime($data['payroll_end_date']))}})</span>
+                                <span class="mt-2 badge badge-success font-size-9" style="padding:5px;"><i class="fa fa-calendar-alt font-size-12"></i>&nbsp;&nbsp;{{ date('d M Y', strtotime($data['payroll_start_date'])) }} <i class="mdi mdi-arrow-right font-size-11"></i> {{ date('d M Y', strtotime($data['payroll_end_date'])) }}</span>
                             </div>
                             <div class="avatar-sm align-self-center mini-stat-icon rounded-circle bg-danger">
                                 <span class="avatar-title" style="background-color: #f46a6a">

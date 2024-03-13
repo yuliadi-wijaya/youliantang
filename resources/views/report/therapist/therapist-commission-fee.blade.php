@@ -28,7 +28,7 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Transaction Revenue Report @endslot
+            @slot('title') Therapist Commission Fee Report @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Transactions @endslot
@@ -128,14 +128,10 @@
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
                                     <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Therapist Name') }}</th>
                                     <th>{{ __('Invoice') }}</th>
-                                    <th>{{ __('Sub Total') }}</th>
-                                    <th>{{ __('Discount') }}</th>
-                                    <th>{{ __('Additional Fee') }}</th>
-                                    <th>{{ __('Tax') }}</th>
-                                    <th>{{ __('NC Revenue') }}</th>
-                                    <th>{{ __('CK Revenue') }}</th>
-                                    <th>{{ __('Revenue Total') }}</th>
+                                    <th>{{ __('Treatment') }}</th>
+                                    <th>{{ __('Commission Fee') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,15 +142,11 @@
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->treatment_date }}</td>
+                                            <td>{{ $item->treatment_date}}</td>
+                                            <td>{{ $item->therapist_name}}</td>
                                             <td class="text-right">{{ number_format($item->invoice_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->price_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->discount_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->additional_price) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->tax_amount_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_nc) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_ck) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_total) }}</td>
+                                            <td class="text-right">{{ number_format($item->treatment_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->commission_fee_total) }}</td>
                                         </tr>
                                         @php $no++; @endphp
                                     @endforeach
@@ -275,3 +267,4 @@
             }
         </script>
     @endsection
+
