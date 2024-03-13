@@ -438,7 +438,7 @@ class ReportController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        return view('report.customer.customer-registration-total', compact('user', 'role', 'reportType', 'months', 'years', 'new_orders', 'repeat_orders', 'request'));
+        return view('report.customer.customer-new-and-repeat-order', compact('user', 'role', 'reportType', 'months', 'years', 'new_orders', 'repeat_orders', 'request'));
     }
 
     public function TherapistReviewReport(Request $request) {
