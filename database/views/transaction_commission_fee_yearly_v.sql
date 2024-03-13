@@ -7,4 +7,4 @@ SELECT YEAR(created_at) as treatment_date, COUNT(DISTINCT invoice_id) AS invoice
 FROM invoice_details 
 WHERE status = 1 AND is_deleted = 0
 GROUP BY YEAR(created_at)
-ORDER BY date(created_at) ASC;
+ORDER BY YEAR(created_at) ASC;

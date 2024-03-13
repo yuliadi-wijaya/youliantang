@@ -75,6 +75,8 @@
         "analytics" => "Analytics",
         "raw-data" => "Raw Data",
         "revenue" => "Revenue",
-        "commission-fee" => "Commission Fee"
+        "commission-fee" => "Commission Fee",
+        "review" => "Review",
+        "new-and-repeat-order" => "New And Repeat Order"
     ];
 ?>

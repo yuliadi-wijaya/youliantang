@@ -28,7 +28,7 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Transaction Revenue Report @endslot
+            @slot('title') Customer New And Repeat Order Report @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Transactions @endslot
@@ -120,43 +120,59 @@
                     </div>
                 </form>
             </div>
-            <div class="col-lg-12">
+            <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
-                        <table id="datas" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <table id="tbl-new-orders" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
                                     <th>{{ __('Date') }}</th>
-                                    <th>{{ __('Invoice') }}</th>
-                                    <th>{{ __('Sub Total') }}</th>
-                                    <th>{{ __('Discount') }}</th>
-                                    <th>{{ __('Additional Fee') }}</th>
-                                    <th>{{ __('Tax') }}</th>
-                                    <th>{{ __('NC Revenue') }}</th>
-                                    <th>{{ __('CK Revenue') }}</th>
-                                    <th>{{ __('Revenue Total') }}</th>
+                                    <th>{{ __('New Order Total') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($reports && count($reports) > 0)
+                                @if ($new_orders && count($new_orders) > 0)
                                     @php 
                                         $no = 1;
                                     @endphp
-                                    @foreach ($reports as $item)
+                                    @foreach ($new_orders as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->treatment_date }}</td>
-                                            <td class="text-right">{{ number_format($item->invoice_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->price_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->discount_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->additional_price) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->tax_amount_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_nc) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_ck) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_total) }}</td>
+                                            <td>{{ $item->regist_date }}</td>
+                                            <td class="text-right">{{ number_format($item->customer_regist_total) }}</td>
                                         </tr>
                                         @php $no++; @endphp
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="tbl-repeat-orders" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead class="text-white" style="background-color: #2a3042">
+                                <tr>
+                                    <th style="width: 75px">{{ __('#') }}</th>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Repeat Order Total') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($repeat_orders && count($repeat_orders) > 0)
+                                    @php 
+                                        $no1 = 1;
+                                    @endphp
+                                    @foreach ($repeat_orders as $item)
+                                        <tr>
+                                            <td class="text-right">{{ $no1 }}</td>
+                                            <td>{{ $item->treatment_date }}</td>
+                                            <td class="text-right">{{ number_format($item->repeat_order_total) }}</td>
+                                        </tr>
+                                        @php $no1++; @endphp
                                     @endforeach
                                 @endif
                             </tbody>
@@ -188,7 +204,19 @@
             $(document).ready(function(){
                 showFormDaily();
 
-                $('#datas').DataTable({
+                $('#tbl-new-orders').DataTable({
+                    buttons: [
+                        'copy',
+                        {extend : 'excel', footer: true},
+                        'colvis' ],
+                    pagingType: 'full_numbers',
+                    "drawCallback": function() {
+                        $('.dataTables_paginate > .pagination').addClass('justify-content-end');
+                        $('.dataTables_filter').addClass('d-flex justify-content-end');
+                    }
+                });
+
+                $('#tbl-repeat-orders').DataTable({
                     buttons: [
                         'copy',
                         {extend : 'excel', footer: true},
