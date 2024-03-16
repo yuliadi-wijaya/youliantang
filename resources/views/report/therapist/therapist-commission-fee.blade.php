@@ -127,7 +127,6 @@
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
-                                    <th>{{ __('Date') }}</th>
                                     <th>{{ __('Therapist Name') }}</th>
                                     <th>{{ __('Invoice') }}</th>
                                     <th>{{ __('Treatment') }}</th>
@@ -136,16 +135,12 @@
                             </thead>
                             @php 
                                 $no = 1;
-                                $sum_invoice = 0;
-                                $sum_treatment = 0;
-                                $sum_commission_fee = 0;
                             @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->treatment_date}}</td>
                                             <td>{{ $item->therapist_name}}</td>
                                             <td class="text-right">{{ number_format($item->invoice_total) }}</td>
                                             <td class="text-right">{{ number_format($item->treatment_total) }}</td>
@@ -153,23 +148,10 @@
                                         </tr>
                                         @php 
                                             $no++; 
-                                            $sum_invoice += $item->invoice_total;
-                                            $sum_treatment += $item->treatment_total;
-                                            $sum_commission_fee += $item->commission_fee_total;
                                         @endphp
                                     @endforeach
                                 @endif
                             </tbody>
-                            @if ($reports && count($reports) > 0)
-                                <tfoot class="text-white" style="background-color: #2a3042">
-                                    <tr>
-                                        <th class="text-right" colspan="3">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
-                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_commission_fee) }}</th>
-                                    </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>

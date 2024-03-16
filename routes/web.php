@@ -165,5 +165,6 @@ Route::get('transactions-commission-fee-report', 'ReportController@TransactionCo
 Route::get('therapist-commission-fee-report', 'ReportController@TherapistCommissionFeeReport');
 Route::get('therapist-review-report', 'ReportController@TherapistReviewReport');
 Route::get('customer-new-and-repeat-order-report', 'ReportController@CustomerNewAndRepeatOrderReport');
-
+Route::get('product-transaction-report', 'ReportController@ProductTransactionReport');
+Route::get('customer-top-repeat-order-report', 'ReportController@CustomerTopRepeatOrderReport');
 });

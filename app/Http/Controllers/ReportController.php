@@ -24,6 +24,7 @@ use App\CustomerRegistrationTotalYearlyView;
 use App\CustomerRepeatOrderDailyView;
 use App\CustomerRepeatOrderMonthlyView;
 use App\CustomerRepeatOrderYearlyView;
+use App\ProductTransactionView;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -379,6 +380,108 @@ class ReportController extends Controller
         return $data;
     }
 
+    public function ProductTransactionReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        if ($request->report_type) {
+            DB::connection()->enableQueryLog();
+            $reports = InvoiceDetail::select('products.name AS treatment_name',
+                DB::raw('SUM(products.duration) AS duration_total'),
+                DB::raw('COUNT(DISTINCT invoice_details.therapist_id) AS therapist_total'),
+                DB::raw('COUNT(DISTINCT invoice_details.invoice_id) AS invoice_total'),
+                DB::raw('COUNT(DISTINCT invoice_details.id) AS treatment_total'),
+                DB::raw('SUM(invoice_details.amount) AS treatment_price_total'),
+                DB::raw('SUM(invoice_details.fee) AS therapist_fee_total'))
+            ->join('invoices', 'invoices.id', '=', 'invoice_details.invoice_id')
+            ->leftJoin('products', 'products.id', '=', 'invoice_details.product_id')
+            ->where('invoices.status', 1)
+            ->where('invoices.is_deleted', 0)
+            ->when($request->report_type == 'daily', function ($query) use ($request) {
+                return $query->whereBetween('invoices.treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))]);
+            })
+            ->when($request->report_type == 'monthly', function ($query) use ($request) {
+                if ($request->month != "All Months") {
+                    return $query->whereMonth('invoices.treatment_date', $request->month);
+                }
+                if ($request->year != "All Years") {
+                    return $query->whereYear('invoices.treatment_date', $request->year);
+                }
+                return $query;
+            })
+            ->groupBy('products.name')
+            ->orderBy(DB::raw('COUNT(DISTINCT invoice_details.therapist_id)'), 'DESC')
+            ->get();
+
+            // echo '<pre>';
+            // print_r(DB::getQueryLog());
+            // echo '</pre>';
+            // die();
+        }
+
+        return view('report.product.product-transaction', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
+    }
+
+    public function CustomerTopRepeatOrderReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        if ($request->report_type) {
+            $reports = Invoice::select(
+                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name, ''), ' - ', users.phone_number) AS customer_name"),
+                DB::raw('COUNT(COALESCE(invoices.id, 0)) AS repeat_order_total'),
+                DB::raw('SUM(invoices.total_price) AS based_paid_total'),
+                DB::raw('SUM(invoices.discount) AS discount_total'),
+                DB::raw('SUM(invoices.additional_price) AS additional_price_total'),
+                DB::raw('SUM(invoices.tax_amount) AS tax_amount_total'),
+                DB::raw('SUM(invoices.grand_total) AS gross_paid_total'))
+            ->join('users', 'users.id', '=', 'invoices.customer_id')
+            ->where('invoices.treatment_date', '>', DB::raw('DATE(users.created_at)'))
+            ->when($request->report_type == 'daily', function ($query) use ($request) {
+                return $query->whereBetween('invoices.treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))]);
+            })
+            ->when($request->report_type == 'monthly', function ($query) use ($request) {
+                if ($request->month != "All Months") {
+                    return $query->whereMonth('invoices.treatment_date', $request->month);
+                }
+                if ($request->year != "All Years") {
+                    return $query->whereYear('invoices.treatment_date', $request->year);
+                }
+                return $query;
+            })
+            ->groupBy(DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name, ''), ' - ', users.phone_number)"))
+            ->orderBy(DB::raw('COUNT(COALESCE(invoices.id, 0))'), 'DESC')
+            ->limit($request->limit)
+            ->get();
+        }
+
+        return view('report.customer.customer-top-repeat-order', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
+    }
+
     public function CustomerNewAndRepeatOrderReport(Request $request) {
         // Get user session data
         $user = Sentinel::getUser();
@@ -448,49 +551,54 @@ class ReportController extends Controller
         // Get user role
         $role = $user->roles[0]->slug;
 
-        $reports = TherapistReviewView::orderBy('rating_average', 'DESC')
-                    ->orderBy('rating_total', 'DESC')
-                    ->orderBy('reviewer_total', 'DESC')
-                    ->orderBy('treatment_total', 'DESC')
-                    ->orderBy('therapist_name', 'ASC')
-                    ->get();
+        // Report Type Filter
+        $reportType = $this->getReportType();
 
-        return view('report.therapist.therapist-review', compact('user', 'role', 'reports', 'request'));
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        if ($request->report_type) {
+            $reports = InvoiceDetail::select(
+                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name, '')) AS therapist_name"),
+                DB::raw('COUNT(invoice_details.id) AS treatment_total'),
+                DB::raw('COUNT(reviews.id) AS reviewer_total'),
+                DB::raw('SUM(COALESCE(reviews.rating, 0)) AS rating_total'),
+                DB::raw('COALESCE(ROUND(SUM(COALESCE(reviews.rating, 0))/COUNT(reviews.id), 2), 0) AS rating_average'))
+            ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+            ->leftJoin('reviews', 'reviews.invoice_detail_id', '=', 'invoice_details.id')
+            ->where('invoice_details.status', 1)
+            ->where('invoice_details.is_deleted', 0)
+            ->when($request->report_type == 'daily', function ($query) use ($request) {
+                return $query->whereBetween(DB::raw('DATE(invoice_details.created_at)'), [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))]);
+            })
+            ->when($request->report_type == 'monthly', function ($query) use ($request) {
+                if ($request->month != "All Months") {
+                    return $query->whereMonth('invoice_details.created_at', $request->month);
+                }
+                if ($request->year != "All Years") {
+                    return $query->whereYear('invoice_details.created_at', $request->year);
+                }
+                return $query;
+            })
+            ->groupBy(DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name,''))"))
+            ->orderBy('rating_average', 'DESC')
+            ->orderBy('rating_total', 'DESC')
+            ->orderBy('reviewer_total', 'DESC')
+            ->orderBy('treatment_total', 'DESC')
+            ->orderBy('therapist_name', 'ASC')
+            ->get();
+        }
+
+        return view('report.therapist.therapist-review', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
     }
 
     public function TherapistCommissionFeeReport(Request $request) {
         // Get user session data
         $user = Sentinel::getUser();
         $reports = null;
-        
-        switch ($request->report_type) {
-            case 'daily':
-                // Validate input data
-                $validatedData = $request->validate([
-                    'daily_start_date' => 'required',
-                    'daily_end_date' => 'required'
-                ]);
-
-                $reports = TherapistCommissionFeeDailyView::whereBetween('treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))])
-                    ->get();
-                break;
-            case 'monthly';
-                $month = $request->month != "All Months"? $request->month : NULL;
-                $year = $request->year != "All Years"? $request->year : NULL;
-
-
-                $reports = TherapistCommissionFeeMonthlyView::get()
-                    ->when($month != NULL, function ($query) use($month) {
-                        return $query->where('month_num', $month);
-                    })
-                    ->when($year != NULL, function ($query) use($year) {
-                        return $query->where('year_num', $year);
-                    });
-                break;
-            case 'yearly':
-                $reports = TherapistCommissionFeeYearlyView::get();
-                break;
-        }
 
         // Report Type Filter
         $reportType = $this->getReportType();
@@ -503,6 +611,32 @@ class ReportController extends Controller
 
         // Get user role
         $role = $user->roles[0]->slug;
+
+        if ($request->report_type) {
+            $reports = InvoiceDetail::select(
+                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name,'')) AS therapist_name"),
+                DB::raw('COUNT(DISTINCT invoice_details.invoice_id) AS invoice_total'),
+                DB::raw('COUNT(DISTINCT invoice_details.id) AS treatment_total'),
+                DB::raw('SUM(invoice_details.fee) AS commission_fee_total'))
+            ->join('users', 'users.id', '=', 'invoice_details.therapist_id')
+            ->where('invoice_details.status', 1)
+            ->where('invoice_details.is_deleted', 0)
+            ->when($request->report_type == 'daily', function ($query) use ($request) {
+                return $query->whereBetween(DB::raw('DATE(invoice_details.created_at)'), [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))]);
+            })
+            ->when($request->report_type == 'monthly', function ($query) use ($request) {
+                if ($request->month != "All Months") {
+                    return $query->whereMonth('invoice_details.created_at', $request->month);
+                }
+                if ($request->year != "All Years") {
+                    return $query->whereYear('invoice_details.created_at', $request->year);
+                }
+                return $query;
+            })
+            ->groupBy(DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name,''))"))
+            ->orderBy(DB::raw('COUNT(DISTINCT invoice_details.id)'), 'DESC')
+            ->get();
+        }
 
         return view('report.therapist.therapist-commission-fee', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
     }

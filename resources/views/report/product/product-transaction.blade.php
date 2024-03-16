@@ -28,7 +28,7 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Therapist Review Report @endslot
+            @slot('title') Product Transaction Report @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Transactions @endslot
@@ -127,37 +127,43 @@
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
-                                    <th>{{ __('Therapist Name') }}</th>
-                                    <th>{{ __('Treatment') }}</th>
-                                    <th>{{ __('Review') }}</th>
-                                    <th>{{ __('Rating Total') }}</th>
-                                    <th>{{ __('Rating Average') }}</th>
+                                    <th>{{ __('Product Name') }}</th>
+                                    <th>{{ __('Duration') }} <span style="font-size: 8pt">{{ __('(minute)')}}</span></th>
+                                    <th>{{ __('Product Price') }}</th>
+                                    <th>{{ __('Therapist') }}</th>
+                                    <th>{{ __('Commission Fee') }}</th>
+                                    <th>{{ __('Transaction Total') }}</th>
                                 </tr>
                             </thead>
                             @php 
                                 $no = 1;
-                                $sum_treatment = 0;
-                                $sum_reviewer = 0;
-                                $sum_rating_total = 0;
-                                $sum_rating_average = 0;
+                                $sum_duration = 0;
+                                $sum_product_price = 0;
+                                $sum_therapist = 0;
+                                $sum_commission_fee = 0;
+                                $sum_transaction = 0;
+                                $sum_invoice = 0;
                             @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->therapist_name}}</td>
-                                            <td class="text-right">{{ number_format($item->treatment_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->reviewer_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->rating_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->rating_average) }}</td>
+                                            <td>{{ $item->treatment_name }}</td>
+                                            <td class="text-right">{{ number_format($item->duration_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->treatment_price_total) }}</td>
+                                            <td class="text-right">{{ number_format($item->therapist_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->therapist_fee_total) }}</td>
+                                            <td class="text-right">{{ number_format($item->treatment_total) }} <span style="font-size: 8pt">transactions</span> / {{ number_format($item->invoice_total) }} <span style="font-size: 8pt">invoices</span></td>
                                         </tr>
                                         @php 
                                             $no++; 
-                                            $sum_treatment += $item->treatment_total;
-                                            $sum_reviewer += $item->reviewer_total;
-                                            $sum_rating_total += $item->rating_total;
-                                            $sum_rating_average += $item->rating_average;
+                                            $sum_duration += $item->duration_total;
+                                            $sum_product_price += $item->treatment_price_total;
+                                            $sum_therapist += $item->therapist_tota;
+                                            $sum_commission_fee += $item->therapist_fee_total;
+                                            $sum_transaction += $item->treatment_total;
+                                            $sum_invoice += $item->invoice_total;
                                         @endphp
                                     @endforeach
                                 @endif
@@ -166,10 +172,11 @@
                                 <tfoot class="text-white" style="background-color: #2a3042">
                                     <tr>
                                         <th class="text-right" colspan="2">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
-                                        <th class="text-right">{{ number_format($sum_reviewer) }}</th>
-                                        <th class="text-right">{{ number_format($sum_rating_total) }}</th>
-                                        <th class="text-right">{{ number_format($sum_rating_average) }}</th>
+                                        <th class="text-right">{{ number_format($sum_duration) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_product_price) }}</th>
+                                        <th class="text-right">{{ number_format($sum_therapist) }}</th>
+                                        <th class="text-right">Rp {{ number_format($sum_commission_fee) }}</th>
+                                        <th class="text-right">{{ number_format($sum_transaction) }} <span style="font-size: 8pt">transactions</span> / {{ number_format($sum_invoice) }} <span style="font-size: 8pt">invoices</span></th>
                                     </tr>
                                 </tfoot>
                             @endif
@@ -199,6 +206,8 @@
 
         <script>
             $(document).ready(function(){
+                showFormDaily();
+
                 $('#datas').DataTable({
                     buttons: [
                         'copy',
@@ -210,8 +219,6 @@
                         $('.dataTables_filter').addClass('d-flex justify-content-end');
                     }
                 });
-
-                showFormDaily();
 
                 function toggleDisplay() {
                     var selec_type = $("#report_type").val();

@@ -28,7 +28,7 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Therapist Review Report @endslot
+            @slot('title') Customer Top Repeat Order Report @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Transactions @endslot
@@ -43,7 +43,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2 form-group">
-                                    <label class="control-label">{{ __('Report Type') }}</label>
+                                    <label class="control-label">{{ __('Report Type') }}<span class="text-danger">*</span></label>
                                     <select class="form-control select2" name="report_type" id="report_type">
                                         @foreach ($reportType as $key => $val) 
                                         <option value="{{ $key }}" @if (old('report_type') == '{{ $key }}') selected @endif>{{ $val }}</option>
@@ -110,6 +110,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-1 form-group">
+                                    <label class="control-label">{{ __('Limit Data') }}<span class="text-danger">*</span></label>
+                                    <select class="form-control" name="limit" id="limit">
+                                        <option value="10" @if (old('limit') == '10') selected @endif>10</option>
+                                        <option value="25" @if (old('limit') == '25') selected @endif>25</option>
+                                        <option value="50" @if (old('limit') == '50') selected @endif>50</option>
+                                        <option value="100" @if (old('limit') == '100') selected @endif>100</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary" style="margin-top: 28px">
                                         {{ __('Search') }}
@@ -127,52 +136,37 @@
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
-                                    <th>{{ __('Therapist Name') }}</th>
-                                    <th>{{ __('Treatment') }}</th>
-                                    <th>{{ __('Review') }}</th>
-                                    <th>{{ __('Rating Total') }}</th>
-                                    <th>{{ __('Rating Average') }}</th>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('RO Total') }}</th>
+                                    <th>{{ __('Based Paid') }}</th>
+                                    <th>{{ __('Discount') }}</th>
+                                    <th>{{ __('Additional Fee') }}</th>
+                                    <th>{{ __('Tax') }}</th>
+                                    <th>{{ __('Gross Paid') }}</th>
                                 </tr>
                             </thead>
                             @php 
                                 $no = 1;
-                                $sum_treatment = 0;
-                                $sum_reviewer = 0;
-                                $sum_rating_total = 0;
-                                $sum_rating_average = 0;
                             @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->therapist_name}}</td>
-                                            <td class="text-right">{{ number_format($item->treatment_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->reviewer_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->rating_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->rating_average) }}</td>
+                                            <td>{{ ucwords($item->customer_name) }}</td>
+                                            <td class="text-right">{{ number_format($item->repeat_order_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->based_paid_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->discount_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->additional_price_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->tax_amount_total) }}</td>
+                                            <td class="text-right">Rp {{ number_format($item->gross_paid_total) }}</td>
                                         </tr>
                                         @php 
                                             $no++; 
-                                            $sum_treatment += $item->treatment_total;
-                                            $sum_reviewer += $item->reviewer_total;
-                                            $sum_rating_total += $item->rating_total;
-                                            $sum_rating_average += $item->rating_average;
                                         @endphp
                                     @endforeach
                                 @endif
                             </tbody>
-                            @if ($reports && count($reports) > 0)
-                                <tfoot class="text-white" style="background-color: #2a3042">
-                                    <tr>
-                                        <th class="text-right" colspan="2">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
-                                        <th class="text-right">{{ number_format($sum_reviewer) }}</th>
-                                        <th class="text-right">{{ number_format($sum_rating_total) }}</th>
-                                        <th class="text-right">{{ number_format($sum_rating_average) }}</th>
-                                    </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>
@@ -199,6 +193,8 @@
 
         <script>
             $(document).ready(function(){
+                showFormDaily();
+
                 $('#datas').DataTable({
                     buttons: [
                         'copy',
@@ -210,8 +206,6 @@
                         $('.dataTables_filter').addClass('d-flex justify-content-end');
                     }
                 });
-
-                showFormDaily();
 
                 function toggleDisplay() {
                     var selec_type = $("#report_type").val();
@@ -288,4 +282,3 @@
             }
         </script>
     @endsection
-
