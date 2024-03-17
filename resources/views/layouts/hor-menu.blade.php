@@ -77,6 +77,9 @@
                                 <div class="arrow-down"></div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="reportsDropdown">
+                                <a href="{{ url('product-transaction-report') }}" class="nav-link">{{ __('translation.products') }}</a>
+                                <a href="{{ url('promo-usage-report') }}" class="nav-link">{{ __('translation.promos') }}</a>
+                                <a href="{{ url('payment-method-transaction-report') }}" class="nav-link">{{ __('translation.payment-method') }}</a>
                                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="customerDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{ __('translation.customers') }} <div class="arrow-down"></div>
                                 </a>
@@ -86,7 +89,6 @@
                                     {{-- <a href="{{ url('/rf-customer-reg') }}" class="dropdown-item">{{ __('translation.total-registration') }}</a>
                                     <a href="{{ url('/rf-customer-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a> --}}
                                 </div>
-
                                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="therapistsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{ __('translation.therapists') }} <div class="arrow-down"></div>
                                 </a>
@@ -96,14 +98,6 @@
                                     {{-- <a href="{{ url('/rf-therapist-trans') }}" class="dropdown-item">{{ __('translation.transaction-history') }}</a>
                                     <a href="{{ url('/rf-therapist-total') }}" class="dropdown-item">{{ __('translation.total-therapist') }}</a> --}}
                                 </div>
-
-                                <a class="nav-link dropdown-toggle arrow-none" href="#" id="transactionsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ __('translation.products') }} <div class="arrow-down"></div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="therapistsDropdown">
-                                    <a href="{{ url('product-transaction-report') }}" class="dropdown-item">{{ __('translation.transactions') }}</a>
-                                </div>
-
                                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="transactionsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{ __('translation.transactions') }} <div class="arrow-down"></div>
                                 </a>

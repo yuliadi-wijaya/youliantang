@@ -43,7 +43,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2 form-group">
-                                    <label class="control-label">{{ __('Report Type') }}</label>
+                                    <label class="control-label">{{ __('Period Type') }}</label>
                                     <select class="form-control select2" name="report_type" id="report_type">
                                         @foreach ($reportType as $key => $val) 
                                         <option value="{{ $key }}" @if (old('report_type') == '{{ $key }}') selected @endif>{{ $val }}</option>
@@ -128,8 +128,7 @@
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
                                     <th>{{ __('Date') }}</th>
-                                    <th>{{ __('Invoice') }}</th>
-                                    <th>{{ __('Treatment') }}</th>
+                                    <th>{{ __('Transaction') }}</th>
                                     <th>{{ __('Therapist') }}</th>
                                     <th>{{ __('Commission Fee') }}</th>
                                 </tr>
@@ -147,8 +146,7 @@
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
                                             <td>{{ $item->treatment_date}}</td>
-                                            <td class="text-right">{{ number_format($item->invoice_total) }}</td>
-                                            <td class="text-right">{{ number_format($item->treatment_total) }}</td>
+                                            <th class="text-right">{{ number_format($item->treatment_total) }} <span style="font-size: 8pt">treatments</span> / {{ number_format($item->invoice_total) }} <span style="font-size: 8pt">invoices</span></th>
                                             <td class="text-right">{{ number_format($item->therapist_total) }}</td>
                                             <td class="text-right">Rp {{ number_format($item->commission_fee_total) }}</td>
                                         </tr>
@@ -166,8 +164,7 @@
                                 <tfoot class="text-white" style="background-color: #2a3042">
                                     <tr>
                                         <th class="text-right" colspan="2">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
-                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
+                                        <th class="text-right">{{ number_format($sum_treatment) }} <span style="font-size: 8pt">treatments</span> / {{ number_format($sum_invoice) }} <span style="font-size: 8pt">invoices</span></th>
                                         <th class="text-right">{{ number_format($sum_therapist) }}</th>
                                         <th class="text-right">Rp {{ number_format($sum_commission_fee) }}</th>
                                     </tr>

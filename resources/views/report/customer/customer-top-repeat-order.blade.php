@@ -43,7 +43,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2 form-group">
-                                    <label class="control-label">{{ __('Report Type') }}<span class="text-danger">*</span></label>
+                                    <label class="control-label">{{ __('Period Type') }}<span class="text-danger">*</span></label>
                                     <select class="form-control select2" name="report_type" id="report_type">
                                         @foreach ($reportType as $key => $val) 
                                         <option value="{{ $key }}" @if (old('report_type') == '{{ $key }}') selected @endif>{{ $val }}</option>
@@ -102,6 +102,26 @@
                                                     @endforeach
                                                 </select>
                                                 @error('year')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 form-group" id="yearly_show" style="display: none;">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group datepickerdiv">
+                                                <select class="form-control @error('yearly_year') is-invalid @enderror" id="yearly_year" name="yearly_year">
+                                                    <option val="" selected>All Years</option>
+                                                    @foreach ($years as $key => $val)
+                                                    <option value="{{ $key }}" @if (old('yearly_year') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('yearly_year')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -217,11 +237,13 @@
 
                         resetFormDaily();
                         resetFormMonthly();
+                        resetFormYearly()
                     } else if (selec_type == 'monthly') {
                         showFormMonthly();
 
                         resetFormDaily();
                         resetFormMonthly();
+                        resetFormYearly()
                     } else if (selec_type == 'yearly') {
                         showFormYearly()
 
@@ -240,6 +262,7 @@
             function showFormDaily() {
                 $("#daily_show").css("display", "block");
                 $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "none");
 
                 $("#daily_start_date").prop('required',true);
                 $("#daily_end_date").prop('required',true);
@@ -248,6 +271,7 @@
             function showFormMonthly() {
                 $("#daily_show").css("display", "none");
                 $("#monthly_show").css("display", "block");
+                $("#yearly_show").css("display", "none");
                 
                 $("#daily_start_date").prop('required',false);
                 $("#daily_end_date").prop('required',false);
@@ -256,6 +280,7 @@
             function showFormYearly() {
                 $("#daily_show").css("display", "none");
                 $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "block");
 
                 $("#daily_start_date").prop('required',false);
                 $("#daily_end_date").prop('required',false);
@@ -278,6 +303,12 @@
 
                 if ($('#year').val()) {
                     $("#year").val($("#year option:first").val());
+                }
+            }
+
+            function resetFormYearly() {
+                if ($('#yearly_year').val()) {
+                    $('#yearly_year').val($('#yearly_year option:first').val());
                 }
             }
         </script>

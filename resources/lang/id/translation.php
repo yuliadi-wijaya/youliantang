@@ -78,6 +78,8 @@
         "commission-fee" => "Commission Fee",
         "review" => "Ulasan",
         "new-and-repeat-order" => "Order Baru dan Berulang",
-        "top-repeat-order" => "Order Berulang Tertinggi"
+        "top-repeat-order" => "Order Berulang Tertinggi",
+        "promo-usage" => "Penggunaan Promo",
+        "payment-method" => "Metode Pembayaran"
     ];
 ?>

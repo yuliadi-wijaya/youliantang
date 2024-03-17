@@ -25,10 +25,12 @@ use App\CustomerRepeatOrderDailyView;
 use App\CustomerRepeatOrderMonthlyView;
 use App\CustomerRepeatOrderYearlyView;
 use App\ProductTransactionView;
+use App\Promo;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Query\JoinClause;
 
 class ReportController extends Controller
 {
@@ -379,6 +381,129 @@ class ReportController extends Controller
         ];
         return $data;
     }
+    public function PaymentMethodTransactionReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        if ($request->report_type) {
+            $reports = Invoice::select('payment_mode',
+                DB::raw('COUNT(id) AS invoice_total'),
+                DB::raw("SUM(CASE 
+                    WHEN invoice_type = 'NC' THEN grand_total
+                    ELSE 0
+                END) AS revenue_nc"),
+                DB::raw("SUM(CASE 
+                    WHEN invoice_type = 'CK' THEN grand_total
+                    ELSE 0
+                END) AS revenue_ck"),
+                DB::raw('SUM(grand_total) as revenue_total'))
+            ->where('status', 1)
+            ->where('is_deleted', 0)
+            ->when($request->report_type == 'daily', function ($query) use ($request) {
+                return $query->whereBetween('treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))]);
+            })
+            ->when($request->report_type == 'monthly', function ($query) use ($request) {
+                if ($request->month != "All Months") {
+                    return $query->whereMonth('treatment_date', $request->month);
+                }
+                if ($request->year != "All Years") {
+                    return $query->whereYear('treatment_date', $request->year);
+                }
+                return $query;
+            })
+            ->when($request->report_type == 'yearly', function ($query) use ($request) {
+                if ($request->yearly_year != "All Years") {
+                    return $query->whereYear('treatment_date', $request->yearly_year);
+                }
+                return $query;
+            })
+            ->groupBy('payment_mode')
+            ->orderBy(DB::raw('COUNT(id)'), 'DESC')
+            ->get();
+        }
+
+        return view('report.payment.payment-method-transaction', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
+    }
+
+    public function PromoUsageReport(Request $request) {
+        // Get user session data
+        $user = Sentinel::getUser();
+        $reports = null;
+        // Get user role
+        $role = $user->roles[0]->slug;
+
+        // Report Type Filter
+        $reportType = $this->getReportType();
+
+        // Month Filter
+        $months = $this->getMonths();
+
+        // Year Filter
+        $years = $this->getYears();
+
+        if ($request->report_type) {
+            // DB::connection()->enableQueryLog();
+            $reports = Promo::select('promos.id',
+                'promos.name',
+                'promos.active_period_start',
+                'promos.active_period_end',
+                'promos.is_reuse_voucher',
+                DB::raw('COUNT(DISTINCT promo_vouchers.id) AS voucher_total'),
+                DB::raw('COUNT(DISTINCT COALESCE(invoices.id, 0)) AS invoice_total'))
+            ->join('promo_vouchers', 'promo_vouchers.promo_id', '=', 'promos.id')
+            ->join('invoices', function (JoinClause $join) {
+                $join->on('invoices.promo_id', '=', 'promos.id')
+                    ->where('invoices.is_deleted', '=', '0');
+            })
+            ->where('promos.is_deleted', 0)
+            ->when($request->report_type == 'daily', function ($query) use ($request) {
+                return $query->whereBetween('invoices.treatment_date', [date('Y-m-d', strtotime($request->daily_start_date)), date('Y-m-d', strtotime($request->daily_end_date))]);
+            })
+            ->when($request->report_type == 'monthly', function ($query) use ($request) {
+                if ($request->month != "All Months") {
+                    return $query->whereMonth('invoices.treatment_date', $request->month);
+                }
+                if ($request->year != "All Years") {
+                    return $query->whereYear('invoices.treatment_date', $request->year);
+                }
+                return $query;
+            })
+            ->when($request->report_type == 'yearly', function ($query) use ($request) {
+                if ($request->yearly_year != "All Years") {
+                    return $query->whereYear('invoices.treatment_date', $request->yearly_year);
+                }
+                return $query;
+            })
+            ->groupBy('promos.id')
+            ->groupBy('promos.name')
+            ->groupBy('promos.active_period_start')
+            ->groupBy('promos.active_period_end')
+            ->groupBy('promos.is_reuse_voucher')
+            ->orderBy(DB::raw('COUNT(DISTINCT COALESCE(invoices.id, 0))'), 'DESC')
+            ->orderBy(DB::raw('COUNT(DISTINCT promo_vouchers.id)'), 'DESC')
+            ->limit($request->limit)
+            ->get();
+
+            // echo '<pre>';
+            // print_r(DB::getQueryLog());
+            // echo '</pre>';
+            // die();
+        }
+
+        return view('report.promo.promo-usage', compact('user', 'role', 'reportType', 'months', 'years', 'reports', 'request'));
+    }
 
     public function ProductTransactionReport(Request $request) {
         // Get user session data
@@ -397,7 +522,6 @@ class ReportController extends Controller
         $years = $this->getYears();
 
         if ($request->report_type) {
-            DB::connection()->enableQueryLog();
             $reports = InvoiceDetail::select('products.name AS treatment_name',
                 DB::raw('SUM(products.duration) AS duration_total'),
                 DB::raw('COUNT(DISTINCT invoice_details.therapist_id) AS therapist_total'),
@@ -418,6 +542,12 @@ class ReportController extends Controller
                 }
                 if ($request->year != "All Years") {
                     return $query->whereYear('invoices.treatment_date', $request->year);
+                }
+                return $query;
+            })
+            ->when($request->report_type == 'yearly', function ($query) use ($request) {
+                if ($request->yearly_year != "All Years") {
+                    return $query->whereYear('invoices.treatment_date', $request->yearly_year);
                 }
                 return $query;
             })
@@ -473,6 +603,12 @@ class ReportController extends Controller
                 }
                 return $query;
             })
+            ->when($request->report_type == 'yearly', function ($query) use($request) {
+                if ($request->yearly_year != "All Years") {
+                    return $query->whereYear('invoices.treatment_date', $request->yearly_year);
+                }
+                return $query;
+            })
             ->groupBy(DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name, ''), ' - ', users.phone_number)"))
             ->orderBy(DB::raw('COUNT(COALESCE(invoices.id, 0))'), 'DESC')
             ->limit($request->limit)
@@ -524,8 +660,16 @@ class ReportController extends Controller
                     });
                 break;
             case 'yearly':
-                $new_orders = CustomerRegistrationTotalYearlyView::get();
-                $repeat_orders = CustomerRepeatOrderYearlyView::get();
+                $yearly_year = $request->yearly_year != "All Years"? $request->yearly_year : NULL;
+
+                $new_orders = CustomerRegistrationTotalYearlyView::get()
+                    ->when($yearly_year != NULL, function ($query) use($yearly_year) {
+                        return $query->where('regist_date', $yearly_year);
+                    });
+                $repeat_orders = CustomerRepeatOrderYearlyView::get()
+                    ->when($yearly_year != NULL, function ($query) use($yearly_year) {
+                        return $query->where('treatment_date', $yearly_year);
+                    });
                 break;
         }
 
@@ -583,6 +727,12 @@ class ReportController extends Controller
                 }
                 return $query;
             })
+            ->when($request->report_type == 'yearly', function ($query) use ($request) {
+                if ($request->yearly_year != "All Years") {
+                    return $query->whereYear('invoice_details.created_at', $request->yearly_year);
+                }
+                return $query;
+            })
             ->groupBy(DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.last_name,''))"))
             ->orderBy('rating_average', 'DESC')
             ->orderBy('rating_total', 'DESC')
@@ -630,6 +780,12 @@ class ReportController extends Controller
                 }
                 if ($request->year != "All Years") {
                     return $query->whereYear('invoice_details.created_at', $request->year);
+                }
+                return $query;
+            })
+            ->when($request->report_type == 'yearly', function ($query) use ($request) {
+                if ($request->yearly_year != "All Years") {
+                    return $query->whereYear('invoice_details.created_at', $request->yearly_year);
                 }
                 return $query;
             })
