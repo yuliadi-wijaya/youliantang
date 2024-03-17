@@ -122,6 +122,38 @@
             </div>
             <div class="col-lg-12">
                 <div class="card">
+                    <div class="card-header" style="border-bottom: solid #495057; background-color: #fff">
+                        <div class="invoice-title text-center">
+                            <div class="col-12 text-center text-white">
+                                <img src="{{ URL::asset('assets/images/logo-dark.png') }}" alt="" width="235" style="margin:-31px 0 -45px 0">
+                            </div>
+                        </div>
+                        @if ($request) 
+                            <div class="row">
+                                <div class="col-md-6 text-left">
+                                    @if (isset($request->report_type))
+                                        <h4>{{ ucwords($request->report_type) }} Period</h4>
+                                    @endif
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    @if ($request->report_type == 'daily')
+                                        <h4>{{ date('j F Y', strtotime($request->daily_start_date)) }} - {{ date('j F Y', strtotime($request->daily_end_date)) }}</h4>
+                                    @elseif ($request->report_type == 'monthly')
+                                        <h4>
+                                        @if ($request->month != 'All Months')
+                                            {{ date("F", mktime(0, 0, 0, $request->month, 10)) }}
+                                        @endif
+                                        @if ($request->year != 'All Years')
+                                            {{ $request->year }}
+                                        @endif
+                                        </h4>
+                                    @elseif ($request->report_type == 'yearly' && $request->yearly_year != 'All Years')
+                                        <h4>{{ $request->yearly_year }}</h4>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                     <div class="card-body">
                         <table id="datas" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="text-white" style="background-color: #2a3042">
