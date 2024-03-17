@@ -34,7 +34,7 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-4 form-group">
-                                    <label class="control-label">{{ __('Report Type') }}</label>
+                                    <label class="control-label">{{ __('Peirode Type') }}</label>
                                     <select class="form-control select2" name="report_type" id="report_type">
                                         <option value="detail" @if (old('report_type') == 'detail') selected @endif>{{ __('Detail') }}</option>
                                         <option value="summary" @if (old('report_type') == 'summary') selected @endif>{{ __('Summary') }}</option>

@@ -43,7 +43,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2 form-group">
-                                    <label class="control-label">{{ __('Report Type') }}</label>
+                                    <label class="control-label">{{ __('Period Type') }}</label>
                                     <select class="form-control select2" name="report_type" id="report_type">
                                         @foreach ($reportType as $key => $val) 
                                         <option value="{{ $key }}" @if (old('report_type') == '{{ $key }}') selected @endif>{{ $val }}</option>
@@ -110,6 +110,26 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-2 form-group" id="yearly_show" style="display: none;">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group datepickerdiv">
+                                                <select class="form-control @error('yearly_year') is-invalid @enderror" id="yearly_year" name="yearly_year">
+                                                    <option val="" selected>All Years</option>
+                                                    @foreach ($years as $key => $val)
+                                                    <option value="{{ $key }}" @if (old('yearly_year') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('yearly_year')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary" style="margin-top: 28px">
                                         {{ __('Search') }}
@@ -127,7 +147,6 @@
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
-                                    <th>{{ __('Date') }}</th>
                                     <th>{{ __('Therapist Name') }}</th>
                                     <th>{{ __('Invoice') }}</th>
                                     <th>{{ __('Treatment') }}</th>
@@ -136,16 +155,12 @@
                             </thead>
                             @php 
                                 $no = 1;
-                                $sum_invoice = 0;
-                                $sum_treatment = 0;
-                                $sum_commission_fee = 0;
                             @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->treatment_date}}</td>
                                             <td>{{ $item->therapist_name}}</td>
                                             <td class="text-right">{{ number_format($item->invoice_total) }}</td>
                                             <td class="text-right">{{ number_format($item->treatment_total) }}</td>
@@ -153,23 +168,10 @@
                                         </tr>
                                         @php 
                                             $no++; 
-                                            $sum_invoice += $item->invoice_total;
-                                            $sum_treatment += $item->treatment_total;
-                                            $sum_commission_fee += $item->commission_fee_total;
                                         @endphp
                                     @endforeach
                                 @endif
                             </tbody>
-                            @if ($reports && count($reports) > 0)
-                                <tfoot class="text-white" style="background-color: #2a3042">
-                                    <tr>
-                                        <th class="text-right" colspan="3">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
-                                        <th class="text-right">{{ number_format($sum_treatment) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_commission_fee) }}</th>
-                                    </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>
@@ -220,11 +222,13 @@
 
                         resetFormDaily();
                         resetFormMonthly();
+                        resetFormYearly()
                     } else if (selec_type == 'monthly') {
                         showFormMonthly();
 
                         resetFormDaily();
                         resetFormMonthly();
+                        resetFormYearly()
                     } else if (selec_type == 'yearly') {
                         showFormYearly()
 
@@ -243,6 +247,7 @@
             function showFormDaily() {
                 $("#daily_show").css("display", "block");
                 $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "none");
 
                 $("#daily_start_date").prop('required',true);
                 $("#daily_end_date").prop('required',true);
@@ -251,6 +256,7 @@
             function showFormMonthly() {
                 $("#daily_show").css("display", "none");
                 $("#monthly_show").css("display", "block");
+                $("#yearly_show").css("display", "none");
                 
                 $("#daily_start_date").prop('required',false);
                 $("#daily_end_date").prop('required',false);
@@ -259,6 +265,7 @@
             function showFormYearly() {
                 $("#daily_show").css("display", "none");
                 $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "block");
 
                 $("#daily_start_date").prop('required',false);
                 $("#daily_end_date").prop('required',false);
@@ -281,6 +288,12 @@
 
                 if ($('#year').val()) {
                     $("#year").val($("#year option:first").val());
+                }
+            }
+
+            function resetFormYearly() {
+                if ($('#yearly_year').val()) {
+                    $('#yearly_year').val($('#yearly_year option:first').val());
                 }
             }
         </script>

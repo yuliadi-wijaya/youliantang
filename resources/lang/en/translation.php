@@ -77,6 +77,9 @@
         "revenue" => "Revenue",
         "commission-fee" => "Commission Fee",
         "review" => "Review",
-        "new-and-repeat-order" => "New And Repeat Order"
+        "new-and-repeat-order" => "New And Repeat Order",
+        "top-repeat-order" => "Top Repeat Order",
+        "promo-usage" => "Promo Usage",
+        "payment-method" => "Payment Method"
     ];
 ?>

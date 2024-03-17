@@ -756,6 +756,12 @@ class InvoiceController extends Controller
             }else{
                 $invoice->use_member = 0;
                 $invoice->voucher_code = $request->voucher_code;
+
+                // setup promo id
+                $promo_voucher = PromoVoucher::where('voucher_code', $request->voucher_code)->first();
+                if ($promo_voucher) {
+                    $invoice->promo_id = $promo_voucher->promo_id;
+                }
             }
             $invoice->total_price = str_replace(',', '', $request->total_price);
             $invoice->discount = str_replace(',', '', $request->discount);
