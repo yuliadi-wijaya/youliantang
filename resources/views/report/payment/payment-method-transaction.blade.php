@@ -181,9 +181,9 @@
                                     <th style="width: 75px">{{ __('#') }}</th>
                                     <th>{{ __('Payment Method') }}</th>
                                     <th>{{ __('Transaction Total') }}</th>
-                                    <th>{{ __('NC Revenue') }}</th>
-                                    <th>{{ __('CK Revenue') }}</th>
-                                    <th>{{ __('Revenue Total') }}</th>
+                                    <th>{{ __('NC Income') }}</th>
+                                    <th>{{ __('CK Income') }}</th>
+                                    <th>{{ __('Income Total') }}</th>
                                 </tr>
                             </thead>
                             @php 
