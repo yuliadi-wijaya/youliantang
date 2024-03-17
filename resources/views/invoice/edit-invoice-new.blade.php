@@ -304,7 +304,7 @@
                                             <select class="form-control @error('payment_mode') is-invalid @enderror"
                                                 name="payment_mode">
                                                 <option selected disabled>{{ __('-- Select Mode --') }}</option>
-                                                <option value="Cash Payement" @if (old('payment_mode', $invoice->payment_mode) == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
+                                                <option value="Cash Payment" @if (old('payment_mode', $invoice->payment_mode) == 'Cash Payement') selected @endif>{{ __('Cash Payment') }} </option>
                                                 <option value="Debit/Credit Card" @if (old('payment_mode', $invoice->payment_mode) == 'Debit/Credit Card') selected @endif>{{ __('Debit/Credit Card') }}</option>
                                                 <option value="QRIS" @if (old('payment_mode', $invoice->payment_mode) == 'QRIS') selected @endif>{{ __('QRIS') }} </option>
                                                 <option value="GoPay" @if (old('payment_mode', $invoice->payment_mode) == 'GoPay') selected @endif>{{ __('GoPay') }} </option>

@@ -37,6 +37,110 @@
         <!-- end page title -->
         <div class="row">
             <div class="col-lg-12">
+                <form>
+                @csrf
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2 form-group">
+                                    <label class="control-label">{{ __('Period Type') }}</label>
+                                    <select class="form-control select2" name="report_type" id="report_type">
+                                        @foreach ($reportType as $key => $val) 
+                                        <option value="{{ $key }}" @if (old('report_type') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4 form-group" id="daily_show">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-6 input-group datepickerdiv">
+                                            <input type="date" class="form-control @error('daily_date') is-invalid @enderror"
+                                                name="daily_start_date" id="daily_start_date" value="{{ old('daily_start_date', date('Y-m-d', strtotime($request->daily_start_date))) }}"
+                                                placeholder="{{ __('Select Date') }}">
+                                            @error('daily_start_date')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 input-group datepickerdiv">
+                                            <input type="date" class="form-control @error('daily_date') is-invalid @enderror"
+                                                name="daily_end_date" id="daily_end_date" value="{{ old('daily_end_date', $request->daily_end_date) }}"
+                                                placeholder="{{ __('Select Date') }}">
+                                            @error('daily_end_date')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 form-group" id="monthly_show" style="display: none;">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group datepickerdiv">
+                                                <select class="form-control @error('month') is-invalid @enderror" id="month" name="month">
+                                                    <option val="" selected>All Months</option>
+                                                    @foreach ($months as $key => $val)
+                                                        <option value="{{ $key }}" @if (old('months') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('month')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group datepickerdiv">
+                                                <select class="form-control @error('year') is-invalid @enderror" id="year" name="year">
+                                                    <option val="" selected>All Years</option>
+                                                    @foreach ($years as $key => $val)
+                                                    <option value="{{ $key }}" @if (old('year') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('year')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 form-group" id="yearly_show" style="display: none;">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group datepickerdiv">
+                                                <select class="form-control @error('yearly_year') is-invalid @enderror" id="yearly_year" name="yearly_year">
+                                                    <option val="" selected>All Years</option>
+                                                    @foreach ($years as $key => $val)
+                                                    <option value="{{ $key }}" @if (old('yearly_year') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('yearly_year')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 28px">
+                                        {{ __('Search') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <table id="datas" class="table dt-responsive table-bordered table-striped table-color-primary" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -126,7 +230,93 @@
                         $('.dataTables_filter').addClass('d-flex justify-content-end');
                     }
                 });
+
+                showFormDaily();
+
+                function toggleDisplay() {
+                    var selec_type = $("#report_type").val();
+
+                    if (selec_type == 'daily') {
+                        showFormDaily();
+
+                        $('daily_start_date').val({{date('d/m/Y', strtotime($request->daily_start_date))}});
+
+                        resetFormDaily();
+                        resetFormMonthly();
+                        resetFormYearly()
+                    } else if (selec_type == 'monthly') {
+                        showFormMonthly();
+
+                        resetFormDaily();
+                        resetFormMonthly();
+                        resetFormYearly()
+                    } else if (selec_type == 'yearly') {
+                        showFormYearly()
+
+                        resetFormDaily();
+                        resetFormMonthly();
+                    }
+                }
+
+                toggleDisplay();
+
+                $("#report_type").on("change", function() {
+                    toggleDisplay();
+                });
             });
+
+            function showFormDaily() {
+                $("#daily_show").css("display", "block");
+                $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "none");
+
+                $("#daily_start_date").prop('required',true);
+                $("#daily_end_date").prop('required',true);
+            }
+
+            function showFormMonthly() {
+                $("#daily_show").css("display", "none");
+                $("#monthly_show").css("display", "block");
+                $("#yearly_show").css("display", "none");
+                
+                $("#daily_start_date").prop('required',false);
+                $("#daily_end_date").prop('required',false);
+            }
+
+            function showFormYearly() {
+                $("#daily_show").css("display", "none");
+                $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "block");
+
+                $("#daily_start_date").prop('required',false);
+                $("#daily_end_date").prop('required',false);
+            }
+
+            function resetFormDaily() {
+                if ($('#daily_start_date').val()) {
+                    $('#daily_start_date').val("");
+                }
+
+                if ($('#daily_end_date').val()) {
+                    $('#daily_end_date').val("");
+                }
+            }
+
+            function resetFormMonthly() {
+                if ($("#month").val()) {
+                    $("#month").val($("#month option:first").val());
+                }
+
+                if ($('#year').val()) {
+                    $("#year").val($("#year option:first").val());
+                }
+            }
+
+            function resetFormYearly() {
+                if ($('#yearly_year').val()) {
+                    $('#yearly_year').val($('#yearly_year option:first').val());
+                }
+            }
         </script>
     @endsection
 

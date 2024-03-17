@@ -361,6 +361,9 @@ class PromoController extends Controller
         $promo->active_period_end = date('Y-m-d', strtotime($request->input('active_period_end')));
         $promo->is_reuse_voucher = $request->input('is_reuse_voucher');
         $promo->status = $request->input('status');
+        $promo->start_number = $request->input('start_number');
+        $promo->voucher_total = $request->input('voucher_total');
+        $promo->voucher_prefix = $request->input('voucher_prefix');
 
         return $promo;
     }

@@ -28,7 +28,7 @@
     @section('content')
         <!-- start page title -->
         @component('components.breadcrumb')
-            @slot('title') Transaction Revenue Report @endslot
+            @slot('title') Promo Usage Report @endslot
             @slot('li_1') Dashboard @endslot
             @slot('li_2') Reports @endslot
             @slot('li_3') Transactions @endslot
@@ -43,7 +43,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2 form-group">
-                                    <label class="control-label">{{ __('Period Type') }}</label>
+                                    <label class="control-label">{{ __('Period Type') }}<span class="text-danger">*</span></label>
                                     <select class="form-control select2" name="report_type" id="report_type">
                                         @foreach ($reportType as $key => $val) 
                                         <option value="{{ $key }}" @if (old('report_type') == '{{ $key }}') selected @endif>{{ $val }}</option>
@@ -110,6 +110,35 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-2 form-group" id="yearly_show" style="display: none;">
+                                    <label class="control-label">{{ __('Invoice Date ') }}<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group datepickerdiv">
+                                                <select class="form-control @error('yearly_year') is-invalid @enderror" id="yearly_year" name="yearly_year">
+                                                    <option val="" selected>All Years</option>
+                                                    @foreach ($years as $key => $val)
+                                                    <option value="{{ $key }}" @if (old('yearly_year') == '{{ $key }}') selected @endif>{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('yearly_year')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 form-group">
+                                    <label class="control-label">{{ __('Limit Data') }}<span class="text-danger">*</span></label>
+                                    <select class="form-control" name="limit" id="limit">
+                                        <option value="10" @if (old('limit') == '10') selected @endif>10</option>
+                                        <option value="25" @if (old('limit') == '25') selected @endif>25</option>
+                                        <option value="50" @if (old('limit') == '50') selected @endif>50</option>
+                                        <option value="100" @if (old('limit') == '100') selected @endif>100</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary" style="margin-top: 28px">
                                         {{ __('Search') }}
@@ -127,72 +156,39 @@
                             <thead class="text-white" style="background-color: #2a3042">
                                 <tr>
                                     <th style="width: 75px">{{ __('#') }}</th>
-                                    <th>{{ __('Date') }}</th>
-                                    <th>{{ __('Invoice') }}</th>
-                                    <th>{{ __('Sub Total') }}</th>
-                                    <th>{{ __('Discount') }}</th>
-                                    <th>{{ __('Additional Fee') }}</th>
-                                    <th>{{ __('Tax') }}</th>
-                                    <th>{{ __('NC Revenue') }}</th>
-                                    <th>{{ __('CK Revenue') }}</th>
-                                    <th>{{ __('Revenue Total') }}</th>
+                                    <th>{{ __('Name') }}</th>
+                                    <th>{{ __('Active Period') }}</th>
+                                    <th>{{ __('Voucher Quota') }}</th>
+                                    <th>{{ __('Transaction Total') }}</th>
+                                    <th>{{ __('Remining Quota') }}</th>
                                 </tr>
                             </thead>
                             @php 
                                 $no = 1;
-                                $sum_invoice = 0;
-                                $sum_price = 0;
-                                $sum_discount = 0;
-                                $sum_additional_price = 0;
-                                $sum_tax_amount = 0;
-                                $sum_revenue_nc = 0;
-                                $sum_revenue_ck = 0;
-                                $sum_revenue_total = 0;
                             @endphp
                             <tbody>
                                 @if ($reports && count($reports) > 0)
                                     @foreach ($reports as $item)
                                         <tr>
                                             <td class="text-right">{{ $no }}</td>
-                                            <td>{{ $item->treatment_date }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($item->active_period_start)) . ' to ' . date('d-m-Y', strtotime($item->active_period_end)) }}</td>
+                                            <td class="text-right">{{ number_format($item->voucher_total) }}</td>
                                             <td class="text-right">{{ number_format($item->invoice_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->price_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->discount_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->additional_price) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->tax_amount_total) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_nc) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_ck) }}</td>
-                                            <td class="text-right">Rp {{ number_format($item->revenue_total) }}</td>
+                                            <td class="text-right">
+                                                @if ($item->is_reuse_voucher == 1)
+                                                    <i>{{ "Unlimited" }}</i>
+                                                @else 
+                                                    {{ number_format($item->voucher_total - $item->invoice_total) }}
+                                                @endif
+                                            </td>
                                         </tr>
                                         @php 
                                             $no++; 
-                                            $sum_invoice += $item->invoice_total;
-                                            $sum_price += $item->price_total;
-                                            $sum_discount += $item->discount_total;
-                                            $sum_additional_price += $item->additional_price;
-                                            $sum_tax_amount += $item->tax_amount_total;
-                                            $sum_revenue_nc += $item->revenue_nc;
-                                            $sum_revenue_ck += $item->revenue_ck;
-                                            $sum_revenue_total +=$item->revenue_total;
                                         @endphp
                                     @endforeach
                                 @endif
                             </tbody>
-                            @if ($reports && count($reports) > 0)
-                                <tfoot class="text-white" style="background-color: #2a3042">
-                                    <tr>
-                                        <th class="text-right" colspan="2">TOTAL</th>
-                                        <th class="text-right">{{ number_format($sum_invoice) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_price) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_discount) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_additional_price) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_tax_amount) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_revenue_nc) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_revenue_ck) }}</th>
-                                        <th class="text-right">Rp {{ number_format($sum_revenue_total) }}</th>
-                                    </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>
@@ -219,8 +215,6 @@
 
         <script>
             $(document).ready(function(){
-                showFormDaily();
-
                 $('#datas').DataTable({
                     buttons: [
                         'copy',
@@ -233,6 +227,8 @@
                     }
                 });
 
+                showFormDaily();
+
                 function toggleDisplay() {
                     var selec_type = $("#report_type").val();
 
@@ -243,11 +239,13 @@
 
                         resetFormDaily();
                         resetFormMonthly();
+                        resetFormYearly()
                     } else if (selec_type == 'monthly') {
                         showFormMonthly();
 
                         resetFormDaily();
                         resetFormMonthly();
+                        resetFormYearly()
                     } else if (selec_type == 'yearly') {
                         showFormYearly()
 
@@ -266,6 +264,7 @@
             function showFormDaily() {
                 $("#daily_show").css("display", "block");
                 $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "none");
 
                 $("#daily_start_date").prop('required',true);
                 $("#daily_end_date").prop('required',true);
@@ -274,6 +273,7 @@
             function showFormMonthly() {
                 $("#daily_show").css("display", "none");
                 $("#monthly_show").css("display", "block");
+                $("#yearly_show").css("display", "none");
                 
                 $("#daily_start_date").prop('required',false);
                 $("#daily_end_date").prop('required',false);
@@ -282,6 +282,7 @@
             function showFormYearly() {
                 $("#daily_show").css("display", "none");
                 $("#monthly_show").css("display", "none");
+                $("#yearly_show").css("display", "block");
 
                 $("#daily_start_date").prop('required',false);
                 $("#daily_end_date").prop('required',false);
@@ -306,5 +307,12 @@
                     $("#year").val($("#year option:first").val());
                 }
             }
+
+            function resetFormYearly() {
+                if ($('#yearly_year').val()) {
+                    $('#yearly_year').val($('#yearly_year option:first').val());
+                }
+            }
         </script>
     @endsection
+
